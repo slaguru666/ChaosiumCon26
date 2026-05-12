@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GM Companion — A Question of Singularity | Event 95</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Special+Elite&family=Oswald:wght@300;400;600&display=swap');
+:root{--ink:#1a1a1a;--page:#f5f3ee;--light:#e8e5dd;--mid:#c8c4bb;--faint:#f0ede6;--mono:'Share Tech Mono','Courier New',monospace;--display:'Oswald',sans-serif;--body:'Special Elite',serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:14px;}
+body{background:#d0cdc6;font-family:var(--body);color:var(--ink);line-height:1.6;}
+.page{width:210mm;min-height:297mm;background:var(--page);margin:8mm auto;padding:16mm 18mm;position:relative;border:1px solid #aaa9a2;}
+.event-bar{font-family:var(--mono);font-size:8px;letter-spacing:2px;text-transform:uppercase;opacity:0.4;border-bottom:0.5px solid var(--mid);padding-bottom:2mm;margin-bottom:4mm;display:flex;justify-content:space-between;}
+.section-header{border-top:2px solid var(--ink);border-bottom:1px solid var(--ink);padding:2mm 0;margin:6mm 0 4mm;display:flex;align-items:baseline;gap:4mm;}
+.section-header .sn{font-family:var(--mono);font-size:10px;opacity:0.4;letter-spacing:2px;min-width:12mm;}
+.section-header h2{font-family:var(--display);font-weight:600;font-size:20px;letter-spacing:2px;text-transform:uppercase;flex:1;}
+.section-header .timing{font-family:var(--mono);font-size:10px;opacity:0.65;letter-spacing:1px;}
+h3{font-family:var(--display);font-weight:400;font-size:14px;letter-spacing:2px;text-transform:uppercase;margin:4mm 0 2mm;padding-bottom:1mm;border-bottom:0.5px solid var(--mid);}
+h4{font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;margin:3mm 0 1.5mm;opacity:0.75;}
+p{margin-bottom:2.5mm;font-size:12px;line-height:1.65;}
+ul{margin:1.5mm 0 2.5mm 5mm;font-size:12px;}
+li{margin-bottom:1mm;line-height:1.6;}
+.read-aloud{background:var(--faint);border-left:3px solid var(--ink);padding:3mm 4mm;margin:3mm 0;font-size:12px;line-height:1.7;font-style:italic;}
+.gm-note{border:1px solid var(--ink);padding:3mm 4mm;margin:3mm 0;font-size:11px;}
+.gm-note .nl{font-family:var(--mono);font-size:8px;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5mm;display:block;opacity:0.55;}
+.timing-table{width:100%;border-collapse:collapse;font-size:11px;margin:3mm 0;}
+.timing-table th{font-family:var(--mono);font-size:8px;letter-spacing:2px;text-transform:uppercase;padding:2mm 3mm;background:var(--ink);color:var(--page);text-align:left;font-weight:normal;}
+.timing-table td{padding:2mm 3mm;border-bottom:0.5px solid var(--mid);vertical-align:top;}
+.timing-table tr:nth-child(even) td{background:var(--faint);}
+.npc-card{border:1.5px solid var(--ink);margin:3mm 0;page-break-inside:avoid;}
+.npc-header{background:var(--ink);color:var(--page);padding:2mm 4mm;display:flex;justify-content:space-between;align-items:baseline;}
+.npc-header .npc-name{font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:1px;text-transform:uppercase;}
+.npc-header .npc-role{font-family:var(--mono);font-size:9px;letter-spacing:1px;opacity:0.8;}
+.npc-body{padding:3mm 4mm;}
+.stat-grid{font-family:var(--mono);font-size:10px;display:grid;grid-template-columns:repeat(8,1fr);gap:1mm;margin:2mm 0;border:0.5px solid var(--mid);padding:2mm;background:var(--faint);}
+.sg{text-align:center;}
+.sg .sl{font-size:7px;opacity:0.55;display:block;}
+.sg .sv{font-size:12px;font-weight:bold;}
+.derived-stats{font-family:var(--mono);font-size:10px;display:grid;grid-template-columns:repeat(3,1fr);gap:1mm;margin-bottom:2mm;}
+.ds{border:0.5px solid var(--mid);padding:1.5mm 2mm;background:var(--faint);}
+.ds .dl{font-size:8px;opacity:0.55;display:block;}
+.ds .dv{font-size:11px;font-weight:bold;}
+.skills-row{font-family:var(--mono);font-size:10px;line-height:1.9;margin:1mm 0;}
+.skills-row span{display:inline-block;border:0.5px solid var(--mid);padding:0.3mm 2mm;margin:0.5mm 1mm 0.5mm 0;font-size:9px;background:var(--faint);}
+.npc-special{border-top:0.5px solid var(--mid);padding-top:2mm;margin-top:2mm;font-size:11px;font-style:italic;}
+.clue-row{display:grid;grid-template-columns:22px 1fr;gap:3mm;margin-bottom:3mm;align-items:start;}
+.clue-num{font-family:var(--mono);font-size:11px;width:22px;height:22px;border:1.5px solid var(--ink);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:0.5mm;}
+.clue-num.opt{border-style:dashed;opacity:0.65;}
+.clue-body{font-size:12px;}
+.clue-body strong{font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;}
+.mechanic{font-family:var(--mono);font-size:10px;background:var(--light);border:0.5px solid var(--mid);padding:1mm 2mm;display:inline-block;margin:0.5mm 0;}
+.outcome-card{border:1px solid var(--ink);margin:2.5mm 0;page-break-inside:avoid;}
+.outcome-header{padding:2mm 4mm;border-bottom:1px solid var(--mid);display:flex;justify-content:space-between;align-items:center;background:var(--faint);}
+.outcome-header .on{font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:1px;text-transform:uppercase;}
+.outcome-header .ot{font-family:var(--mono);font-size:9px;opacity:0.6;max-width:55%;text-align:right;line-height:1.4;}
+.outcome-body{padding:2.5mm 4mm;font-size:12px;}
+.pacing-alert{background:var(--ink);color:var(--page);padding:2mm 4mm;font-family:var(--mono);font-size:10px;letter-spacing:1px;margin:3mm 0;}
+.pacing-alert .pal{font-size:8px;letter-spacing:3px;text-transform:uppercase;opacity:0.7;display:block;margin-bottom:1mm;}
+.loop-box{border:2px solid var(--ink);padding:3mm 4mm;margin:3mm 0;text-align:center;font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;}
+.rule{border:none;border-top:0.5px solid var(--mid);margin:4mm 0;}
+.rule-heavy{border:none;border-top:1.5px solid var(--ink);margin:4mm 0;}
+.pg{position:absolute;bottom:8mm;right:12mm;font-family:var(--mono);font-size:9px;opacity:0.35;letter-spacing:2px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:5mm;}
+.data-readout{font-family:var(--mono);font-size:10px;background:var(--faint);border:1px solid var(--mid);padding:3mm;line-height:1.9;}
+.data-readout .dr{display:flex;gap:3mm;border-bottom:0.3px solid var(--mid);padding:0.8mm 0;}
+.data-readout .dr:last-child{border-bottom:none;}
+.data-readout .dk{opacity:0.55;min-width:40mm;}
+.data-readout .dv{flex:1;}
+.location-box{border:1px solid var(--mid);padding:3mm 4mm;margin:2mm 0;background:var(--faint);font-size:12px;}
+.location-box .loc-name{font-family:var(--display);font-weight:400;font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5mm;}
+.handout-page{width:210mm;min-height:148mm;background:var(--page);margin:8mm auto;padding:12mm 16mm;border:1px solid #aaa9a2;position:relative;}
+.ho-header{font-family:var(--mono);font-size:8px;letter-spacing:3px;text-transform:uppercase;opacity:0.45;border-bottom:0.5px solid var(--mid);padding-bottom:2mm;margin-bottom:4mm;display:flex;justify-content:space-between;}
+.ho-title{font-family:var(--display);font-weight:400;font-size:16px;letter-spacing:2px;text-transform:uppercase;margin-bottom:4mm;}
+.ho-body{font-size:12px;line-height:1.7;}
+.ho-stamp{position:absolute;bottom:10mm;right:14mm;font-family:var(--mono);font-size:8px;letter-spacing:2px;opacity:0.35;text-transform:uppercase;}
+.handwritten{font-family:'Special Elite',serif;font-size:12px;line-height:1.8;}
+.cover-wrap{display:flex;flex-direction:column;min-height:297mm;justify-content:space-between;}
+.cover-art-block{border:1.5px solid var(--ink);overflow:hidden;}
+.cover-top{border-top:3px solid var(--ink);border-bottom:1px solid var(--ink);padding:4mm 0 3mm;text-align:center;}
+.cover-top .sysline{font-family:var(--mono);font-size:9px;letter-spacing:3px;text-transform:uppercase;opacity:0.6;margin-bottom:2mm;}
+.cover-top h1{font-family:var(--display);font-weight:600;font-size:34px;letter-spacing:2px;text-transform:uppercase;line-height:1.1;}
+.cover-top .subt{font-family:var(--mono);font-size:10px;letter-spacing:2px;margin-top:2mm;opacity:0.7;}
+.cover-meta{display:grid;grid-template-columns:1fr 1fr 1fr;border:1px solid var(--ink);}
+.cm{padding:3mm 4mm;text-align:center;border-right:1px solid var(--ink);}
+.cm:last-child{border-right:none;}
+.cm .cml{font-family:var(--mono);font-size:8px;letter-spacing:2px;text-transform:uppercase;opacity:0.55;display:block;margin-bottom:1mm;}
+.cm .cmv{font-family:var(--display);font-weight:400;font-size:12px;letter-spacing:1px;}
+.tangent-box{border:2px solid var(--ink);padding:4mm;margin:3mm 0;background:var(--faint);}
+.tangent-box .tb-label{font-family:var(--mono);font-size:8px;letter-spacing:3px;text-transform:uppercase;opacity:0.55;margin-bottom:2mm;display:block;}
+.tangent-box h3{border:none;padding-bottom:0;font-size:16px;}
+@media print{body{background:white;}.page,.handout-page{margin:0;border:none;page-break-after:always;width:100%;padding:15mm 18mm;}.no-print{display:none;}}
+</style>
+</head>
+<body>
+
+<!-- NO-PRINT CONTROLS -->
+<div class="no-print" style="text-align:center;padding:5mm;font-family:'Courier New',monospace;font-size:11px;color:#555;background:#ccc;border-bottom:1px solid #aaa;">
+  GM COMPANION DOCUMENT &nbsp;|&nbsp; A QUESTION OF SINGULARITY &nbsp;|&nbsp;
+  <a href="#" onclick="window.print();return false;" style="color:#1a1a1a;font-weight:bold;">PRINT / SAVE AS PDF</a>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ PAGE 1: COVER -->
+<div class="page">
+  <div class="cover-wrap">
+
+    <div class="cover-top">
+      <div class="sysline">Ringworld Roleplaying Game &nbsp;·&nbsp; 1984 Edition &nbsp;·&nbsp; GM Eyes Only</div>
+      <h1>A Question<br>of Singularity</h1>
+      <div class="subt">GM Companion Document &nbsp;·&nbsp; Event 95 &nbsp;·&nbsp; Chaosium Con UK 2026</div>
+    </div>
+
+    <div style="margin:4mm 0;">
+      <div class="cover-art-block">
+        <svg width="100%" viewBox="0 0 680 600" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="surf" patternUnits="userSpaceOnUse" width="12" height="12"><line x1="0" y1="12" x2="12" y2="0" stroke="#1a1a1a" stroke-width="0.4" opacity="0.4"/></pattern>
+            <pattern id="xh" patternUnits="userSpaceOnUse" width="8" height="8"><line x1="0" y1="8" x2="8" y2="0" stroke="#1a1a1a" stroke-width="0.5" opacity="0.55"/><line x1="0" y1="0" x2="8" y2="8" stroke="#1a1a1a" stroke-width="0.5" opacity="0.55"/></pattern>
+          </defs>
+          <g fill="#1a1a1a"><circle cx="48" cy="55" r="1.5"/><circle cx="95" cy="28" r="1"/><circle cx="148" cy="88" r="1.5"/><circle cx="202" cy="38" r="1"/><circle cx="418" cy="32" r="1.5"/><circle cx="472" cy="72" r="1"/><circle cx="535" cy="48" r="1"/><circle cx="598" cy="36" r="1.5"/><circle cx="638" cy="88" r="1"/><circle cx="62" cy="122" r="1"/><circle cx="525" cy="128" r="1.5"/><circle cx="55" cy="195" r="1"/><circle cx="460" cy="205" r="1.5"/><circle cx="602" cy="198" r="1"/><circle cx="645" cy="228" r="1.5"/><circle cx="60" cy="278" r="1"/><circle cx="128" cy="268" r="1.5"/><circle cx="555" cy="268" r="1"/><circle cx="622" cy="285" r="1"/></g>
+          <path d="M0,355 Q340,338 680,355 L680,590 L0,590 Z" fill="#f5f3ee" stroke="#1a1a1a" stroke-width="1.5"/>
+          <path d="M0,355 Q340,338 680,355 L680,590 L0,590 Z" fill="url(#surf)"/>
+          <rect x="72" y="355" width="66" height="235" fill="url(#xh)"/>
+          <rect x="305" y="355" width="60" height="235" fill="url(#xh)"/>
+          <rect x="536" y="355" width="68" height="235" fill="url(#xh)"/>
+          <circle cx="490" cy="468" r="54" fill="#f5f3ee" stroke="#1a1a1a" stroke-width="1.2"/>
+          <circle cx="490" cy="468" r="5" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+          <line x1="490" y1="457" x2="490" y2="442" stroke="#1a1a1a" stroke-width="0.7"/><line x1="490" y1="479" x2="490" y2="494" stroke="#1a1a1a" stroke-width="0.7"/><line x1="479" y1="468" x2="464" y2="468" stroke="#1a1a1a" stroke-width="0.7"/><line x1="501" y1="468" x2="516" y2="468" stroke="#1a1a1a" stroke-width="0.7"/>
+          <path d="M433,462 Q441,440 453,445 Q457,426 469,436" fill="none" stroke="#1a1a1a" stroke-width="0.9"/>
+          <rect x="78" y="322" width="86" height="14" rx="1" fill="#1a1a1a"/><rect x="302" y="328" width="80" height="13" rx="1" fill="#1a1a1a"/><rect x="524" y="322" width="88" height="13" rx="1" fill="#1a1a1a"/>
+          <line x1="121" y1="322" x2="121" y2="308" stroke="#1a1a1a" stroke-width="0.5"/><line x1="342" y1="328" x2="342" y2="314" stroke="#1a1a1a" stroke-width="0.5"/><line x1="568" y1="322" x2="568" y2="308" stroke="#1a1a1a" stroke-width="0.5"/>
+          <polygon points="146,168 188,148 406,144 450,162 454,178 450,196 406,214 188,210 146,188 142,178" fill="#f5f3ee" stroke="#1a1a1a" stroke-width="1.5"/>
+          <line x1="188" y1="178" x2="450" y2="178" stroke="#1a1a1a" stroke-width="0.7"/>
+          <line x1="242" y1="150" x2="242" y2="208" stroke="#1a1a1a" stroke-width="0.5"/><line x1="298" y1="146" x2="298" y2="212" stroke="#1a1a1a" stroke-width="0.5"/><line x1="358" y1="145" x2="358" y2="213" stroke="#1a1a1a" stroke-width="0.5"/>
+          <rect x="404" y="130" width="74" height="27" rx="2" fill="#f5f3ee" stroke="#1a1a1a" stroke-width="1.2"/><rect x="404" y="202" width="74" height="27" rx="2" fill="#f5f3ee" stroke="#1a1a1a" stroke-width="1.2"/>
+          <ellipse cx="481" cy="143" rx="10" ry="8" fill="#e8e5dd" stroke="#1a1a1a" stroke-width="1.2"/><ellipse cx="481" cy="216" rx="10" ry="8" fill="#e8e5dd" stroke="#1a1a1a" stroke-width="1.2"/><ellipse cx="456" cy="178" rx="13" ry="10" fill="#e8e5dd" stroke="#1a1a1a" stroke-width="1.5"/>
+          <line x1="491" y1="143" x2="506" y2="143" stroke="#1a1a1a" stroke-width="0.8"/><line x1="502" y1="138" x2="514" y2="138" stroke="#1a1a1a" stroke-width="0.5"/><line x1="502" y1="148" x2="514" y2="148" stroke="#1a1a1a" stroke-width="0.5"/>
+          <line x1="491" y1="216" x2="506" y2="216" stroke="#1a1a1a" stroke-width="0.8"/><line x1="469" y1="178" x2="486" y2="178" stroke="#1a1a1a" stroke-width="1.2"/>
+          <rect x="128" y="162" width="42" height="34" rx="4" fill="#f5f3ee" stroke="#1a1a1a" stroke-width="1.2"/>
+          <rect x="134" y="168" width="8" height="5" rx="1" fill="#e8e5dd" stroke="#1a1a1a" stroke-width="0.8"/><rect x="148" y="168" width="8" height="5" rx="1" fill="#e8e5dd" stroke="#1a1a1a" stroke-width="0.8"/><rect x="134" y="178" width="8" height="5" rx="1" fill="#e8e5dd" stroke="#1a1a1a" stroke-width="0.8"/><rect x="148" y="178" width="8" height="5" rx="1" fill="#e8e5dd" stroke="#1a1a1a" stroke-width="0.8"/>
+          <line x1="128" y1="172" x2="95" y2="168" stroke="#1a1a1a" stroke-width="1"/><circle cx="91" cy="167" r="5" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+          <text x="105" y="130" text-anchor="end" font-family="monospace" font-size="10" fill="#1a1a1a">THE FOOLISH ENDEAVOUR</text>
+          <line x1="490" y1="414" x2="490" y2="402" stroke="#1a1a1a" stroke-width="0.5" stroke-dasharray="2,3"/>
+          <text x="490" y="399" text-anchor="middle" font-family="monospace" font-size="9" fill="#1a1a1a">QUIET ZONE · 40km</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="cover-meta">
+      <div class="cm"><span class="cml">Event</span><span class="cmv">95</span></div>
+      <div class="cm"><span class="cml">Session</span><span class="cmv">Fri Day 2 · 2:00–5:50pm</span></div>
+      <div class="cm"><span class="cml">Players</span><span class="cmv">6 (Pre-generated)</span></div>
+    </div>
+
+    <div style="margin-top:4mm;border-top:1px solid var(--ink);padding-top:3mm;">
+      <div class="two-col">
+        <div>
+          <div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;opacity:0.55;text-transform:uppercase;margin-bottom:1.5mm;">Tone</div>
+          <p style="font-size:11px;margin:0;">Cosmic wonder shading into existential dread. The horror is not violence. It is the realisation that the players are variables in an equation they cannot fully read.</p>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;opacity:0.55;text-transform:uppercase;margin-bottom:1.5mm;">Runtime</div>
+          <div style="font-family:var(--mono);font-size:11px;line-height:1.8;">
+            Total: 3 hrs 30 min (210 min)<br>
+            Hard stop to Act 3: 2:45 elapsed<br>
+            Hard resolution: 3:15 elapsed
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="pg">01</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ PAGE 2: TRUTH + TIMING -->
+<div class="page">
+  <div class="event-bar"><span>Event 95 · A Question of Singularity</span><span>GM Eyes Only</span></div>
+
+  <div class="section-header">
+    <span class="sn">00</span>
+    <h2>The Truth</h2>
+    <span class="timing">GM Eyes Only — Full Plot</span>
+  </div>
+
+  <p>Three hundred years ago, the Ringworld's distributed management system detected a mass imbalance in this region — a structural inconsistency that should not exist given the engineering tolerances of the structure. Left uncorrected, it compounds. The system initiated a containment protocol: isolate the region, simulate a gravitational collapse to model the inconsistency, recalculate structural load, reset conditions, repeat. An iterative solution engine — mechanical, patient, relentless.</p>
+
+  <p><strong>The problem: conscious observers.</strong> Every time beings enter the region, they introduce chaotic variables into the calculation. So the system resets. The region is caught in a loop — not of time exactly, but of <em>conditions</em>. Physical matter resets. Energy states reset. Memory, however, does not fully reset for beings with sufficient cognitive complexity.</p>
+
+  <p>Dr. Silev Marr has been caught in the loop for what feels to him like years. He has lost count of iterations. He is not mad — he is exhausted. He knows more about this region than anyone alive, because he has died here hundreds of times and woken up at the start of each cycle.</p>
+
+  <p><strong>The deeper problem: the system is failing.</strong> Its iterative process has exceeded its own predictive limits. Each reset leaves a small residue of mass. The simulated singularity is accumulating <em>real</em> mass. What began as a calculation is becoming a physical event. If nothing interrupts it, the singularity will become self-sustaining within hours. The Foolish Endeavour will be pulled in.</p>
+
+  <p><strong>The system is not malicious.</strong> It does not want to destroy anything. But it will accept input — if the players can communicate in terms it recognises: mathematical data, physical action on the mass source, or complete withdrawal of conscious variables from the region.</p>
+
+  <div class="rule-heavy"></div>
+
+  <div class="section-header">
+    <span class="sn">01</span>
+    <h2>Session Timing</h2>
+    <span class="timing">210 min total</span>
+  </div>
+
+  <table class="timing-table">
+    <tr><th>Act</th><th>Duration</th><th>Cumulative</th><th>What Must Be Done Before Moving On</th></tr>
+    <tr><td><strong>Introduction</strong></td><td>~15 min</td><td>0:15</td><td>Players briefed, anomaly established, landing team deployed</td></tr>
+    <tr><td><strong>Act One — The Surface</strong></td><td>~60 min</td><td>1:15</td><td>Loop experienced, Marr encountered, transit arch witnessed</td></tr>
+    <tr><td><strong>Act Two — The Spire</strong></td><td>~90 min</td><td>2:45</td><td>System logs found, mass escalation confirmed, loops tightening</td></tr>
+    <tr><td><strong>Act Three — The Core</strong></td><td>~30 min</td><td>3:15</td><td>Decision made, system responds</td></tr>
+    <tr><td><strong>Epilogue</strong></td><td>~15 min</td><td>3:30</td><td>Outcome played, table debrief</td></tr>
+  </table>
+
+  <div class="pacing-alert">
+    <span class="pal">Hard Rule</span>
+    At 2:45 elapsed, move to Act Three regardless of where the players are. Use each act's fast-track trigger. Do not let investigation run over.
+  </div>
+
+  <div class="rule-heavy"></div>
+
+  <div class="section-header">
+    <span class="sn">02</span>
+    <h2>GM Tone Notes</h2>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <h4>The Loop at the Table</h4>
+      <p>Use actual table moments. When the loop manifests, repeat something a player actually said — slightly wrong. "You said that before" is only effective if it really happened. Keep a note of two or three small moments to echo back.</p>
+
+      <h4>Marr Is Your Instrument</h4>
+      <p>He is not mysterious. He is not withholding. He is <em>exhausted</em>. Play him as a scientist who has been right every time and it has never been enough. Everything he knows, he will tell. The tragedy is that knowing hasn't helped.</p>
+    </div>
+    <div>
+      <h4>The System Is Not an Enemy</h4>
+      <p>Never, at any point, should the system feel malicious. It is indifferent the way physics is indifferent. The horror is that it does not know the players are there in any way that matters to it.</p>
+
+      <h4>Ship Crew as Chorus</h4>
+      <p>Vorn = withdrawal. Talren = engagement. Brakk = destruction. These are the three possible responses to the scenario made vocal over comms. Let their disagreements escalate as the situation worsens. They are mirrors for the table.</p>
+    </div>
+  </div>
+
+  <div class="pg">02</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ PAGE 3: INTRO + ACT ONE -->
+<div class="page">
+  <div class="event-bar"><span>Event 95 · A Question of Singularity</span><span>Introduction + Act One</span></div>
+
+  <div class="section-header">
+    <span class="sn">03</span>
+    <h2>Introduction</h2>
+    <span class="timing">~15 min</span>
+  </div>
+
+  <div class="read-aloud">
+    The Foolish Endeavour dropped from hyperdrive six hours ago and has been holding position since.<br><br>
+    The Ringworld fills the forward viewport — not as a planet but as a wall, a horizon that curves upward in both directions and never ends. You can make out the shadow squares drifting in their slow procession and the faint smear of weather systems moving across a surface the size of a million Earths.<br><br>
+    Chief Navigator Talren has not left the instruments since arrival. He keeps rechecking the same figures. Captain Vorn has twice asked him if there is an error. Both times, Talren has said the same thing:<br><br>
+    <em>"There is no error. That is the problem."</em><br><br>
+    The anomaly is there on every screen. A circular region approximately forty kilometres in diameter on the Ringworld's inner surface. Weather systems stop at its edge as if hitting a wall. Gravitational readings within the boundary are absent. A perfect, engineered nothing. And at its centre: a gravitational signature that your instruments say should not be physically possible at this scale.<br><br>
+    Brakk has already checked the weapons systems twice.
+  </div>
+
+  <div class="gm-note">
+    <span class="nl">Before Descent — Establish</span>
+    (1) Ship maintains orbit, comms open at all times. (2) Vorn's standing order: observe, do not interfere with Ringworld systems. (3) Talren aside: mass signature is growing, slowly but measurably. (4) Brakk's position: any unknown mechanism should be assumed hostile.
+  </div>
+
+  <div class="rule-heavy"></div>
+
+  <div class="section-header">
+    <span class="sn">04</span>
+    <h2>Act One — The Surface</h2>
+    <span class="timing">~60 min · Goal: establish the loop as mystery</span>
+  </div>
+
+  <p style="font-style:italic;font-size:11px;opacity:0.8;margin-bottom:3mm;">The players explore, find evidence of others, meet Marr, and experience their first loop event. They should leave Act One unsettled but not yet understanding what they face.</p>
+
+  <h3>Locations</h3>
+
+  <div class="location-box">
+    <div class="loc-name">The Boundary</div>
+    <p>A perfectly circular line where the Ringworld's surface ecology simply stops. Nothing violent — the wrongness is in the <em>physics</em>. Air pressure slightly different. Sound echoes arrive before they should. Instruments flicker within 10m of the line, then stabilise. Biological functions feel subtly out of sync for ~30 seconds after crossing.</p>
+    <div class="mechanic">[Ringworld: Awareness — notices the sound anomaly]</div>&nbsp;
+    <div class="mechanic">[Ringworld: Science (Physics) — understands active field maintenance]</div>
+  </div>
+
+  <div class="location-box">
+    <div class="loc-name">The Quiet Zone — Open Ground</div>
+    <p>Absolute silence. No plants, insects, wind. The sky is normal — arc of surface visible, shadow squares drifting — but weather stops at the boundary edge above as surely as it does on the ground. Clouds pile against invisible walls. Equipment scattered: survey pack, comm unit, a single boot. Cold. Undamaged. Footprints in impossible configurations — overlapping, some ending mid-step.</p>
+    <div class="mechanic">[Ringworld: Awareness — impossible track configurations, different depths]</div>&nbsp;
+    <div class="mechanic">[Ringworld: Science (Survey) — survey pack is RSC issue, model discontinued 40 years ago]</div>
+  </div>
+
+  <div class="location-box">
+    <div class="loc-name">Marr's Camp</div>
+    <p>Rough shelter from salvaged hull plating. Cot, hundreds of identical notebooks, an autodoc with power cell nearly exhausted. The first entry in every single notebook reads: <em>"Day one. The Endeavour has arrived. Earlier than last time."</em> Later notebooks contain entries about events that haven't happened yet this iteration. One reads: <em>"The tall one with the grey jacket goes to the arch first. Don't let them."</em></p>
+    <div class="mechanic">[Ringworld: Research — cross-referencing dates reveals temporal impossibilities; paper shows no age]</div>
+  </div>
+
+  <div class="location-box">
+    <div class="loc-name">The Transit Arch</div>
+    <p>Standard Ringworld stepping-disc arch — behaving in no standard way. Activates intermittently, no apparent trigger. Produces objects: tools, fragments, once a human hand (disappears before it can be retrieved). Destination display cycles through coordinates that don't resolve. One of the tools bears an engraving matching a player character's equipment.</p>
+    <div class="mechanic">[Ringworld: Electronics — arch receiving a signal it cannot fully decode, not malfunctioning]</div>&nbsp;
+    <div class="mechanic">[Ringworld: Awareness Hard — engraved tool matches a player character's kit]</div>
+  </div>
+
+  <div class="pg">03</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ PAGE 4: MARR + ACT ONE CLUES -->
+<div class="page">
+  <div class="event-bar"><span>Event 95 · A Question of Singularity</span><span>Act One — NPCs + Clues</span></div>
+
+  <div class="section-header">
+    <span class="sn">05</span>
+    <h2>Dr. Silev Marr</h2>
+    <span class="timing">Primary NPC · Act One</span>
+  </div>
+
+  <div class="npc-card">
+    <div class="npc-header">
+      <span class="npc-name">Dr. Silev Marr</span>
+      <span class="npc-role">Ringworld Survey Scientist · Loop Survivor</span>
+    </div>
+    <div class="npc-body">
+      <p style="font-size:11px;margin-bottom:2mm;"><strong>Appearance:</strong> Human male, appears mid-50s though he cannot determine his own age anymore. Lean, weathered. Hair completely white. Eyes clear and sharp — whatever the loop has done to him, his mind is intact. Layered clothing repaired many times. Moves carefully, as though the ground might give way.</p>
+
+      <div class="stat-grid">
+        <div class="sg"><span class="sl">STR</span><span class="sv">09</span></div>
+        <div class="sg"><span class="sl">CON</span><span class="sv">12</span></div>
+        <div class="sg"><span class="sl">SIZ</span><span class="sv">11</span></div>
+        <div class="sg"><span class="sl">INT</span><span class="sv">17</span></div>
+        <div class="sg"><span class="sl">POW</span><span class="sv">14</span></div>
+        <div class="sg"><span class="sl">DEX</span><span class="sv">12</span></div>
+        <div class="sg"><span class="sl">APP</span><span class="sv">10</span></div>
+        <div class="sg"><span class="sl">EDU</span><span class="sv">18</span></div>
+      </div>
+      <div class="derived-stats">
+        <div class="ds"><span class="dl">HP</span><span class="dv">12</span></div>
+        <div class="ds"><span class="dl">PP</span><span class="dv">14</span></div>
+        <div class="ds"><span class="dl">DB</span><span class="dv">—</span></div>
+      </div>
+
+      <div class="skills-row">
+        <span>Science (Physics) 78%</span><span>Science (Engineering) 65%</span><span>Research 82%</span><span>Awareness 70%</span><span>Computer 60%</span><span>Linguistics 55%</span><span>First Aid 45%</span><span>Persuade 40%</span>
+      </div>
+      <p style="font-size:11px;margin:1.5mm 0;"><em>Weapons: None carried willingly. Improvised weapon 25%, 1D4 if cornered.</em></p>
+      <div class="npc-special">
+        <strong>Special — Loop Memory:</strong> Marr retains partial memory across iterations. The GM may give him information about player actions that "haven't happened yet" in this loop, delivered as fragmentary warnings or apparent non-sequiturs. Use sparingly. Maximum impact is one specific, accurate, impossible detail per act.
+      </div>
+    </div>
+  </div>
+
+  <div class="two-col" style="gap:4mm;margin-top:2mm;">
+    <div>
+      <h4>What Marr Knows</h4>
+      <ul style="font-size:11px;">
+        <li>The region resets when the players "fail to resolve" the central structure</li>
+        <li>Each reset leaves residue — the singularity is more real than when he arrived</li>
+        <li>The Weather Spire is the access point for the management system</li>
+        <li>The system logs can be partially read in the Spire's log chamber</li>
+        <li>He has tried fourteen approaches he can remember. None have worked.</li>
+        <li>In iteration 612, someone found a way to communicate directly. He doesn't know what they said. The loop reset before he could ask.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Disposition</h4>
+      <p style="font-size:11px;">Terrified but controlled. Will help because the players are his best chance. Will not perform heroics. If the situation deteriorates badly, first instinct is to run — needs to be talked back.</p>
+      <h4>First Words</h4>
+      <div class="read-aloud" style="font-size:11px;padding:2mm 3mm;">He recognises them immediately — not as individuals, but as a pattern.<br><br><em>"You're earlier than last time."</em></div>
+    </div>
+  </div>
+
+  <div class="rule-heavy"></div>
+
+  <div class="section-header">
+    <span class="sn">06</span>
+    <h2>Act One Clue Trail</h2>
+  </div>
+
+  <div class="clue-row">
+    <div class="clue-num">C1</div>
+    <div class="clue-body"><strong>Essential · Open Ground</strong> — Overlapping tracks in impossible configurations. Multiple previous parties; patterns are physically inconsistent, suggesting temporal displacement. <em>Fallback: Marr says "Look at the ground. Tell me what you see."</em></div>
+  </div>
+  <div class="clue-row">
+    <div class="clue-num">C2</div>
+    <div class="clue-body"><strong>Essential · Marr's Camp</strong> — First entry identical in every notebook: "Day one. The Endeavour has arrived. Earlier than last time." Something is resetting. Marr has been here across many iterations. <em>Fallback: Marr recites the line from memory while staring at the pile.</em></div>
+  </div>
+  <div class="clue-row">
+    <div class="clue-num opt">C3</div>
+    <div class="clue-body"><strong>Optional · Transit Arch</strong> — The arch produces a tool engraved with a player character's personal mark. <span class="mechanic">[Awareness Hard]</span> The arch is outputting material from other iterations. The players are already part of the loop.</div>
+  </div>
+  <div class="clue-row">
+    <div class="clue-num opt">C4</div>
+    <div class="clue-body"><strong>Optional · Open Ground</strong> — Survey pack dated 40 years ago, perfectly undamaged. <span class="mechanic">[Science (Survey)]</span> Others were sent here decades ago. The loop may have been running far longer than anyone knows.</div>
+  </div>
+
+  <div class="pacing-alert">
+    <span class="pal">Act One Fast-Track · Use at 1:15 elapsed</span>
+    Marr says, directly: "We need to go to the Spire. The answers are there and we are running out of time before it resets again. I can feel it." Move immediately.
+  </div>
+
+  <div class="pg">04</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ PAGE 5: ACT TWO -->
+<div class="page">
+  <div class="event-bar"><span>Event 95 · A Question of Singularity</span><span>Act Two — The Spire</span></div>
+
+  <div class="section-header">
+    <span class="sn">07</span>
+    <h2>Act Two — The Spire</h2>
+    <span class="timing">~90 min · Goal: players understand they are the variable</span>
+  </div>
+
+  <p style="font-style:italic;font-size:11px;opacity:0.8;margin-bottom:3mm;">The players discover what the system is, what it is doing, and — crucially — that their presence is the reason it keeps resetting. The emotional pivot: they are not investigators. They are variables.</p>
+
+  <h3>Locations</h3>
+
+  <div class="location-box">
+    <div class="loc-name">Weather Spire — Exterior</div>
+    <p>~200 metres tall, perfectly circular cross-section. Scrith construction — faint iridescence of nearly-indestructible material. A single entry point at ground level, open. No door. The opening pulses with a light that is not quite any colour the players have a name for. At the base: hundreds of tally marks scratched into the scrith (which should be unscratchable). Marr's work. <em>"I stopped counting,"</em> he says.</p>
+    <div class="mechanic">[Ringworld: Science (Engineering) — power output far beyond a weather control node]</div>
+  </div>
+
+  <div class="location-box">
+    <div class="loc-name">Weather Spire — Control Level</div>
+    <p>Circular chamber. Walls are read-out surfaces — not screens but surfaces that shift and reconfigure, showing data in real time. In the centre: a raised dais with a single interface hemisphere that responds to biological contact. The interface will not injure anyone, but it displays targeted information drawn from the system's understanding of that individual. What it displays is not always welcome.</p>
+    <div class="mechanic">[Ringworld: Computer 75% — partial translation reveals iteration count and mass accumulation figures]</div>&nbsp;
+    <div class="mechanic">[Ringworld: Science (Physics) Hard — mass accumulation rate implies self-sustaining singularity within 4–6 hours]</div>
+  </div>
+
+  <div class="location-box">
+    <div class="loc-name">Weather Spire — Log Chamber</div>
+    <p>Smaller room, passage known only to Marr (or a very fortunate Awareness roll). The system's actual iteration record — not in any language, but a combination of Computer, Linguistics, and Science (Physics) can begin to translate. Three hundred years of logs. Like reading the minutes of a meeting that has been happening for three centuries with no resolution.</p>
+    <div class="mechanic">[Ringworld: Linguistics + Computer combined — full translation; partial on either alone]</div>
+  </div>
+
+  <div class="rule-heavy"></div>
+
+  <h3>Act Two Clue Trail</h3>
+
+  <div class="clue-row">
+    <div class="clue-num">C5</div>
+    <div class="clue-body"><strong>Essential · Log Chamber</strong> — <em>"Conscious variable introduced. Calculation corrupted. Reset initiated."</em> The players are the reason the system resets; their presence is the unsolvable variable. <em>Fallback: Marr recites this line from memory: "Conscious variable. That's us. That's always been us."</em></div>
+  </div>
+  <div class="clue-row">
+    <div class="clue-num">C6</div>
+    <div class="clue-body"><strong>Essential · Control Level</strong> — Mass accumulation data on the walls. <span class="mechanic">[Computer]</span> The singularity is becoming real. The system is past the point of simulation.</div>
+  </div>
+  <div class="clue-row">
+    <div class="clue-num opt">C7</div>
+    <div class="clue-body"><strong>Optional · Log Chamber</strong> — Iteration count: 847. Over three centuries. This is not a new problem.</div>
+  </div>
+  <div class="clue-row">
+    <div class="clue-num opt">C8</div>
+    <div class="clue-body"><strong>Optional · Control Level dais</strong> — When touched, the interface shows personalised data. The system has already catalogued each player since they crossed the boundary. It has been watching them the whole time.</div>
+  </div>
+
+  <h3>Act Two Story Hooks</h3>
+  <ul style="font-size:12px;">
+    <li><strong>Loop tightening:</strong> Echo a real table moment — something minor someone said earlier. Not exactly. With a difference. Use it once, hard.</li>
+    <li><strong>Talren over comms:</strong> Pak library fragments recovered 80 years ago reference this type of system. The Pak theorised it but never activated it. The Ringworld is doing something the Pak only dreamed of.</li>
+    <li><strong>Marr's near-miss:</strong> <em>"In iteration 612, someone found a way to communicate with it directly. I don't know what they said. The loop reset before I could ask."</em></li>
+    <li><span class="mechanic">[Ringworld: POW×5]</span> Players near the interface may flash on an alternate iteration — themselves, making a different choice, the system responding differently.</li>
+  </ul>
+
+  <div class="pacing-alert">
+    <span class="pal">Act Two Fast-Track · Use at 2:45 elapsed</span>
+    The same five seconds of a player speaking replay three times in a row, audible to everyone at the table. Marr says, with zero drama: "It's accelerating. We need to go down. Now." Move immediately.
+  </div>
+
+  <div class="pg">05</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ PAGE 6: SHIP CREW NPCs -->
+<div class="page">
+  <div class="event-bar"><span>Event 95 · A Question of Singularity</span><span>Act Two — Ship Crew NPCs</span></div>
+
+  <div class="section-header">
+    <span class="sn">08</span>
+    <h2>The Ship Crew</h2>
+    <span class="timing">Voice on Comms Only · Act Two–Three</span>
+  </div>
+
+  <p style="font-size:11px;font-style:italic;margin-bottom:3mm;">None of these characters appear in person. They are heard only over comms. Use them to embody the three possible attitudes to the scenario: <strong>withdrawal</strong> (Vorn), <strong>engagement</strong> (Talren), <strong>destruction</strong> (Brakk). Let their disagreements escalate.</p>
+
+  <div class="npc-card">
+    <div class="npc-header">
+      <span class="npc-name">Captain Vorn</span>
+      <span class="npc-role">Commander · Voice: Controlled, Increasingly Strained</span>
+    </div>
+    <div class="npc-body">
+      <p style="font-size:11px;">Responsible for the seventeen people on his ship. Does not care about the discovery. Cares about getting everyone off the Ringworld before the anomaly makes it impossible. Professional, not unkind.</p>
+      <div class="stat-grid">
+        <div class="sg"><span class="sl">STR</span><span class="sv">13</span></div><div class="sg"><span class="sl">CON</span><span class="sv">14</span></div><div class="sg"><span class="sl">SIZ</span><span class="sv">13</span></div><div class="sg"><span class="sl">INT</span><span class="sv">15</span></div><div class="sg"><span class="sl">POW</span><span class="sv">13</span></div><div class="sg"><span class="sl">DEX</span><span class="sv">12</span></div><div class="sg"><span class="sl">APP</span><span class="sv">14</span></div><div class="sg"><span class="sl">EDU</span><span class="sv">16</span></div>
+      </div>
+      <div class="skills-row"><span>Pilot (Spacecraft) 85%</span><span>Navigate 80%</span><span>Persuade 72%</span><span>Command 78%</span><span>Awareness 65%</span></div>
+      <p style="font-size:10px;font-family:var(--mono);margin-top:1.5mm;opacity:0.7;">HP: 14 · PP: 13 · DB: +1D4 · Not in combat range</p>
+      <p style="font-size:11px;margin-top:2mm;"><strong>Act Three message:</strong> <em>"I'm breaking orbit in twenty minutes. With or without you."</em></p>
+    </div>
+  </div>
+
+  <div class="npc-card">
+    <div class="npc-header">
+      <span class="npc-name">Talren</span>
+      <span class="npc-role">Chief Navigator / Science Officer · Voice: Rapid, Manic, Hasn't Slept</span>
+    </div>
+    <div class="npc-body">
+      <p style="font-size:11px;">This is the greatest discovery in Known Space history. He will not leave. Underneath the excitement he is deeply frightened, which is making him manic rather than cautious. Will push players toward deeper investigation without considering consequences.</p>
+      <div class="stat-grid">
+        <div class="sg"><span class="sl">STR</span><span class="sv">09</span></div><div class="sg"><span class="sl">CON</span><span class="sv">11</span></div><div class="sg"><span class="sl">SIZ</span><span class="sv">10</span></div><div class="sg"><span class="sl">INT</span><span class="sv">18</span></div><div class="sg"><span class="sl">POW</span><span class="sv">12</span></div><div class="sg"><span class="sl">DEX</span><span class="sv">11</span></div><div class="sg"><span class="sl">APP</span><span class="sv">13</span></div><div class="sg"><span class="sl">EDU</span><span class="sv">19</span></div>
+      </div>
+      <div class="skills-row"><span>Science (Physics) 88%</span><span>Science (Mathematics) 82%</span><span>Computer 79%</span><span>Research 85%</span><span>Navigate 70%</span></div>
+      <p style="font-size:10px;font-family:var(--mono);margin-top:1.5mm;opacity:0.7;">HP: 11 · PP: 12 · DB: None · Not in combat range</p>
+      <p style="font-size:11px;margin-top:2mm;"><strong>Key comms moment:</strong> Excitedly reports Pak library fragments reference this system type. <em>"The Pak theorised it. The Ringworld actually built it."</em></p>
+    </div>
+  </div>
+
+  <div class="npc-card">
+    <div class="npc-header">
+      <span class="npc-name">Brakk</span>
+      <span class="npc-role">Security Chief · Voice: Flat, Deliberate, Economy of Words</span>
+    </div>
+    <div class="npc-body">
+      <p style="font-size:11px;">Shut it down. Whatever it is, it should be disabled before it threatens the ship. His solution to everything is removal of the threat. Not stupid — he knows force won't help here, which is the only thing holding him back. Will advocate loudly for destroying the Spire interface.</p>
+      <div class="stat-grid">
+        <div class="sg"><span class="sl">STR</span><span class="sv">15</span></div><div class="sg"><span class="sl">CON</span><span class="sv">15</span></div><div class="sg"><span class="sl">SIZ</span><span class="sv">14</span></div><div class="sg"><span class="sl">INT</span><span class="sv">13</span></div><div class="sg"><span class="sl">POW</span><span class="sv">11</span></div><div class="sg"><span class="sl">DEX</span><span class="sv">14</span></div><div class="sg"><span class="sl">APP</span><span class="sv">11</span></div><div class="sg"><span class="sl">EDU</span><span class="sv">14</span></div>
+      </div>
+      <div class="skills-row"><span>Ranged Weapon 82%</span><span>Unarmed Combat 75%</span><span>Zero-G Combat 68%</span><span>Awareness 70%</span><span>Command 50%</span></div>
+      <p style="font-size:10px;font-family:var(--mono);margin-top:1.5mm;opacity:0.7;">HP: 15 · PP: 11 · DB: +1D4 · Not in combat range</p>
+    </div>
+  </div>
+
+  <div class="pg">06</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ PAGE 7: ACT THREE -->
+<div class="page">
+  <div class="event-bar"><span>Event 95 · A Question of Singularity</span><span>Act Three — The Core</span></div>
+
+  <div class="section-header">
+    <span class="sn">09</span>
+    <h2>Act Three — The Core</h2>
+    <span class="timing">~30 min · Hard stop at 3:15</span>
+  </div>
+
+  <p style="font-style:italic;font-size:11px;opacity:0.8;margin-bottom:3mm;">This is not a fight. It is a decision made under impossible conditions. The system will accept input. The players must decide what to give it. Do not steer. Do not hint. Let them decide.</p>
+
+  <div class="two-col">
+    <div>
+      <h3>The Descent</h3>
+      <p style="font-size:12px;">Circular shaft in the Spire's lowest level, ~3m diameter, with handholds. Gravity fluctuates from 50m down — not dangerously, but players notice their weight changing. During descent, loops manifest visually for the first time: half-visible echoes of themselves descending in slightly different configurations. They do not interact. They are simply there.</p>
+      <div class="mechanic">[Ringworld: CON×5 — resist mild disorientation from gravity fluctuation]</div>
+      <p style="font-size:11px;margin-top:2mm;font-style:italic;">Marr will not descend. He stays at the top and tells them: <em>"Someone always goes in. No one has come back wrong. But the loop always resets after. I don't know if it's because you fail, or because you succeed."</em></p>
+    </div>
+    <div>
+      <h3>The Core Chamber</h3>
+      <p style="font-size:12px;">Spherical chamber, ~40m diameter. Scrith walls transparent — through them, the Ringworld's superstructure and the void beyond. At the exact centre: the singularity. Size of a human fist. Warps light around it. Looking directly at it feels like trying to read text that keeps moving.</p>
+      <p style="font-size:12px;margin-top:2mm;">The system communicates in simplified form — not language but intent, displayed on the walls in shifting mathematical notation. Three statements repeat:</p>
+      <div class="loop-box">
+        STABILITY REQUIRED<br>
+        VARIABLES INTERFERE<br>
+        RESOLUTION PENDING
+      </div>
+    </div>
+  </div>
+
+  <div class="mechanic">[Ringworld: Science (Mathematics) Hard — system is asking a question it cannot phrase in terms they can naturally understand]</div>&nbsp;
+  <div class="mechanic">[Ringworld: Awareness Hard — perceives flickers of alternate outcomes at the edge of vision]</div>
+
+  <div class="rule-heavy"></div>
+
+  <h3>The System — Three Forms of Input It Will Accept</h3>
+
+  <table class="timing-table">
+    <tr><th>Input Type</th><th>What the Players Must Do</th><th>Rolls Required</th></tr>
+    <tr>
+      <td><strong>Mathematical data</strong></td>
+      <td>Feed the system information that helps it recalculate the mass imbalance. Requires genuine understanding of the problem from Acts One and Two.</td>
+      <td><span class="mechanic">Computer + Science (Physics), Hard difficulty</span></td>
+    </tr>
+    <tr>
+      <td><strong>Physical action</strong></td>
+      <td>Remove the source of the mass discrepancy. Requires identifying what it actually is — only possible if players assembled all clues C1–C6.</td>
+      <td>Clue-based — no single roll</td>
+    </tr>
+    <tr>
+      <td><strong>Withdrawal</strong></td>
+      <td>All conscious variables leave the region completely and remain outside for a calculated period. Marr knows this option. Requires abandoning the ship's orbit position.</td>
+      <td>No roll — pure decision</td>
+    </tr>
+  </table>
+
+  <div class="gm-note">
+    <span class="nl">What the System Cannot Accept</span>
+    Destruction of the singularity. If players attempt to destroy or disrupt the core directly, the system triggers an immediate imperfect reset. Players wake at the Introduction with fragmented memories — they know something has happened, but not what.
+    <br><span class="mechanic" style="margin-top:1.5mm;display:inline-block;">[Ringworld: Luck×5 — or lose 1D6 PP from cognitive disruption if caught in partial reset]</span>
+  </div>
+
+  <h3>Act Three Pressure Points</h3>
+  <ul style="font-size:12px;">
+    <li><strong>Vorn's comms (hard deadline):</strong> <em>"I'm breaking orbit in twenty minutes. With or without you."</em></li>
+    <li><strong>Marr from the shaft:</strong> <em>"Last time someone did nothing, I woke up here again. I don't want to wake up here again."</em></li>
+    <li><strong>At 3:10 elapsed:</strong> The singularity begins audibly resonating — a tone that increases in pitch. Vorn's comms cut out. The loops stop entirely. The system is no longer iterating. It is converging. This forces a decision.</li>
+    <li><strong>Vision flicker:</strong> A player sees an alternate outcome — recognisable, making a choice, the walls going dark, then silence. Whether this is good or bad is deliberately unresolvable.</li>
+  </ul>
+
+  <div class="pg">07</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ PAGE 8: OUTCOMES + TANGENT -->
+<div class="page">
+  <div class="event-bar"><span>Event 95 · A Question of Singularity</span><span>Epilogue · Outcomes · The Tangent</span></div>
+
+  <div class="section-header">
+    <span class="sn">10</span>
+    <h2>Outcomes</h2>
+    <span class="timing">Epilogue ~15 min</span>
+  </div>
+
+  <div class="outcome-card">
+    <div class="outcome-header">
+      <span class="on">Full Success</span>
+      <span class="ot">Players provide sufficient data or remove the mass discrepancy source</span>
+    </div>
+    <div class="outcome-body">
+      The system completes a clean iteration. The singularity dissipates. The quiet zone normalises over about an hour. Marr is released from the loop. The Foolish Endeavour receives a single, clear signal: <em>RESOLUTION COMPLETE.</em>
+      <p style="margin-top:2mm;font-style:italic;font-size:11px;">Read aloud: "The tone drops. Not gradually — it simply stops, between one moment and the next. Where the singularity was, there is nothing. Not a void. Just air. When you surface from the shaft, Marr is sitting on the floor, back against the wall, eyes closed. He opens them. 'It's quiet. The right kind of quiet.'"</p>
+    </div>
+  </div>
+
+  <div class="outcome-card">
+    <div class="outcome-header">
+      <span class="on">Partial Success</span>
+      <span class="ot">Players withdraw all conscious variables from the region and maintain distance</span>
+    </div>
+    <div class="outcome-body">
+      System completes an iteration, but incompletely. The quiet zone remains. The singularity does not grow further. Marr leaves with the players — but he is not certain the loop is over. The ship leaves safely. The anomaly is listed as <em>contained, unresolved</em> in the survey record.
+    </div>
+  </div>
+
+  <div class="outcome-card">
+    <div class="outcome-header">
+      <span class="on">Failure — Loop Reset</span>
+      <span class="ot">Players unable to decide, or attempt to destroy the core</span>
+    </div>
+    <div class="outcome-body">
+      Loop reset triggers. Players wake at the Introduction with fragmented memories — they know something has happened, but not what. Optional: run a compressed Act One with partial memories, ending with a harder choice at the core. The Foolish Endeavour receives a signal. Clear. Precise. Familiar. The voices in the transmission are their own.
+    </div>
+  </div>
+
+  <div class="outcome-card">
+    <div class="outcome-header">
+      <span class="on">Pyrrhic</span>
+      <span class="ot">Players allow the system to complete its process without intervention</span>
+    </div>
+    <div class="outcome-body">
+      The singularity becomes self-sustaining. The region is lost — a permanent gravitational anomaly on the Ringworld's inner surface. The Foolish Endeavour breaks orbit barely in time. Marr, who chose to stay at the shaft head, is not seen again. The players leave with everything intact and a discovery that will reshape Known Space cosmology — and one man unaccounted for.
+    </div>
+  </div>
+
+  <div class="rule-heavy"></div>
+
+  <div class="tangent-box">
+    <span class="tb-label">Post-Session Spin-Off Seed</span>
+    <h3>The 848th Iteration</h3>
+    <p style="font-size:12px;margin-top:2mm;">Analysis of Marr's notebooks after the session reveals something no one noticed during play: in notebook 731, there is an entry written in a different hand. Neat, precise, written in a dialect of Interworld Standard that hasn't been in common use for approximately sixty years.</p>
+    <p style="font-size:12px;margin-top:2mm;">The entry reads: <em>"The system is not the problem. The system is the answer to a different question. Find the question."</em></p>
+    <p style="font-size:12px;margin-top:2mm;">It is signed with a symbol that, with the right Research roll, matches the personal insignia of a Pak Protector — one identified in ARM records as having been active in the Ringworld region three centuries ago.</p>
+    <p style="font-size:12px;margin-top:2mm;"><strong>The mass imbalance is not an engineering error. It was placed there deliberately.</strong> Someone built an anomaly into the Ringworld, then built a system to keep trying — forever — to resolve it. As if the resolution process itself was the point. As if something needed the Ringworld to keep running this calculation, indefinitely, producing output no one has yet identified.</p>
+    <p style="font-size:12px;margin-top:2mm;">The players have stopped the loop. They may have also stopped something else.</p>
+  </div>
+
+  <div class="pg">08</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ PAGE 9: QUICK REF -->
+<div class="page">
+  <div class="event-bar"><span>Event 95 · A Question of Singularity</span><span>Quick Reference</span></div>
+
+  <div class="section-header">
+    <span class="sn">11</span>
+    <h2>Ringworld RPG Quick Reference</h2>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <h3>Core Mechanic</h3>
+      <p style="font-size:12px;">Roll 1D100 equal to or under Skill% to succeed. Three difficulty levels:</p>
+      <table class="timing-table" style="margin-top:2mm;">
+        <tr><th>Level</th><th>Target</th></tr>
+        <tr><td>Regular</td><td>Skill% as normal</td></tr>
+        <tr><td>Hard</td><td>Half Skill% (round down)</td></tr>
+        <tr><td>Extreme</td><td>One-fifth Skill% (round down)</td></tr>
+      </table>
+
+      <h3 style="margin-top:3mm;">Success Levels</h3>
+      <table class="timing-table">
+        <tr><th>Roll</th><th>Result</th></tr>
+        <tr><td>01–05 or ≤ 1/5 Skill</td><td>Critical Success</td></tr>
+        <tr><td>≤ 1/2 Skill</td><td>Special Success</td></tr>
+        <tr><td>≤ Skill</td><td>Regular Success</td></tr>
+        <tr><td>Over Skill</td><td>Failure</td></tr>
+        <tr><td>96–00</td><td>Fumble</td></tr>
+      </table>
+
+      <h3 style="margin-top:3mm;">Opposed Rolls</h3>
+      <p style="font-size:12px;">Both sides roll. Higher level of success wins. Ties go to the higher Skill%.</p>
+
+      <h3 style="margin-top:3mm;">Pushed Rolls</h3>
+      <p style="font-size:12px;">Players may re-roll a failed roll once. The GM describes additional risk or cost. On second failure, consequences are worse.</p>
+    </div>
+
+    <div>
+      <h3>Characteristic Rolls</h3>
+      <p style="font-size:12px;">Roll Characteristic × 5 on 1D100. Standard difficulty unless noted.</p>
+      <div class="data-readout" style="margin:2mm 0;">
+        <div class="dr"><span class="dk">STR×5</span><span class="dv">Physical force, breaking things</span></div>
+        <div class="dr"><span class="dk">CON×5</span><span class="dv">Resist physical hardship</span></div>
+        <div class="dr"><span class="dk">DEX×5</span><span class="dv">Balance, reflex, fine motor</span></div>
+        <div class="dr"><span class="dk">INT×5</span><span class="dv">Problem-solving, memory</span></div>
+        <div class="dr"><span class="dk">POW×5</span><span class="dv">Mental resistance, willpower</span></div>
+        <div class="dr"><span class="dk">APP×5</span><span class="dv">Social situations, first impressions</span></div>
+        <div class="dr"><span class="dk">Luck</span><span class="dv">POW×5 when fate intervenes</span></div>
+      </div>
+
+      <h3 style="margin-top:3mm;">Damage Modifier (DB)</h3>
+      <table class="timing-table">
+        <tr><th>STR+SIZ</th><th>DB</th></tr>
+        <tr><td>2–12</td><td>−1D6</td></tr>
+        <tr><td>13–16</td><td>−1D4</td></tr>
+        <tr><td>17–24</td><td>None</td></tr>
+        <tr><td>25–32</td><td>+1D4</td></tr>
+        <tr><td>33–40</td><td>+1D6</td></tr>
+      </table>
+
+      <h3 style="margin-top:3mm;">Hit Points &amp; Wounds</h3>
+      <div class="data-readout" style="margin:2mm 0;">
+        <div class="dr"><span class="dk">Major Wound</span><span class="dv">HP damage ≥ half max HP in one blow</span></div>
+        <div class="dr"><span class="dk">Unconscious</span><span class="dv">HP reaches 2 or less</span></div>
+        <div class="dr"><span class="dk">Dead</span><span class="dv">HP reaches 0 or less</span></div>
+        <div class="dr"><span class="dk">First Aid</span><span class="dv">Restores 1D3 HP if attempted within 1hr</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rule-heavy"></div>
+
+  <h3>Key Skills For This Scenario</h3>
+  <table class="timing-table">
+    <tr><th>Skill</th><th>Primary Use In This Scenario</th></tr>
+    <tr><td>Awareness</td><td>Noticing the loop, the impossible tracks, the player's own tool at the arch (Hard), alternate outcome flickers (Hard)</td></tr>
+    <tr><td>Science (Physics)</td><td>Understanding the boundary field; mass accumulation rate; self-sustaining singularity timeline</td></tr>
+    <tr><td>Computer</td><td>Partial translation of Spire wall data; iteration count; feeding mathematical data to the system (Hard)</td></tr>
+    <tr><td>Linguistics</td><td>Combined with Computer for full log translation</td></tr>
+    <tr><td>Research</td><td>Cross-referencing notebook dates; Pak Protector insignia (post-session tangent)</td></tr>
+    <tr><td>Science (Engineering)</td><td>Spire's anomalous power output; Ringworld structural systems</td></tr>
+    <tr><td>POW×5</td><td>Resisting brief flashes of loop memories or alternate iteration visions</td></tr>
+    <tr><td>CON×5</td><td>Resisting gravity fluctuation disorientation in the descent shaft</td></tr>
+  </table>
+
+  <div class="pg">09</div>
+</div>
+
+<!-- ═══════════════════════════════ HANDOUT PAGES (A5-sized within the layout) -->
+
+<!-- HANDOUT 95-H00-A: Mission Briefing -->
+<div class="handout-page">
+  <div class="ho-header">
+    <span>Ringworld Survey Commission · Official Communication</span>
+    <span>95-H00-A</span>
+  </div>
+  <div style="text-align:center;margin-bottom:4mm;">
+    <div style="font-family:var(--mono);font-size:9px;letter-spacing:3px;text-transform:uppercase;opacity:0.5;margin-bottom:1mm;">RINGWORLD SURVEY COMMISSION</div>
+    <div style="font-family:var(--mono);font-size:8px;letter-spacing:2px;opacity:0.4;">FIELD MISSION AUTHORISATION · DOCUMENT RSC-7741-B</div>
+  </div>
+  <hr style="border:0.5px solid #ccc;margin-bottom:4mm;">
+  <div class="ho-title">Mission Briefing — Survey Assignment 7741</div>
+  <div class="ho-body">
+    <div class="data-readout" style="margin-bottom:4mm;">
+      <div class="dr"><span class="dk">Vessel</span><span class="dv">RSC Survey Vessel Foolish Endeavour</span></div>
+      <div class="dr"><span class="dk">Classification</span><span class="dv">Standard Investigation — Anomalous Reading</span></div>
+      <div class="dr"><span class="dk">Target Region</span><span class="dv">Inner Surface Sector 7741, bearing 220-17-44</span></div>
+      <div class="dr"><span class="dk">Anomaly Type</span><span class="dv">Gravitational Irregularity — Classification Pending</span></div>
+      <div class="dr"><span class="dk">Priority Level</span><span class="dv">3 (Routine Investigation)</span></div>
+    </div>
+    <p>Survey Commission instruments have detected an anomalous gravitational signature in the above-referenced sector of the Ringworld inner surface. The signature does not correspond to any known natural formation or documented Ringworld infrastructure system. Initial analysis suggests localised atmospheric and meteorological disruption consistent with Class 2 interference events. No structural risk to the Ringworld surface has been assessed at this time.</p>
+    <p style="margin-top:2mm;">Landing team is authorised to observe, document, and collect data. <strong>Standard Protocol 12 applies: no interference with Ringworld infrastructure systems without Commission authorisation.</strong> Return to orbit within 48 standard hours. Full report required.</p>
+    <p style="margin-top:3mm;font-style:italic;font-size:11px;opacity:0.7;">This is a routine assignment. Commission analysts anticipate a weather system interaction with a subsurface structure of unknown type. Exercise standard precautions.</p>
+  </div>
+  <div class="ho-stamp">RSC Field Operations · Survey Division</div>
+</div>
+
+<!-- HANDOUT 95-H01-A: Marr's Notebook Page -->
+<div class="handout-page">
+  <div class="ho-header">
+    <span>Personal Field Notes — Dr. S. Marr</span>
+    <span>95-H01-A</span>
+  </div>
+  <div class="ho-title">Notebook — Volume Unknown</div>
+  <div class="ho-body">
+    <div class="handwritten" style="border-left:2px solid #ccc;padding-left:4mm;margin-bottom:3mm;">
+      <p>Day one. The Endeavour has arrived. Earlier than last time.</p>
+    </div>
+    <div class="handwritten" style="margin-top:4mm;">
+      <p style="border-bottom:1px solid #e0ddd6;padding-bottom:2mm;">The landing team. Six of them. I counted from the camp entrance before they saw me.</p>
+      <p style="margin-top:2mm;padding-bottom:2mm;border-bottom:1px solid #e0ddd6;">[Physical description of the player characters, written in accurate detail — their heights, clothing, any distinguishing features. Write this in before the session based on what the players are wearing at the table.]</p>
+      <p style="margin-top:2mm;padding-bottom:2mm;border-bottom:1px solid #e0ddd6;">The tall one went to the arch. I should have warned them. I am warning you now: do not touch the arch before you understand what it is doing. The last person who touched it was me, in iteration — I have lost the number.</p>
+      <p style="margin-top:2mm;">They asked me my name as though it would help. I told them. I always tell them.</p>
+    </div>
+    <div style="margin-top:4mm;font-family:var(--mono);font-size:9px;opacity:0.5;text-align:right;">
+      [page continues — subsequent pages water-damaged / illegible]
+    </div>
+  </div>
+</div>
+
+<!-- HANDOUT 95-H01-B: Old Sensor Log -->
+<div class="handout-page">
+  <div class="ho-header">
+    <span>Recovered Field Equipment · Sensor Log Fragment</span>
+    <span>95-H01-B</span>
+  </div>
+  <div class="ho-title">Sensor Log — RSC Survey Unit 4419</div>
+  <div class="ho-body">
+    <div class="data-readout" style="margin-bottom:3mm;">
+      <div class="dr"><span class="dk">Unit Serial</span><span class="dv">RSC-4419-FLD</span></div>
+      <div class="dr"><span class="dk">Log Date</span><span class="dv">[23 YEARS AGO — exact date notation]</span></div>
+      <div class="dr"><span class="dk">Sector</span><span class="dv">7741 Inner Surface</span></div>
+      <div class="dr"><span class="dk">Status</span><span class="dv" style="font-weight:bold;">ACTIVE LOG — MISSION IN PROGRESS</span></div>
+    </div>
+    <p>Anomaly boundary confirmed at coordinates as transmitted. Readings match initial orbital survey exactly. No degradation or change in approximately—</p>
+    <p style="font-family:var(--mono);font-size:11px;margin:2mm 0;background:var(--light);padding:2mm;border:0.5px solid var(--mid);">GRAV SIGNATURE: 0.000-047-881 [EXACT MATCH TO CURRENT READINGS]<br>BOUNDARY RADIUS: 20.04km [EXACT MATCH]<br>ATMOSPHERIC HALT AT: 100% BOUNDARY CORRELATION<br>MASS SIGNATURE CENTRE: [SAME COORDINATES]</p>
+    <p>This is not a new phenomenon. The readings are identical to our orbital survey within instrument tolerance. The anomaly has not changed in [DURATION UNKNOWN]. Whatever this is, it has been here a long time.</p>
+    <p style="margin-top:2mm;font-family:var(--mono);font-size:9px;opacity:0.6;">LOG ENDS. NO FURTHER ENTRIES RECORDED. UNIT RECOVERED 23 YEARS LATER — UNDAMAGED, POWER CELL AT 94%.</p>
+  </div>
+  <div class="ho-stamp">Evidence: Quiet Zone, Open Ground</div>
+</div>
+
+<!-- HANDOUT 95-H02-A: System Log Excerpts -->
+<div class="handout-page">
+  <div class="ho-header">
+    <span>Ringworld Management System · Translated Log Excerpts</span>
+    <span>95-H02-A</span>
+  </div>
+  <div class="ho-title">System Log — Partial Translation</div>
+  <div class="ho-body">
+    <p style="font-family:var(--mono);font-size:9px;opacity:0.55;margin-bottom:3mm;">[TRANSLATION INCOMPLETE — RENDERED FROM SYSTEM NOTATION VIA COMBINED COMPUTER/LINGUISTICS ANALYSIS — ACCURACY ESTIMATED 60-70%]</p>
+    <div class="data-readout">
+      <div class="dr"><span class="dk">Entry #000001</span><span class="dv">[~300 YEARS AGO]</span></div>
+    </div>
+    <p style="font-family:var(--mono);font-size:10px;margin:2mm 0;padding:2mm;background:var(--light);border:0.5px solid var(--mid);line-height:1.8;">Mass discrepancy detected. Sector 7741. Magnitude: [TRANSLATION INCOMPLETE] within tolerance parameters for corrective action. Containment protocol initiated. Iterative correction sequence authorised. Region isolation: ACTIVE.</p>
+    <div class="data-readout" style="margin-top:3mm;">
+      <div class="dr"><span class="dk">Entry #000001</span><span class="dv">ITERATION 001</span></div>
+    </div>
+    <p style="font-family:var(--mono);font-size:10px;margin:2mm 0;padding:2mm;background:var(--light);border:0.5px solid var(--mid);line-height:1.8;">Calculation initiated. Conscious variable introduced. Calculation corrupted. Reset initiated. [TRANSLATION INCOMPLETE] — variable behaviour [TRANSLATION INCOMPLETE] — recalculation required.</p>
+    <div class="data-readout" style="margin-top:3mm;">
+      <div class="dr"><span class="dk">Most Recent Entry</span><span class="dv">ITERATION 847</span></div>
+    </div>
+    <p style="font-family:var(--mono);font-size:10px;margin:2mm 0;padding:2mm;background:var(--light);border:0.5px solid var(--mid);line-height:1.8;">Iteration count exceeds predictive limit. Mass discrepancy unresolved. Residual mass accumulation rate: [INCREASING — EXACT FIGURE TRANSLATION INCOMPLETE]. Escalation authorised. [TRANSLATION INCOMPLETE] — convergence [TRANSLATION INCOMPLETE].</p>
+  </div>
+  <div class="ho-stamp">Evidence: Log Chamber, Act Two</div>
+</div>
+
+<!-- HANDOUT 95-H02-B: Mass Reading Graph -->
+<div class="handout-page">
+  <div class="ho-header">
+    <span>Foolish Endeavour · Instrument Transmission</span>
+    <span>95-H02-B</span>
+  </div>
+  <div class="ho-title">Mass Accumulation — Real-Time Reading</div>
+  <div class="ho-body">
+    <p style="font-family:var(--mono);font-size:9px;margin-bottom:2mm;opacity:0.6;">TRANSMITTED FROM FOOLISH ENDEAVOUR — CHIEF NAVIGATOR TALREN — PRIORITY URGENT</p>
+    <div style="border:1px solid var(--mid);padding:3mm;background:var(--faint);">
+      <!-- Simple SVG graph -->
+      <svg width="100%" viewBox="0 0 500 180" xmlns="http://www.w3.org/2000/svg">
+        <line x1="50" y1="20" x2="50" y2="155" stroke="#1a1a1a" stroke-width="1"/>
+        <line x1="50" y1="155" x2="485" y2="155" stroke="#1a1a1a" stroke-width="1"/>
+        <!-- Y axis labels -->
+        <text x="44" y="158" text-anchor="end" font-family="monospace" font-size="9" fill="#1a1a1a">0</text>
+        <text x="44" y="122" text-anchor="end" font-family="monospace" font-size="9" fill="#1a1a1a">0.25</text>
+        <text x="44" y="90" text-anchor="end" font-family="monospace" font-size="9" fill="#1a1a1a">0.50</text>
+        <text x="44" y="57" text-anchor="end" font-family="monospace" font-size="9" fill="#1a1a1a">0.75</text>
+        <text x="44" y="24" text-anchor="end" font-family="monospace" font-size="9" fill="#1a1a1a">1.00</text>
+        <!-- Grid lines -->
+        <line x1="50" y1="122" x2="485" y2="122" stroke="#1a1a1a" stroke-width="0.3" stroke-dasharray="3,3" opacity="0.4"/>
+        <line x1="50" y1="90" x2="485" y2="90" stroke="#1a1a1a" stroke-width="0.3" stroke-dasharray="3,3" opacity="0.4"/>
+        <line x1="50" y1="57" x2="485" y2="57" stroke="#1a1a1a" stroke-width="0.3" stroke-dasharray="3,3" opacity="0.4"/>
+        <!-- Exponential accumulation curve (the problem) -->
+        <path d="M55,152 C 120,150 200,145 280,135 C 340,126 390,110 430,90 C 455,74 470,55 485,28" fill="none" stroke="#1a1a1a" stroke-width="1.5"/>
+        <!-- Point of No Return vertical line -->
+        <line x1="395" y1="20" x2="395" y2="155" stroke="#1a1a1a" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="397" y="30" font-family="monospace" font-size="8" fill="#1a1a1a">POINT OF NO RETURN</text>
+        <text x="397" y="40" font-family="monospace" font-size="8" fill="#1a1a1a">EST. 4-6 HRS</text>
+        <!-- X axis labels -->
+        <text x="55" y="168" font-family="monospace" font-size="8" fill="#1a1a1a" text-anchor="middle">T-0</text>
+        <text x="175" y="168" font-family="monospace" font-size="8" fill="#1a1a1a" text-anchor="middle">T+1HR</text>
+        <text x="295" y="168" font-family="monospace" font-size="8" fill="#1a1a1a" text-anchor="middle">T+2HR</text>
+        <text x="415" y="168" font-family="monospace" font-size="8" fill="#1a1a1a" text-anchor="middle">T+4HR</text>
+        <!-- Y axis title -->
+        <text x="14" y="90" font-family="monospace" font-size="8" fill="#1a1a1a" transform="rotate(-90,14,90)" text-anchor="middle">MASS INDEX (RELATIVE)</text>
+      </svg>
+    </div>
+    <p style="font-family:var(--mono);font-size:10px;margin-top:2mm;line-height:1.8;">Current accumulation rate: <strong>NON-LINEAR — ACCELERATING</strong><br>
+    Projected self-sustaining threshold: 4–6 hours from current reading<br>
+    Ship orbit stability: compromised at mass index 0.8 or above<br>
+    Current index: <strong>0.31 AND RISING</strong></p>
+    <p style="font-family:var(--mono);font-size:9px;margin-top:2mm;opacity:0.6;">— Talren: "This has to stop. Or we have to leave. We do not have both options for much longer."</p>
+  </div>
+  <div class="ho-stamp">Evidence: Control Level, Act Two</div>
+</div>
+
+<!-- HANDOUT 95-H03-A: System Statements -->
+<div class="handout-page" style="display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:200mm;">
+  <div style="width:100%;max-width:140mm;text-align:center;">
+    <div style="font-family:var(--mono);font-size:8px;letter-spacing:3px;opacity:0.4;margin-bottom:10mm;text-transform:uppercase;">95-H03-A · Ringworld Management System · Core Chamber Display</div>
+    <div style="font-family:var(--mono);font-size:28px;letter-spacing:6px;line-height:2.2;text-transform:uppercase;border-top:2px solid #1a1a1a;border-bottom:2px solid #1a1a1a;padding:8mm 0;">
+      STABILITY<br>REQUIRED<br>
+      <span style="font-size:18px;opacity:0.5;">·</span><br>
+      VARIABLES<br>INTERFERE<br>
+      <span style="font-size:18px;opacity:0.5;">·</span><br>
+      RESOLUTION<br>PENDING
+    </div>
+    <div style="font-family:var(--mono);font-size:8px;opacity:0.35;margin-top:8mm;letter-spacing:2px;">[PARTIAL TRANSLATION — MATHEMATICAL NOTATION OMITTED — FULL CONTEXT REQUIRES SCIENCE (MATHEMATICS) HARD ROLL]</div>
+  </div>
+</div>
+
+</body>
+</html>
