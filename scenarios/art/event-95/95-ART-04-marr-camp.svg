@@ -1,0 +1,42 @@
+<svg width="680" height="520" viewBox="0 0 680 520" xmlns="http://www.w3.org/2000/svg">
+<title>95-ART-04 Marr's Camp — hundreds of notebooks, small figure, depleted autodoc</title>
+<style>text{font-family:sans-serif;fill:#1a1a1a;}</style>
+<defs>
+<pattern id="ch" patternUnits="userSpaceOnUse" width="10" height="10"><line x1="0" y1="10" x2="10" y2="0" stroke="#1a1a1a" stroke-width="0.5" opacity="0.55"/><line x1="0" y1="0" x2="10" y2="10" stroke="#1a1a1a" stroke-width="0.5" opacity="0.55"/></pattern>
+<pattern id="wh" patternUnits="userSpaceOnUse" width="14" height="14"><line x1="0" y1="14" x2="14" y2="0" stroke="#1a1a1a" stroke-width="0.38" opacity="0.35"/></pattern>
+<pattern id="fh" patternUnits="userSpaceOnUse" width="20" height="20"><line x1="0" y1="20" x2="20" y2="0" stroke="#1a1a1a" stroke-width="0.25" opacity="0.25"/></pattern>
+</defs>
+<!-- Ceiling -->
+<rect x="88" y="50" width="504" height="52" fill="#fafaf8"/><rect x="88" y="50" width="504" height="52" fill="url(#ch)"/>
+<line x1="88" y1="102" x2="592" y2="102" stroke="#1a1a1a" stroke-width="1.2"/>
+<line x1="238" y1="50" x2="238" y2="102" stroke="#1a1a1a" stroke-width="0.6"/><line x1="416" y1="50" x2="416" y2="102" stroke="#1a1a1a" stroke-width="0.6"/>
+<!-- Back wall -->
+<rect x="88" y="102" width="265" height="288" fill="#fafaf8"/><rect x="88" y="102" width="265" height="288" fill="url(#wh)"/>
+<line x1="88" y1="198" x2="353" y2="198" stroke="#1a1a1a" stroke-width="0.7"/><line x1="88" y1="294" x2="353" y2="294" stroke="#1a1a1a" stroke-width="0.7"/>
+<line x1="220" y1="102" x2="220" y2="390" stroke="#1a1a1a" stroke-width="0.7"/><line x1="88" y1="102" x2="88" y2="390" stroke="#1a1a1a" stroke-width="1.2"/>
+<!-- Floor -->
+<rect x="88" y="390" width="504" height="90" fill="#fafaf8"/><rect x="88" y="390" width="504" height="90" fill="url(#fh)"/>
+<line x1="88" y1="390" x2="592" y2="390" stroke="#1a1a1a" stroke-width="1.2"/><line x1="592" y1="102" x2="592" y2="390" stroke="#1a1a1a" stroke-width="1.2"/>
+<!-- NOTEBOOK STACKS — right half of shelter -->
+<rect x="480" y="106" width="108" height="284" fill="#fafaf8" stroke="#1a1a1a" stroke-width="1"/>
+<rect x="376" y="138" width="102" height="252" fill="#fafaf8" stroke="#1a1a1a" stroke-width="1"/>
+<!-- Spine lines stack 1 -->
+<line x1="480" y1="118" x2="588" y2="118" stroke="#1a1a1a" stroke-width="0.7"/><line x1="480" y1="130" x2="588" y2="130" stroke="#1a1a1a" stroke-width="0.6"/><line x1="480" y1="142" x2="588" y2="142" stroke="#1a1a1a" stroke-width="0.7"/><line x1="480" y1="154" x2="588" y2="154" stroke="#1a1a1a" stroke-width="0.6"/><line x1="480" y1="166" x2="588" y2="166" stroke="#1a1a1a" stroke-width="0.7"/><line x1="480" y1="178" x2="588" y2="178" stroke="#1a1a1a" stroke-width="0.6"/><line x1="480" y1="190" x2="588" y2="190" stroke="#1a1a1a" stroke-width="0.7"/><line x1="480" y1="202" x2="588" y2="202" stroke="#1a1a1a" stroke-width="0.6"/><line x1="480" y1="214" x2="588" y2="214" stroke="#1a1a1a" stroke-width="0.7"/><line x1="480" y1="226" x2="588" y2="226" stroke="#1a1a1a" stroke-width="0.6"/><line x1="480" y1="238" x2="588" y2="238" stroke="#1a1a1a" stroke-width="0.7"/><line x1="480" y1="250" x2="588" y2="250" stroke="#1a1a1a" stroke-width="0.6"/><line x1="480" y1="262" x2="588" y2="262" stroke="#1a1a1a" stroke-width="0.7"/><line x1="480" y1="274" x2="588" y2="274" stroke="#1a1a1a" stroke-width="0.6"/><line x1="480" y1="286" x2="588" y2="286" stroke="#1a1a1a" stroke-width="0.7"/><line x1="480" y1="298" x2="588" y2="298" stroke="#1a1a1a" stroke-width="0.6"/><line x1="480" y1="310" x2="588" y2="310" stroke="#1a1a1a" stroke-width="0.7"/><line x1="480" y1="322" x2="588" y2="322" stroke="#1a1a1a" stroke-width="0.6"/><line x1="480" y1="334" x2="588" y2="334" stroke="#1a1a1a" stroke-width="0.7"/><line x1="480" y1="346" x2="588" y2="346" stroke="#1a1a1a" stroke-width="0.6"/><line x1="480" y1="358" x2="588" y2="358" stroke="#1a1a1a" stroke-width="0.7"/>
+<!-- Spine lines stack 2 -->
+<line x1="376" y1="150" x2="478" y2="150" stroke="#1a1a1a" stroke-width="0.7"/><line x1="376" y1="162" x2="478" y2="162" stroke="#1a1a1a" stroke-width="0.6"/><line x1="376" y1="174" x2="478" y2="174" stroke="#1a1a1a" stroke-width="0.7"/><line x1="376" y1="186" x2="478" y2="186" stroke="#1a1a1a" stroke-width="0.6"/><line x1="376" y1="198" x2="478" y2="198" stroke="#1a1a1a" stroke-width="0.7"/><line x1="376" y1="210" x2="478" y2="210" stroke="#1a1a1a" stroke-width="0.6"/><line x1="376" y1="222" x2="478" y2="222" stroke="#1a1a1a" stroke-width="0.7"/><line x1="376" y1="234" x2="478" y2="234" stroke="#1a1a1a" stroke-width="0.6"/><line x1="376" y1="246" x2="478" y2="246" stroke="#1a1a1a" stroke-width="0.7"/><line x1="376" y1="258" x2="478" y2="258" stroke="#1a1a1a" stroke-width="0.6"/><line x1="376" y1="270" x2="478" y2="270" stroke="#1a1a1a" stroke-width="0.7"/><line x1="376" y1="282" x2="478" y2="282" stroke="#1a1a1a" stroke-width="0.6"/><line x1="376" y1="294" x2="478" y2="294" stroke="#1a1a1a" stroke-width="0.7"/><line x1="376" y1="306" x2="478" y2="306" stroke="#1a1a1a" stroke-width="0.6"/><line x1="376" y1="318" x2="478" y2="318" stroke="#1a1a1a" stroke-width="0.7"/><line x1="376" y1="330" x2="478" y2="330" stroke="#1a1a1a" stroke-width="0.6"/><line x1="376" y1="342" x2="478" y2="342" stroke="#1a1a1a" stroke-width="0.7"/><line x1="376" y1="354" x2="478" y2="354" stroke="#1a1a1a" stroke-width="0.6"/><line x1="376" y1="366" x2="478" y2="366" stroke="#1a1a1a" stroke-width="0.7"/>
+<!-- Cot -->
+<rect x="98" y="268" width="148" height="8" rx="1" fill="#e6e4e0" stroke="#1a1a1a" stroke-width="1"/>
+<line x1="102" y1="276" x2="102" y2="316" stroke="#1a1a1a" stroke-width="1.2"/><line x1="234" y1="276" x2="234" y2="316" stroke="#1a1a1a" stroke-width="1.2"/>
+<path d="M114,268 Q140,252 165,262 Q188,250 212,260 Q230,252 244,268" fill="none" stroke="#1a1a1a" stroke-width="0.9"/>
+<!-- Autodoc (depleted) -->
+<rect x="128" y="314" width="68" height="76" rx="6" fill="#fafaf8" stroke="#1a1a1a" stroke-width="1.2"/>
+<rect x="136" y="322" width="52" height="28" rx="2" fill="none" stroke="#1a1a1a" stroke-width="0.8"/>
+<rect x="138" y="356" width="48" height="8" rx="1" fill="none" stroke="#1a1a1a" stroke-width="0.8"/>
+<rect x="140" y="358" width="6" height="4" fill="#1a1a1a"/>
+<line x1="160" y1="330" x2="160" y2="342" stroke="#1a1a1a" stroke-width="1.2"/><line x1="154" y1="336" x2="166" y2="336" stroke="#1a1a1a" stroke-width="1.2"/>
+<!-- Marr figure (back to viewer) -->
+<path d="M252,390 L238,348 Q234,332 244,328 Q258,324 268,332 L276,348 L268,390 Z" fill="#fafaf8" stroke="#1a1a1a" stroke-width="1.2"/>
+<ellipse cx="256" cy="320" rx="18" ry="20" fill="#fafaf8" stroke="#1a1a1a" stroke-width="1.2"/>
+<path d="M238,348 Q228,360 220,368 Q215,378 226,384" fill="none" stroke="#1a1a1a" stroke-width="1.2"/>
+<rect x="88" y="50" width="504" height="430" fill="none" stroke="#1a1a1a" stroke-width="1.2"/>
+</svg>

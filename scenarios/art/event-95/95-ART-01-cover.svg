@@ -1,0 +1,36 @@
+<svg width="680" height="920" viewBox="0 0 680 920" xmlns="http://www.w3.org/2000/svg" role="img">
+<title>95-ART-01 Cover — The Foolish Endeavour in orbit above the Ringworld</title>
+<style>text{font-family:sans-serif;fill:#1a1a1a;}</style>
+<defs>
+<pattern id="surf" patternUnits="userSpaceOnUse" width="12" height="12"><line x1="0" y1="12" x2="12" y2="0" stroke="#1a1a1a" stroke-width="0.4" opacity="0.4"/></pattern>
+<pattern id="xhatch" patternUnits="userSpaceOnUse" width="8" height="8"><line x1="0" y1="8" x2="8" y2="0" stroke="#1a1a1a" stroke-width="0.5" opacity="0.55"/><line x1="0" y1="0" x2="8" y2="8" stroke="#1a1a1a" stroke-width="0.5" opacity="0.55"/></pattern>
+</defs>
+<g fill="#1a1a1a"><circle cx="48" cy="75" r="1.5"/><circle cx="95" cy="42" r="1"/><circle cx="148" cy="118" r="1.5"/><circle cx="202" cy="55" r="1"/><circle cx="255" cy="88" r="1"/><circle cx="418" cy="48" r="1.5"/><circle cx="472" cy="95" r="1"/><circle cx="535" cy="68" r="1"/><circle cx="598" cy="52" r="1.5"/><circle cx="638" cy="115" r="1"/><circle cx="62" cy="155" r="1"/><circle cx="115" cy="192" r="1.5"/><circle cx="182" cy="168" r="1"/><circle cx="468" cy="172" r="1"/><circle cx="525" cy="155" r="1.5"/><circle cx="590" cy="175" r="1"/><circle cx="640" cy="198" r="1"/><circle cx="55" cy="235" r="1"/><circle cx="460" cy="240" r="1.5"/><circle cx="518" cy="255" r="1"/><circle cx="602" cy="235" r="1"/><circle cx="645" cy="262" r="1.5"/><circle cx="60" cy="315" r="1"/><circle cx="128" cy="308" r="1.5"/><circle cx="555" cy="305" r="1"/><circle cx="615" cy="325" r="1"/><circle cx="642" cy="312" r="1.5"/><circle cx="68" cy="388" r="1"/><circle cx="140" cy="368" r="1.5"/><circle cx="545" cy="378" r="1"/><circle cx="622" cy="395" r="1"/></g>
+<path d="M0,475 Q340,458 680,475 L680,910 L0,910 Z" fill="#fafaf8" stroke="#1a1a1a" stroke-width="1.5"/>
+<path d="M0,475 Q340,458 680,475 L680,910 L0,910 Z" fill="url(#surf)"/>
+<rect x="72" y="475" width="66" height="435" fill="url(#xhatch)"/>
+<rect x="305" y="475" width="60" height="435" fill="url(#xhatch)"/>
+<rect x="536" y="475" width="68" height="435" fill="url(#xhatch)"/>
+<circle cx="490" cy="648" r="54" fill="#fafaf8" stroke="#1a1a1a" stroke-width="1.2"/>
+<circle cx="490" cy="648" r="5" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+<line x1="490" y1="637" x2="490" y2="622" stroke="#1a1a1a" stroke-width="0.7"/><line x1="490" y1="659" x2="490" y2="674" stroke="#1a1a1a" stroke-width="0.7"/><line x1="479" y1="648" x2="464" y2="648" stroke="#1a1a1a" stroke-width="0.7"/><line x1="501" y1="648" x2="516" y2="648" stroke="#1a1a1a" stroke-width="0.7"/>
+<path d="M433,642 Q441,620 453,625 Q457,606 469,616" fill="none" stroke="#1a1a1a" stroke-width="0.9"/>
+<rect x="78" y="436" width="86" height="14" rx="1" fill="#1a1a1a"/><rect x="302" y="443" width="80" height="13" rx="1" fill="#1a1a1a"/><rect x="524" y="438" width="88" height="13" rx="1" fill="#1a1a1a"/>
+<line x1="121" y1="436" x2="121" y2="420" stroke="#1a1a1a" stroke-width="0.5"/><line x1="342" y1="443" x2="342" y2="427" stroke="#1a1a1a" stroke-width="0.5"/><line x1="568" y1="438" x2="568" y2="422" stroke="#1a1a1a" stroke-width="0.5"/>
+<polygon points="146,270 188,249 406,245 450,263 454,280 450,297 406,315 188,311 146,290 142,280" fill="#fafaf8" stroke="#1a1a1a" stroke-width="1.5"/>
+<line x1="188" y1="280" x2="450" y2="280" stroke="#1a1a1a" stroke-width="0.7"/>
+<line x1="242" y1="250" x2="242" y2="310" stroke="#1a1a1a" stroke-width="0.5"/><line x1="298" y1="246" x2="298" y2="314" stroke="#1a1a1a" stroke-width="0.5"/><line x1="358" y1="245" x2="358" y2="315" stroke="#1a1a1a" stroke-width="0.5"/>
+<rect x="404" y="230" width="74" height="27" rx="2" fill="#fafaf8" stroke="#1a1a1a" stroke-width="1.2"/><rect x="404" y="303" width="74" height="27" rx="2" fill="#fafaf8" stroke="#1a1a1a" stroke-width="1.2"/>
+<ellipse cx="481" cy="243" rx="10" ry="8" fill="#e6e4e0" stroke="#1a1a1a" stroke-width="1.2"/><ellipse cx="481" cy="316" rx="10" ry="8" fill="#e6e4e0" stroke="#1a1a1a" stroke-width="1.2"/><ellipse cx="456" cy="280" rx="13" ry="10" fill="#e6e4e0" stroke="#1a1a1a" stroke-width="1.5"/>
+<rect x="128" y="263" width="42" height="34" rx="4" fill="#fafaf8" stroke="#1a1a1a" stroke-width="1.2"/>
+<rect x="134" y="269" width="8" height="5" rx="1" fill="#e6e4e0" stroke="#1a1a1a" stroke-width="0.8"/><rect x="148" y="269" width="8" height="5" rx="1" fill="#e6e4e0" stroke="#1a1a1a" stroke-width="0.8"/><rect x="134" y="280" width="8" height="5" rx="1" fill="#e6e4e0" stroke="#1a1a1a" stroke-width="0.8"/><rect x="148" y="280" width="8" height="5" rx="1" fill="#e6e4e0" stroke="#1a1a1a" stroke-width="0.8"/>
+<line x1="128" y1="272" x2="95" y2="268" stroke="#1a1a1a" stroke-width="1"/><circle cx="91" cy="267" r="5" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+<rect x="255" y="234" width="98" height="10" rx="1" fill="none" stroke="#1a1a1a" stroke-width="0.8"/>
+<line x1="128" y1="272" x2="95" y2="268" stroke="#1a1a1a" stroke-width="1"/>
+<text x="105" y="225" text-anchor="end" font-size="12" fill="#1a1a1a">THE FOOLISH ENDEAVOUR</text>
+<text x="490" y="572" text-anchor="middle" font-size="12" fill="#1a1a1a">QUIET ZONE · 40km</text>
+<line x1="80" y1="835" x2="600" y2="835" stroke="#1a1a1a" stroke-width="1"/>
+<text x="340" y="858" text-anchor="middle" font-size="20" font-weight="bold" fill="#1a1a1a">A Question of Singularity</text>
+<text x="340" y="878" text-anchor="middle" font-size="12" fill="#1a1a1a">RINGWORLD RPG · CHAOSIUM CON 2026 · EVENT 95</text>
+<line x1="80" y1="888" x2="600" y2="888" stroke="#1a1a1a" stroke-width="1"/>
+</svg>

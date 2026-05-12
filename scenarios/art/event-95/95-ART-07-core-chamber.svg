@@ -1,0 +1,51 @@
+<svg width="680" height="580" viewBox="0 0 680 580" xmlns="http://www.w3.org/2000/svg">
+<title>95-ART-07 The Core Chamber — the constructed singularity at the heart of the Weather Spire</title>
+<style>text{font-family:sans-serif;fill:#1a1a1a;}</style>
+<defs>
+<pattern id="bs" patternUnits="userSpaceOnUse" width="40" height="40"><line x1="0" y1="40" x2="40" y2="0" stroke="#1a1a1a" stroke-width="0.3" opacity="0.2"/><line x1="0" y1="0" x2="40" y2="40" stroke="#1a1a1a" stroke-width="0.3" opacity="0.2"/></pattern>
+</defs>
+<!-- Background: Ringworld superstructure -->
+<line x1="40" y1="40" x2="640" y2="540" stroke="#1a1a1a" stroke-width="0.5" opacity="0.15"/><line x1="640" y1="40" x2="40" y2="540" stroke="#1a1a1a" stroke-width="0.5" opacity="0.15"/><line x1="40" y1="200" x2="640" y2="380" stroke="#1a1a1a" stroke-width="0.4" opacity="0.12"/><line x1="640" y1="200" x2="40" y2="380" stroke="#1a1a1a" stroke-width="0.4" opacity="0.12"/>
+<rect x="40" y="40" width="600" height="500" fill="url(#bs)"/>
+<rect x="55" y="55" width="180" height="130" fill="none" stroke="#1a1a1a" stroke-width="0.5" opacity="0.18"/><rect x="445" y="55" width="180" height="130" fill="none" stroke="#1a1a1a" stroke-width="0.5" opacity="0.18"/><rect x="55" y="395" width="180" height="130" fill="none" stroke="#1a1a1a" stroke-width="0.5" opacity="0.18"/><rect x="445" y="395" width="180" height="130" fill="none" stroke="#1a1a1a" stroke-width="0.5" opacity="0.18"/>
+<!-- Spherical chamber interior -->
+<ellipse cx="340" cy="280" rx="260" ry="225" fill="#fafaf8"/>
+<ellipse cx="340" cy="280" rx="260" ry="225" fill="none" stroke="#1a1a1a" stroke-width="2.2"/>
+<ellipse cx="340" cy="280" rx="252" ry="218" fill="none" stroke="#1a1a1a" stroke-width="0.7"/>
+<!-- Interior great circle lines -->
+<path d="M82,230 Q340,205 598,230" fill="none" stroke="#1a1a1a" stroke-width="0.5" opacity="0.35"/>
+<path d="M82,330 Q340,355 598,330" fill="none" stroke="#1a1a1a" stroke-width="0.5" opacity="0.35"/>
+<path d="M280,58 Q255,280 280,502" fill="none" stroke="#1a1a1a" stroke-width="0.5" opacity="0.3"/>
+<path d="M400,58 Q425,280 400,502" fill="none" stroke="#1a1a1a" stroke-width="0.5" opacity="0.3"/>
+<!-- Structural elements seen through walls -->
+<line x1="98" y1="165" x2="148" y2="235" stroke="#1a1a1a" stroke-width="0.6" opacity="0.22"/>
+<line x1="82" y1="320" x2="142" y2="355" stroke="#1a1a1a" stroke-width="0.6" opacity="0.22"/>
+<line x1="532" y1="155" x2="572" y2="215" stroke="#1a1a1a" stroke-width="0.6" opacity="0.22"/>
+<line x1="545" y1="320" x2="592" y2="348" stroke="#1a1a1a" stroke-width="0.6" opacity="0.22"/>
+<!-- Gravitational lens rings -->
+<circle cx="340" cy="280" r="28" fill="none" stroke="#1a1a1a" stroke-width="0.3" opacity="0.2"/>
+<circle cx="340" cy="280" r="45" fill="none" stroke="#1a1a1a" stroke-width="0.3" opacity="0.15"/>
+<circle cx="340" cy="280" r="68" fill="none" stroke="#1a1a1a" stroke-width="0.25" opacity="0.12"/>
+<circle cx="340" cy="280" r="95" fill="none" stroke="#1a1a1a" stroke-width="0.25" opacity="0.1"/>
+<circle cx="340" cy="280" r="128" fill="none" stroke="#1a1a1a" stroke-width="0.2" opacity="0.08"/>
+<!-- Light-bending paths converging on singularity -->
+<path d="M120,80 C 210,140 300,220 328,263" fill="none" stroke="#1a1a1a" stroke-width="1.0"/>
+<path d="M340,58 C 337,150 338,225 340,267" fill="none" stroke="#1a1a1a" stroke-width="1.0"/>
+<path d="M560,80 C 470,140 380,220 352,263" fill="none" stroke="#1a1a1a" stroke-width="1.0"/>
+<path d="M598,280 C 498,278 418,279 353,280" fill="none" stroke="#1a1a1a" stroke-width="1.0"/>
+<path d="M560,480 C 470,420 380,340 352,297" fill="none" stroke="#1a1a1a" stroke-width="1.0"/>
+<path d="M340,502 C 337,410 338,335 340,293" fill="none" stroke="#1a1a1a" stroke-width="1.0"/>
+<path d="M120,480 C 210,420 300,340 328,297" fill="none" stroke="#1a1a1a" stroke-width="1.0"/>
+<path d="M82,280 C 182,282 262,281 327,280" fill="none" stroke="#1a1a1a" stroke-width="1.0"/>
+<!-- Deflected exit paths -->
+<path d="M355,265 C 420,235 490,195 560,160" fill="none" stroke="#1a1a1a" stroke-width="0.6" stroke-dasharray="4,3"/>
+<path d="M353,296 C 410,330 470,368 530,405" fill="none" stroke="#1a1a1a" stroke-width="0.6" stroke-dasharray="4,3"/>
+<!-- THE SINGULARITY -->
+<circle cx="340" cy="280" r="14" fill="#1a1a1a"/>
+<circle cx="340" cy="280" r="20" fill="none" stroke="#1a1a1a" stroke-width="0.8"/>
+<!-- System messages -->
+<text x="128" y="276" text-anchor="middle" font-size="10" fill="#1a1a1a" transform="rotate(-8,128,276)">STABILITY REQUIRED</text>
+<text x="552" y="276" text-anchor="middle" font-size="10" fill="#1a1a1a" transform="rotate(8,552,276)">VARIABLES INTERFERE</text>
+<text x="340" y="468" text-anchor="middle" font-size="10" fill="#1a1a1a">RESOLUTION PENDING</text>
+<rect x="40" y="40" width="600" height="500" fill="none" stroke="#1a1a1a" stroke-width="0.8"/>
+</svg>

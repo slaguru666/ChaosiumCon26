@@ -1,0 +1,40 @@
+<svg width="680" height="520" viewBox="0 0 680 520" xmlns="http://www.w3.org/2000/svg">
+<title>95-ART-05 The Transit Arch — a hand emerges from the activation field and begins to fade</title>
+<style>text{font-family:sans-serif;fill:#1a1a1a;}</style>
+<defs><pattern id="ag" patternUnits="userSpaceOnUse" width="16" height="16"><line x1="0" y1="16" x2="16" y2="0" stroke="#1a1a1a" stroke-width="0.28" opacity="0.25"/></pattern></defs>
+<rect x="40" y="40" width="600" height="440" fill="none" stroke="#1a1a1a" stroke-width="0.8"/>
+<line x1="40" y1="388" x2="640" y2="388" stroke="#1a1a1a" stroke-width="1.2"/>
+<rect x="40" y="388" width="600" height="92" fill="#fafaf8"/><rect x="40" y="388" width="600" height="92" fill="url(#ag)"/>
+<!-- Arch top beam -->
+<rect x="192" y="110" width="296" height="32" rx="2" fill="#fafaf8" stroke="#1a1a1a" stroke-width="1.5"/>
+<line x1="192" y1="126" x2="488" y2="126" stroke="#1a1a1a" stroke-width="0.6"/>
+<rect x="316" y="116" width="48" height="20" rx="2" fill="none" stroke="#1a1a1a" stroke-width="0.8"/>
+<!-- Left pillar -->
+<rect x="192" y="142" width="44" height="246" rx="1" fill="#fafaf8" stroke="#1a1a1a" stroke-width="1.5"/>
+<line x1="192" y1="200" x2="236" y2="200" stroke="#1a1a1a" stroke-width="0.6"/><line x1="192" y1="258" x2="236" y2="258" stroke="#1a1a1a" stroke-width="0.6"/><line x1="192" y1="316" x2="236" y2="316" stroke="#1a1a1a" stroke-width="0.6"/>
+<ellipse cx="214" cy="148" rx="14" ry="6" fill="#e6e4e0" stroke="#1a1a1a" stroke-width="1"/>
+<!-- Right pillar -->
+<rect x="444" y="142" width="44" height="246" rx="1" fill="#fafaf8" stroke="#1a1a1a" stroke-width="1.5"/>
+<line x1="444" y1="200" x2="488" y2="200" stroke="#1a1a1a" stroke-width="0.6"/><line x1="444" y1="258" x2="488" y2="258" stroke="#1a1a1a" stroke-width="0.6"/><line x1="444" y1="316" x2="488" y2="316" stroke="#1a1a1a" stroke-width="0.6"/>
+<ellipse cx="466" cy="148" rx="14" ry="6" fill="#e6e4e0" stroke="#1a1a1a" stroke-width="1"/>
+<!-- Stepping disc -->
+<ellipse cx="340" cy="390" rx="130" ry="18" fill="#fafaf8" stroke="#1a1a1a" stroke-width="1.2"/>
+<ellipse cx="340" cy="390" rx="118" ry="14" fill="none" stroke="#1a1a1a" stroke-width="0.5"/>
+<!-- Activation field radiating lines -->
+<line x1="340" y1="265" x2="290" y2="215" stroke="#1a1a1a" stroke-width="0.4" opacity="0.5"/><line x1="340" y1="265" x2="310" y2="205" stroke="#1a1a1a" stroke-width="0.4" opacity="0.5"/><line x1="340" y1="265" x2="335" y2="200" stroke="#1a1a1a" stroke-width="0.4" opacity="0.5"/><line x1="340" y1="265" x2="360" y2="202" stroke="#1a1a1a" stroke-width="0.4" opacity="0.5"/><line x1="340" y1="265" x2="382" y2="210" stroke="#1a1a1a" stroke-width="0.4" opacity="0.5"/><line x1="340" y1="265" x2="268" y2="240" stroke="#1a1a1a" stroke-width="0.4" opacity="0.4"/><line x1="340" y1="265" x2="255" y2="268" stroke="#1a1a1a" stroke-width="0.4" opacity="0.4"/><line x1="340" y1="265" x2="415" y2="268" stroke="#1a1a1a" stroke-width="0.4" opacity="0.4"/><line x1="340" y1="265" x2="270" y2="318" stroke="#1a1a1a" stroke-width="0.4" opacity="0.35"/><line x1="340" y1="265" x2="340" y2="335" stroke="#1a1a1a" stroke-width="0.4" opacity="0.35"/><line x1="340" y1="265" x2="408" y2="316" stroke="#1a1a1a" stroke-width="0.4" opacity="0.35"/>
+<!-- THE HAND (palm, solid strokes fading to dashed at fingertips) -->
+<path d="M295,342 L288,310 Q286,296 292,290 L304,288 L308,290 L308,296 Q310,290 316,288 Q322,286 326,290 L326,296 Q328,290 334,288 Q340,286 344,290 L344,298 Q346,290 352,288 Q358,287 362,292 Q368,288 374,292 Q380,298 380,308 L374,340 Q360,352 338,356 Q315,352 295,342 Z" fill="#fafaf8" stroke="#1a1a1a" stroke-width="1.4"/>
+<path d="M298,320 Q316,314 332,318" fill="none" stroke="#1a1a1a" stroke-width="0.6"/>
+<!-- Index finger fading -->
+<path d="M304,288 L302,252 Q302,238 308,232 Q314,228 318,234 L318,288" fill="#fafaf8" stroke="#1a1a1a" stroke-width="1.2"/>
+<path d="M304,256 L302,238 Q302,231 310,229" fill="none" stroke="#1a1a1a" stroke-width="0.7" stroke-dasharray="4,3"/>
+<!-- Middle finger fading -->
+<path d="M326,290 L323,252 Q322,238 329,231 Q336,227 340,234 L340,290" fill="#fafaf8" stroke="#1a1a1a" stroke-width="1.2"/>
+<path d="M325,258 L323,240 Q323,229 331,226" fill="none" stroke="#1a1a1a" stroke-width="0.7" stroke-dasharray="4,3"/>
+<!-- Ring finger fading -->
+<path d="M344,290 L343,258 Q343,242 349,237 Q356,232 360,239 L360,292" fill="none" stroke="#1a1a1a" stroke-width="1.1"/>
+<path d="M344,262 L343,245 Q344,234 351,232" fill="none" stroke="#1a1a1a" stroke-width="0.6" stroke-dasharray="3,4"/>
+<!-- Thumb -->
+<path d="M295,342 Q282,330 274,316 Q268,302 274,295 Q280,290 288,296" fill="none" stroke="#1a1a1a" stroke-width="1.2"/>
+<path d="M274,316 Q270,308 271,298" fill="none" stroke="#1a1a1a" stroke-width="0.7" stroke-dasharray="3,2"/>
+</svg>

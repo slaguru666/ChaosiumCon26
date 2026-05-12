@@ -1,0 +1,43 @@
+<svg width="680" height="460" viewBox="0 0 680 460" xmlns="http://www.w3.org/2000/svg" role="img">
+<title>95-ART-02 The Boundary — where the Ringworld falls silent</title>
+<style>text{font-family:sans-serif;fill:#1a1a1a;}</style>
+<defs>
+<pattern id="lg" patternUnits="userSpaceOnUse" width="14" height="14"><line x1="0" y1="14" x2="14" y2="0" stroke="#1a1a1a" stroke-width="0.35" opacity="0.42"/></pattern>
+<pattern id="rg" patternUnits="userSpaceOnUse" width="22" height="22"><line x1="0" y1="22" x2="22" y2="0" stroke="#1a1a1a" stroke-width="0.22" opacity="0.18"/></pattern>
+</defs>
+<path d="M40,195 Q200,185 340,188" fill="none" stroke="#1a1a1a" stroke-width="0.6" opacity="0.4"/>
+<path d="M40,198 Q200,189 340,191" fill="none" stroke="#1a1a1a" stroke-width="0.4" opacity="0.25"/>
+<path d="M95,155 L100,150 L105,155" fill="none" stroke="#1a1a1a" stroke-width="0.8"/><path d="M115,145 L119,141 L123,145" fill="none" stroke="#1a1a1a" stroke-width="0.7"/><path d="M78,168 L82,164 L86,168" fill="none" stroke="#1a1a1a" stroke-width="0.7"/>
+<line x1="40" y1="208" x2="640" y2="208" stroke="#1a1a1a" stroke-width="1.2"/>
+<rect x="40" y="208" width="298" height="212" fill="#fafaf8"/><rect x="40" y="208" width="298" height="212" fill="url(#lg)"/>
+<rect x="342" y="208" width="298" height="212" fill="#fafaf8"/><rect x="342" y="208" width="298" height="212" fill="url(#rg)"/>
+<path d="M55,208 L51,186 M55,208 L55,182 M55,208 L60,188 M75,208 L71,180 M75,208 L76,176 M75,208 L80,183 M75,208 L68,185 M98,208 L94,178 M98,208 L99,174 M98,208 L104,181 M118,208 L115,185 M118,208 L119,180 M118,208 L123,187 M140,208 L136,179 M140,208 L140,175 M140,208 L145,182 M140,208 L133,183 M162,208 L158,182 M162,208 L163,178 M162,208 L168,184 M184,208 L180,176 M184,208 L185,173 M184,208 L190,179 M205,208 L202,185 M205,208 L206,181 M205,208 L211,187 M224,208 L220,178 M224,208 L225,174 M224,208 L230,181 M245,208 L241,182 M245,208 L246,178 M245,208 L251,184 M266,208 L263,184 M266,208 L267,180 M266,208 L272,186 M286,208 L282,179 M286,208 L287,175 M286,208 L292,181 M305,208 L301,182 M305,208 L306,178 M305,208 L311,184 M325,208 L321,180 M325,208 L326,176 M325,208 L331,183" fill="none" stroke="#1a1a1a" stroke-width="0.9"/>
+<path d="M108,208 L108,168 Q112,152 118,160 Q124,148 128,162 Q134,150 136,165 L136,208" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+<path d="M195,208 L195,165 Q200,148 206,158 Q212,145 216,160 L216,208" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+<ellipse cx="170" cy="206" rx="14" ry="6" fill="#fafaf8" stroke="#1a1a1a" stroke-width="0.9"/>
+<ellipse cx="240" cy="206" rx="10" ry="5" fill="#fafaf8" stroke="#1a1a1a" stroke-width="0.8"/>
+<line x1="340" y1="208" x2="340" y2="420" stroke="#1a1a1a" stroke-width="1.8"/>
+<!-- Main crossing footprints -->
+<ellipse cx="449" cy="295" rx="9" ry="5" transform="rotate(-12,449,295)" fill="none" stroke="#1a1a1a" stroke-width="0.9"/>
+<ellipse cx="436" cy="314" rx="9" ry="5" transform="rotate(-15,436,314)" fill="none" stroke="#1a1a1a" stroke-width="0.9"/>
+<ellipse cx="416" cy="285" rx="9" ry="5" transform="rotate(-10,416,285)" fill="none" stroke="#1a1a1a" stroke-width="0.9"/>
+<ellipse cx="403" cy="304" rx="9" ry="5" transform="rotate(-13,403,304)" fill="none" stroke="#1a1a1a" stroke-width="0.9"/>
+<ellipse cx="382" cy="278" rx="9" ry="5" transform="rotate(-10,382,278)" fill="none" stroke="#1a1a1a" stroke-width="0.9"/>
+<ellipse cx="369" cy="295" rx="9" ry="5" transform="rotate(-12,369,295)" fill="none" stroke="#1a1a1a" stroke-width="0.9"/>
+<ellipse cx="352" cy="270" rx="9" ry="5" transform="rotate(-8,352,270)" fill="none" stroke="#1a1a1a" stroke-width="0.9"/>
+<ellipse cx="339" cy="287" rx="9" ry="5" transform="rotate(-10,339,287)" fill="none" stroke="#1a1a1a" stroke-width="0.9"/>
+<ellipse cx="316" cy="264" rx="9" ry="5" transform="rotate(-8,316,264)" fill="none" stroke="#1a1a1a" stroke-width="0.9"/>
+<ellipse cx="304" cy="280" rx="9" ry="5" transform="rotate(-10,304,280)" fill="none" stroke="#1a1a1a" stroke-width="0.9"/>
+<ellipse cx="275" cy="259" rx="9" ry="5" transform="rotate(-8,275,259)" fill="none" stroke="#1a1a1a" stroke-width="0.9"/>
+<ellipse cx="263" cy="274" rx="9" ry="5" transform="rotate(-10,263,274)" fill="none" stroke="#1a1a1a" stroke-width="0.9"/>
+<!-- Secondary track stopping mid-step -->
+<ellipse cx="500" cy="340" rx="9" ry="5" transform="rotate(20,500,340)" fill="none" stroke="#1a1a1a" stroke-width="0.9"/>
+<ellipse cx="484" cy="355" rx="9" ry="5" transform="rotate(18,484,355)" fill="none" stroke="#1a1a1a" stroke-width="0.9"/>
+<ellipse cx="466" cy="340" rx="9" ry="5" transform="rotate(22,466,340)" fill="none" stroke="#1a1a1a" stroke-width="0.9"/>
+<ellipse cx="450" cy="356" rx="9" ry="5" transform="rotate(19,450,356)" fill="none" stroke="#1a1a1a" stroke-width="0.9"/>
+<ellipse cx="432" cy="342" rx="9" ry="5" transform="rotate(20,432,342)" fill="none" stroke="#1a1a1a" stroke-width="0.9"/>
+<text x="185" y="238" text-anchor="middle" font-size="12" fill="#1a1a1a">RINGWORLD INNER SURFACE</text>
+<text x="490" y="238" text-anchor="middle" font-size="12" fill="#1a1a1a">QUIET ZONE</text>
+<text x="340" y="202" text-anchor="middle" font-size="10" fill="#1a1a1a">BOUNDARY</text>
+<rect x="40" y="40" width="600" height="380" fill="none" stroke="#1a1a1a" stroke-width="0.8"/>
+</svg>
