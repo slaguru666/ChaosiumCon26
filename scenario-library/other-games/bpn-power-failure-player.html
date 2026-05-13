@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BPN BLUE-DT2-4478-MAINT — SLA Industries</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+
+  :root {
+    --paper:    #e8e2d6;
+    --paper-dk: #d4cdc0;
+    --ink:      #1a1612;
+    --ink-mid:  #3a3228;
+    --ink-dim:  #6a5f52;
+    --red:      #c0160a;
+    --red-dk:   #8a0f07;
+    --red-pale: #f5e8e6;
+    --orange:   #d4600a;
+    --rule:     #a09080;
+    --rule-lt:  #c8bfb0;
+    --blue-acc: #1a3a8a;
+    --mono:     'Share Tech Mono', monospace;
+    --cond:     'Barlow Condensed', sans-serif;
+    --body:     'Barlow', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: #3a3530;
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 32px 16px;
+    font-family: var(--body);
+  }
+
+  /* ── PAGE WRAPPER ── */
+  .page {
+    width: 740px;
+    background: var(--paper);
+    color: var(--ink);
+    position: relative;
+    box-shadow:
+      0 4px 6px rgba(0,0,0,0.3),
+      0 20px 60px rgba(0,0,0,0.4),
+      inset 0 0 80px rgba(0,0,0,0.04);
+    overflow: hidden;
+  }
+
+  /* Paper texture overlay */
+  .page::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* ── TOP SECURITY BAR ── */
+  .security-bar {
+    background: var(--ink);
+    padding: 7px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .security-bar .sec-code {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: #8a7f72;
+    letter-spacing: 2px;
+  }
+  .security-bar .sec-class {
+    font-family: var(--cond);
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: #6a5f52;
+    font-weight: 600;
+  }
+
+  /* ── SLA HEADER ── */
+  .sla-header {
+    background: var(--ink);
+    padding: 0;
+    display: flex;
+    align-items: stretch;
+    border-bottom: 4px solid var(--red);
+  }
+
+  .sla-logo-block {
+    padding: 20px 28px;
+    border-right: 1px solid #2e2820;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 160px;
+  }
+
+  .sla-wordmark {
+    font-family: var(--cond);
+    font-size: 52px;
+    font-weight: 900;
+    color: var(--red);
+    letter-spacing: -2px;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+  .sla-wordmark span {
+    font-size: 10px;
+    color: #5a5040;
+    letter-spacing: 3px;
+    font-weight: 300;
+    display: block;
+    margin-top: 3px;
+  }
+
+  .sla-header-centre {
+    flex: 1;
+    padding: 18px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .doc-type-label {
+    font-family: var(--cond);
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: #5a5040;
+    font-weight: 400;
+    margin-bottom: 4px;
+  }
+  .doc-title {
+    font-family: var(--cond);
+    font-size: 28px;
+    font-weight: 900;
+    color: #e8ddd0;
+    letter-spacing: 5px;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+  .doc-subtitle {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: #4a4038;
+    margin-top: 5px;
+    letter-spacing: 1px;
+  }
+
+  .sla-header-right {
+    padding: 18px 24px 18px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  /* Barcode SVG */
+  .barcode {
+    display: block;
+    margin-bottom: 6px;
+  }
+  .barcode-num {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: #4a4038;
+    text-align: right;
+    letter-spacing: 1px;
+  }
+
+  /* ── CLASSIFICATION BAND ── */
+  .classification-band {
+    background: var(--red);
+    padding: 8px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .class-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .class-pill {
+    background: #fff;
+    color: var(--red-dk);
+    font-family: var(--cond);
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    padding: 3px 10px;
+    text-transform: uppercase;
+  }
+  .class-desc {
+    font-family: var(--cond);
+    font-size: 13px;
+    color: #fff;
+    letter-spacing: 2px;
+    font-weight: 600;
+    opacity: 0.9;
+  }
+  .class-right {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 1px;
+  }
+
+  /* ── BODY ── */
+  .bpn-body {
+    padding: 0 28px 28px;
+  }
+
+  /* ── FORM FIELDS ROW ── */
+  .fields-grid {
+    display: grid;
+    gap: 0;
+    border: 1px solid var(--rule);
+    border-top: none;
+    margin-bottom: 20px;
+  }
+  .fields-row {
+    display: flex;
+    border-bottom: 1px solid var(--rule);
+  }
+  .fields-row:last-child { border-bottom: none; }
+
+  .field-cell {
+    flex: 1;
+    padding: 9px 14px;
+    border-right: 1px solid var(--rule);
+    position: relative;
+  }
+  .field-cell:last-child { border-right: none; }
+  .field-cell.wide { flex: 2; }
+  .field-cell.full { flex: 1 0 100%; border-right: none; }
+
+  .field-label {
+    font-family: var(--cond);
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  .field-value {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .field-value.prominent {
+    font-family: var(--cond);
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--ink);
+  }
+  .field-value.red { color: var(--red); font-weight: 700; }
+  .field-value.orange { color: var(--orange); }
+  .field-value.blue { color: var(--blue-acc); }
+
+  /* Payment highlight cell */
+  .field-cell.payment-cell {
+    background: #f0e8dc;
+    border-left: 3px solid var(--orange);
+  }
+
+  /* ── SECTION HEADERS ── */
+  .section-head {
+    display: flex;
+    align-items: center;
+    margin: 22px 0 10px;
+    gap: 12px;
+  }
+  .section-num {
+    width: 22px; height: 22px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--cond);
+    font-size: 11px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .section-title {
+    font-family: var(--cond);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--ink-mid);
+  }
+  .section-rule {
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  /* ── BODY TEXT ── */
+  .body-text {
+    font-family: var(--body);
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.75;
+  }
+  .body-text + .body-text { margin-top: 10px; }
+  .body-text strong { color: var(--ink); font-weight: 600; }
+
+  /* ── OBJECTIVE BOX ── */
+  .objective-box {
+    border: 1px solid var(--rule);
+    border-left: 4px solid var(--ink);
+    background: rgba(26,22,18,0.04);
+    padding: 14px 18px;
+    margin-bottom: 0;
+  }
+  .objective-box .body-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.65;
+  }
+
+  /* ── TWO COLUMN ── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 10px;
+  }
+  .info-block {
+    border: 1px solid var(--rule-lt);
+    padding: 12px 14px;
+  }
+  .info-block-title {
+    font-family: var(--cond);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--ink-dim);
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--rule-lt);
+  }
+  .info-item {
+    font-family: var(--body);
+    font-size: 12px;
+    color: var(--ink-mid);
+    line-height: 1.6;
+    padding: 3px 0;
+    border-bottom: 1px solid rgba(160,144,128,0.2);
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+  }
+  .info-item:last-child { border-bottom: none; }
+  .info-item::before {
+    content: '—';
+    color: var(--rule);
+    flex-shrink: 0;
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+
+  /* ── D-NOTICE STAMP ── */
+  .dnotice-wrap {
+    margin: 22px 0 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  .dnotice-stamp {
+    flex-shrink: 0;
+    width: 110px;
+    height: 110px;
+    border: 3px solid var(--red);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(-4deg);
+    opacity: 0.85;
+    position: relative;
+  }
+  .dnotice-stamp::before {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border: 1px solid var(--red);
+    opacity: 0.5;
+  }
+  .dnotice-d {
+    font-family: var(--cond);
+    font-size: 48px;
+    font-weight: 900;
+    color: var(--red);
+    line-height: 1;
+    letter-spacing: -2px;
+  }
+  .dnotice-notice {
+    font-family: var(--cond);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-top: -4px;
+  }
+  .dnotice-sub {
+    font-family: var(--mono);
+    font-size: 8px;
+    color: var(--red);
+    letter-spacing: 1px;
+    margin-top: 4px;
+    opacity: 0.8;
+  }
+  .dnotice-text {
+    flex: 1;
+    border: 1px solid var(--rule-lt);
+    border-left: 4px solid var(--red);
+    padding: 12px 16px;
+    background: var(--red-pale);
+  }
+  .dnotice-text .dnotice-title {
+    font-family: var(--cond);
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--red-dk);
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .dnotice-text p {
+    font-family: var(--body);
+    font-size: 12px;
+    color: #5a2020;
+    line-height: 1.6;
+  }
+  .dnotice-text p + p { margin-top: 6px; }
+
+  /* ── RISK GRID ── */
+  .risk-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border: 1px solid var(--rule);
+    margin-top: 10px;
+  }
+  .risk-cell {
+    padding: 10px 12px;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .risk-cell:nth-child(4n) { border-right: none; }
+  .risk-cell:nth-last-child(-n+4) { border-bottom: none; }
+  .risk-label {
+    font-family: var(--cond);
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 5px;
+  }
+  .risk-val {
+    font-family: var(--cond);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 1px;
+  }
+  .risk-val.elevated { color: var(--orange); }
+  .risk-val.high { color: var(--red); }
+
+  /* ── CONTACTS TABLE ── */
+  .contacts-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 12px;
+  }
+  .contacts-table th {
+    font-family: var(--cond);
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    font-weight: 700;
+    background: rgba(0,0,0,0.05);
+    padding: 7px 10px;
+    text-align: left;
+    border: 1px solid var(--rule);
+  }
+  .contacts-table td {
+    padding: 8px 10px;
+    border: 1px solid var(--rule-lt);
+    color: var(--ink-mid);
+    font-family: var(--body);
+    vertical-align: top;
+    line-height: 1.4;
+  }
+  .contacts-table td.mono { font-family: var(--mono); font-size: 11px; }
+  .contacts-table tr:nth-child(even) td { background: rgba(0,0,0,0.025); }
+
+  /* ── LEGAL FOOTER ── */
+  .legal-band {
+    background: var(--ink);
+    padding: 10px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .legal-text {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: #3a3028;
+    line-height: 1.6;
+    flex: 1;
+  }
+  .legal-right {
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .legal-right .stamp-issued {
+    font-family: var(--cond);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: #3a3028;
+    display: block;
+  }
+  .legal-right .stamp-auth {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: #2a2520;
+    display: block;
+    margin-top: 3px;
+  }
+
+  /* ── REDACTION MARKS ── */
+  .redact {
+    display: inline-block;
+    background: var(--ink);
+    color: transparent;
+    user-select: none;
+    padding: 0 2px;
+    min-width: 80px;
+    height: 1em;
+    vertical-align: middle;
+  }
+
+  /* ── PRINT BUTTON ── */
+  .print-bar {
+    background: #2e2820;
+    padding: 10px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .print-note {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: #5a5040;
+    letter-spacing: 1px;
+  }
+  .print-btn {
+    background: none;
+    border: 1px solid #5a5040;
+    color: #8a7f72;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .print-btn:hover {
+    border-color: var(--paper-dk);
+    color: var(--paper-dk);
+  }
+
+  @media print {
+    html, body { background: white; padding: 0; }
+    .page { box-shadow: none; width: 100%; }
+    .print-bar { display: none; }
+  }
+
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- Security bar -->
+  <div class="security-bar">
+    <span class="sec-code">SLA/IND/BPN/FORM-7B REV.12 &nbsp;·&nbsp; AUTHORISED DISTRIBUTION ONLY</span>
+    <span class="sec-class">OPERATIVE COPY</span>
+  </div>
+
+  <!-- SLA Header -->
+  <div class="sla-header">
+    <div class="sla-logo-block">
+      <div class="sla-wordmark">SLA<span>INDUSTRIES</span></div>
+    </div>
+    <div class="sla-header-centre">
+      <div class="doc-type-label">Blueprint News · Operative Assignment</div>
+      <div class="doc-title">Power Failure</div>
+      <div class="doc-subtitle">BLUE-DT2-4478-MAINT &nbsp;·&nbsp; Dept. Infrastructure &amp; Energy &nbsp;·&nbsp; Sector Maintenance Division</div>
+    </div>
+    <div class="sla-header-right">
+      <!-- Barcode SVG (stylised) -->
+      <svg class="barcode" width="100" height="40" viewBox="0 0 100 40">
+        <rect x="0" y="0" width="2" height="40" fill="#8a7f72"/>
+        <rect x="4" y="0" width="1" height="40" fill="#8a7f72"/>
+        <rect x="7" y="0" width="3" height="40" fill="#8a7f72"/>
+        <rect x="12" y="0" width="1" height="40" fill="#8a7f72"/>
+        <rect x="15" y="0" width="2" height="40" fill="#8a7f72"/>
+        <rect x="19" y="0" width="1" height="40" fill="#8a7f72"/>
+        <rect x="22" y="0" width="4" height="40" fill="#8a7f72"/>
+        <rect x="28" y="0" width="1" height="40" fill="#8a7f72"/>
+        <rect x="31" y="0" width="2" height="40" fill="#8a7f72"/>
+        <rect x="35" y="0" width="1" height="40" fill="#8a7f72"/>
+        <rect x="38" y="0" width="3" height="40" fill="#8a7f72"/>
+        <rect x="43" y="0" width="1" height="40" fill="#8a7f72"/>
+        <rect x="46" y="0" width="2" height="40" fill="#8a7f72"/>
+        <rect x="50" y="0" width="1" height="40" fill="#8a7f72"/>
+        <rect x="53" y="0" width="3" height="40" fill="#8a7f72"/>
+        <rect x="58" y="0" width="2" height="40" fill="#8a7f72"/>
+        <rect x="62" y="0" width="1" height="40" fill="#8a7f72"/>
+        <rect x="65" y="0" width="4" height="40" fill="#8a7f72"/>
+        <rect x="71" y="0" width="1" height="40" fill="#8a7f72"/>
+        <rect x="74" y="0" width="2" height="40" fill="#8a7f72"/>
+        <rect x="78" y="0" width="1" height="40" fill="#8a7f72"/>
+        <rect x="81" y="0" width="3" height="40" fill="#8a7f72"/>
+        <rect x="86" y="0" width="2" height="40" fill="#8a7f72"/>
+        <rect x="90" y="0" width="1" height="40" fill="#8a7f72"/>
+        <rect x="93" y="0" width="4" height="40" fill="#8a7f72"/>
+        <rect x="99" y="0" width="1" height="40" fill="#8a7f72"/>
+      </svg>
+      <div class="barcode-num">4478-MAINT-DT2</div>
+    </div>
+  </div>
+
+  <!-- Classification band -->
+  <div class="classification-band">
+    <div class="class-left">
+      <div class="class-pill">BLUE</div>
+      <div class="class-desc">Standard Maintenance / Investigation BPN</div>
+    </div>
+    <div class="class-right">ISSUED: MORT STANDARD DATE &nbsp;·&nbsp; SCL 10+</div>
+  </div>
+
+  <!-- Body -->
+  <div class="bpn-body">
+
+    <!-- Form fields top grid -->
+    <div class="fields-grid" style="margin-top:20px;">
+      <div class="fields-row">
+        <div class="field-cell wide">
+          <span class="field-label">Issuing Department</span>
+          <div class="field-value">Department of Infrastructure &amp; Energy — Sector Maintenance Division</div>
+        </div>
+        <div class="field-cell">
+          <span class="field-label">BPN Reference Code</span>
+          <div class="field-value prominent">BLUE-DT2-4478-MAINT</div>
+        </div>
+      </div>
+      <div class="fields-row">
+        <div class="field-cell">
+          <span class="field-label">Location</span>
+          <div class="field-value">Keller-Voss Energy Generation Plant<br>Downtown District 2, Sector 18</div>
+        </div>
+        <div class="field-cell">
+          <span class="field-label">SCL Requirement</span>
+          <div class="field-value prominent">10+</div>
+        </div>
+        <div class="field-cell">
+          <span class="field-label">Squad Size</span>
+          <div class="field-value prominent">4 – 6 Operatives</div>
+        </div>
+        <div class="field-cell payment-cell">
+          <span class="field-label">Payment (per Operative)</span>
+          <div class="field-value prominent" style="font-size:20px;">250<span style="font-size:13px;font-family:var(--mono);font-weight:400;color:var(--orange)"> creds</span></div>
+        </div>
+      </div>
+      <div class="fields-row">
+        <div class="field-cell">
+          <span class="field-label">Additional Remuneration</span>
+          <div class="field-value blue">Salvage rights granted on all facility assets</div>
+        </div>
+        <div class="field-cell">
+          <span class="field-label">Threat Assessment</span>
+          <div class="field-value red">MEDIUM-HIGH</div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--ink-dim);margin-top:3px;">Revised from LOW — see Incident 4478-A</div>
+        </div>
+        <div class="field-cell">
+          <span class="field-label">BPN Status</span>
+          <div class="field-value blue">ACTIVE — OPEN FOR SQUAD CLAIM</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 1: Objective -->
+    <div class="section-head">
+      <div class="section-num">1</div>
+      <div class="section-title">Primary Objective</div>
+      <div class="section-rule"></div>
+    </div>
+
+    <div class="objective-box">
+      <p class="body-text">
+        Operatives are tasked to <strong>investigate and secure</strong> the abandoned Keller-Voss Energy Generation Plant, Downtown District 2, Sector 18. Determine the cause of local power fluctuations and civilian disappearances in surrounding residential Blocks 47–52. <strong>Restore facility to safe shutdown status</strong> or submit formal demolition recommendation to issuing department.
+      </p>
+    </div>
+
+    <!-- Section 2: Background -->
+    <div class="section-head">
+      <div class="section-num">2</div>
+      <div class="section-title">Operational Background</div>
+      <div class="section-rule"></div>
+    </div>
+
+    <p class="body-text">
+      The Keller-Voss Energy Generation Plant has been offline for <strong>14 months</strong> following completion of routine decommissioning procedures. All shutdown documentation was filed and accepted by the Department of Infrastructure &amp; Energy on the recorded decommissioning date.
+    </p>
+    <p class="body-text" style="margin-top:10px;">
+      Recent monitoring data indicates <strong>unexplained power surges and fluctuations</strong> affecting residential supply across Blocks 47–52, consistent with a source within or adjacent to the Keller-Voss site. Local Shiver Division patrols (Sector 18, Downtown District 2) have additionally reported <strong>unauthorised access activity</strong>, possible squatter occupation, and <strong>civilian disappearances</strong> in the immediate vicinity of the facility perimeter over the past three weeks. Twelve civilians have been reported missing; investigations remain ongoing.
+    </p>
+
+    <div class="two-col">
+      <div class="info-block">
+        <div class="info-block-title">Site Observations — Shiver Reports</div>
+        <div class="info-item">Unauthorised perimeter access — main gate compromised</div>
+        <div class="info-item">Possible squatter activity reported, lower levels</div>
+        <div class="info-item">Intermittent electrical discharge observed from exterior</div>
+        <div class="info-item">Twelve civilian disappearances, Blocks 47–52 (3 week period)</div>
+        <div class="info-item">Perimeter declared exclusion zone — Shiver cordon active</div>
+      </div>
+      <div class="info-block">
+        <div class="info-block-title">Expected Scope of Work</div>
+        <div class="info-item">Secure and clear all access points and levels</div>
+        <div class="info-item">Identify and eliminate cause of power anomalies</div>
+        <div class="info-item">Locate and recover any surviving personnel</div>
+        <div class="info-item">Assess structural integrity for shutdown / demolition</div>
+        <div class="info-item">Submit full incident report to issuing department on completion</div>
+      </div>
+    </div>
+
+    <!-- Section 3: Prior Squad Notice -->
+    <div class="section-head">
+      <div class="section-num">3</div>
+      <div class="section-title">Prior Operative Activity — Incident 4478-A</div>
+      <div class="section-rule"></div>
+    </div>
+
+    <p class="body-text">
+      An Operative squad (internal designation: <strong>Hammer-6</strong>, SCL 9) was assigned to an earlier iteration of this BPN and entered the facility <strong>six days prior to the issue of this document</strong>. Of the six Operatives assigned, <strong>five are currently listed as KIA or MIA</strong>. The sixth was extracted by trauma response and is currently on indefinite medical leave. The threat assessment for this BPN was revised from LOW to MEDIUM-HIGH following review of Incident 4478-A.
+    </p>
+    <p class="body-text" style="margin-top:10px;">
+      Operatives accepting this BPN are advised that <strong>prior squad equipment and personal effects</strong> may be present within the facility and are subject to the salvage rights clause of this assignment.
+    </p>
+
+    <!-- Section 4: Risk Assessment -->
+    <div class="section-head">
+      <div class="section-num">4</div>
+      <div class="section-title">Risk Assessment &amp; Threat Profile</div>
+      <div class="section-rule"></div>
+    </div>
+
+    <div class="risk-grid">
+      <div class="risk-cell">
+        <span class="risk-label">Overall Threat</span>
+        <div class="risk-val high">MEDIUM-HIGH</div>
+      </div>
+      <div class="risk-cell">
+        <span class="risk-label">Structural Risk</span>
+        <div class="risk-val elevated">ELEVATED</div>
+      </div>
+      <div class="risk-cell">
+        <span class="risk-label">Hostile Contact</span>
+        <div class="risk-val elevated">PROBABLE</div>
+      </div>
+      <div class="risk-cell">
+        <span class="risk-label">Electrical Hazard</span>
+        <div class="risk-val high">CONFIRMED</div>
+      </div>
+      <div class="risk-cell">
+        <span class="risk-label">Civilian Presence</span>
+        <div class="risk-val elevated">POSSIBLE</div>
+      </div>
+      <div class="risk-cell">
+        <span class="risk-label">Squat Activity</span>
+        <div class="risk-val elevated">REPORTED</div>
+      </div>
+      <div class="risk-cell">
+        <span class="risk-label">Gang Activity</span>
+        <div class="risk-val elevated">SECTOR 18: YES</div>
+      </div>
+      <div class="risk-cell">
+        <span class="risk-label">Ebb Anomaly</span>
+        <div class="risk-val" style="color:var(--ink-dim);">NOT ASSESSED</div>
+      </div>
+    </div>
+
+    <!-- D-Notice -->
+    <div class="dnotice-wrap">
+      <div class="dnotice-stamp">
+        <div class="dnotice-d">D</div>
+        <div class="dnotice-notice">NOTICE</div>
+        <div class="dnotice-sub">SLA/MEDIA/SUPPRESS</div>
+      </div>
+      <div class="dnotice-text">
+        <div class="dnotice-title">Media Suppression Order — Active</div>
+        <p>A D-Notice has been issued by the SLA Media Liaison Bureau in relation to all events connected with the Keller-Voss Energy Generation Plant, Downtown District 2, Sector 18, and to Incident 4478-A.</p>
+        <p>Operatives are reminded that <strong>disclosure of operational details to any media representative</strong>, including personnel from Third Eye News, Third Cycle News, or independent broadcast entities, constitutes a breach of SLA Industries Operative Contract Clause 14 (Operational Security) and may result in <strong>SCL review, financial penalty, or contract termination</strong>.</p>
+        <p>All media enquiries regarding this BPN or associated incidents should be referred without comment to the SLA Media Liaison Bureau.</p>
+      </div>
+    </div>
+
+    <!-- Section 5: On-Site Contacts -->
+    <div class="section-head">
+      <div class="section-num">5</div>
+      <div class="section-title">On-Site Support &amp; Authorised Contacts</div>
+      <div class="section-rule"></div>
+    </div>
+
+    <table class="contacts-table">
+      <thead>
+        <tr>
+          <th>Name / Designation</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="mono">SGT. E. KADE</td>
+          <td>Shiver Patrol Supervisor, Sector 18</td>
+          <td>Active — perimeter</td>
+          <td>Primary liaison for Shiver cordon. Can provide site access and local intelligence. Will not enter facility.</td>
+        </tr>
+        <tr>
+          <td class="mono">OPERATIVE M. TRELL</td>
+          <td>Hammer-6 survivor (SCL 9)</td>
+          <td>Medical leave — SLA Medical 18-North, Rm 447</td>
+          <td>Sole survivor of prior Operative deployment. May be available for debrief. Medical clearance required before operational contact.</td>
+        </tr>
+        <tr>
+          <td class="mono">DEPT. INFRASTRUCTURE<br>CASE OFFICER <span class="redact">████████</span></td>
+          <td>BPN Issuing Authority</td>
+          <td>Administrative contact only</td>
+          <td>All completion reports, expense claims, and salvage manifests to be submitted via standard BPN close-out protocol.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Section 6: Completion -->
+    <div class="section-head">
+      <div class="section-num">6</div>
+      <div class="section-title">Completion Conditions &amp; Payment Release</div>
+      <div class="section-rule"></div>
+    </div>
+
+    <p class="body-text">
+      Payment of <strong>250 credits per Operative</strong> will be released on submission of a completed BPN close-out report confirming one of the following outcomes:
+    </p>
+
+    <div class="info-block" style="margin-top:10px;">
+      <div class="info-block-title">Accepted Completion Conditions</div>
+      <div class="info-item">Facility secured and returned to confirmed safe-shutdown status</div>
+      <div class="info-item">Cause of power anomalies identified and eliminated or contained</div>
+      <div class="info-item">Facility rendered structurally non-viable (demolition) — written recommendation accepted by issuing department</div>
+      <div class="info-item">All hostile or unauthorised occupants removed from facility premises</div>
+    </div>
+
+    <p class="body-text" style="margin-top:12px;font-size:12px;color:var(--ink-dim);">
+      Salvage rights are valid for all items recovered from within the facility perimeter during the active BPN period. Salvage claims must be listed on the close-out report. Items listed under <span class="redact">████</span> category (see SLA Salvage &amp; Recovery Protocol 12) are excluded from operative retention and must be surrendered to the issuing department on completion.
+    </p>
+
+  </div><!-- /bpn-body -->
+
+  <!-- Legal footer -->
+  <div class="legal-band">
+    <div class="legal-text">
+      SLA INDUSTRIES LTD. — OPERATIVE SERVICES DIVISION — MORT OPERATIONS<br>
+      This document is issued under SLA Operative Contract and is the property of SLA Industries Ltd. Unauthorised reproduction, distribution or disclosure is prohibited under SLA Corporate Security Protocol. Operatives accept all risks inherent to BPN assignment. SLA Industries accepts no liability for injury, death, psychological damage or loss of equipment sustained during BPN operations. Payment conditional on verified completion. All disputes subject to SLA Arbitration Clause.
+    </div>
+    <div class="legal-right">
+      <span class="stamp-issued">ISSUED — MORT OPERATIONS</span>
+      <span class="stamp-auth">AUTH: DIE/SMD/4478 // BPN-BLUE</span>
+    </div>
+  </div>
+
+  <!-- Print bar -->
+  <div class="print-bar">
+    <span class="print-note">GM TOOL — PLAYER DISTRIBUTION COPY — BLUE-DT2-4478-MAINT</span>
+    <button class="print-btn" onclick="window.print()">⎙ PRINT / SAVE PDF</button>
+  </div>
+
+</div><!-- /page -->
+
+</body>
+</html>
