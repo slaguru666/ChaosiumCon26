@@ -23,9 +23,9 @@ scenario-library/
 
 ## Scenario Index
 
-| Title | System | Era / Setting | First Run | Convention | Status |
-|-------|--------|---------------|-----------|------------|--------|
-| *(add as scenarios are filed)* | | | | | |
+| Title | System | Era / Setting | First Run | Status |
+|-------|--------|---------------|-----------|--------|
+| [Power Failure](other-games/sla-power-failure.md) | SLA Industries | Mort, Downtown District 2 | not yet run | ready |
 
 ---
 
@@ -41,25 +41,20 @@ scenario-library/
 
 ---
 
-## File Naming Convention
+## File Structure Per Scenario
 
-```
-[system]-[short-title].md
-```
-
-Examples:
-- `coc-last-train-to-coney-island.md`
-- `brp-the-night-crawler.md`
-- `ringworld-question-of-singularity.md`
-
-*(No event numbers — these are system-level files, not tied to a specific convention slot)*
+Each scenario has:
+- `[system]-[title].md` — main scenario file (players may see premise/structure)
+- `[system]-[title]-gm.md` — GM companion (NPC secrets, encounter notes, handout text)
+- `art/[system]-[title]/` — maps and artwork (SVG floor plans, handouts)
 
 ---
 
 ## Adding a New Scenario
 
 1. Choose the correct system folder
-2. Create a file using the naming convention above
-3. Use `SCENARIO-LIBRARY-TEMPLATE.md` (in this folder) as your starting point
+2. Create files using the naming convention above
+3. Use `SCENARIO-LIBRARY-TEMPLATE.md` as starting point for the main file
 4. Add a row to the index table above
-5. Push to GitHub
+5. Update the system folder README
+6. Push to GitHub

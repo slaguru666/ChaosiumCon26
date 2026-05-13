@@ -6,11 +6,9 @@ Scenarios written for systems outside the main Chaosium catalogue.
 
 ## Systems
 
-Add a row here when a new system is introduced to the library.
-
 | System | Genre | Notes |
 |--------|-------|-------|
-| *(add as needed)* | | |
+| SLA Industries | Corporate dystopian horror | 1st edition rules. No game stats stored — narrative/GM content only |
 
 ---
 
@@ -18,16 +16,14 @@ Add a row here when a new system is introduced to the library.
 
 | Title | System | Setting | Duration | Status | First Run |
 |-------|--------|---------|----------|--------|-----------|
-| *(add scenarios as filed)* | | | | | |
+| [Power Failure](sla-power-failure.md) | SLA Industries | Mort — Downtown District 2, Sector 18 | 4–6 hours | ready | not yet run |
 
 ---
 
 ## File Naming
 
-Use the system name as a prefix:
-
 ```
 [system-short]-[scenario-title].md
+[system-short]-[scenario-title]-gm.md        (GM companion)
+art/[system-short]-[scenario-title]/          (maps and artwork)
 ```
-
-Example: `traveller-dead-drop-at-janus.md`
