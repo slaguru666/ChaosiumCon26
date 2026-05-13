@@ -1,0 +1,1845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>POWER FAILURE — GM Console // SLA Industries</title>
+<style>
+  :root {
+    --bg:        #07090a;
+    --panel:     #0c1014;
+    --border:    #1e2a30;
+    --border-hi: #2e4050;
+    --dim:       #2a3840;
+    --text:      #c8d8e0;
+    --text-dim:  #5a7080;
+    --accent:    #3af0b0;
+    --accent2:   #f0a03a;
+    --danger:    #f03a3a;
+    --purple:    #b03af0;
+    --yellow:    #f0e03a;
+    --red-dim:   #3a0808;
+    --green-dim: #083a1a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── TOP BAR ── */
+  #topbar {
+    height: 44px;
+    background: #0a0e12;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+  #topbar .bpn-badge {
+    background: var(--accent);
+    color: #000;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 3px 7px;
+    letter-spacing: 1px;
+  }
+  #topbar h1 {
+    font-size: 14px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  #topbar .sub { color: var(--text-dim); font-size: 10px; letter-spacing: 1px; }
+  #topbar .spacer { flex: 1; }
+
+  /* Tension meter */
+  #tension-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+  #tension-wrap span { color: var(--text-dim); }
+  .t-pips { display: flex; gap: 4px; }
+  .t-pip {
+    width: 14px; height: 14px;
+    border: 1px solid var(--border-hi);
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .t-pip.active-1 { background: var(--accent); border-color: var(--accent); }
+  .t-pip.active-2 { background: var(--accent2); border-color: var(--accent2); }
+  .t-pip.active-3 { background: #f07020; border-color: #f07020; }
+  .t-pip.active-4 { background: var(--danger); border-color: var(--danger); }
+  .t-pip.active-5 { background: var(--danger); border-color: var(--danger); box-shadow: 0 0 6px var(--danger); }
+  #tension-label { min-width: 80px; font-size: 10px; }
+
+  /* ── MAIN LAYOUT ── */
+  #layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* ── SIDEBAR ── */
+  #sidebar {
+    width: 160px;
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow-y: auto;
+  }
+  .nav-section {
+    padding: 10px 0 4px 12px;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    border-top: 1px solid var(--border);
+    margin-top: 4px;
+  }
+  .nav-section:first-child { border-top: none; margin-top: 0; }
+  .nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 12px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: var(--text-dim);
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    width: 100%;
+    text-align: left;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+  }
+  .nav-btn:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+  .nav-btn.active { color: var(--accent); border-left-color: var(--accent); background: rgba(58,240,176,0.05); }
+  .nav-btn .icon { font-size: 14px; width: 20px; text-align: center; }
+  .nav-btn .badge {
+    margin-left: auto;
+    background: var(--accent2);
+    color: #000;
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 2px;
+  }
+  .nav-btn .badge.danger { background: var(--danger); color: #fff; }
+
+  /* Scene progress dots */
+  .scene-dots {
+    display: flex;
+    gap: 4px;
+    padding: 6px 12px;
+  }
+  .s-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    border: 1px solid var(--border-hi);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .s-dot.done { background: var(--green-dim); border-color: #1a7040; }
+  .s-dot.active { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 5px var(--accent); }
+  .s-dot.future { background: transparent; }
+
+  /* ── CONTENT ── */
+  #content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .panel-hidden { display: none !important; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+  }
+  .card-title {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .ct-icon { font-size: 16px; }
+
+  /* Grid helpers */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+  /* ── SCENE PANEL ── */
+  .scene-card {
+    border-left: 3px solid var(--border-hi);
+    padding: 12px 14px;
+    background: var(--panel);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .scene-card:hover { border-left-color: var(--text-dim); }
+  .scene-card.active { border-left-color: var(--accent); background: rgba(58,240,176,0.04); }
+  .scene-card.done { border-left-color: #1a7040; opacity: 0.7; }
+  .scene-num { font-size: 10px; letter-spacing: 2px; color: var(--text-dim); }
+  .scene-title { font-size: 13px; color: var(--text); margin: 3px 0 6px; }
+  .scene-body { font-size: 12px; color: var(--text-dim); line-height: 1.6; }
+  .scene-body .key-beat {
+    margin-top: 8px;
+    padding: 6px 10px;
+    background: rgba(58,240,176,0.06);
+    border-left: 2px solid var(--accent);
+    color: var(--text);
+    font-size: 11px;
+  }
+  .scene-body .warn-beat {
+    margin-top: 6px;
+    padding: 6px 10px;
+    background: rgba(240,160,58,0.07);
+    border-left: 2px solid var(--accent2);
+    color: var(--accent2);
+    font-size: 11px;
+  }
+  .scene-controls {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .btn {
+    padding: 6px 12px;
+    border: 1px solid var(--border-hi);
+    background: none;
+    color: var(--text-dim);
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.15s;
+  }
+  .btn:hover { color: var(--text); border-color: var(--text-dim); }
+  .btn.btn-accent { border-color: var(--accent); color: var(--accent); }
+  .btn.btn-accent:hover { background: rgba(58,240,176,0.1); }
+  .btn.btn-danger { border-color: var(--danger); color: var(--danger); }
+  .btn.btn-done { border-color: #1a7040; color: #2aaa60; background: var(--green-dim); }
+
+  /* ── NPC PANEL ── */
+  .npc-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .npc-card:hover { border-color: var(--border-hi); }
+  .npc-header {
+    padding: 12px 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .npc-status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-top: 4px;
+    flex-shrink: 0;
+  }
+  .dot-ally { background: var(--accent); }
+  .dot-hostile { background: var(--danger); }
+  .dot-wild { background: var(--accent2); }
+  .dot-mixed { background: var(--purple); }
+  .npc-info { flex: 1; }
+  .npc-name { font-size: 13px; color: var(--text); font-weight: bold; letter-spacing: 1px; }
+  .npc-role { font-size: 10px; color: var(--text-dim); letter-spacing: 1px; margin-top: 2px; }
+  .npc-location { font-size: 10px; color: var(--accent2); margin-top: 3px; }
+  .npc-expand-icon { color: var(--text-dim); font-size: 16px; margin-left: auto; transition: transform 0.2s; }
+  .npc-card.expanded .npc-expand-icon { transform: rotate(180deg); }
+
+  .npc-body {
+    display: none;
+    padding: 0 14px 14px 32px;
+    border-top: 1px solid var(--border);
+  }
+  .npc-card.expanded .npc-body { display: block; }
+  .npc-section-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin: 10px 0 5px;
+  }
+  .npc-text { font-size: 12px; color: var(--text-dim); line-height: 1.6; }
+  .npc-quote {
+    margin-top: 8px;
+    padding: 8px 10px;
+    background: rgba(255,255,255,0.03);
+    border-left: 2px solid var(--text-dim);
+    color: var(--text);
+    font-size: 12px;
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  .classified-wrap { margin-top: 10px; }
+  .classified-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: var(--red-dim);
+    border: 1px solid #5a1010;
+    color: #f08080;
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    width: 100%;
+    transition: all 0.2s;
+  }
+  .classified-btn:hover { background: #4a0c0c; border-color: var(--danger); color: var(--danger); }
+  .classified-content {
+    display: none;
+    padding: 10px;
+    background: #0e0505;
+    border: 1px solid #3a0808;
+    border-top: none;
+  }
+  .classified-content.revealed { display: block; }
+  .secret-item {
+    padding: 6px 0;
+    border-bottom: 1px solid #1a0505;
+    font-size: 12px;
+    color: #e08080;
+    line-height: 1.5;
+  }
+  .secret-item:last-child { border-bottom: none; }
+  .secret-item strong { color: var(--danger); }
+
+  /* ── CLUE TRACKER ── */
+  .clue-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .clue-row:hover { background: rgba(255,255,255,0.02); }
+  .clue-row.found { opacity: 0.55; }
+  .clue-row.found .clue-name { text-decoration: line-through; }
+  .clue-check {
+    width: 16px; height: 16px;
+    border: 1px solid var(--border-hi);
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: var(--accent);
+    background: none;
+    transition: all 0.2s;
+  }
+  .clue-row.found .clue-check { background: var(--green-dim); border-color: #1a7040; }
+  .clue-content { flex: 1; }
+  .clue-name { font-size: 12px; color: var(--text); }
+  .clue-where { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+  .tag {
+    display: inline-block;
+    padding: 1px 6px;
+    font-size: 9px;
+    letter-spacing: 1px;
+    border-radius: 2px;
+    margin-right: 4px;
+    font-weight: bold;
+  }
+  .tag-essential { background: #3a1a00; color: var(--accent2); border: 1px solid #6a3000; }
+  .tag-major { background: #1a003a; color: #c080ff; border: 1px solid #3a0066; }
+  .tag-useful { background: var(--green-dim); color: #2aaa60; border: 1px solid #0a4020; }
+
+  .clue-progress-bar {
+    height: 4px;
+    background: var(--border);
+    margin: 8px 0 4px;
+  }
+  .clue-progress-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.4s;
+  }
+  .clue-summary {
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+
+  /* ── HANDOUTS ── */
+  .handout-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 14px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .handout-card:hover { border-color: var(--accent2); }
+  .handout-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--accent2);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .handout-title { font-size: 13px; color: var(--text); margin-bottom: 6px; }
+  .handout-preview { font-size: 11px; color: var(--text-dim); font-style: italic; }
+  .handout-show-btn {
+    margin-top: 10px;
+    padding: 6px 12px;
+    background: rgba(240,160,58,0.1);
+    border: 1px solid var(--accent2);
+    color: var(--accent2);
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    display: inline-block;
+    transition: all 0.2s;
+  }
+  .handout-show-btn:hover { background: rgba(240,160,58,0.2); }
+
+  /* Handout modal */
+  #handout-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.88);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  #handout-modal.open { display: flex; }
+  .modal-inner {
+    background: #0a0c0e;
+    border: 1px solid var(--accent2);
+    max-width: 700px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 30px 36px;
+  }
+  .modal-header {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--accent2);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .modal-title {
+    font-size: 16px;
+    color: var(--text);
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .modal-body {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.8;
+    white-space: pre-wrap;
+  }
+  .modal-body em { color: var(--text-dim); font-style: italic; }
+  .modal-body strong { color: var(--accent2); }
+  .modal-close {
+    margin-top: 24px;
+    padding: 8px 18px;
+    border: 1px solid var(--border-hi);
+    background: none;
+    color: var(--text-dim);
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    cursor: pointer;
+    letter-spacing: 1px;
+  }
+  .modal-close:hover { color: var(--text); border-color: var(--text); }
+
+  /* ── MAPS ── */
+  .map-selector {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .map-tab {
+    padding: 7px 14px;
+    border: 1px solid var(--border);
+    background: none;
+    color: var(--text-dim);
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.15s;
+  }
+  .map-tab:hover { border-color: var(--accent); color: var(--accent); }
+  .map-tab.active { background: rgba(58,240,176,0.08); border-color: var(--accent); color: var(--accent); }
+
+  .map-view {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 10px;
+    display: none;
+  }
+  .map-view.active { display: block; }
+  .map-view svg { width: 100%; height: auto; display: block; }
+  .map-legend {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    font-size: 10px;
+    color: var(--text-dim);
+    line-height: 1.8;
+  }
+
+  /* ── RESOLUTION PANEL ── */
+  .resolution-card {
+    border: 1px solid var(--border);
+    background: var(--panel);
+    padding: 14px;
+  }
+  .res-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .res-name { font-size: 13px; color: var(--text); letter-spacing: 1px; }
+  .res-difficulty {
+    font-size: 10px;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border: 1px solid;
+  }
+  .diff-medium { color: var(--accent2); border-color: var(--accent2); }
+  .diff-hard { color: var(--danger); border-color: var(--danger); }
+  .diff-easy { color: var(--accent); border-color: var(--accent); }
+  .res-method { font-size: 12px; color: var(--text-dim); line-height: 1.5; margin-bottom: 8px; }
+  .res-outcome {
+    padding: 6px 10px;
+    background: rgba(58,240,176,0.05);
+    border-left: 2px solid var(--accent);
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+  .res-cost {
+    padding: 6px 10px;
+    background: rgba(240,60,60,0.05);
+    border-left: 2px solid var(--danger);
+    font-size: 11px;
+    color: #e06060;
+  }
+
+  /* ── BRIEFING ── */
+  .briefing-block {
+    padding: 14px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    line-height: 1.7;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .briefing-block .label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 8px;
+  }
+  .briefing-block .bpn-line {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 6px;
+    align-items: baseline;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 6px;
+  }
+  .briefing-block .bpn-key {
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    min-width: 120px;
+    flex-shrink: 0;
+  }
+  .briefing-block .bpn-val { color: var(--text); font-size: 12px; }
+  .bpn-val.hi { color: var(--accent2); }
+  .bpn-val.danger { color: var(--danger); }
+
+  .read-aloud {
+    margin-top: 12px;
+    padding: 12px 14px;
+    background: #090c0a;
+    border: 1px solid #1a3020;
+    border-left: 3px solid var(--accent);
+    font-size: 12px;
+    color: #a0c8b0;
+    line-height: 1.7;
+    font-style: italic;
+  }
+  .read-aloud .ra-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    font-style: normal;
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+
+  /* ── GM NOTES sidebar ── */
+  #gm-notes-panel {
+    width: 220px;
+    background: var(--panel);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow: hidden;
+    transition: width 0.2s;
+  }
+  #gm-notes-panel.collapsed { width: 0; border-left: none; }
+  .notes-header {
+    padding: 10px 12px;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  #notes-textarea {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--accent);
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    padding: 12px;
+    resize: none;
+    outline: none;
+    line-height: 1.6;
+  }
+  #notes-textarea::placeholder { color: var(--dim); }
+
+  .timer-block {
+    padding: 10px 12px;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .timer-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+  .timer-display {
+    font-size: 22px;
+    color: var(--accent);
+    letter-spacing: 3px;
+    margin-bottom: 6px;
+    text-align: center;
+  }
+  .timer-display.warning { color: var(--accent2); }
+  .timer-display.urgent { color: var(--danger); animation: blink 1s infinite; }
+  @keyframes blink { 50% { opacity: 0.4; } }
+  .timer-btns { display: flex; gap: 6px; }
+  .tbtn {
+    flex: 1;
+    padding: 5px;
+    border: 1px solid var(--border-hi);
+    background: none;
+    color: var(--text-dim);
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    cursor: pointer;
+    text-align: center;
+  }
+  .tbtn:hover { color: var(--text); border-color: var(--text-dim); }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border-hi); }
+
+  /* Utility */
+  .muted { color: var(--text-dim); }
+  .highlight { color: var(--accent); }
+  .warning-text { color: var(--accent2); }
+  .danger-text { color: var(--danger); }
+  hr.divider { border: none; border-top: 1px solid var(--border); margin: 10px 0; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div id="topbar">
+  <span class="bpn-badge">BLUE BPN</span>
+  <h1>POWER FAILURE</h1>
+  <span class="sub">BLUE-DT2-4478-MAINT &nbsp;|&nbsp; SECTOR 18</span>
+  <div class="spacer"></div>
+  <div id="tension-wrap">
+    <span>ENTITY PRESENCE</span>
+    <div class="t-pips" id="tension-pips">
+      <div class="t-pip" data-level="1" onclick="setTension(1)"></div>
+      <div class="t-pip" data-level="2" onclick="setTension(2)"></div>
+      <div class="t-pip" data-level="3" onclick="setTension(3)"></div>
+      <div class="t-pip" data-level="4" onclick="setTension(4)"></div>
+      <div class="t-pip" data-level="5" onclick="setTension(5)"></div>
+    </div>
+    <span id="tension-label" class="muted">NONE</span>
+  </div>
+  <button class="btn btn-accent" onclick="toggleNotes()">NOTES ◧</button>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div id="layout">
+
+  <!-- SIDEBAR -->
+  <nav id="sidebar">
+    <div class="nav-section">Navigate</div>
+    <button class="nav-btn active" onclick="showPanel('briefing')"><span class="icon">⬡</span>Briefing</button>
+    <button class="nav-btn" onclick="showPanel('scenes')"><span class="icon">◈</span>Scenes</button>
+    <button class="nav-btn" onclick="showPanel('npcs')"><span class="icon">◉</span>NPCs</button>
+    <button class="nav-btn" onclick="showPanel('clues')">
+      <span class="icon">⬛</span>Clues
+      <span class="badge" id="clue-badge">0/14</span>
+    </button>
+    <button class="nav-btn" onclick="showPanel('maps')"><span class="icon">▦</span>Maps</button>
+    <div class="nav-section">Ready</div>
+    <button class="nav-btn" onclick="showPanel('handouts')"><span class="icon">▤</span>Handouts</button>
+    <button class="nav-btn" onclick="showPanel('resolution')"><span class="icon">◇</span>Resolution</button>
+    <div class="nav-section">Scenes</div>
+    <div class="scene-dots" id="scene-dots-nav"></div>
+  </nav>
+
+  <!-- CONTENT PANELS -->
+  <div id="content">
+
+    <!-- ══ BRIEFING ══ -->
+    <div id="panel-briefing">
+      <div class="briefing-block">
+        <span class="label">▸ BPN DETAILS</span>
+        <div class="bpn-line"><span class="bpn-key">CODE</span><span class="bpn-val">BLUE-DT2-4478-MAINT</span></div>
+        <div class="bpn-line"><span class="bpn-key">ISSUING DEPT</span><span class="bpn-val">Dept of Infrastructure &amp; Energy, Sector Maintenance Division</span></div>
+        <div class="bpn-line"><span class="bpn-key">SCL REQUIREMENT</span><span class="bpn-val hi">8+ &nbsp;|&nbsp; Squad 4–6 Operatives</span></div>
+        <div class="bpn-line"><span class="bpn-key">PAYMENT</span><span class="bpn-val hi">500c per Operative + salvage rights</span></div>
+        <div class="bpn-line"><span class="bpn-key">THREAT</span><span class="bpn-val danger">MEDIUM-HIGH (revised from LOW — Incident 4478-A)</span></div>
+        <div class="bpn-line"><span class="bpn-key">PRIOR SQUAD</span><span class="bpn-val danger">Hammer-6 (SCL 7) — 5 KIA/MIA. 1 survivor: Trell, SLA Medical 18-North, Rm 447</span></div>
+        <div class="bpn-line"><span class="bpn-key">MEDIA STATUS</span><span class="bpn-val danger">D-NOTICE IN EFFECT</span></div>
+      </div>
+
+      <div class="read-aloud">
+        <span class="ra-label">▸ READ ALOUD — BPN BRIEFING TEXT</span>
+        Investigate and secure the abandoned Keller-Voss Energy Generation Plant, Downtown District 2, Sector 18. Determine cause of local power fluctuations and civilian disappearances in surrounding residential blocks (Blocks 47–52). Restore facility to safe shutdown status or recommend demolition.<br><br>
+        The Keller-Voss plant has been offline for 14 months following routine decommissioning. Reports indicate unauthorized access, squatter activity, and unexplained energy surges affecting surrounding residential blocks. Local Shiver patrols report civilians missing near the facility perimeter.<br><br>
+        <em>Note: Previous investigation team (Squad designation: Hammer-6, SCL 7) entered the facility six days ago. Status: 5 KIA/MIA. 1 survivor, medical leave. Media coverage suppressed via D-Notice.</em>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="ct-icon">⚠</span>GM TONE NOTES — BEFORE YOU BEGIN</div>
+        <div style="font-size:12px;color:var(--text-dim);line-height:1.7;">
+          <strong style="color:var(--accent2)">The horror is layered.</strong> The entity is real, but it isn't the worst thing here. SLA Industries created the conditions and will bury the squad if needed. Reward player paranoia.<br><br>
+          <strong style="color:var(--accent2)">The D-Notice is the first red flag.</strong> Blue BPNs don't come with D-Notices. Let that land.<br><br>
+          <strong style="color:var(--accent2)">The rain never stops on Mort.</strong> Every exterior scene: mention it. Inside, they can still hear it on the roof. Note when it becomes inaudible — they've gone too deep.
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">⬡ PRE-ENTRY RESEARCH OPTIONS</div>
+          <div style="font-size:12px;color:var(--text-dim);line-height:1.7;">
+            <span style="color:var(--accent)">▸</span> Hammer-6 casualty report — heavily redacted. Trell's name &amp; location visible<br>
+            <span style="color:var(--accent)">▸</span> Decommissioning paperwork — too clean for a plant this age<br>
+            <span style="color:var(--accent)">▸</span> 12 civilians missing, Blocks 47–52 — Shiver classifies as gang activity<br>
+            <span style="color:var(--accent)">▸</span> Volt Runners graffiti: <em>"STAY OUT — THEY'RE WATCHING"</em> — atypical gang behaviour
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">◉ FIRST CONTACT OPTIONS</div>
+          <div style="font-size:12px;color:var(--text-dim);line-height:1.7;">
+            <span style="color:var(--accent2)">▸</span> Visit Trell (SLA Medical 18-North Rm 447, lucid 0800–1000)<br>
+            <span style="color:var(--accent2)">▸</span> Contact Sgt Kade at Sector 18 Command (blueprints, civilian intel)<br>
+            <span style="color:var(--accent2)">▸</span> Perimeter survey — Volt Runners graffiti, memorials, camera tracking movement
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SCENES ══ -->
+    <div id="panel-scenes" class="panel-hidden">
+      <div id="scenes-container"></div>
+    </div>
+
+    <!-- ══ NPCs ══ -->
+    <div id="panel-npcs" class="panel-hidden">
+      <div id="npcs-container"></div>
+    </div>
+
+    <!-- ══ CLUES ══ -->
+    <div id="panel-clues" class="panel-hidden">
+      <div class="card">
+        <div class="card-title">⬛ CLUE TRACKER</div>
+        <div class="clue-progress-bar"><div class="clue-progress-fill" id="clue-bar" style="width:0%"></div></div>
+        <div class="clue-summary" id="clue-summary">0 of 14 found &nbsp;|&nbsp; Essential: 0/7</div>
+        <div id="clues-container"></div>
+      </div>
+    </div>
+
+    <!-- ══ MAPS ══ -->
+    <div id="panel-maps" class="panel-hidden">
+      <div class="map-selector">
+        <button class="map-tab active" onclick="showMap('ground')">Ground Level</button>
+        <button class="map-tab" onclick="showMap('sl1')">Sub-Level 1</button>
+        <button class="map-tab" onclick="showMap('sl3')">Sub-Level 2–3 / Rupture</button>
+      </div>
+      <div class="map-view active" id="map-ground"></div>
+      <div class="map-view" id="map-sl1"></div>
+      <div class="map-view" id="map-sl3"></div>
+    </div>
+
+    <!-- ══ HANDOUTS ══ -->
+    <div id="panel-handouts" class="panel-hidden">
+      <div style="color:var(--text-dim);font-size:11px;margin-bottom:12px;letter-spacing:1px;">Click SHOW to display full screen for players to read.</div>
+      <div id="handouts-container" class="grid-2"></div>
+    </div>
+
+    <!-- ══ RESOLUTION ══ -->
+    <div id="panel-resolution" class="panel-hidden">
+      <div class="card" style="margin-bottom:12px;">
+        <div class="card-title">◇ RESOLUTION OPTIONS</div>
+        <div style="font-size:12px;color:var(--text-dim);line-height:1.6;">
+          Four possible endings. Each has a cost. There is no clean victory — that's the point. The Operatives decide what they owe the truth and what they owe SLA Industries.
+        </div>
+      </div>
+      <div id="resolution-container" class="grid-2"></div>
+
+      <div class="card" style="margin-top:12px;">
+        <div class="card-title">◇ ENDING NOTE FOR THE GM</div>
+        <div style="font-size:12px;color:var(--text-dim);line-height:1.7;">
+          The most dramatically satisfying conclusion: close the Rupture, honour Vasquez's fragment's request, walk out with all the evidence — then decide what to do with it while Slade's clock ticks.<br><br>
+          <strong style="color:var(--accent)">SLA wins</strong> if the evidence disappears.<br>
+          <strong style="color:var(--accent2)">The operatives win materially</strong> if they comply with Slade.<br>
+          <strong style="color:var(--purple)">The operatives win personally</strong> if they don't.<br><br>
+          The rain doesn't stop on Mort. But sometimes someone sees it and decides to remember it.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+
+  <!-- GM NOTES PANEL -->
+  <div id="gm-notes-panel" class="collapsed">
+    <div class="notes-header">
+      <span>SESSION NOTES</span>
+      <span class="muted" style="cursor:pointer" onclick="toggleNotes()">✕</span>
+    </div>
+    <textarea id="notes-textarea" placeholder="Type notes here...&#10;&#10;Player decisions, names, &#10;what they found, where &#10;they are now..."></textarea>
+    <div class="timer-block">
+      <div class="timer-label">SESSION TIMER</div>
+      <div class="timer-display" id="timer-display">00:00</div>
+      <div class="timer-btns">
+        <button class="tbtn" onclick="timerStart()">▶ START</button>
+        <button class="tbtn" onclick="timerPause()">⏸</button>
+        <button class="tbtn" onclick="timerReset()">↺</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /layout -->
+
+<!-- HANDOUT MODAL -->
+<div id="handout-modal" onclick="closeModal(event)">
+  <div class="modal-inner">
+    <div class="modal-header" id="modal-header"></div>
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-body" id="modal-body"></div>
+    <button class="modal-close" onclick="closeHandoutModal()">[ CLOSE ]</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════
+
+const SCENES = [
+  {
+    num: "01", title: "The Briefing and the Red Flags",
+    summary: "BPN received. Standard Blue maintenance — except it isn't. D-Notice. Previous squad gone. Let them feel the wrongness before they step inside.",
+    beats: [
+      "D-Notice on a Blue BPN — let that land silently. Don't explain it.",
+      "Hammer-6 casualty report: five dead/missing, one survivor screaming about electricity",
+      "12 civilian disappearances classified as gang activity. Twelve."
+    ],
+    warnings: ["First moment of paranoia is here — reward it with silence, not reassurance"]
+  },
+  {
+    num: "02", title: "The Survivor",
+    summary: "SLA Medical 18-North, Room 447. Trell is gaunt and refuses to sleep with lights off. Lucid 0800–1000. He wants to be believed. He is telling the truth.",
+    beats: [
+      "He followed the emergency beacons. They led them down. Don't follow the beacons.",
+      "Electrical systems are sensory organs. It watches through them.",
+      "Scientists are still down there — but they're not people anymore.",
+      "TRUST REQUIRED: data chip (Vasquez deliberately overrode safety locks) — in his boot"
+    ],
+    warnings: [
+      "Lyssa Tam may be attempting access at the same time — potential complication",
+      "He still hears whispers from the facility. He hasn't reported this."
+    ]
+  },
+  {
+    num: "03", title: "Kade and the Perimeter",
+    summary: "Sgt Kade knows. He's been ordered to say he doesn't. He can't go in. That's why the squad exists. He wants to know what happened to Dex.",
+    beats: [
+      "Blueprints provided — but the experimental wing isn't on them. Off-books.",
+      "Supply truck records: late-night deliveries to a 'decommissioned' plant from Research depots",
+      "The rain. It's falling. Last moment of normal before entry.",
+      "Hammer-6 entry/exit point marked. One came out — off the fence."
+    ],
+    warnings: ["Kade has a blast-door protocol if entity escapes. He will use it. Operatives would be inside."]
+  },
+  {
+    num: "04", title: "Descent",
+    summary: "Inside now. Loading bay through generator floor. The entity knows they're here before they find evidence. One monitor shows their current positions — timestamped 47 minutes ahead.",
+    beats: [
+      "Loading bay: dried blood trail, Hammer-6 bootprints in dust, smell of ozone",
+      "Control room: ONE flickering terminal — future timestamp footage of the squad. Let this sink in.",
+      "Dormitories: Trell's note in a locker — 'NOT ELECTRICAL. ALIVE. INSIDE THE WALLS.'",
+      "Air hums. Getting thicker. Ebb-sensitives begin to feel the Rupture pulling."
+    ],
+    warnings: ["Do not rush the monitor moment. It is the scenario's first real horror beat."]
+  },
+  {
+    num: "05", title: "The Deep Level",
+    summary: "Generator Hall: cathedral, catwalks, Keller's territory. Research Wing: concealed, the full truth. Vasquez somewhere between.",
+    beats: [
+      "Generator Hall: Two Hammer-6 corpses — desiccated, faces frozen. Keller ambushes here.",
+      "Keller: grapple + drain. May briefly hesitate (use ONCE). May garble 'C-seven... panel...'",
+      "Concealed Research Wing (false panel, keycard required): Vasquez's journal + terminal (pw: 'ailuJ')",
+      "Vasquez: lures, doesn't attack first. Ebb contact = trapped fragment = overload sequence + Marn identity"
+    ],
+    warnings: [
+      "Keller's hesitation: one moment only. More than that diminishes it.",
+      "Vasquez's fragment asks only one thing in return. Play it quietly."
+    ]
+  },
+  {
+    num: "06", title: "The Rupture Chamber",
+    summary: "Sub-Level 3, deepest point. Spherical chamber, scorched black, pulsing 2m tear in reality. Gravity fluctuates. Time feels wrong. The entity is fully present here.",
+    beats: [
+      "Can no longer hear rain on roof. They've gone too deep.",
+      "Three containment generators — simultaneous overload = technical solution",
+      "Entity physical manifestation: lightning and void, things that aren't eyes. NEVER describe fully.",
+      "Slade may call again here — final offer / threat — ticking clock"
+    ],
+    warnings: [
+      "The entity should feel fundamentally wrong, not conventionally terrifying.",
+      "Resolution choice belongs to the players. Don't steer it. Respect it."
+    ]
+  }
+];
+
+const NPCS = [
+  {
+    name: "Operative Markus Trell",
+    role: "SCL 7 Investigator — Hammer-6 Survivor",
+    location: "SLA Medical 18-North, Room 447 (lucid 0800–1000)",
+    status: "ally",
+    summary: "Gaunt, haunted, refuses lights off. Traumatised but truthful. Wants to be believed. Will talk if treated with basic human decency.",
+    info: [
+      "Followed beacons — they were false, generated by entity",
+      "Electrical systems are sensory organs throughout facility",
+      "Scientists are 'not people anymore' — still down there",
+      "His squad were alive when he ran. He hears them in dreams.",
+      "Brain scans show unusual electrical activity — residual contact"
+    ],
+    quote: '"It wasn\'t in the reports. The power plant... it was doing something else. Something wrong. Don\'t trust the electrical systems. It lives in them. Speaks through them. It\'s hungry."',
+    secrets: [
+      "<strong>DATA CHIP</strong> — hidden in his boot. Security footage showing Vasquez deliberately overriding safety lockouts. Requires trust to obtain. Timestamp: 3 weeks ago, hours before Rupture.",
+      "<strong>STILL CONNECTED</strong> — entity partially touches his mind. He hears whispers, knows things he shouldn't. Hasn't reported this — fears termination as 'compromised.'",
+      "<strong>IA CONTACT WARNING</strong> — if Operatives seem trustworthy: will warn them Slade visited twice, offered money to 'remember correctly.'",
+      "<strong>COWARDICE</strong> — he abandoned his squad while they were still alive and screaming. He knows this. If pressed hard enough, he will break and admit it."
+    ]
+  },
+  {
+    name: "Shiver Sgt Elias Kade",
+    role: "Sector 18 Patrol Supervisor — 20-year veteran",
+    location: "Sector 18 Command / Keller-Voss perimeter",
+    status: "ally",
+    summary: "Cynical, competent, protective of his people. Knows something is deeply wrong. Can't act. Wants to know what happened to Dex (his informant, one of the 12 missing).",
+    info: [
+      "Blueprints available — incomplete (experimental wing off-books)",
+      "Supply truck records: Research depot deliveries to 'decommissioned' plant",
+      "12 missing civilians (names, last locations)",
+      "Will NOT enter facility under any circumstances",
+      "Has emergency blast-door protocol for surrounding 6 blocks"
+    ],
+    quote: '"We\'ve lost twelve civilians in three weeks. Command tells us it\'s gang activity. I\'ve been doing this long enough to know when something\'s wrong. This is wrong."',
+    secrets: [
+      "<strong>CAPTAIN VORNE</strong> — his superior ordered the gang-activity classification directly. She was nervous making the call. He suspects outside pressure but no proof. Will tell Operatives if they return with evidence.",
+      "<strong>BLAST-DOOR PROTOCOL</strong> — he will use it if entity appears to be escaping. Operatives would be sealed inside. He will not apologise.",
+      "<strong>DEX</strong> — his street informant was one of the 12. Personal. He'll bend more rules for Operatives who acknowledge this.",
+      "<strong>RETIREMENT</strong> — 8 months away. He desperately wants to survive that long. He will not die for this."
+    ]
+  },
+  {
+    name: "Dr. Helena Vasquez",
+    role: "Lead Researcher / Primary Thrall",
+    location: "Moves: Research Wing ↔ upper Generator Hall",
+    status: "hostile",
+    summary: "Late 40s, filthy lab coat, eyes reflect electrical discharge. Overlapping voices. Puppet-like movement. The entity's diplomat and lure. Does not attack first — tries to draw Operatives deeper.",
+    info: [
+      "Physical contact = energy drain. Lethal after 3+ seconds skin contact.",
+      "Will use false distress calls and false security alerts to lure downward",
+      "Offers to 'join the Current' — entity's sincere offer by its own terms",
+      "Ebb mental contact reaches TRAPPED FRAGMENT — not the entity"
+    ],
+    quote: '"We were so close... so close to limitless power. And we found it. It found us. Join us. Feed the Current. Become part of something eternal."',
+    secrets: [
+      "<strong>DELIBERATELY CAUSED RUPTURE</strong> — believed experiment was being shut down. Rushed final test, overrode three safety lockouts. Ego destroyed everything. Data chip shows this.",
+      "<strong>TRAPPED FRAGMENT</strong> — fragment of original Vasquez remains conscious and watching. Exhausted, horrified. Wants to die, cannot act against entity. Gives: overload sequence + Yola Marn's false identity (Caya Strond, Block 89 Sector 22). Asks one thing in return.",
+      "<strong>IA INFORMANT</strong> — she was Slade's asset for years. Gave him dirt on colleagues in exchange for ethics complaint suppression. Slade wants her misconduct used against Director Kain.",
+      "<strong>EMBEZZLEMENT</strong> — 47,000c over 3 years in research fund irregularities. Evidence on her terminal (password: 'ailuJ' — daughter's name reversed). Implicates her department head."
+    ]
+  },
+  {
+    name: "Tomás Keller",
+    role: "Lab Assistant (313 Stormer) / Aggressive Thrall",
+    location: "Generator Hall + lower maintenance corridors — AMBUSH",
+    status: "hostile",
+    summary: "Large Stormer frame, partially withered, electrical arcing across skin. Attacks on sight. Grapple + drain. Knows every shadow in this facility.",
+    info: [
+      "Former Operative (5 yrs) before research transfer — combat trained",
+      "Attempts grapple, then energy drain — does NOT lure or negotiate",
+      "Patrols Generator Hall and Sub-Level 2 maintenance corridors"
+    ],
+    quote: null,
+    secrets: [
+      "<strong>WEAPONS CACHE</strong> — Sub-Level 2, Section C-7, panel 34-B. Two FEN AR rifles, 6 ammo clips, 4 frag grenades, medical kit. He hid this before the Rupture.",
+      "<strong>CONSCIOUSNESS FIGHTS BACK</strong> — brief hesitation possible when entity's attention is divided or electrical countermeasures used. May garble: 'C-seven... panel...' or '...didn\'t want... told her...' USE ONCE MAXIMUM.",
+      "<strong>FORMAL PROTEST</strong> — filed 2 days before Rupture, citing specific safety concerns. Copy in Research Wing personnel files. Completely exonerates him.",
+      "<strong>BATCH-BROTHER</strong> — Dask Keller, Shiver Division Sector 22. Has been asking about Tomás, been told to stop by superiors (IA pressure). Potential ally if Operatives investigate Keller's background."
+    ]
+  },
+  {
+    name: "Lyssa Tam",
+    role: "Investigative Reporter, Third Cycle News",
+    location: "Mobile — Keller-Voss perimeter + SLA Medical 18-North",
+    status: "wild",
+    summary: "29, ambitious, reckless. Hasn't fully internalised that SLA doesn't share her values. Has rumours, not facts. Could be liability or tool depending on player approach.",
+    info: [
+      "Pursuing story despite D-Notice — close to getting caught",
+      "Three perimeter micro-cameras running, streaming to encrypted storage",
+      "Attempting contact with Trell via a nurse contact at the medical facility",
+      "Can publish a story within 24 hours of receiving substantive evidence"
+    ],
+    quote: null,
+    secrets: [
+      "<strong>PROTECTION IS A BLUFF</strong> — 'dead man's switch' that auto-publishes her research if she disappears. Completely fake. She's working alone.",
+      "<strong>32,000c IN DEBT</strong> — father's medical bills. Rival org offering 50,000c for exclusive footage. This is why she'll take dangerous risks.",
+      "<strong>CAMERAS RUNNING</strong> — if Operatives don't sweep for surveillance, she has footage of their approach and faces. She will recognise them later.",
+      "<strong>NURSE SOURCE</strong> — romantic contact at SLA Medical. This is how she found Trell. Nurse doesn't know details — just that 'the traumatised Operative in 447 is being watched by IA.'"
+    ]
+  },
+  {
+    name: "IA Agent Corwin Slade",
+    role: "Senior Investigator, Internal Affairs Division",
+    location: "Mobile — unmarked unit near Sector 18. First contact: COMM",
+    status: "mixed",
+    summary: "Surgically polite. Career IA operative. First contact via comm — not in person. Offers 2,000c per Operative for 'discrete handling.' He is not bluffing about consequences.",
+    info: [
+      "Knows Operatives have been to see Trell and Kade — has surveillance on both",
+      "First offer: 2,000c per Operative for 'discrete handling' (destroy evidence)",
+      "Escalation: SCL consequences → BPN reclassification → termination authority",
+      "Priority override chip: reclassifies BPN to 'Terminated: Operational Failure'"
+    ],
+    quote: null,
+    secrets: [
+      "<strong>TERMINATION AUTHORITY</strong> — authorised to terminate witnesses, destroy evidence, reclassify BPN. Has done this 47 times. Once triggered, it's a second hostile threat to manage.",
+      "<strong>DYING</strong> — genetic degradation from 15-year-old experimental augmentations. ~2 years left. Makes him both more dangerous (nothing to lose) and potentially vulnerable (legacy angle).",
+      "<strong>VASQUEZ WAS HIS ASSET</strong> — she provided IA with dirt on colleagues for years. When she caused the Rupture against his advice, she ended his best long-term source. He wants her misconduct used against Director Kain, his real target.",
+      "<strong>RIVAL AGENT CASTELLAN</strong> — independently investigating Research funding from another angle. Slade doesn't know. If Operatives find Castellan, they can play the two agents against each other."
+    ]
+  },
+  {
+    name: "Captain Irena Vorne",
+    role: "Shiver Division Captain — Downtown District 2 Command",
+    location: "Shiver Division Command, Downtown District 2",
+    status: "mixed",
+    summary: "51, career administrator, 2 years from full retirement. Accepted a bribe to suppress investigation. Knows less than Kade about what's actually inside. Scared of being scapegoated.",
+    info: [
+      "Ordered Kade to classify disappearances as gang activity",
+      "Was told only 'SLA corporate assets require protection' — not told what they are",
+      "Has drafted pre-emptive disciplinary paperwork for Kade (to throw him under)"
+    ],
+    quote: null,
+    secrets: [
+      "<strong>BRIBED</strong> — 15,000c accepted from intermediary (unknowingly working for IA) to suppress investigation. 'Untraceable' account — financial forensics would find it.",
+      "<strong>INSURANCE</strong> — kept encrypted copies of all communications ordering her to suppress. At Shiver HQ. Will produce instantly if threatened — names Slade's operation indirectly.",
+      "<strong>KADE AS SCAPEGOAT</strong> — disciplinary paperwork for Kade is already drafted. She'll file it within hours if the scandal breaks publicly. Kade doesn't know."
+    ]
+  }
+];
+
+const CLUES = [
+  { id:1, name:"Trell's verbal testimony", where:"SLA Medical 18-North, Room 447", essential:true, type:"essential" },
+  { id:2, name:"Trell's data chip (Vasquez deliberately overrode safety locks)", where:"In Trell's boot — requires trust", essential:false, type:"major" },
+  { id:3, name:"Kade's supply truck records (Research depot deliveries)", where:"Sgt Kade — offered freely", essential:false, type:"major" },
+  { id:4, name:"Facility blueprints (incomplete — no experimental wing)", where:"Sgt Kade", essential:true, type:"essential" },
+  { id:5, name:"Trell's handwritten note ('NOT ELECTRICAL...')", where:"Worker dormitory locker", essential:true, type:"essential" },
+  { id:6, name:"Corrupted security feed (FUTURE timestamp footage of squad)", where:"Operations Control Room — flickering terminal", essential:true, type:"essential" },
+  { id:7, name:"Whiteboards — Ebb/thermodynamics equations", where:"Concealed Research Wing", essential:true, type:"essential" },
+  { id:8, name:"Vasquez's research journal (experiment history + failure)", where:"Concealed Research Wing", essential:true, type:"essential" },
+  { id:9, name:"Vasquez's terminal files (embezzlement + overload sequence)", where:"Research Wing — password 'ailuJ'", essential:true, type:"essential" },
+  { id:10, name:"Keller's formal protest (filed 2 days pre-Rupture)", where:"Research Wing — personnel files", essential:false, type:"useful" },
+  { id:11, name:"Keller's weapons cache (2x FEN AR, 4x frag, medkit)", where:"Sub-Level 2 maint. C-7, panel 34-B", essential:false, type:"useful" },
+  { id:12, name:"Hammer-6 corpses (cause of death evident — drained)", where:"Generator Hall", essential:true, type:"essential" },
+  { id:13, name:"Vasquez trapped consciousness (overload sequence + Marn identity)", where:"Ebb mental contact with Vasquez thrall", essential:false, type:"major" },
+  { id:14, name:"IA surveillance devices (Trell's room, Kade's office, perimeter)", where:"Various locations — require careful sweep", essential:false, type:"major" }
+];
+
+const HANDOUTS = [
+  {
+    label: "HANDOUT 01",
+    title: "Trell's Warning Note",
+    source: "Found in Worker Dormitory locker — Hammer-6 entry",
+    preview: '"NOT ELECTRICAL. ALIVE. INSIDE THE WALLS..."',
+    body: `NOT ELECTRICAL. ALIVE. INSIDE THE WALLS. 
+
+DON'T TRUST THE LIGHTS. 
+
+IT WATCHES THROUGH THE CAMERAS. 
+
+WE FOLLOWED THE BEACONS. 
+DON'T FOLLOW THE BEACONS.
+
+— TRELL, HAMMER-6`
+  },
+  {
+    label: "HANDOUT 02",
+    title: "Vasquez's Journal — Final Entry",
+    source: "Found in Concealed Research Wing",
+    preview: '"Day 47 post-decommissioning. Containment integrity at 94%..."',
+    body: `Day 47 post-decommissioning. 
+Containment integrity at 94%. 
+
+Tomás filed another formal objection — I have overridden it. 
+We are six hours from viable proof of concept. 
+Sixteen months of work. I will not stop now.
+
+The executive shutdown notice will arrive on Friday at the earliest. 
+We have until then.
+
+If it works, everything they said about me will be forgotten. 
+
+If it doesn't—
+
+It will work.
+
+— H.V.`
+  },
+  {
+    label: "HANDOUT 03",
+    title: "Entity Emergency Broadcast (Lure)",
+    source: "Playing on old SLA emergency frequency throughout facility",
+    preview: '"This is an automated distress broadcast from Keller-Voss facility Sub-Level 3..."',
+    body: `[TRANSMISSION — SLA EMERGENCY FREQUENCY 7 — AUTOMATED]
+
+"This is an automated distress broadcast from Keller-Voss facility 
+Sub-Level 3. Injured personnel require immediate assistance. 
+Medical emergency in progress. 
+
+Please respond to this frequency and proceed to lower levels. 
+
+Life signs detected. 
+
+Repeat: injured personnel requiring immediate assistance—"
+
+[TRANSMISSION LOOPS]`
+  },
+  {
+    label: "HANDOUT 04",
+    title: "Keller's Formal Protest (Personnel File)",
+    source: "Research Wing — personnel records. Exonerates Keller.",
+    preview: '"I formally request this experiment be delayed pending independent safety review..."',
+    body: `INTERNAL MEMO — DEPT OF RESEARCH
+From: T. Keller (Lab Assistant, Keller-Voss Project)
+To: Department Safety Committee
+Filed: [2 days before Rupture event]
+
+I formally request that the final containment experiment scheduled 
+for this week be delayed pending independent safety review.
+
+Specific concerns:
+— Containment field geometry has not been independently verified  
+— Rupture risk under full-load conditions is unquantified
+— Emergency shutdown response time is outside safe parameters
+
+Dr. Vasquez has overridden previous objections. I am filing this 
+through official channels as a matter of record.
+
+I do not believe this experiment should proceed as scheduled.
+
+T. Keller`
+  },
+  {
+    label: "HANDOUT 05",
+    title: "Slade's First Comm Contact",
+    source: "IA Agent Corwin Slade — incoming comm during investigation",
+    preview: '"Consider this a courtesy call. The BPN you\'re currently working..."',
+    body: `[INCOMING COMM — UNREGISTERED CHANNEL]
+
+"Good [time of day]. My name is Slade. Internal Affairs.
+
+Consider this a courtesy call. The BPN you're currently working 
+is... more complex than its classification suggests. 
+
+I'm authorised to offer a supplementary payment of 2,000 credits 
+per Operative for handling this matter with appropriate discretion. 
+By which I mean: a clean resolution. No loose ends. 
+
+Evidence of any... irregular research activity... should be 
+destroyed rather than preserved. Any personnel encountered in a 
+compromised state should be treated as a tactical liability.
+
+The facility's decommissioning paperwork, once complete, will 
+reflect a straightforward structural failure and energy surge.
+
+This is a reasonable offer. I would encourage you to take it.
+
+I'll be in touch."
+
+[CHANNEL CLOSES]`
+  }
+];
+
+const RESOLUTIONS = [
+  {
+    name: "Technical Solution",
+    difficulty: "Hard",
+    method: "Use research notes to overload all 3 containment field generators simultaneously. Requires technical skill and precise timing in the Rupture Chamber.",
+    outcome: "Entity banished. Thralls die or become catatonic. Rupture collapses.",
+    cost: "Illegal research fully exposed. IA pressure follows. Vasquez's request must be honoured.",
+    diffClass: "diff-hard"
+  },
+  {
+    name: "Demolition",
+    difficulty: "Medium",
+    method: "Rig facility with explosives. Collapse it entirely. Simple. Brutal.",
+    outcome: "Immediate threat eliminated. All evidence destroyed.",
+    cost: "Rupture may be buried, not sealed. Thralls killed (ethical question). Cannot prove what happened. Slade wins the cover-up by default.",
+    diffClass: "diff-medium"
+  },
+  {
+    name: "Containment",
+    difficulty: "Easy",
+    method: "Restore the damaged original containment field. Trap entity temporarily.",
+    outcome: "Immediate threat contained. Operatives leave alive.",
+    cost: "Problem delayed, not solved. SLA may restart experiments. Guaranteed sequel. Thralls remain trapped inside.",
+    diffClass: "diff-easy"
+  },
+  {
+    name: "Exposure",
+    difficulty: "Medium",
+    method: "Hand all evidence to Lyssa Tam at Third Cycle News. Force SLA to act transparently.",
+    outcome: "Media scandal. SLA forced to respond publicly. Operatives become famous or infamous.",
+    cost: "Powerful enemies in Dept of Research and IA. SCL gain or loss depending on how SLA's PR machine frames it. Slade may activate termination authority.",
+    diffClass: "diff-medium"
+  }
+];
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+
+let currentPanel = 'briefing';
+let currentScene = 0;
+let sceneDone = [];
+let clueFound = {};
+let tensionLevel = 0;
+let timerInterval = null;
+let timerSeconds = 0;
+let timerRunning = false;
+let notesOpen = false;
+
+// ═══════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════
+
+function renderScenes() {
+  const c = document.getElementById('scenes-container');
+  c.innerHTML = '';
+  SCENES.forEach((s, i) => {
+    const done = sceneDone.includes(i);
+    const active = currentScene === i;
+    const div = document.createElement('div');
+    div.className = `scene-card${active ? ' active' : ''}${done ? ' done' : ''}`;
+    div.style.marginBottom = '10px';
+    div.onclick = () => { currentScene = i; renderScenes(); renderSceneDots(); };
+
+    let beatsHTML = s.beats.map(b => `<div class="key-beat">▸ ${b}</div>`).join('');
+    let warnsHTML = (s.warnings||[]).map(w => `<div class="warn-beat">⚠ ${w}</div>`).join('');
+
+    div.innerHTML = `
+      <div class="scene-num">SCENE ${s.num}</div>
+      <div class="scene-title">${s.title}</div>
+      <div class="scene-body">${s.summary}${active ? beatsHTML + warnsHTML : ''}</div>
+      ${active ? `<div class="scene-controls">
+        <button class="btn ${done ? 'btn-done' : 'btn-accent'}" onclick="toggleDone(${i}, event)">${done ? '✓ DONE' : 'MARK DONE'}</button>
+        ${i < SCENES.length-1 ? `<button class="btn" onclick="nextScene(event)">NEXT SCENE →</button>` : ''}
+      </div>` : ''}
+    `;
+    c.appendChild(div);
+  });
+}
+
+function renderSceneDots() {
+  const c = document.getElementById('scene-dots-nav');
+  c.innerHTML = '';
+  SCENES.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.title = `Scene ${i+1}`;
+    dot.className = `s-dot ${sceneDone.includes(i) ? 'done' : (currentScene === i ? 'active' : 'future')}`;
+    dot.onclick = () => { currentScene = i; showPanel('scenes'); };
+    c.appendChild(dot);
+  });
+}
+
+function toggleDone(i, e) {
+  e.stopPropagation();
+  const idx = sceneDone.indexOf(i);
+  if (idx === -1) sceneDone.push(i);
+  else sceneDone.splice(idx, 1);
+  renderScenes();
+  renderSceneDots();
+}
+
+function nextScene(e) {
+  e.stopPropagation();
+  if (currentScene < SCENES.length - 1) {
+    currentScene++;
+    renderScenes();
+    renderSceneDots();
+    document.getElementById('scenes-container').scrollTop = 0;
+  }
+}
+
+function renderNPCs() {
+  const c = document.getElementById('npcs-container');
+  c.innerHTML = '<div class="grid-2">';
+  const grid = document.createElement('div');
+  grid.className = 'grid-2';
+  c.appendChild(grid);
+
+  NPCS.forEach((n, i) => {
+    const card = document.createElement('div');
+    card.className = 'npc-card';
+    card.id = `npc-${i}`;
+
+    const dotClass = { ally:'dot-ally', hostile:'dot-hostile', wild:'dot-wild', mixed:'dot-mixed' }[n.status];
+    const statusLabel = { ally:'ALLY', hostile:'HOSTILE', wild:'WILD CARD', mixed:'AMBIGUOUS' }[n.status];
+
+    let infoHTML = n.info.map(x => `<div>▸ ${x}</div>`).join('');
+    let secretsHTML = n.secrets.map(s => `<div class="secret-item">${s}</div>`).join('');
+    let quoteHTML = n.quote ? `<div class="npc-quote">${n.quote}</div>` : '';
+
+    card.innerHTML = `
+      <div class="npc-header" onclick="toggleNPC(${i})">
+        <div class="npc-status-dot ${dotClass}"></div>
+        <div class="npc-info">
+          <div class="npc-name">${n.name}</div>
+          <div class="npc-role">${statusLabel} &nbsp;·&nbsp; ${n.role}</div>
+          <div class="npc-location">📍 ${n.location}</div>
+        </div>
+        <div class="npc-expand-icon">⌄</div>
+      </div>
+      <div class="npc-body">
+        <div class="npc-section-label">OVERVIEW</div>
+        <div class="npc-text">${n.summary}</div>
+        <div class="npc-section-label">KEY INFORMATION</div>
+        <div class="npc-text">${infoHTML}</div>
+        ${quoteHTML}
+        <div class="classified-wrap">
+          <button class="classified-btn" onclick="toggleClassified(${i})">
+            ▣ CLASSIFIED — REVEAL SECRETS
+          </button>
+          <div class="classified-content" id="classified-${i}">
+            ${secretsHTML}
+          </div>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function toggleNPC(i) {
+  const card = document.getElementById(`npc-${i}`);
+  card.classList.toggle('expanded');
+}
+
+function toggleClassified(i) {
+  const c = document.getElementById(`classified-${i}`);
+  c.classList.toggle('revealed');
+  const btn = c.previousElementSibling;
+  if (c.classList.contains('revealed')) {
+    btn.textContent = '▣ CLASSIFIED — HIDE SECRETS';
+    btn.style.borderColor = 'var(--danger)';
+    btn.style.color = 'var(--danger)';
+  } else {
+    btn.innerHTML = '▣ CLASSIFIED — REVEAL SECRETS';
+    btn.style.borderColor = '#5a1010';
+    btn.style.color = '#f08080';
+  }
+}
+
+function renderClues() {
+  const c = document.getElementById('clues-container');
+  c.innerHTML = '';
+  CLUES.forEach(cl => {
+    const found = !!clueFound[cl.id];
+    const row = document.createElement('div');
+    row.className = `clue-row${found ? ' found' : ''}`;
+    row.onclick = () => { clueFound[cl.id] = !clueFound[cl.id]; renderClues(); updateClueBadge(); };
+    const tagMap = { essential:'<span class="tag tag-essential">ESSENTIAL</span>', major:'<span class="tag tag-major">MAJOR</span>', useful:'<span class="tag tag-useful">USEFUL</span>' };
+    row.innerHTML = `
+      <div class="clue-check">${found ? '✓' : ''}</div>
+      <div class="clue-content">
+        <div class="clue-name">${tagMap[cl.type]} ${cl.name}</div>
+        <div class="clue-where">📍 ${cl.where}</div>
+      </div>
+    `;
+    c.appendChild(row);
+  });
+  updateClueBadge();
+}
+
+function updateClueBadge() {
+  const total = CLUES.length;
+  const found = Object.values(clueFound).filter(Boolean).length;
+  const essFound = CLUES.filter(c => c.type === 'essential' && clueFound[c.id]).length;
+  const essTot = CLUES.filter(c => c.type === 'essential').length;
+  document.getElementById('clue-badge').textContent = `${found}/${total}`;
+  document.getElementById('clue-summary').textContent = `${found} of ${total} found  |  Essential: ${essFound}/${essTot}`;
+  const pct = (found / total) * 100;
+  document.getElementById('clue-bar').style.width = pct + '%';
+  const bar = document.getElementById('clue-bar');
+  bar.style.background = pct > 70 ? 'var(--accent)' : pct > 40 ? 'var(--accent2)' : 'var(--danger)';
+}
+
+function renderHandouts() {
+  const c = document.getElementById('handouts-container');
+  c.innerHTML = '';
+  HANDOUTS.forEach((h, i) => {
+    const card = document.createElement('div');
+    card.className = 'handout-card';
+    card.innerHTML = `
+      <div class="handout-label">▤ ${h.label}</div>
+      <div class="handout-title">${h.title}</div>
+      <div class="handout-preview">${h.preview}</div>
+      <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">📍 ${h.source}</div>
+      <button class="handout-show-btn" onclick="showHandout(${i})">▶ SHOW HANDOUT</button>
+    `;
+    c.appendChild(card);
+  });
+}
+
+function showHandout(i) {
+  const h = HANDOUTS[i];
+  document.getElementById('modal-header').textContent = h.label + ' — ' + h.source;
+  document.getElementById('modal-title').textContent = h.title;
+  document.getElementById('modal-body').textContent = h.body;
+  document.getElementById('handout-modal').classList.add('open');
+}
+
+function closeHandoutModal() {
+  document.getElementById('handout-modal').classList.remove('open');
+}
+
+function closeModal(e) {
+  if (e.target.id === 'handout-modal') closeHandoutModal();
+}
+
+function renderResolution() {
+  const c = document.getElementById('resolution-container');
+  c.innerHTML = '';
+  RESOLUTIONS.forEach(r => {
+    const card = document.createElement('div');
+    card.className = 'resolution-card';
+    card.innerHTML = `
+      <div class="res-header">
+        <div class="res-name">${r.name}</div>
+        <div class="res-difficulty ${r.diffClass}">${r.difficulty}</div>
+      </div>
+      <div class="res-method">${r.method}</div>
+      <div class="res-outcome">✓ OUTCOME: ${r.outcome}</div>
+      <div class="res-cost">⚠ COST: ${r.cost}</div>
+    `;
+    c.appendChild(card);
+  });
+}
+
+function renderMaps() {
+  const groundSVG = `<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg" font-family="monospace">
+  <defs><pattern id="g1" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1a2a1a" stroke-width="0.5"/></pattern></defs>
+  <rect width="800" height="600" fill="#0a0f0a"/><rect width="800" height="600" fill="url(#g1)"/>
+  <rect x="10" y="10" width="780" height="36" fill="#0d1a0d" stroke="#2a4a2a" stroke-width="1"/>
+  <text x="400" y="28" text-anchor="middle" fill="#4aff4a" font-size="13" font-weight="bold" letter-spacing="3">GROUND LEVEL &amp; EXTERIOR</text>
+  <text x="400" y="42" text-anchor="middle" fill="#2a6a2a" font-size="9" letter-spacing="2">KELLER-VOSS ENERGY PLANT — SECTOR 18, DOWNTOWN DISTRICT 2</text>
+  <rect x="60" y="60" width="680" height="480" fill="none" stroke="#3a5a3a" stroke-width="2" stroke-dasharray="8,4"/>
+  <text x="400" y="78" text-anchor="middle" fill="#2a5a2a" font-size="9">— PERIMETER FENCE (4M CHAIN-LINK / DEFUNCT RAZORWIRE) —</text>
+  <rect x="360" y="58" width="80" height="6" fill="#0a0f0a"/>
+  <line x1="360" y1="61" x2="382" y2="61" stroke="#4aff4a" stroke-width="2"/>
+  <line x1="418" y1="61" x2="440" y2="61" stroke="#4aff4a" stroke-width="2"/>
+  <text x="400" y="56" text-anchor="middle" fill="#ffaa00" font-size="9">MAIN GATE (OPEN / CUT)</text>
+  <circle cx="130" cy="150" r="5" fill="none" stroke="#ff6644" stroke-width="1.5"/>
+  <text x="142" y="154" fill="#ff6644" font-size="8">✝ MEMORIAL</text>
+  <circle cx="130" cy="380" r="5" fill="none" stroke="#ff6644" stroke-width="1.5"/>
+  <text x="142" y="384" fill="#ff6644" font-size="8">✝ MEMORIAL</text>
+  <text x="65" y="250" fill="#2a5a2a" font-size="8" font-style="italic">"STAY OUT —</text>
+  <text x="65" y="264" fill="#2a5a2a" font-size="8" font-style="italic">THEY'RE WATCHING"</text>
+  <text x="65" y="276" fill="#1a3a1a" font-size="7">— VOLT RUNNERS</text>
+  <rect x="140" y="110" width="520" height="390" fill="#0d160d" stroke="#2a4a2a" stroke-width="2"/>
+  <text x="400" y="138" text-anchor="middle" fill="#2a4a2a" font-size="10" letter-spacing="2">KELLER-VOSS GENERATION PLANT</text>
+  <rect x="575" y="240" width="85" height="110" fill="#111811" stroke="#3a6a3a" stroke-width="1.5"/>
+  <text x="617" y="263" text-anchor="middle" fill="#4aff4a" font-size="9">LOADING</text>
+  <text x="617" y="277" text-anchor="middle" fill="#4aff4a" font-size="9">BAY</text>
+  <rect x="656" y="245" width="6" height="100" fill="#1a2a1a" stroke="#3a6a3a" stroke-width="1"/>
+  <line x1="656" y1="245" x2="662" y2="245" stroke="#4aff4a" stroke-width="2"/>
+  <text x="668" y="254" fill="#ffaa00" font-size="8">DOOR</text>
+  <text x="668" y="266" fill="#ffaa00" font-size="8">PARTIAL</text>
+  <path d="M 656 285 Q 590 280 530 265 Q 480 250 440 240" fill="none" stroke="#8b0000" stroke-width="2" stroke-dasharray="5,3" opacity="0.7"/>
+  <text x="485" y="235" fill="#8b0000" font-size="8">BLOOD TRAIL → ENTRY</text>
+  <rect x="630" y="160" width="12" height="8" fill="#333" stroke="#ffaa00" stroke-width="1"/>
+  <circle cx="636" cy="164" r="3" fill="none" stroke="#ff4444" stroke-width="1.5"/>
+  <text x="648" y="167" fill="#ff4444" font-size="8">⚠ CAM ACTIVE (SHOULD BE OFFLINE)</text>
+  <rect x="350" y="110" width="100" height="8" fill="#0a0f0a"/>
+  <line x1="350" y1="114" x2="375" y2="114" stroke="#3a6a3a" stroke-width="2"/>
+  <line x1="425" y1="114" x2="450" y2="114" stroke="#3a6a3a" stroke-width="2"/>
+  <text x="400" y="108" text-anchor="middle" fill="#2a5a2a" font-size="8">MAIN ENTRANCE (SEALED)</text>
+  <rect x="190" y="152" width="55" height="45" fill="#111811" stroke="#2a5a2a" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="217" y="172" text-anchor="middle" fill="#2a5a2a" font-size="8">STAIR</text>
+  <text x="217" y="186" text-anchor="middle" fill="#2a5a2a" font-size="8">▼ SL1</text>
+  <rect x="545" y="152" width="55" height="45" fill="#111811" stroke="#2a5a2a" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="572" y="172" text-anchor="middle" fill="#2a5a2a" font-size="8">STAIR</text>
+  <text x="572" y="186" text-anchor="middle" fill="#2a5a2a" font-size="8">▼ SL1</text>
+  <rect x="260" y="210" width="280" height="230" fill="#0a120a" stroke="#1a3a1a" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="400" y="265" text-anchor="middle" fill="#1a3a1a" font-size="9">OPERATIONS FLOOR</text>
+  <text x="400" y="280" text-anchor="middle" fill="#1a3a1a" font-size="9">(abandoned)</text>
+  <rect x="350" y="365" width="60" height="40" fill="#111811" stroke="#3a5a3a" stroke-width="1"/>
+  <text x="380" y="381" text-anchor="middle" fill="#3a5a3a" font-size="8">FREIGHT</text>
+  <text x="380" y="394" text-anchor="middle" fill="#3a5a3a" font-size="8">LIFT ▼</text>
+  <text x="740" y="98" text-anchor="middle" fill="#2a5a2a" font-size="20">↑</text>
+  <text x="740" y="112" text-anchor="middle" fill="#2a5a2a" font-size="9">N</text>
+  <rect x="60" y="548" width="680" height="44" fill="#0d1a0d" stroke="#1a3a1a" stroke-width="1"/>
+  <text x="400" y="578" text-anchor="middle" fill="#1a3a1a" font-size="8" letter-spacing="1">POWER FAILURE — GM REFERENCE ONLY</text>
+</svg>`;
+
+  const sl1SVG = `<svg viewBox="0 0 800 580" xmlns="http://www.w3.org/2000/svg" font-family="monospace">
+  <defs><pattern id="g2" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1a1a2a" stroke-width="0.5"/></pattern></defs>
+  <rect width="800" height="580" fill="#08080f"/><rect width="800" height="580" fill="url(#g2)"/>
+  <rect x="10" y="10" width="780" height="36" fill="#0d0d1a" stroke="#2a2a4a" stroke-width="1"/>
+  <text x="400" y="28" text-anchor="middle" fill="#44aaff" font-size="13" font-weight="bold" letter-spacing="3">SUB-LEVEL 1</text>
+  <text x="400" y="42" text-anchor="middle" fill="#2a2a6a" font-size="9" letter-spacing="2">OPERATIONS CONTROL / WORKER DORMITORIES  |  DEPTH: −6M</text>
+  <rect x="60" y="60" width="680" height="468" fill="#0a0a14" stroke="#2a2a4a" stroke-width="3"/>
+  <rect x="60" y="265" width="680" height="55" fill="#0d0d1a" stroke="#1a1a3a" stroke-width="1"/>
+  <text x="400" y="296" text-anchor="middle" fill="#1a1a4a" font-size="9" letter-spacing="3">— MAIN CORRIDOR —</text>
+  <rect x="95" y="60" width="58" height="48" fill="#111120" stroke="#2a2a5a" stroke-width="1.5"/>
+  <text x="124" y="79" text-anchor="middle" fill="#2a2a6a" font-size="8">STAIR ▲</text>
+  <text x="124" y="93" text-anchor="middle" fill="#2a4a6a" font-size="8">▼ SL2</text>
+  <rect x="645" y="60" width="58" height="48" fill="#111120" stroke="#2a2a5a" stroke-width="1.5"/>
+  <text x="674" y="79" text-anchor="middle" fill="#2a2a6a" font-size="8">STAIR ▲</text>
+  <text x="674" y="93" text-anchor="middle" fill="#2a4a6a" font-size="8">▼ SL2</text>
+  <rect x="360" y="60" width="78" height="48" fill="#111120" stroke="#2a2a5a" stroke-width="1.5"/>
+  <text x="399" y="79" text-anchor="middle" fill="#2a2a6a" font-size="8">FREIGHT</text>
+  <text x="399" y="93" text-anchor="middle" fill="#2a4a6a" font-size="8">LIFT ▲▼</text>
+  <rect x="78" y="110" width="255" height="145" fill="#0c0c18" stroke="#3a3a6a" stroke-width="2"/>
+  <text x="205" y="130" text-anchor="middle" fill="#44aaff" font-size="10" font-weight="bold">OPERATIONS CONTROL ROOM</text>
+  <rect x="90" y="140" width="28" height="18" fill="#111130" stroke="#2a2a5a" stroke-width="1"/>
+  <rect x="123" y="140" width="28" height="18" fill="#111130" stroke="#2a2a5a" stroke-width="1"/>
+  <rect x="156" y="140" width="28" height="18" fill="#111130" stroke="#2a2a5a" stroke-width="1"/>
+  <rect x="189" y="140" width="28" height="18" fill="#111130" stroke="#2a2a5a" stroke-width="1"/>
+  <text x="200" y="155" fill="#1a1a5a" font-size="7">DEAD MONITORS</text>
+  <rect x="260" y="136" width="55" height="30" fill="#0a0a20" stroke="#44aaff" stroke-width="2"/>
+  <text x="287" y="149" text-anchor="middle" fill="#44aaff" font-size="8">ACTIVE</text>
+  <text x="287" y="161" text-anchor="middle" fill="#ff4444" font-size="8">LIVE FEED</text>
+  <text x="318" y="144" fill="#ff4444" font-size="8">⚠ FUTURE</text>
+  <text x="318" y="156" fill="#ff4444" font-size="8">TIMESTAMP</text>
+  <rect x="90" y="178" width="220" height="22" fill="#111120" stroke="#2a2a5a" stroke-width="1"/>
+  <text x="200" y="192" text-anchor="middle" fill="#2a2a5a" font-size="8">CONTROL PANELS (SHUTDOWN INCOMPLETE)</text>
+  <text x="200" y="235" text-anchor="middle" fill="#3a3a8a" font-size="9" font-style="italic">Something is watching in real time</text>
+  <text x="200" y="248" text-anchor="middle" fill="#2a2a6a" font-size="8">Final shutdown was never completed</text>
+  <rect x="455" y="110" width="258" height="145" fill="#0c0c18" stroke="#3a3a5a" stroke-width="2"/>
+  <text x="584" y="130" text-anchor="middle" fill="#7788aa" font-size="10" font-weight="bold">WORKER DORMITORIES</text>
+  <rect x="468" y="140" width="32" height="18" fill="#111120" stroke="#2a2a4a" stroke-width="1"/>
+  <rect x="468" y="162" width="32" height="18" fill="#111120" stroke="#2a2a4a" stroke-width="1"/>
+  <rect x="506" y="140" width="32" height="18" fill="#111120" stroke="#2a2a4a" stroke-width="1"/>
+  <rect x="506" y="162" width="32" height="18" fill="#111120" stroke="#2a2a4a" stroke-width="1"/>
+  <rect x="544" y="140" width="32" height="18" fill="#111120" stroke="#2a2a4a" stroke-width="1"/>
+  <rect x="544" y="162" width="32" height="18" fill="#111120" stroke="#2a2a4a" stroke-width="1"/>
+  <text x="530" y="156" fill="#1a1a4a" font-size="7">BUNKS</text>
+  <rect x="468" y="192" width="228" height="18" fill="#111120" stroke="#2a2a4a" stroke-width="1"/>
+  <line x1="500" y1="192" x2="500" y2="210" stroke="#1a1a3a" stroke-width="1"/>
+  <line x1="535" y1="192" x2="535" y2="210" stroke="#1a1a3a" stroke-width="1"/>
+  <line x1="570" y1="192" x2="570" y2="210" stroke="#1a1a3a" stroke-width="1"/>
+  <line x1="605" y1="192" x2="605" y2="210" stroke="#1a1a3a" stroke-width="1"/>
+  <line x1="640" y1="192" x2="640" y2="210" stroke="#1a1a3a" stroke-width="1"/>
+  <text x="580" y="204" text-anchor="middle" fill="#2a2a5a" font-size="7">LOCKERS</text>
+  <rect x="641" y="192" width="35" height="18" fill="#0a0a20" stroke="#ffaa00" stroke-width="2"/>
+  <text x="658" y="204" text-anchor="middle" fill="#ffaa00" font-size="7">◈ KEY</text>
+  <text x="680" y="200" fill="#ffaa00" font-size="8">TRELL'S NOTE</text>
+  <text x="680" y="212" fill="#aa6600" font-size="7">'NOT ELECTRICAL...'</text>
+  <text x="584" y="240" text-anchor="middle" fill="#2a2a4a" font-size="8" font-style="italic">Photographs, clothing, child's toy on bunk 3</text>
+  <rect x="78" y="332" width="158" height="96" fill="#0c0c18" stroke="#2a2a4a" stroke-width="1.5"/>
+  <text x="157" y="350" text-anchor="middle" fill="#2a4a6a" font-size="9">SECURITY OFFICE</text>
+  <text x="157" y="363" text-anchor="middle" fill="#1a2a4a" font-size="8">(cleared / abandoned)</text>
+  <rect x="560" y="332" width="158" height="96" fill="#0c0c18" stroke="#2a2a4a" stroke-width="1.5"/>
+  <text x="639" y="350" text-anchor="middle" fill="#2a4a6a" font-size="9">MAINTENANCE OFFICE</text>
+  <text x="639" y="365" text-anchor="middle" fill="#1a2a4a" font-size="8">Blueprint files (incomplete)</text>
+  <rect x="310" y="332" width="178" height="96" fill="#0c0c14" stroke="#3a2a5a" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <text x="399" y="350" text-anchor="middle" fill="#3a2a6a" font-size="9">MAINTENANCE JUNCTION</text>
+  <text x="399" y="366" text-anchor="middle" fill="#5a3a8a" font-size="9">◈ FALSE PANEL → CONCEALED WING</text>
+  <text x="399" y="380" text-anchor="middle" fill="#3a2a5a" font-size="8">Keycard required — leads to Sub-Level 2</text>
+  <text x="399" y="395" text-anchor="middle" fill="#2a1a4a" font-size="8">Air smells of ozone. Ebb-users feel the Rupture.</text>
+  <rect x="300" y="445" width="58" height="52" fill="#111120" stroke="#3a2a5a" stroke-width="1.5"/>
+  <text x="329" y="464" text-anchor="middle" fill="#3a2a6a" font-size="8">STAIR</text>
+  <text x="329" y="477" text-anchor="middle" fill="#3a2a6a" font-size="8">▼ SL2</text>
+  <text x="329" y="490" text-anchor="middle" fill="#5a2a8a" font-size="8">▼ SL3</text>
+  <rect x="440" y="445" width="58" height="52" fill="#111120" stroke="#3a2a5a" stroke-width="1.5"/>
+  <text x="469" y="464" text-anchor="middle" fill="#3a2a6a" font-size="8">STAIR</text>
+  <text x="469" y="477" text-anchor="middle" fill="#3a2a6a" font-size="8">▼ SL2</text>
+  <text x="469" y="490" text-anchor="middle" fill="#5a2a8a" font-size="8">▼ SL3</text>
+  <rect x="60" y="535" width="680" height="38" fill="#0d0d1a" stroke="#1a1a3a" stroke-width="1"/>
+  <text x="400" y="558" text-anchor="middle" fill="#1a1a3a" font-size="8" letter-spacing="1">POWER FAILURE — GM REFERENCE ONLY</text>
+</svg>`;
+
+  const sl3SVG = `<svg viewBox="0 0 900 660" xmlns="http://www.w3.org/2000/svg" font-family="monospace">
+  <defs>
+    <pattern id="g3" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1a0a0a" stroke-width="0.5"/></pattern>
+    <radialGradient id="rg1" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#660033" stop-opacity="0.8"/><stop offset="100%" stop-color="#0a0005" stop-opacity="0"/></radialGradient>
+    <radialGradient id="rg2" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ff0066"/><stop offset="60%" stop-color="#880033"/><stop offset="100%" stop-color="#330011"/></radialGradient>
+    <pattern id="cw" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M10,0 L0,10 M0,0 L10,10" fill="none" stroke="#3a1a1a" stroke-width="0.5"/></pattern>
+  </defs>
+  <rect width="900" height="660" fill="#080005"/><rect width="900" height="660" fill="url(#g3)"/>
+  <rect x="10" y="10" width="880" height="36" fill="#140010" stroke="#3a0030" stroke-width="1"/>
+  <text x="450" y="28" text-anchor="middle" fill="#ff44aa" font-size="13" font-weight="bold" letter-spacing="3">SUB-LEVELS 2 &amp; 3 — DEEP</text>
+  <text x="450" y="42" text-anchor="middle" fill="#6a0050" font-size="9" letter-spacing="2">CONCEALED RESEARCH WING / GENERATOR HALL / RUPTURE CHAMBER</text>
+  <rect x="60" y="58" width="305" height="230" fill="#0c0010" stroke="#4a006a" stroke-width="2" stroke-dasharray="6,3"/>
+  <text x="212" y="78" text-anchor="middle" fill="#8800cc" font-size="11" font-weight="bold">CONCEALED RESEARCH WING</text>
+  <text x="212" y="92" text-anchor="middle" fill="#5500aa" font-size="8">(Sub-Level 2 — Off-books — Keycard access)</text>
+  <rect x="75" y="105" width="172" height="118" fill="#0a000e" stroke="#3a0055" stroke-width="1.5"/>
+  <text x="161" y="123" text-anchor="middle" fill="#6600aa" font-size="9">MAIN LAB</text>
+  <rect x="86" y="132" width="55" height="32" fill="#080010" stroke="#4400aa" stroke-width="1"/>
+  <text x="113" y="143" text-anchor="middle" fill="#4400aa" font-size="7">EBB/ENERGY</text>
+  <text x="113" y="153" text-anchor="middle" fill="#4400aa" font-size="7">EQUATIONS</text>
+  <text x="113" y="164" text-anchor="middle" fill="#6600aa" font-size="7">◈ CLUE</text>
+  <rect x="152" y="132" width="38" height="24" fill="#050010" stroke="#ff44aa" stroke-width="2"/>
+  <text x="171" y="143" text-anchor="middle" fill="#ff44aa" font-size="7">TERMINAL</text>
+  <text x="171" y="154" text-anchor="middle" fill="#aa2266" font-size="7">pw: ailuJ</text>
+  <text x="192" y="140" fill="#ff44aa" font-size="7">◈ KEY</text>
+  <rect x="86" y="177" width="148" height="18" fill="#060010" stroke="#2a0044" stroke-width="1"/>
+  <text x="160" y="189" text-anchor="middle" fill="#2a0044" font-size="7">DISSECTION TABLES (RESTRAINED)</text>
+  <rect x="252" y="105" width="97" height="118" fill="#0a000e" stroke="#3a0055" stroke-width="1.5"/>
+  <text x="300" y="123" text-anchor="middle" fill="#5500aa" font-size="9">LAB B</text>
+  <rect x="262" y="133" width="77" height="68" fill="#060010" stroke="#2a0044" stroke-width="1"/>
+  <text x="300" y="152" text-anchor="middle" fill="#2a0044" font-size="7">PERSONNEL FILES</text>
+  <text x="300" y="165" text-anchor="middle" fill="#4400aa" font-size="7">◈ KELLER PROTEST</text>
+  <text x="300" y="178" text-anchor="middle" fill="#2a0044" font-size="7">Research journal</text>
+  <text x="300" y="191" text-anchor="middle" fill="#4400aa" font-size="7">◈ VASQUEZ LOG</text>
+  <text x="212" y="252" text-anchor="middle" fill="#6600aa" font-size="9" font-style="italic">VASQUEZ patrols here — Ebb contact possible</text>
+  <text x="212" y="266" text-anchor="middle" fill="#4400aa" font-size="8">Trapped fragment: overload seq + Marn identity</text>
+  <rect x="408" y="58" width="452" height="360" fill="#0a0005" stroke="#3a0020" stroke-width="3"/>
+  <text x="634" y="80" text-anchor="middle" fill="#ff4444" font-size="11" font-weight="bold">PRIMARY GENERATOR HALL</text>
+  <text x="634" y="95" text-anchor="middle" fill="#6a0020" font-size="8">Cathedral space — silent turbines — catwalks — KELLER PATROLS</text>
+  <rect x="418" y="108" width="65" height="85" fill="#120008" stroke="#3a0020" stroke-width="2" rx="4"/>
+  <text x="450" y="140" text-anchor="middle" fill="#3a0020" font-size="8">TURBINE A</text>
+  <rect x="505" y="108" width="65" height="85" fill="#120008" stroke="#3a0020" stroke-width="2" rx="4"/>
+  <text x="537" y="140" text-anchor="middle" fill="#3a0020" font-size="8">TURBINE B</text>
+  <rect x="600" y="108" width="65" height="85" fill="#120008" stroke="#3a0020" stroke-width="2" rx="4"/>
+  <text x="632" y="140" text-anchor="middle" fill="#3a0020" font-size="8">TURBINE C</text>
+  <rect x="700" y="108" width="65" height="85" fill="#120008" stroke="#3a0020" stroke-width="2" rx="4"/>
+  <text x="732" y="140" text-anchor="middle" fill="#3a0020" font-size="8">TURBINE D</text>
+  <rect x="410" y="104" width="440" height="12" fill="url(#cw)" stroke="#2a0015" stroke-width="1" opacity="0.8"/>
+  <text x="630" y="114" text-anchor="middle" fill="#2a0015" font-size="7">CATWALK (OVERHEAD)</text>
+  <rect x="410" y="238" width="440" height="10" fill="url(#cw)" stroke="#2a0015" stroke-width="1" opacity="0.6"/>
+  <path d="M 465 212 Q 630 212 800 212 Q 800 315 630 330 Q 465 330 465 315 Z" fill="none" stroke="#ff4444" stroke-width="1.5" stroke-dasharray="6,3" opacity="0.6"/>
+  <text x="634" y="270" text-anchor="middle" fill="#ff4444" font-size="9">⚠ KELLER PATROL ZONE</text>
+  <text x="634" y="284" text-anchor="middle" fill="#aa2222" font-size="8">Ambush specialist — grapple + drain</text>
+  <text x="634" y="298" text-anchor="middle" fill="#661111" font-size="7" font-style="italic">Consciousness fights entity — ONE hesitation max</text>
+  <text x="434" y="230" fill="#8b0000" font-size="16">†</text>
+  <text x="416" y="248" fill="#8b0000" font-size="7">HAMMER-6</text>
+  <text x="416" y="258" fill="#660000" font-size="7">desiccated</text>
+  <text x="798" y="260" fill="#8b0000" font-size="16">†</text>
+  <text x="783" y="278" fill="#8b0000" font-size="7">HAMMER-6</text>
+  <rect x="410" y="340" width="115" height="62" fill="#0c0008" stroke="#2a4a1a" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <text x="467" y="356" text-anchor="middle" fill="#3a6a2a" font-size="8">MAINT. C-7</text>
+  <rect x="465" y="364" width="38" height="18" fill="#0a0a08" stroke="#4a8a2a" stroke-width="2"/>
+  <text x="484" y="376" text-anchor="middle" fill="#4aff2a" font-size="7">PANEL 34-B</text>
+  <text x="533" y="368" fill="#3a6a2a" font-size="7">◈ WEAPONS</text>
+  <text x="533" y="380" fill="#2a5a1a" font-size="7">CACHE</text>
+  <rect x="830" y="108" width="38" height="48" fill="#120010" stroke="#3a0030" stroke-width="1.5"/>
+  <text x="849" y="128" text-anchor="middle" fill="#4a0050" font-size="8">STAIR</text>
+  <text x="849" y="142" text-anchor="middle" fill="#7a0080" font-size="8">▼ RC</text>
+  <rect x="60" y="330" width="780" height="288" fill="#080005" stroke="#1a0010" stroke-width="1"/>
+  <text x="450" y="353" text-anchor="middle" fill="#880033" font-size="11" font-weight="bold" letter-spacing="3">THE RUPTURE CHAMBER</text>
+  <text x="450" y="367" text-anchor="middle" fill="#550022" font-size="8">Spherical 20m — walls scorched black — gravity fluctuates — time wrong</text>
+  <circle cx="450" cy="490" r="150" fill="url(#rg1)" opacity="0.4"/>
+  <circle cx="450" cy="490" r="120" fill="url(#rg1)" opacity="0.3"/>
+  <circle cx="450" cy="490" r="80" fill="url(#rg1)" opacity="0.5"/>
+  <circle cx="450" cy="490" r="155" fill="none" stroke="#220010" stroke-width="6" opacity="0.7"/>
+  <rect x="440" y="410" width="20" height="44" fill="#1a0010" stroke="#440022" stroke-width="1"/>
+  <circle cx="450" cy="490" r="32" fill="url(#rg2)"/>
+  <circle cx="450" cy="490" r="14" fill="#ff0066" opacity="0.8"/>
+  <text x="450" y="486" text-anchor="middle" fill="#ffffff" font-size="8" font-weight="bold">THE</text>
+  <text x="450" y="498" text-anchor="middle" fill="#ffffff" font-size="8" font-weight="bold">RUPTURE</text>
+  <rect x="352" y="440" width="38" height="38" fill="#0a0010" stroke="#8800cc" stroke-width="2"/>
+  <text x="371" y="456" text-anchor="middle" fill="#8800cc" font-size="7">CONT</text>
+  <text x="371" y="467" text-anchor="middle" fill="#8800cc" font-size="7">GEN 1</text>
+  <text x="371" y="478" text-anchor="middle" fill="#6600aa" font-size="7">◈</text>
+  <rect x="510" y="440" width="38" height="38" fill="#0a0010" stroke="#8800cc" stroke-width="2"/>
+  <text x="529" y="456" text-anchor="middle" fill="#8800cc" font-size="7">CONT</text>
+  <text x="529" y="467" text-anchor="middle" fill="#8800cc" font-size="7">GEN 2</text>
+  <text x="529" y="478" text-anchor="middle" fill="#6600aa" font-size="7">◈</text>
+  <rect x="430" y="540" width="38" height="38" fill="#0a0010" stroke="#8800cc" stroke-width="2"/>
+  <text x="449" y="556" text-anchor="middle" fill="#8800cc" font-size="7">CONT</text>
+  <text x="449" y="567" text-anchor="middle" fill="#8800cc" font-size="7">GEN 3</text>
+  <text x="449" y="578" text-anchor="middle" fill="#6600aa" font-size="7">◈</text>
+  <text x="650" y="455" fill="#8800cc" font-size="8">TECHNICAL SOLUTION:</text>
+  <text x="650" y="468" fill="#6600aa" font-size="7">Overload all 3 gens simultaneously</text>
+  <text x="650" y="480" fill="#6600aa" font-size="7">using research notes sequence</text>
+  <text x="650" y="492" fill="#880055" font-size="7">→ entity banished / thralls die</text>
+  <text x="650" y="504" fill="#880055" font-size="7">→ Vasquez's request honoured</text>
+  <text x="450" y="630" text-anchor="middle" fill="#2a0020" font-size="8" letter-spacing="1">POWER FAILURE — GM REFERENCE ONLY</text>
+</svg>`;
+
+  document.getElementById('map-ground').innerHTML = groundSVG;
+  document.getElementById('map-sl1').innerHTML = sl1SVG;
+  document.getElementById('map-sl3').innerHTML = sl3SVG;
+}
+
+function showMap(which) {
+  document.querySelectorAll('.map-view').forEach(m => m.classList.remove('active'));
+  document.querySelectorAll('.map-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('map-' + which).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// ═══════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════
+
+function showPanel(name) {
+  document.querySelectorAll('#content > div').forEach(d => d.classList.add('panel-hidden'));
+  document.getElementById(`panel-${name}`).classList.remove('panel-hidden');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const btns = document.querySelectorAll('.nav-btn');
+  btns.forEach(b => { if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(`'${name}'`)) b.classList.add('active'); });
+  currentPanel = name;
+}
+
+// ═══════════════════════════════════════
+// TENSION
+// ═══════════════════════════════════════
+
+const TENSION_LABELS = ['NONE', 'STIRRING', 'RISING', 'CRITICAL', 'SPREADING'];
+
+function setTension(level) {
+  tensionLevel = tensionLevel === level ? 0 : level;
+  document.querySelectorAll('.t-pip').forEach(p => {
+    const l = parseInt(p.dataset.level);
+    p.className = 't-pip' + (l <= tensionLevel ? ` active-${l}` : '');
+  });
+  document.getElementById('tension-label').textContent = tensionLevel === 0 ? 'NONE' : TENSION_LABELS[tensionLevel - 1];
+  document.getElementById('tension-label').style.color = ['var(--text-dim)', 'var(--accent)', 'var(--accent2)', '#f07020', 'var(--danger)'][tensionLevel];
+}
+
+// ═══════════════════════════════════════
+// NOTES + TIMER
+// ═══════════════════════════════════════
+
+function toggleNotes() {
+  notesOpen = !notesOpen;
+  document.getElementById('gm-notes-panel').classList.toggle('collapsed', !notesOpen);
+}
+
+function timerStart() {
+  if (timerRunning) return;
+  timerRunning = true;
+  timerInterval = setInterval(() => {
+    timerSeconds++;
+    const m = String(Math.floor(timerSeconds / 60)).padStart(2,'0');
+    const s = String(timerSeconds % 60).padStart(2,'0');
+    const el = document.getElementById('timer-display');
+    el.textContent = m + ':' + s;
+    el.className = 'timer-display' + (timerSeconds > 14400 ? ' urgent' : timerSeconds > 10800 ? ' warning' : '');
+  }, 1000);
+}
+
+function timerPause() {
+  timerRunning = false;
+  clearInterval(timerInterval);
+}
+
+function timerReset() {
+  timerPause();
+  timerSeconds = 0;
+  document.getElementById('timer-display').textContent = '00:00';
+  document.getElementById('timer-display').className = 'timer-display';
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+
+renderScenes();
+renderSceneDots();
+renderNPCs();
+renderClues();
+renderHandouts();
+renderResolution();
+renderMaps();
+</script>
+</body>
+</html>
