@@ -2,599 +2,994 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Event 91 – The Night Crawler | GM App</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event 91 – The Night Crawler | GM</title>
 <style>
-  :root {
-    --bg: #0a0a0f;
-    --surface: #111118;
-    --surface2: #1a1a24;
-    --surface3: #22222e;
-    --border: #2a2a3a;
-    --cyan: #00e5ff;
-    --amber: #ffb700;
-    --red: #ff4444;
-    --green: #00e676;
-    --purple: #c0a0ff;
-    --text: #e2e2f0;
-    --text-dim: #9898bc;
-    --text-bright: #f5f5ff;
-    --font: 'Courier New', monospace;
-    --radius: 6px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 15px; min-height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+/* ============================================================
+   DESIGN SYSTEM
+   Target: 13" laptop / large tablet, low-light gaming environment
+   Touch targets: min 48px. Font: min 15px body, 17px headings.
+   ============================================================ */
+:root {
+  --bg:         #0d0d16;
+  --surface:    #171724;
+  --surface-hi: #1e1e2e;
+  --surface-top:#25253a;
+  --border:     #303048;
+  --border-hi:  #4a4a78;
 
-  /* HEADER */
-  #header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 10px 14px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-shrink: 0;
-  }
-  #header-title { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; }
-  #header-scenario { font-size: 15px; color: var(--cyan); font-weight: bold; }
-  #timer-display { text-align: right; min-width: 90px; }
-  #timer-main { font-size: 24px; color: var(--amber); font-weight: bold; letter-spacing: 1px; }
-  #timer-act { font-size: 11px; color: var(--text-dim); text-transform: uppercase; }
+  --text:       #eeeefc;
+  --text-sub:   #b8b8d8;
+  --text-muted: #7878a0;
 
-  /* PROGRESS BAR */
-  #progress-container {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 7px 14px;
-    flex-shrink: 0;
-  }
-  #progress-bar-bg { background: var(--surface3); height: 7px; border-radius: 3px; overflow: hidden; margin-bottom: 4px; }
-  #progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--cyan), var(--amber)); border-radius: 3px; transition: width 1s linear; width: 0%; }
-  #progress-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
-  #progress-labels span.active { color: var(--amber); }
+  --cyan:   #00d8ff;
+  --amber:  #ffc040;
+  --red:    #ff5555;
+  --green:  #44ee88;
+  --purple: #cc88ff;
 
-  /* MAIN CONTENT */
-  #main { flex: 1; overflow-y: auto; overflow-x: hidden; }
+  --done-bg:    rgba(68,238,136,0.12);
+  --done-color: #44ee88;
+  --shown-bg:   rgba(0,216,255,0.10);
+  --shown-color:#00d8ff;
+  --missed-bg:  rgba(255,85,85,0.12);
 
-  /* SCREENS */
-  .screen { display: none; padding: 14px; }
-  .screen.active { display: block; }
+  --font: "Courier New", Courier, monospace;
+  --r: 8px;
+}
 
-  /* BOTTOM NAV */
-  #nav { background: var(--surface); border-top: 1px solid var(--border); display: flex; flex-shrink: 0; }
-  .nav-btn {
-    flex: 1;
-    background: none;
-    border: none;
-    color: var(--text-dim);
-    padding: 13px 4px 11px;
-    cursor: pointer;
-    font-family: var(--font);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    transition: color 0.15s;
-    min-height: 64px;
-  }
-  .nav-btn .icon { font-size: 22px; }
-  .nav-btn.active { color: var(--cyan); border-top: 2px solid var(--cyan); }
-  .nav-btn:active { background: var(--surface2); }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* CARDS */
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 12px; overflow: hidden; }
-  .card-header {
-    padding: 16px 14px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    user-select: none;
-    min-height: 58px;
-  }
-  .card-header:active { background: var(--surface2); }
-  .card-title { font-size: 14px; color: var(--text-bright); font-weight: bold; }
-  .card-subtitle { font-size: 12px; color: var(--text-dim); margin-top: 3px; }
-  .card-tag { font-size: 11px; padding: 3px 9px; border-radius: 10px; text-transform: uppercase; letter-spacing: 1px; flex-shrink: 0; }
-  .card-body { padding: 14px; border-top: 1px solid var(--border); display: none; }
-  .card-body.open { display: block; }
-  .chevron { color: var(--text-dim); font-size: 14px; transition: transform 0.2s; }
-  .chevron.open { transform: rotate(180deg); }
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-tap-highlight-color: transparent;
+  overflow: hidden;
+}
 
-  /* DISPOSITION COLORS */
-  .disp-friendly { background: rgba(0,230,118,0.15); color: var(--green); border: 1px solid rgba(0,230,118,0.3); }
-  .disp-neutral { background: rgba(255,183,0,0.15); color: var(--amber); border: 1px solid rgba(255,183,0,0.3); }
-  .disp-hostile { background: rgba(255,68,68,0.15); color: var(--red); border: 1px solid rgba(255,68,68,0.3); }
-  .disp-hidden { background: rgba(192,160,255,0.15); color: var(--purple); border: 1px solid rgba(192,160,255,0.3); }
-  .disp-compromised { background: rgba(0,229,255,0.15); color: var(--cyan); border: 1px solid rgba(0,229,255,0.3); }
+/* ============================================================
+   LAYOUT — sidebar on wide, bottom nav on narrow
+   ============================================================ */
+#app {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  grid-template-columns: 200px 1fr;
+  grid-template-areas:
+    "header  header"
+    "progress progress"
+    "sidebar  main";
+  height: 100vh;
+  overflow: hidden;
+}
 
-  /* ACT TAGS */
-  .act1-tag { background: rgba(0,229,255,0.1); color: var(--cyan); border: 1px solid rgba(0,229,255,0.2); }
-  .act2-tag { background: rgba(255,183,0,0.1); color: var(--amber); border: 1px solid rgba(255,183,0,0.2); }
-  .act3-tag { background: rgba(255,68,68,0.1); color: var(--red); border: 1px solid rgba(255,68,68,0.2); }
+@media (max-width: 800px) {
+  #app {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr auto;
+    grid-template-areas:
+      "header"
+      "progress"
+      "main"
+      "sidebar";
+  }
+  #sidebar { flex-direction: row; border-right: none; border-top: 1px solid var(--border); }
+  #sidebar .nav-label { display: none; }
+  #sidebar .nav-icon { font-size: 22px; }
+  .nav-item { flex: 1; flex-direction: column; padding: 10px 4px; min-height: 58px; }
+}
 
-  /* TYPOGRAPHY WITHIN CARDS */
-  .card-body p { margin-bottom: 9px; line-height: 1.6; font-size: 14px; }
-  .card-body p:last-child { margin-bottom: 0; }
-  .label { color: var(--text-dim); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
-  .value { color: var(--text-bright); font-size: 14px; margin-bottom: 11px; line-height: 1.5; }
-  .mechanic {
-    background: var(--surface3);
-    border-left: 3px solid var(--cyan);
-    padding: 10px 12px;
-    margin: 10px 0;
-    font-size: 13px;
-    color: var(--cyan);
-    border-radius: 0 var(--radius) var(--radius) 0;
-    line-height: 1.5;
-  }
-  .san-note {
-    background: var(--surface3);
-    border-left: 3px solid var(--red);
-    padding: 10px 12px;
-    margin: 10px 0;
-    font-size: 13px;
-    color: #ff7070;
-    border-radius: 0 var(--radius) var(--radius) 0;
-    line-height: 1.5;
-  }
-  .clue-essential { border-left: 3px solid var(--amber); }
-  .clue-optional { border-left: 3px solid var(--purple); }
-  .pacing-note {
-    background: var(--surface3);
-    border: 1px solid var(--amber);
-    border-radius: var(--radius);
-    padding: 12px 14px;
-    margin-top: 14px;
-    font-size: 13px;
-    color: var(--text);
-    line-height: 1.5;
-  }
-  .pacing-note .pacing-label { color: var(--amber); font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+/* ============================================================
+   HEADER
+   ============================================================ */
+#header {
+  grid-area: header;
+  background: var(--surface);
+  border-bottom: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  gap: 16px;
+}
+#hdr-left { display: flex; flex-direction: column; gap: 2px; }
+#hdr-event { font-size: 11px; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; }
+#hdr-title { font-size: 18px; color: var(--cyan); font-weight: bold; letter-spacing: 1px; }
+#hdr-right { display: flex; align-items: center; gap: 16px; }
 
-  /* DASHBOARD */
-  .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
-  .dash-btn {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 18px 10px;
-    text-align: center;
-    cursor: pointer;
-    color: var(--text);
-    font-family: var(--font);
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    min-height: 82px;
-    transition: border-color 0.15s, color 0.15s;
-  }
-  .dash-btn:active { background: var(--surface2); }
-  .dash-btn .dash-icon { font-size: 28px; display: block; margin-bottom: 7px; }
-  .dash-btn.cyan-btn { border-color: rgba(0,229,255,0.35); color: var(--cyan); }
-  .dash-btn.amber-btn { border-color: rgba(255,183,0,0.35); color: var(--amber); }
+#timer-block { text-align: right; }
+#timer-main { font-size: 28px; font-weight: bold; color: var(--amber); letter-spacing: 2px; line-height: 1; }
+#timer-act { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+#timer-main.warn { color: var(--amber); animation: pulse 1s infinite; }
+#timer-main.danger { color: var(--red); animation: pulse 0.5s infinite; }
 
-  /* TIMER CONTROL */
-  .timer-controls { display: flex; gap: 10px; margin-bottom: 16px; }
-  .timer-btn {
-    flex: 1;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
-    color: var(--text);
-    font-family: var(--font);
-    font-size: 14px;
-    cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    min-height: 54px;
-    transition: background 0.15s;
-  }
-  .timer-btn.primary { border-color: var(--cyan); color: var(--cyan); }
-  .timer-btn.warn { border-color: var(--amber); color: var(--amber); }
-  .timer-btn:active { background: var(--surface2); }
+.hdr-btn {
+  background: var(--surface-hi);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 13px;
+  padding: 10px 18px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  min-height: 44px;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.hdr-btn:hover { background: var(--surface-top); }
+.hdr-btn.primary { border-color: var(--cyan); color: var(--cyan); }
+.hdr-btn.warn-btn { border-color: var(--amber); color: var(--amber); }
+.hdr-btn.danger-btn { border-color: var(--red); color: var(--red); }
 
-  /* CLUE TRACKER */
-  .clue-item {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px 14px;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    cursor: pointer;
-    min-height: 60px;
-  }
-  .clue-item:active { background: var(--surface2); }
-  .clue-check {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 2px solid var(--border);
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    transition: all 0.2s;
-    margin-top: 1px;
-  }
-  .clue-check.found { border-color: var(--green); background: rgba(0,230,118,0.2); color: var(--green); }
-  .clue-check.missed { border-color: var(--red); background: rgba(255,68,68,0.2); color: var(--red); }
-  .clue-info { flex: 1; }
-  .clue-name { color: var(--text-bright); font-size: 14px; font-weight: bold; margin-bottom: 4px; }
-  .clue-loc { color: var(--text-dim); font-size: 12px; margin-bottom: 5px; }
-  .clue-reveal { color: var(--text); font-size: 13px; line-height: 1.5; }
-  .clue-fallback { color: var(--amber); font-size: 12px; margin-top: 6px; font-style: italic; }
-  .section-head {
-    font-size: 11px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    padding: 4px 0 10px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 12px;
-  }
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+#progress {
+  grid-area: progress;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+#progress-track {
+  height: 8px;
+  background: var(--surface-top);
+  border-radius: 4px;
+  overflow: hidden;
+}
+#progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--cyan), var(--amber));
+  border-radius: 4px;
+  transition: width 1s linear;
+  width: 0%;
+}
+#progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+#progress-labels .active { color: var(--amber); font-weight: bold; }
 
-  /* HP TRACKER */
-  .pc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .pc-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; }
-  .pc-name { font-size: 12px; color: var(--cyan); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; font-weight: bold; }
-  .pc-player { font-size: 11px; color: var(--text-dim); margin-bottom: 10px; }
-  .stat-row { display: flex; gap: 6px; margin-bottom: 8px; }
-  .stat-box { flex: 1; background: var(--surface2); border-radius: 4px; padding: 8px 4px; text-align: center; }
-  .stat-box-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
-  .stat-box-val { font-size: 18px; color: var(--text-bright); font-weight: bold; line-height: 1.2; }
-  .stat-controls { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
-  .stat-controls .stat-label { font-size: 11px; color: var(--text-dim); width: 30px; text-transform: uppercase; }
-  .stat-ctrl-btn {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    color: var(--text-bright);
-    font-size: 18px;
-    width: 38px;
-    height: 38px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .stat-ctrl-btn:active { background: var(--surface3); }
-  .stat-num { font-size: 18px; color: var(--text-bright); font-weight: bold; min-width: 34px; text-align: center; }
-  .status-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
-  .status-tag {
-    font-size: 11px;
-    padding: 5px 10px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    color: var(--text-dim);
-    cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    user-select: none;
-    min-height: 30px;
-    display: flex;
-    align-items: center;
-  }
-  .status-tag.active-injured { border-color: var(--amber); color: var(--amber); background: rgba(255,183,0,0.1); }
-  .status-tag.active-insane { border-color: var(--purple); color: var(--purple); background: rgba(192,160,255,0.1); }
-  .status-tag.active-dead { border-color: var(--red); color: var(--red); background: rgba(255,68,68,0.1); }
+/* ============================================================
+   ALERT BANNER
+   ============================================================ */
+#alert-bar {
+  grid-area: progress;
+  display: none;
+  padding: 12px 20px;
+  font-size: 15px;
+  font-weight: bold;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  animation: pulse 1s infinite;
+  border-bottom: 1px solid;
+}
+#alert-bar.show { display: block; }
+#alert-bar.amber { background: rgba(255,192,64,0.18); color: var(--amber); border-color: var(--amber); }
+#alert-bar.red   { background: rgba(255,85,85,0.18); color: var(--red); border-color: var(--red); }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.55} }
 
-  /* HANDOUTS */
-  .handout-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 12px; overflow: hidden; }
-  .handout-header {
-    padding: 16px 14px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    min-height: 62px;
-  }
-  .handout-header:active { background: var(--surface2); }
-  .handout-id { font-size: 11px; color: var(--text-dim); }
-  .handout-title { font-size: 14px; color: var(--amber); font-weight: bold; }
-  .handout-body { display: none; padding: 0; }
-  .handout-body.open { display: block; }
-  .handout-content {
-    background: #14120f;
-    border-top: 1px solid var(--border);
-    padding: 16px;
-    font-size: 13px;
-    line-height: 1.75;
-    color: #d4cbb0;
-    white-space: pre-wrap;
-    font-family: 'Courier New', monospace;
-    position: relative;
-  }
-  .handout-content.terminal { background: #080e0e; color: #00cc88; font-size: 13px; }
-  .handout-content.handwritten { background: #1a1510; color: #ddd0a0; font-family: Georgia, serif; font-style: italic; font-size: 14px; }
-  .fullscreen-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    color: var(--text-dim);
-    padding: 8px 12px;
-    font-size: 12px;
-    cursor: pointer;
-    font-family: var(--font);
-  }
+/* ============================================================
+   SIDEBAR / NAV
+   ============================================================ */
+#sidebar {
+  grid-area: sidebar;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
 
-  /* FULLSCREEN HANDOUT OVERLAY */
-  #handout-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: #12100e;
-    z-index: 1000;
-    padding: 20px;
-    overflow-y: auto;
-  }
-  #handout-overlay.active { display: flex; flex-direction: column; }
-  #handout-overlay-close {
-    align-self: flex-end;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    color: var(--amber);
-    padding: 14px 24px;
-    font-family: var(--font);
-    font-size: 14px;
-    cursor: pointer;
-    margin-bottom: 20px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    min-height: 50px;
-  }
-  #handout-overlay-content {
-    font-size: 16px;
-    line-height: 1.9;
-    color: #d4c090;
-    white-space: pre-wrap;
-    font-family: Georgia, serif;
-    max-width: 700px;
-    margin: 0 auto;
-  }
-  #handout-overlay-content.terminal {
-    font-family: 'Courier New', monospace;
-    color: #00cc99;
-    font-size: 14px;
-    background: #060d0d;
-    padding: 20px;
-    border-radius: 6px;
-  }
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  cursor: pointer;
+  color: var(--text-sub);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+  min-height: 52px;
+  user-select: none;
+  position: relative;
+}
+.nav-item:hover { background: var(--surface-hi); color: var(--text); }
+.nav-item.active { background: var(--surface-hi); color: var(--cyan); border-left-color: var(--cyan); }
+.nav-icon { font-size: 20px; flex-shrink: 0; }
+.nav-label { font-size: 12px; }
+.nav-badge {
+  margin-left: auto;
+  background: var(--cyan);
+  color: var(--bg);
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 20px;
+  text-align: center;
+}
+.nav-badge.amber { background: var(--amber); }
+.nav-badge.red { background: var(--red); }
+.nav-divider { height: 1px; background: var(--border); margin: 6px 0; }
 
-  /* NPC PORTRAIT FULLSCREEN */
-  #portrait-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: #000;
-    z-index: 1100;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-  }
-  #portrait-overlay.active { display: flex; }
-  #portrait-overlay-img {
-    width: 100%;
-    flex: 1;
-    object-fit: contain;
-    object-position: top center;
-  }
-  #portrait-overlay-bar {
-    width: 100%;
-    background: rgba(0,0,0,0.9);
-    border-top: 1px solid var(--border);
-    padding: 14px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-shrink: 0;
-  }
-  #portrait-overlay-name { font-family: var(--font); font-size: 14px; color: var(--text-bright); text-transform: uppercase; letter-spacing: 2px; }
-  #portrait-overlay-close {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    color: var(--amber);
-    padding: 12px 22px;
-    font-family: var(--font);
-    font-size: 13px;
-    cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    min-height: 46px;
-  }
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+#main {
+  grid-area: main;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px;
+}
 
-  /* REFERENCE SCREEN */
-  .ref-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 14px; }
-  .ref-table th {
-    background: var(--surface2);
-    color: var(--text);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    padding: 9px 10px;
-    text-align: left;
-    border-bottom: 1px solid var(--border);
-  }
-  .ref-table td { padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.5; }
-  .ref-table tr:last-child td { border-bottom: none; }
-  .ref-table .highlight { color: var(--amber); }
-  .ref-table .cyan { color: var(--cyan); }
-  .ref-table .red { color: var(--red); }
+/* ============================================================
+   SCREENS
+   ============================================================ */
+.screen { display: none; }
+.screen.active { display: block; }
 
-  /* NPC PORTRAIT */
-  .npc-portrait {
-    width: 110px;
-    min-width: 110px;
-    height: 148px;
-    flex-shrink: 0;
-    border-radius: 4px;
-    overflow: hidden;
-    border: 1px solid var(--border);
-    background: #0a0a0f;
-    cursor: pointer;
-    position: relative;
-  }
-  .npc-portrait::after {
-    content: "TAP TO SHOW";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(0,0,0,0.72);
-    color: var(--text-dim);
-    font-family: var(--font);
-    font-size: 9px;
-    text-align: center;
-    padding: 5px 2px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-  .npc-portrait:active::after { opacity: 1; }
-  .npc-portrait svg { display: block; }
-  .npc-portrait img { display: block; }
-  .npc-card-inner { display: flex; gap: 12px; align-items: flex-start; }
-  .npc-card-text { flex: 1; min-width: 0; }
+/* ============================================================
+   CARDS
+   ============================================================ */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  margin-bottom: 14px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+.card.done { border-color: rgba(68,238,136,0.3); background: rgba(68,238,136,0.04); }
+.card.shown { border-color: rgba(0,216,255,0.3); }
 
-  /* STAT BLOCK */
-  .stat-block {
-    background: var(--surface2);
-    border-radius: 4px;
-    padding: 12px;
-    margin: 10px 0;
-    font-size: 13px;
-    line-height: 1.9;
-  }
-  .stat-block-row { color: var(--text); margin-bottom: 2px; }
-  .stat-block-row span { color: var(--text-bright); }
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  cursor: pointer;
+  min-height: 60px;
+  user-select: none;
+}
+.card-head:hover { background: var(--surface-hi); }
+.card-head-text { flex: 1; min-width: 0; }
+.card-title { font-size: 16px; font-weight: bold; color: var(--text); }
+.card-sub { font-size: 13px; color: var(--text-sub); margin-top: 3px; }
+.card-body { padding: 18px; border-top: 1px solid var(--border); }
+.card-body p { font-size: 15px; line-height: 1.65; margin-bottom: 10px; color: var(--text); }
+.card-body p:last-child { margin-bottom: 0; }
 
-  /* ALERT BANNER */
-  #alert-banner {
-    display: none;
-    padding: 12px;
-    font-size: 14px;
-    font-weight: bold;
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    animation: pulse 1s infinite;
-  }
-  #alert-banner.amber { background: rgba(255,183,0,0.2); color: var(--amber); border-bottom: 1px solid var(--amber); }
-  #alert-banner.red { background: rgba(255,68,68,0.2); color: var(--red); border-bottom: 1px solid var(--red); }
-  #alert-banner.active { display: block; }
-  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+.chevron { font-size: 16px; color: var(--text-muted); flex-shrink: 0; transition: transform 0.2s; }
+.chevron.open { transform: rotate(180deg); }
 
-  /* ACT SELECTOR */
-  .act-tabs { display: flex; gap: 8px; margin-bottom: 14px; overflow-x: auto; padding-bottom: 4px; }
-  .act-tab {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 10px 18px;
-    font-family: var(--font);
-    font-size: 12px;
-    color: var(--text-dim);
-    cursor: pointer;
-    white-space: nowrap;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    flex-shrink: 0;
-    min-height: 42px;
-    display: flex;
-    align-items: center;
-  }
-  .act-tab.active { border-color: var(--cyan); color: var(--cyan); }
-  .act-tab:active { background: var(--surface2); }
-  .act-panel { display: none; }
-  .act-panel.active { display: block; }
+/* STATUS BADGE on cards */
+.status-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--border);
+}
+.status-dot.done  { background: var(--green); box-shadow: 0 0 6px var(--green); }
+.status-dot.shown { background: var(--cyan);  box-shadow: 0 0 6px var(--cyan); }
+.status-dot.missed{ background: var(--red);   box-shadow: 0 0 4px var(--red); }
 
-  /* GOAL BOX */
-  .goal-box {
-    background: var(--surface2);
-    border-left: 3px solid var(--cyan);
-    padding: 12px 14px;
-    margin-bottom: 14px;
-    font-size: 13px;
-    color: var(--text);
-    border-radius: 0 var(--radius) var(--radius) 0;
-    line-height: 1.6;
-  }
-  .goal-box strong { color: var(--cyan); }
+/* TAG PILLS */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: bold;
+}
+.tag-cyan   { background: rgba(0,216,255,0.15); color: var(--cyan);   border: 1px solid rgba(0,216,255,0.3); }
+.tag-amber  { background: rgba(255,192,64,0.15); color: var(--amber); border: 1px solid rgba(255,192,64,0.3); }
+.tag-red    { background: rgba(255,85,85,0.15);  color: var(--red);   border: 1px solid rgba(255,85,85,0.3); }
+.tag-green  { background: rgba(68,238,136,0.15); color: var(--green); border: 1px solid rgba(68,238,136,0.3); }
+.tag-purple { background: rgba(204,136,255,0.15);color: var(--purple);border: 1px solid rgba(204,136,255,0.3); }
+.tag-grey   { background: rgba(255,255,255,0.06);color: var(--text-sub);border: 1px solid var(--border); }
 
-  /* SCROLL HELPERS */
-  ::-webkit-scrollbar { width: 4px; height: 4px; }
-  ::-webkit-scrollbar-track { background: var(--surface); }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+/* ============================================================
+   CALLOUT BOXES (mechanics, san notes, pacing)
+   ============================================================ */
+.callout {
+  border-left: 4px solid var(--border-hi);
+  background: var(--surface-hi);
+  padding: 12px 14px;
+  margin: 12px 0;
+  border-radius: 0 var(--r) var(--r) 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text);
+}
+.callout-cyan   { border-left-color: var(--cyan);   color: var(--cyan); background: rgba(0,216,255,0.07); }
+.callout-red    { border-left-color: var(--red);    color: #ff8888;     background: rgba(255,85,85,0.07); }
+.callout-amber  { border-left-color: var(--amber);  color: var(--amber);background: rgba(255,192,64,0.07); }
+.callout-green  { border-left-color: var(--green);  color: var(--green);background: rgba(68,238,136,0.07); }
 
-  /* MODAL */
-  #san-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 900; align-items: center; justify-content: center; padding: 20px; }
-  #san-modal.active { display: flex; }
-  #san-modal-inner { background: var(--surface); border: 1px solid var(--red); border-radius: var(--radius); padding: 22px; max-width: 400px; width: 100%; }
-  #san-modal-title { color: var(--red); font-size: 14px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px; }
-  #san-modal-close {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    color: var(--text);
-    padding: 14px 20px;
-    font-family: var(--font);
-    font-size: 13px;
-    cursor: pointer;
-    margin-top: 16px;
-    width: 100%;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    min-height: 50px;
-  }
+/* ============================================================
+   SECTION HEADING
+   ============================================================ */
+.section-head {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding: 6px 0 10px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 14px;
+}
+.section-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--text);
+  margin-bottom: 16px;
+}
 
-  .separator { height: 1px; background: var(--border); margin: 14px 0; }
-  .small-label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
-  .dim { color: var(--text-dim); }
-  .bright { color: var(--text-bright); }
-  .cyan-text { color: var(--cyan); }
-  .amber-text { color: var(--amber); }
-  .red-text { color: var(--red); }
-  .green-text { color: var(--green); }
-  .bold { font-weight: bold; }
-  .mt8 { margin-top: 8px; }
-  .mb8 { margin-bottom: 8px; }
-  .italic { font-style: italic; }
+/* ============================================================
+   BUTTON
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--surface-hi);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 13px;
+  padding: 11px 20px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  min-height: 48px;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+  user-select: none;
+}
+.btn:hover { background: var(--surface-top); border-color: var(--border-hi); }
+.btn-cyan   { border-color: var(--cyan);   color: var(--cyan); }
+.btn-amber  { border-color: var(--amber);  color: var(--amber); }
+.btn-red    { border-color: var(--red);    color: var(--red); }
+.btn-green  { border-color: var(--green);  color: var(--green); background: rgba(68,238,136,0.08); }
+.btn-full   { width: 100%; }
+.btn-sm     { font-size: 12px; padding: 8px 14px; min-height: 38px; }
+
+/* ============================================================
+   GRID LAYOUTS
+   ============================================================ */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+@media (max-width: 600px) {
+  .grid-3 { grid-template-columns: 1fr 1fr; }
+}
+
+/* ============================================================
+   HOME SCREEN
+   ============================================================ */
+.dash-tile {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 20px 18px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+  min-height: 90px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  user-select: none;
+}
+.dash-tile:hover { background: var(--surface-hi); border-color: var(--border-hi); }
+.dash-tile-icon { font-size: 28px; }
+.dash-tile-label { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-sub); }
+.dash-tile.cyan  { border-color: rgba(0,216,255,0.35); }
+.dash-tile.cyan .dash-tile-label { color: var(--cyan); }
+.dash-tile.amber { border-color: rgba(255,192,64,0.35); }
+.dash-tile.amber .dash-tile-label { color: var(--amber); }
+
+/* QUICK STATUS PANEL */
+.status-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 16px 18px;
+  margin-bottom: 16px;
+}
+.status-panel-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.status-row:last-child { border-bottom: none; }
+.status-row-label { flex: 1; color: var(--text-sub); }
+.status-row-val { font-weight: bold; color: var(--text); }
+
+/* PINNED AREA */
+#pinned-area { margin-bottom: 16px; }
+#pinned-area:empty { display: none; }
+.pinned-label { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--amber); margin-bottom: 8px; }
+.pinned-items { display: flex; flex-wrap: wrap; gap: 8px; }
+.pinned-item {
+  background: rgba(255,192,64,0.1);
+  border: 1px solid rgba(255,192,64,0.35);
+  border-radius: var(--r);
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--amber);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+}
+.pinned-item:hover { background: rgba(255,192,64,0.18); }
+.pin-remove { color: var(--text-muted); font-size: 16px; margin-left: 4px; }
+
+/* ============================================================
+   ACT NAVIGATION TABS
+   ============================================================ */
+.act-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: none;
+}
+.act-tabs::-webkit-scrollbar { display: none; }
+.act-tab {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-family: var(--font);
+  font-size: 13px;
+  color: var(--text-sub);
+  cursor: pointer;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  flex-shrink: 0;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  transition: all 0.15s;
+  user-select: none;
+}
+.act-tab:hover { background: var(--surface-hi); color: var(--text); }
+.act-tab.active { border-color: var(--cyan); color: var(--cyan); background: rgba(0,216,255,0.08); }
+.act-panel { display: none; }
+.act-panel.active { display: block; }
+
+/* GOAL BOX */
+.goal-box {
+  background: rgba(0,216,255,0.06);
+  border-left: 4px solid var(--cyan);
+  border-radius: 0 var(--r) var(--r) 0;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.6;
+}
+.goal-box strong { color: var(--cyan); }
+
+/* LOCATION ITEM */
+.loc-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  margin-bottom: 10px;
+  background: var(--surface);
+  cursor: pointer;
+  min-height: 52px;
+  transition: all 0.15s;
+}
+.loc-item:hover { background: var(--surface-hi); }
+.loc-item.visited { background: rgba(68,238,136,0.05); border-color: rgba(68,238,136,0.25); }
+.loc-item.visited .loc-name { text-decoration: line-through; color: var(--text-muted); }
+.loc-check {
+  width: 26px; height: 26px;
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  transition: all 0.2s;
+}
+.loc-item.visited .loc-check { border-color: var(--green); background: rgba(68,238,136,0.2); color: var(--green); }
+.loc-name { font-size: 15px; font-weight: bold; color: var(--text); }
+.loc-sub  { font-size: 13px; color: var(--text-sub); margin-top: 3px; }
+
+/* ============================================================
+   NPC SCREEN
+   ============================================================ */
+.npc-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  margin-bottom: 14px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+.npc-card.introduced { border-color: rgba(0,216,255,0.35); }
+
+.npc-head {
+  display: flex;
+  gap: 14px;
+  padding: 16px;
+  cursor: pointer;
+  min-height: 64px;
+  user-select: none;
+}
+.npc-head:hover { background: var(--surface-hi); }
+
+.npc-portrait-thumb {
+  width: 80px;
+  min-width: 80px;
+  height: 107px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  cursor: pointer;
+  flex-shrink: 0;
+  position: relative;
+}
+.npc-portrait-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+.npc-portrait-thumb:hover::after {
+  content: "SHOW";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--cyan);
+  font-family: var(--font);
+}
+/* The ::after is tricky for hover without JS - use a data-hover class instead */
+.npc-portrait-thumb.hovered::after {
+  content: "⛶ SHOW";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--cyan);
+  font-family: var(--font);
+}
+
+.npc-meta { flex: 1; min-width: 0; }
+.npc-name { font-size: 17px; font-weight: bold; color: var(--text); }
+.npc-role { font-size: 13px; color: var(--text-sub); margin: 4px 0; }
+.npc-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+
+.npc-introduced-badge {
+  display: none;
+  background: rgba(0,216,255,0.15);
+  border: 1px solid rgba(0,216,255,0.4);
+  color: var(--cyan);
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.npc-card.introduced .npc-introduced-badge { display: inline-flex; }
+
+.npc-body { padding: 18px; border-top: 1px solid var(--border); }
+.npc-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; margin-top: 14px; }
+.npc-label:first-child { margin-top: 0; }
+.npc-value { font-size: 15px; color: var(--text); line-height: 1.6; }
+.stat-block {
+  background: var(--surface-hi);
+  border-radius: var(--r);
+  padding: 12px 14px;
+  font-size: 13px;
+  color: var(--text-sub);
+  line-height: 2;
+  white-space: pre-line;
+}
+
+.npc-actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+
+/* ============================================================
+   CLUE TRACKER
+   ============================================================ */
+.clue-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  margin-bottom: 10px;
+  background: var(--surface);
+  cursor: pointer;
+  min-height: 64px;
+  transition: all 0.15s;
+  user-select: none;
+}
+.clue-item:hover { background: var(--surface-hi); }
+.clue-item.found  { border-color: rgba(68,238,136,0.4);  background: rgba(68,238,136,0.05); }
+.clue-item.missed { border-color: rgba(255,85,85,0.35); background: rgba(255,85,85,0.05); }
+
+.clue-toggle {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  transition: all 0.2s;
+  margin-top: 2px;
+  min-width: 34px;
+}
+.clue-item.found  .clue-toggle { border-color: var(--green); background: rgba(68,238,136,0.2); color: var(--green); }
+.clue-item.missed .clue-toggle { border-color: var(--red);   background: rgba(255,85,85,0.2);  color: var(--red); }
+
+.clue-name    { font-size: 15px; font-weight: bold; color: var(--text); margin-bottom: 4px; }
+.clue-where   { font-size: 13px; color: var(--text-sub); margin-bottom: 6px; }
+.clue-reveals { font-size: 14px; color: var(--text); line-height: 1.55; }
+.clue-fallback { font-size: 13px; color: var(--amber); margin-top: 8px; font-style: italic; }
+
+/* ============================================================
+   HANDOUTS
+   ============================================================ */
+.handout-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  margin-bottom: 12px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+.handout-item.shown { border-color: rgba(0,216,255,0.4); }
+
+.handout-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  cursor: pointer;
+  min-height: 62px;
+  user-select: none;
+}
+.handout-head:hover { background: var(--surface-hi); }
+.handout-id    { font-size: 11px; color: var(--text-muted); }
+.handout-title { font-size: 15px; font-weight: bold; color: var(--amber); flex: 1; }
+.handout-shown-badge {
+  display: none;
+  background: rgba(0,216,255,0.12);
+  border: 1px solid rgba(0,216,255,0.35);
+  color: var(--cyan);
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+.handout-item.shown .handout-shown-badge { display: flex; align-items: center; }
+
+.handout-body { display: none; border-top: 1px solid var(--border); }
+.handout-body.open { display: block; }
+.handout-text {
+  padding: 18px;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text);
+  white-space: pre-wrap;
+  background: var(--bg);
+}
+.handout-text.terminal { color: #00cc88; font-size: 13px; }
+.handout-text.handwritten { font-family: Georgia, serif; font-style: italic; color: #e0d4a8; font-size: 15px; }
+.handout-actions { padding: 14px 18px; border-top: 1px solid var(--border); display: flex; gap: 10px; }
+
+/* ============================================================
+   PLAYERS TRACKER
+   ============================================================ */
+.pc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.pc-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 16px;
+}
+.pc-name   { font-size: 15px; font-weight: bold; color: var(--cyan); text-transform: uppercase; margin-bottom: 4px; }
+.pc-player { font-size: 13px; color: var(--text-sub); margin-bottom: 12px; }
+
+.stat-bars { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+.stat-bar { background: var(--surface-hi); border-radius: 6px; padding: 10px 8px; text-align: center; }
+.stat-bar-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+.stat-bar-val { font-size: 22px; font-weight: bold; color: var(--text); line-height: 1.2; margin-top: 2px; }
+
+.stat-adjuster { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.adj-label { font-size: 12px; color: var(--text-sub); text-transform: uppercase; width: 36px; }
+.adj-btn {
+  width: 42px; height: 42px;
+  background: var(--surface-hi);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.1s;
+  user-select: none;
+}
+.adj-btn:hover { background: var(--surface-top); }
+.adj-val { font-size: 20px; font-weight: bold; color: var(--text); min-width: 40px; text-align: center; }
+
+.pc-statuses { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.pc-status {
+  font-size: 12px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  color: var(--text-sub);
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  min-height: 38px;
+  display: flex; align-items: center;
+  user-select: none;
+  transition: all 0.15s;
+}
+.pc-status:hover { border-color: var(--border-hi); }
+.pc-status.injured { border-color: var(--amber); color: var(--amber); background: rgba(255,192,64,0.1); }
+.pc-status.insane  { border-color: var(--purple); color: var(--purple); background: rgba(204,136,255,0.1); }
+.pc-status.dead    { border-color: var(--red);    color: var(--red);   background: rgba(255,85,85,0.1); }
+
+/* ============================================================
+   REFERENCE TABLES
+   ============================================================ */
+.ref-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 16px; }
+.ref-table th {
+  background: var(--surface-hi);
+  color: var(--text-sub);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.ref-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); line-height: 1.5; color: var(--text); }
+.ref-table tr:last-child td { border-bottom: none; }
+.ref-table .c-cyan   { color: var(--cyan); }
+.ref-table .c-amber  { color: var(--amber); font-weight: bold; }
+.ref-table .c-red    { color: var(--red); font-weight: bold; }
+.ref-table .c-green  { color: var(--green); }
+.ref-table .c-muted  { color: var(--text-sub); }
+
+/* ============================================================
+   FULLSCREEN OVERLAY — portraits, handouts, artwork
+   ============================================================ */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: #000;
+  flex-direction: column;
+}
+.overlay.active { display: flex; }
+
+/* TOP BAR — always visible, always has a BACK button */
+.overlay-topbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(0,0,0,0.92);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  flex-shrink: 0;
+  min-height: 60px;
+}
+.overlay-back {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface-hi);
+  border: 2px solid var(--cyan);
+  border-radius: var(--r);
+  color: var(--cyan);
+  font-family: var(--font);
+  font-size: 15px;
+  padding: 10px 22px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  min-height: 48px;
+  font-weight: bold;
+}
+.overlay-back:hover { background: rgba(0,216,255,0.15); }
+.overlay-title {
+  flex: 1;
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.overlay-action-btn {
+  background: var(--surface-hi);
+  border: 1px solid var(--green);
+  border-radius: var(--r);
+  color: var(--green);
+  font-family: var(--font);
+  font-size: 13px;
+  padding: 10px 18px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  min-height: 46px;
+  transition: background 0.15s;
+}
+.overlay-action-btn:hover { background: rgba(68,238,136,0.12); }
+.overlay-action-btn.shown { border-color: var(--cyan); color: var(--cyan); }
+
+/* Portrait overlay content */
+#portrait-overlay .overlay-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 20px;
+}
+#portrait-overlay img {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  border-radius: var(--r);
+}
+
+/* Handout overlay content */
+#handout-overlay .overlay-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 30px;
+}
+#handout-overlay-text {
+  max-width: 700px;
+  margin: 0 auto;
+  font-size: 17px;
+  line-height: 1.9;
+  color: #e0d4a8;
+  white-space: pre-wrap;
+  font-family: Georgia, serif;
+}
+#handout-overlay-text.terminal { font-family: var(--font); color: #00cc88; font-size: 15px; background: #060e0e; padding: 24px; border-radius: var(--r); }
+
+/* SAN Modal */
+#san-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 1500;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+#san-modal.active { display: flex; }
+.san-inner {
+  background: var(--surface);
+  border: 2px solid var(--red);
+  border-radius: var(--r);
+  padding: 24px;
+  max-width: 420px;
+  width: 100%;
+}
+.san-title { color: var(--red); font-size: 16px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 18px; }
+
+/* Notes textarea */
+.notes-area {
+  width: 100%;
+  background: var(--surface-hi);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  padding: 12px 14px;
+  resize: vertical;
+  min-height: 90px;
+  line-height: 1.6;
+}
+.notes-area:focus { outline: none; border-color: var(--cyan); }
+.notes-area::placeholder { color: var(--text-muted); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* Utilities */
+.mb-0 { margin-bottom: 0 !important; }
+.mt-12 { margin-top: 12px; }
+.mt-16 { margin-top: 16px; }
+.flex { display: flex; }
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.gap-8 { gap: 8px; }
+.gap-12 { gap: 12px; }
+.text-muted { color: var(--text-sub); }
+.text-bright { color: var(--text); }
+.bold { font-weight: bold; }
 </style>
 </head>
 <body>
 
+<div id="app">
+
 <!-- HEADER -->
 <div id="header">
-  <div>
-    <div id="header-title">Event 91 · BRP</div>
-    <div id="header-scenario">The Night Crawler</div>
+  <div id="hdr-left">
+    <div id="hdr-event">Event 91 · BRP · Chaosium Con 2026</div>
+    <div id="hdr-title">The Night Crawler</div>
   </div>
-  <div id="timer-display">
-    <div id="timer-main">3:30:00</div>
-    <div id="timer-act" id="timer-act-label">Session</div>
+  <div id="hdr-right">
+    <button class="hdr-btn warn-btn" onclick="showSanModal()">⚠ SAN</button>
+    <button class="hdr-btn primary" id="btn-start" onclick="toggleTimer()">▶ Start</button>
+    <button class="hdr-btn" onclick="resetTimer()">↺</button>
+    <div id="timer-block">
+      <div id="timer-main">3:30:00</div>
+      <div id="timer-act">Ready</div>
+    </div>
   </div>
 </div>
 
-<!-- ALERT BANNER -->
-<div id="alert-banner"></div>
-
 <!-- PROGRESS BAR -->
-<div id="progress-container">
-  <div id="progress-bar-bg"><div id="progress-bar-fill"></div></div>
+<div id="progress">
+  <div id="progress-track"><div id="progress-fill"></div></div>
   <div id="progress-labels">
     <span id="pl-intro">Intro</span>
     <span id="pl-a1">Act I</span>
@@ -604,568 +999,186 @@
   </div>
 </div>
 
-<!-- MAIN CONTENT -->
+<div id="alert-bar"></div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="nav-item active" id="nav-home"    onclick="navTo('home')">   <span class="nav-icon">⌂</span><span class="nav-label">Home</span></div>
+  <div class="nav-item"        id="nav-acts"    onclick="navTo('acts')">   <span class="nav-icon">🎭</span><span class="nav-label">Acts</span></div>
+  <div class="nav-item"        id="nav-npcs"    onclick="navTo('npcs')">   <span class="nav-icon">👤</span><span class="nav-label">NPCs</span></div>
+  <div class="nav-item"        id="nav-clues"   onclick="navTo('clues')">  <span class="nav-icon">🔍</span><span class="nav-label">Clues</span><span class="nav-badge" id="badge-clues">7</span></div>
+  <div class="nav-item"        id="nav-handouts" onclick="navTo('handouts')"><span class="nav-icon">📄</span><span class="nav-label">Handouts</span></div>
+  <div class="nav-item"        id="nav-players" onclick="navTo('players')"> <span class="nav-icon">♟</span><span class="nav-label">Players</span></div>
+  <div class="nav-divider"></div>
+  <div class="nav-item"        id="nav-ref"     onclick="navTo('ref')">    <span class="nav-icon">📋</span><span class="nav-label">Reference</span></div>
+</nav>
+
+<!-- MAIN -->
 <div id="main">
 
-  <!-- ===== HOME SCREEN ===== -->
-  <div id="screen-home" class="screen active">
-    <div class="timer-controls">
-      <button class="timer-btn primary" id="btn-start-pause" onclick="toggleTimer()">▶ START</button>
-      <button class="timer-btn" onclick="resetTimer()">↺ RESET</button>
-      <button class="timer-btn warn" onclick="showSanModal()">⚠ SAN</button>
+  <!-- ===== HOME ===== -->
+  <div class="screen active" id="screen-home">
+    <div id="pinned-area"></div>
+
+    <div class="grid-2" style="margin-bottom:16px;">
+      <div class="dash-tile cyan" onclick="navTo('acts')"><div class="dash-tile-icon">🎭</div><div class="dash-tile-label">Acts</div></div>
+      <div class="dash-tile cyan" onclick="navTo('npcs')"><div class="dash-tile-icon">👤</div><div class="dash-tile-label">NPCs</div></div>
+      <div class="dash-tile amber" onclick="navTo('clues')"><div class="dash-tile-icon">🔍</div><div class="dash-tile-label">Clues</div></div>
+      <div class="dash-tile amber" onclick="navTo('handouts')"><div class="dash-tile-icon">📄</div><div class="dash-tile-label">Handouts</div></div>
+      <div class="dash-tile" onclick="navTo('players')"><div class="dash-tile-icon">♟</div><div class="dash-tile-label">Players</div></div>
+      <div class="dash-tile" onclick="showSanModal()"><div class="dash-tile-icon">⚠</div><div class="dash-tile-label">SAN Table</div></div>
     </div>
-    <div class="dash-grid">
-      <div class="dash-btn cyan-btn" onclick="navTo('acts')"><span class="dash-icon">🎭</span>Acts</div>
-      <div class="dash-btn amber-btn" onclick="navTo('npcs')"><span class="dash-icon">👤</span>NPCs</div>
-      <div class="dash-btn" onclick="navTo('clues')"><span class="dash-icon">🔍</span>Clues</div>
-      <div class="dash-btn" onclick="navTo('handouts')"><span class="dash-icon">📄</span>Handouts</div>
-      <div class="dash-btn" onclick="navTo('players')"><span class="dash-icon">♟</span>Players</div>
-      <div class="dash-btn" onclick="navTo('ref')"><span class="dash-icon">📋</span>Reference</div>
+
+    <!-- Checkpoints -->
+    <div class="status-panel">
+      <div class="status-panel-title">Session Checkpoints</div>
+      <div class="status-row"><span class="status-row-label">0:15 — Briefing done, team in Sub-D7</span> <span class="tag tag-cyan">Intro</span></div>
+      <div class="status-row"><span class="status-row-label">1:10 — Reth's squat found, map in hand</span> <span class="tag tag-cyan">Act I</span></div>
+      <div class="status-row"><span class="status-row-label">2:00 — Junction passed, bodies found</span> <span class="tag tag-amber">Act II</span></div>
+      <div class="status-row" style="font-weight:bold;"><span class="status-row-label" style="color:var(--amber);">⚠ 2:15 — RETH FOUND (hard deadline)</span> <span class="tag tag-amber">Act II</span></div>
+      <div class="status-row"><span class="status-row-label">2:45 — Ascending through Sutter-Vane</span> <span class="tag tag-red">Act III</span></div>
+      <div class="status-row" style="font-weight:bold;"><span class="status-row-label" style="color:var(--red);">🔴 3:05 — MORAL CHOICE (hard deadline)</span> <span class="tag tag-red">Act III</span></div>
     </div>
+
+    <!-- One-Minute Briefing -->
     <div class="card">
-      <div class="card-header" onclick="toggleCard(this)">
-        <div><div class="card-title">Session Checkpoints</div><div class="card-subtitle">Hard deadlines during play</div></div>
+      <div class="card-head" onclick="toggleCard(this)">
+        <div class="card-head-text"><div class="card-title">One-Minute Player Briefing</div><div class="card-sub">Read this aloud before play begins</div></div>
         <span class="chevron">▼</span>
       </div>
       <div class="card-body">
-        <table class="ref-table">
-          <tr><th>Clock</th><th>Checkpoint</th></tr>
-          <tr><td class="cyan">0:15</td><td>Briefing done — team in Sub-District 7</td></tr>
-          <tr><td>1:10</td><td>Reth's squat found — map in hand</td></tr>
-          <tr><td>2:00</td><td>Junction passed — bodies found</td></tr>
-          <tr><td class="highlight bold">2:15 ⚠</td><td class="highlight">RETH FOUND — hard deadline</td></tr>
-          <tr><td>2:45</td><td>Ascending through Sutter-Vane</td></tr>
-          <tr><td class="red bold">3:05 ⚠</td><td class="red">MORAL CHOICE — hard deadline</td></tr>
-          <tr><td>3:20</td><td>Epilogue coda running</td></tr>
-        </table>
+        <p style="font-size:16px; color:var(--text); font-style:italic; line-height:1.7;">"This is a corporate horror scenario. There is nothing that can be conventionally defeated. The goal is not to win — it is to make a decision you can live with."</p>
+        <p style="font-size:16px; color:var(--text); font-style:italic; line-height:1.7; margin-top:12px;">"There will be Sanity rolls. When you lose SAN, roleplay it — even just one line. That is the only rule I will ask you to hold."</p>
       </div>
     </div>
+
+    <!-- Players -->
     <div class="card">
-      <div class="card-header" onclick="toggleCard(this)">
-        <div><div class="card-title">One-Minute Briefing</div><div class="card-subtitle">Read this to the table before play</div></div>
+      <div class="card-head" onclick="toggleCard(this)">
+        <div class="card-head-text"><div class="card-title">Player Roster</div></div>
         <span class="chevron">▼</span>
       </div>
       <div class="card-body">
-        <p class="bright">"This is a corporate horror scenario. There is nothing that can be conventionally defeated. The goal is not to win — it is to make a decision you can live with."</p>
-        <p class="mt8">"There will be Sanity rolls. When you lose SAN, roleplay it — even just one line. That is the only rule I will ask you to hold."</p>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header" onclick="toggleCard(this)">
-        <div><div class="card-title">Players</div><div class="card-subtitle">Mateusz · Alex · Paul · Tom · Ciaran · Elena</div></div>
-        <span class="chevron">▼</span>
-      </div>
-      <div class="card-body">
-        <table class="ref-table">
-          <tr><th>Player</th><th>Archetype</th></tr>
-          <tr><td>Mateusz Sawicki</td><td class="cyan">The Fixer</td></tr>
-          <tr><td>Alex Walker</td><td class="cyan">The Ghost</td></tr>
-          <tr><td>Paul Looby</td><td class="cyan">The Muscle</td></tr>
-          <tr><td>Tom Wright</td><td class="cyan">The Tech</td></tr>
-          <tr><td>Ciaran McGrath</td><td class="cyan">The Medic</td></tr>
-          <tr><td>Elena Giordano</td><td class="cyan">The Analyst</td></tr>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== ACTS SCREEN ===== -->
-  <div id="screen-acts" class="screen">
-    <div class="act-tabs">
-      <button class="act-tab active" onclick="switchAct('intro', this)">Intro</button>
-      <button class="act-tab" onclick="switchAct('act1', this)">Act I</button>
-      <button class="act-tab" onclick="switchAct('act2', this)">Act II</button>
-      <button class="act-tab" onclick="switchAct('act3', this)">Act III</button>
-      <button class="act-tab" onclick="switchAct('epilogue', this)">Epilogue</button>
-    </div>
-
-    <!-- INTRO -->
-    <div class="act-panel active" id="ap-intro">
-      <div class="goal-box"><strong>Goal:</strong> Brief the team. Establish tone. Get them in the elevator, down into the Undertow.</div>
-      <div class="card">
-        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">Opening Read-Aloud</div></div><span class="chevron">▼</span></div>
-        <div class="card-body">
-          <p class="bright">"The elevator doesn't announce its floor. It just opens, and you're in a reception suite that smells of processed air and expensive polymer. The carpet absorbs sound. Everything is grey and clean. Outside the floor-to-ceiling windows, Neo-Ashford glitters in the acid haze forty storeys below."</p>
-          <p class="mt8 bright">"The woman waiting for you doesn't stand up. Late forties, expensive coat. Corporate augments visible as a faint ridge along her jaw — subdermal comms. She looks at the wall slightly to your left when she speaks, as if watching something you can't see."</p>
-          <p class="mt8 cyan-text bold">"Sit down. There's a job."</p>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">What Sable Tells Them</div></div><span class="chevron">▼</span></div>
-        <div class="card-body">
-          <p>• Damos Reth, data analyst, AWOL in Sub-Districts 7–9</p>
-          <p>• Proprietary data-chip — chip is the priority, Reth secondary</p>
-          <p>• 8,000 credits each. Half now. Half on delivery</p>
-          <p>• NDA covers everything they see. 48-hour window</p>
-          <div class="separator"></div>
-          <p class="red-text bold">What Sable does NOT say:</p>
-          <p>• Why Reth ran</p>
-          <p>• A second Veltris team is already in the tunnels</p>
-          <p>• The biological clause in the NDA means anything</p>
-          <p>• She has already authorised their termination if they surface with the full story</p>
-          <div class="mechanic">BRP: Research / Law 30% — notices NDA biological clause. Sable: "Standard boilerplate. Don't worry about it."</div>
-          <div class="mechanic">BRP: Insight 40% — Sable is withholding something large. She is not lying; she is simply not offering.</div>
-        </div>
-      </div>
-      <div class="pacing-note">
-        <div class="pacing-label">⏱ Pacing — 15 min</div>
-        Let players ask questions. Answer factually and minimally. At 0:15 they should be heading down into Sub-District 7.
-      </div>
-    </div>
-
-    <!-- ACT 1 -->
-    <div class="act-panel" id="ap-act1">
-      <div class="goal-box"><strong>Goal:</strong> Establish the Undertow. Plant seeds of wrongness. Give the team Reth's map. Deliver the photograph.</div>
-
-      <div class="card">
-        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">The Slab</div><div class="card-subtitle">Elevated market — Sub-District 7 entry</div></div><span class="act1-tag card-tag">Act I</span><span class="chevron">▼</span></div>
-        <div class="card-body">
-          <p class="dim">Noise, heat, synthesised food and something oily. Neon catching rain-slick. And underneath — faint, sweet, wrong — the smell, rising from drain grates.</p>
-          <div class="separator"></div>
-          <div class="mechanic">BRP: Persuade / Fast Talk — vendor confirms Reth's direction. "Scared. Paying cash. Not talking to anyone." (50 credits)</div>
-          <div class="mechanic">BRP: Spot / Electronics 50% — drone patrol routes rerouted by someone corporate, carving blind spots toward Sub-District 9. ⚠ ESSENTIAL CLUE #1</div>
-          <p class="mt8 amber-text bold">The Child → The Tech specifically</p>
-          <p>Folds a note: "Don't go to the plant. My dad went. He didn't come back the same." Paper has the organic smell. Child is ~9, gone before anyone can follow.</p>
-          <div class="mechanic">BRP: Track 40% — child lives in a stairwell 200m east. Father: Gavrel Muss. Vanished 3 weeks ago. Came back for one day. Walked back down at 3am.</div>
-          <p class="mt8 dim">Rivet Teeth gang — 3–4 members. Watching but will NOT initiate. Leader: Scratch. <span class="amber-text">RED HERRING — not connected to entity.</span></p>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">The Terminus Bar</div><div class="card-subtitle">Jed Osler. Room 4 upstairs.</div></div><span class="act1-tag card-tag">Act I</span><span class="chevron">▼</span></div>
-        <div class="card-body">
-          <p class="dim">Dim, warm, humid. Strip lighting. Six booths. Clientele don't look up — which takes effort.</p>
-          <div class="mechanic">BRP: Insight 40% — Jed is sizing the team up. Friendly + direct + cash = opens up. Flash Veltris logo or threaten = shut down permanently.</div>
-          <div class="separator"></div>
-          <p class="bright bold">What Jed says (if treated well):</p>
-          <p>• Reth was here 4 nights ago. Nervous, cash, two drinks unfinished</p>
-          <p>• Asking about "the disappearances"</p>
-          <p>• Paid for a week upstairs, room 4. Bag still there</p>
-          <p>• The organic smell started ~1 year ago. "You stop smelling it eventually."</p>
-          <p>• Ghost gets automatic warm reception</p>
-          <p>• Will not go below street level for any price. "People who come back from below... some of them go back on their own. That's worse."</p>
-          <p class="mt8 amber-text bold">⚠ ESSENTIAL CLUE #2</p>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">Room 4 — Reth's Squat</div><div class="card-subtitle">The corkboard. The photograph.</div></div><span class="act1-tag card-tag">Act I</span><span class="chevron">▼</span></div>
-        <div class="card-body">
-          <p class="dim">Stale air and adrenaline-sweat. Chaos left by someone frightened and thinking fast. Blank data-chips. Handwritten notes on paper.</p>
-          <div class="mechanic">BRP: Spot 40% — notes torn where pen pressed too hard. Handwriting starts neat, becomes erratic.</div>
-          <p class="mt8 bright bold">The corkboard:</p>
-          <p>Hand-drawn map of Sub-District 9. Drainage tunnel routes. One route highlighted in red. End of route: X and "MW pod 7"</p>
-          <div class="mechanic">BRP: Research / Insight 40% — map drawn from Veltris infrastructure plans. He knew where he was going before he ran. ⚠ ESSENTIAL CLUE #3</div>
-          <div class="separator"></div>
-          <p class="red-text bold">☠ THE PHOTOGRAPH — SANITY CHECK</p>
-          <p>Pinned to bottom of corkboard. Drainage tunnel photo. Behind the apparent subject: something large. It does not resolve into anything recognisable. The impression it has moved — is still moving — is very difficult to dismiss.</p>
-          <div class="san-note">BRP: Sanity 0/1 — the shape does not belong in the world you thought you were in.</div>
-          <div class="mechanic">BRP: Photography / Art 40% — photograph is NOT doctored. Whatever is in it was there. OPTIONAL CLUE A</div>
-        </div>
-      </div>
-
-      <div class="pacing-note">
-        <div class="pacing-label">⏱ Pacing — 1:10 hard</div>
-        Skip Rivet Teeth if over. Move child to bar staircase. Must have: blind spots, Jed's info, corkboard map. If 15+ min left at squat — let them sit with the photograph. Do not rush it.
-      </div>
-    </div>
-
-    <!-- ACT 2 -->
-    <div class="act-panel" id="ap-act2">
-      <div class="goal-box"><strong>Goal:</strong> Horror from atmospheric to visceral. Locate Reth. Reveal the entity's reality. Force the decision to ascend.</div>
-
-      <div class="card">
-        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">Entry Shaft</div><div class="card-subtitle">400m below street level</div></div><span class="act2-tag card-tag">Act II</span><span class="chevron">▼</span></div>
-        <div class="card-body">
-          <p class="dim">Access hatch forced recently and badly repaired. Temperature rising as they descend. Organic sweetness immediately stronger. Comms: rhythmic interference. Not a signal. A pattern.</p>
-          <div class="mechanic">BRP: Electronics / Lockpick 40% — bypass done with high-grade corporate hacking suite. This was Veltris black ops. Not Reth.</div>
-          <p class="mt8 amber-text">▶ HORROR ESCALATION #1 (before Junction)</p>
-          <p>The Tech's drone shows a large shape behind the group — large, not animal, not machinery. When they look: nothing. Play back footage: the shape does not replay. The recording has a clean gap of 4 seconds.</p>
-          <div class="san-note">BRP: Sanity 0/1 — the gap in the recording is more disturbing than the shape would have been.</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">The Junction</div><div class="card-subtitle">The entity's outer edge</div></div><span class="act2-tag card-tag">Act II</span><span class="chevron">▼</span></div>
-        <div class="card-body">
-          <p class="dim">Six tunnels converge. Walls, ceiling, support columns: covered in pale filamentous growth — organic, faintly luminescent, warm to the touch. The silence is full. Occupied by attention.</p>
-          <div class="mechanic">BRP: Science (Bio) / Medicine 40% — not fungal, not bacterial, no known taxonomy. Bio-scanner: "organic: living: class: unclassified" → then: "WARNING — POSSIBLE MEMETIC HAZARD" (yellow text).</div>
-          <div class="san-note">BRP: Sanity 1/1D6 — first sight of the filament growth.</div>
-          <p class="mt8 amber-text bold">If the growth is cut:</p>
-          <p>It does not bleed. The cut ends contract — slowly, deliberately, like a creature reacting to pain in slow motion.</p>
-          <div class="san-note">BRP: Sanity 0/1 — witnessing the contraction (only if a player cuts it).</div>
-          <p class="mt8 amber-text bold">⚠ ESSENTIAL CLUE #4 — entity is physically present</p>
-          <p class="purple-text dim">OPTIONAL CLUE B — MEMETIC HAZARD flag implies Veltris knew before Sutter-Vane acquisition</p>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">The Watching Room</div><div class="card-subtitle">Reth's terminal. The Veltris files.</div></div><span class="act2-tag card-tag">Act II</span><span class="chevron">▼</span></div>
-        <div class="card-body">
-          <p class="dim">Old decommissioned control room. Portable terminal on, battery 12%. Doorframe has filament residue, cleared in direction of Feed Corridor.</p>
-          <div class="mechanic">BRP: Electronics 35% / Computer Use 50% — reads the partial Veltris files. ⚠ ESSENTIAL CLUE #5</div>
-          <p class="mt8 bright bold">Files reveal:</p>
-          <p>• Month 1–3: "biological anomaly" → reclassified as "entity"</p>
-          <p>• Month 7: Feeding programme operational. Dr Chen assigned lead</p>
-          <p>• Month 11: Security Team C did not return from containment response</p>
-          <p>• Month 14: Entity perceives directed observation. Dr Chen: "adjust our relationship with the concept of observation"</p>
-          <p>• Month 16: Reth accessed files. "Recommend containment."</p>
-          <div class="mechanic">BRP: Insight 40% — "recommend containment" does not mean "keep him safe." It never did.</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">The Feed Corridor</div><div class="card-subtitle">Architecture. Bodies. The named rhythm.</div></div><span class="act2-tag card-tag">Act II</span><span class="chevron">▼</span></div>
-        <div class="card-body">
-          <p class="dim">Filament growth structured almost architecturally — arching buttresses, lateral formations like ribs. This space has been remodelled. The shapes have a quality of intention.</p>
-          <div class="san-note">BRP: Sanity 1/1D4 — entering the Feed Corridor. The purposefulness of the architecture.</div>
-          <p class="mt8 amber-text bold">▶ HORROR ESCALATION #2 — The Named Rhythm</p>
-          <p>Tell one player privately: "Your comm is carrying a sound. Underneath the interference. It sounds almost like your name, repeated very slowly." This is not a transmission. It is something older.</p>
-          <div class="mechanic">BRP: Listen / Spot 40% — to notice the name-rhythm. Other characters notice interference but not the specific quality.</div>
-          <div class="separator"></div>
-          <p class="red-text bold">☠ THE THREE BODIES</p>
-          <p>Three sets of remains in decomposed Veltris security gear. Each torso opened not from violence but from within. Ribcages splayed outward like flowers in bloom. No blood. Chest cavities empty and clean, with dried filament residue along interior edges.</p>
-          <div class="mechanic">BRP: Medicine / Science (Bio) 40% — the ribcages were not broken. They were unsealed. Something exited from inside. It took its time. The mechanism is identical across all three. ⚠ ESSENTIAL CLUE #6</div>
-          <div class="san-note">BRP: Sanity 1D4/1D10 — seeing the opened bodies.</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">Maintenance Pod 7 — Finding Reth</div><div class="card-subtitle">"Who sent you." Not a question.</div></div><span class="act2-tag card-tag">Act II</span><span class="chevron">▼</span></div>
-        <div class="card-body">
-          <p class="dim">Heavy maintenance pod door, sealed from inside with a metal bar. 15-second pause after knocking. Correct answer: anything that is not "Veltris."</p>
-          <div class="mechanic">BRP: Persuade / Fast Talk 50% — Ghost's Sub-D7 accent: +20%. Showing the photograph or quoting "it knows where the warmth is" will convince anyone.</div>
-          <div class="separator"></div>
-          <p class="bright bold">What Reth tells them: ⚠ ESSENTIAL CLUE #7</p>
-          <p>• Veltris studying the entity for 18 months — it was already there when they bought Sutter-Vane</p>
-          <p>• "It knows you're here. It knew before you arrived. It feels weight, warmth — it feels intent. It followed the fear."</p>
-          <p>• Dr Chen moved in permanently and stopped being entirely Dr Chen</p>
-          <p>• He refuses to go back through Veltris. He means this. Cannot be convinced.</p>
-          <p>• "There is a second node. Sub-District 4, two kilometres north. NOBODY KNOWS."</p>
-          <div class="separator"></div>
-          <p class="amber-text bold">▶ HORROR ESCALATION #4 — Reth's Hands</p>
-          <p>Subcutaneous filament tracery on both palms — pale threads beneath skin, following the tendons.</p>
-          <div class="mechanic">BRP: Medicine 50% — early-stage integration. Reversible with treatment within 72 hours. The Medic's hook about thoracic tissue connects here. OPTIONAL CLUE D</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">Kov and Sera — Second Veltris Team</div><div class="card-subtitle">Optional — skip if running behind</div></div><span class="act2-tag card-tag">Act II</span><span class="chevron">▼</span></div>
-        <div class="card-body">
-          <div class="mechanic">BRP: Spot / Perception 40% — movement in side tunnel. Two heat signatures ~30m ahead on bio-scanner.</div>
-          <p class="mt8">Black-ops contractors. Orders: recover Reth, eliminate players. But: Kov has broken rib (audible), Sera hasn't slept in 36 hours. Both have seen the bodies.</p>
-          <div class="mechanic">BRP: Persuade 50% — leverage: (1) team knows what Veltris's operation is; (2) they've both seen the bodies; (3) nobody is coming to get either team out.</div>
-          <div class="separator"></div>
-          <div class="stat-block">
-            <div class="stat-block-row cyan-text bold">KOV (broken rib: all physical -2, Move 8)</div>
-            <div class="stat-block-row dim">STR 15 | CON 14 | SIZ 14 | INT 12 | POW 11 | DEX 13</div>
-            <div class="stat-block-row dim">HP <span>15</span> | PP <span>11</span> | DB <span>+1D4</span></div>
-            <div class="stat-block-row dim">Firearms (Pistol) 60%, Brawl 55%, Dodge 45%</div>
-            <div class="stat-block-row dim">Sidearm 2D6+2 | Body armour 4pts torso</div>
-          </div>
-          <div class="stat-block">
-            <div class="stat-block-row cyan-text bold">SERA (exhausted: all rolls -10%)</div>
-            <div class="stat-block-row dim">STR 12 | CON 11 | SIZ 11 | INT 14 | POW 12 | DEX 15</div>
-            <div class="stat-block-row dim">HP <span>12</span> | PP <span>12</span> | DB <span>None</span></div>
-            <div class="stat-block-row dim">Firearms (Pistol) 65%, SMG 60%, Dodge 55%</div>
-            <div class="stat-block-row dim">Sidearm / SMG 2D6+2 | Body armour 4pts torso</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="pacing-note">
-        <div class="pacing-label">⏱ Pacing — 2:15 hard (Reth found)</div>
-        Skip Kov/Sera if over 10 min late at 2:00. Non-negotiables: Junction (entity), Watching Room files (corporate), Three Bodies (mechanism), Reth (full story).
-      </div>
-    </div>
-
-    <!-- ACT 3 -->
-    <div class="act-panel" id="ap-act3">
-      <div class="goal-box"><strong>Goal:</strong> Get out. Make the choice. Live with it. Fast pace. No new information — only consequences.</div>
-
-      <div class="card">
-        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">Sub-Level 9 — Containment Floor</div><div class="card-subtitle">Two barriers failed. Two amber.</div></div><span class="act3-tag card-tag">Act III</span><span class="chevron">▼</span></div>
-        <div class="card-body">
-          <p class="dim">Filament growth covers the lower third of the room. Two dead barrier rigs — grown through, the way a tree grows through a fence. The other two glow amber.</p>
-          <div class="san-note">BRP: Sanity 1D4/1D10 — seeing the containment floor and the scale of entity's physical presence.</div>
-          <p class="mt8 red-text bold">☠ THE PRIMARY NODE</p>
-          <p>Through reinforced glass at the far end: approximately transit-bus sized. Radially symmetrical — not in any familiar way. Constantly in slow motion. No eyes. The sense of being perceived is overwhelming regardless.</p>
-          <div class="san-note">BRP: Sanity 1D10/1D20 — primary node. Critical fail (max d20): paralysed 1D4 rounds + 1D3 permanent SAN loss.</div>
-          <p class="mt8 amber-text bold">Power: If power is cut → both remaining barriers fail in 30 seconds.</p>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">Observation Gallery — Dr Chen</div><div class="card-subtitle">Do not skip this if at all possible.</div></div><span class="act3-tag card-tag">Act III</span><span class="chevron">▼</span></div>
-        <div class="card-body">
-          <p class="dim">Reinforced glass room overlooking containment. Dr Chen at a terminal. Does not look up immediately. Finishes a line of notes first. Not frightened. Not hostile. Fascinated.</p>
-          <div class="separator"></div>
-          <p class="bright bold">Her answers:</p>
-          <p class="dim">On the entity: <span class="bright">"It has been here since before the city. It has directions. Like a tide."</span></p>
-          <p class="dim">On containment: <span class="bright">"The barriers were always a delay. It wasn't contained. It was being given time."</span></p>
-          <p class="dim">On herself: <span class="bright">"I've been here fourteen weeks. I feel quite well."</span></p>
-          <p class="dim">On what to do: <span class="bright">"Whatever you decide, it will continue. You have been here approximately ninety minutes."</span></p>
-          <div class="mechanic">BRP: Perception / Insight 50% — her typing rhythm does not match any human keyboard cadence. Consistent, structured, nothing she learned from any human source. OPTIONAL CLUE E</div>
-          <div class="san-note">BRP: Sanity 0/1D4 — extended conversation with Dr Chen. The wrongness accumulates. She is not monstrous. She is someone who has been remade slowly and is not unhappy about it.</div>
-          <div class="mechanic">BRP: POW resistance vs POW 16 — 5+ minutes of conversation. Fail: 1 SAN loss from subtle cognitive alignment. Roll secretly. Tell the affected player privately.</div>
-          <p class="mt8 amber-text">GM TECHNIQUE: When playing Chen, look slightly past the player's shoulder. Hold it a beat longer than comfortable. Don't theatricalise it.</p>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">THE MORAL CHOICE</div><div class="card-subtitle">Three options. No clean answer.</div></div><span class="act3-tag card-tag">Act III</span><span class="chevron">▼</span></div>
-        <div class="card-body">
-          <p class="amber-text bold">PRESENT ALL THREE WITH EQUAL WEIGHT. Do not telegraph a preferred outcome.</p>
-          <div class="separator"></div>
-          <p class="bright bold">Option 1 — Walk Away</p>
-          <p>Take the money. Sign the NDA. Say nothing. Entity remains imperfectly contained. Breaches final barriers in ~6 months. Secondary node in Sub-District 4 established by then.</p>
-          <p class="dim">Cost: The team knows. They will always know.</p>
-          <div class="separator"></div>
-          <p class="bright bold">Option 2 — Expose Veltris</p>
-          <p>Use chip data to go public or to a rival corp. Veltris takes the damage. Programme shut down. Containment systems go offline as no one maintains them. Entity begins slow spread again with no one watching.</p>
-          <p class="dim">Cost: Corporation damaged. Entity released. Nobody knows what they're dealing with.</p>
-          <div class="separator"></div>
-          <p class="bright bold">Option 3 — Destroy the Plant</p>
-          <p>Tech triggers catastrophic power cell overload. 10 minutes to rig. During those 10 minutes: barriers fail as power rerouted. Entity free in Sub-Level 9 — cannot reach upper floors in time. Explosion destroys primary node. Filaments wither over weeks. Secondary node in Sub-D4 unaffected.</p>
-          <p class="dim">Cost: Power/water/heat/medical to surrounding blocks goes out. ~15–30 civilian deaths. Four will be children.</p>
-          <div class="separator"></div>
-          <p class="red-text bold">If players try all three: the maths don't work. 10 min to rig + Reth + firefight upstairs exceeds any safe timeline. Two of three. Not all three.</p>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">Upper Floor Security</div><div class="card-subtitle">4 personnel. Standing orders.</div></div><span class="act3-tag card-tag">Act III</span><span class="chevron">▼</span></div>
-        <div class="card-body">
-          <p>3 Veltris researchers (non-combatant). 4 Veltris security — standing orders: prevent anything leaving Sub-Level 9. Anything.</p>
-          <div class="mechanic">BRP: Stealth 50% — moving through upper floors. -10% if bringing Reth without coaching him first.</div>
-          <div class="stat-block">
-            <div class="stat-block-row cyan-text bold">VELTRIS SECURITY × 4</div>
-            <div class="stat-block-row dim">STR 13 | CON 12 | SIZ 12 | INT 11 | POW 10 | DEX 12</div>
-            <div class="stat-block-row dim">HP <span>13</span> | PP <span>10</span> | DB <span>None</span> | Move <span>10</span></div>
-            <div class="stat-block-row dim">Firearms (Pistol) 55%, Brawl 45%, Spot 40%, Dodge 40%</div>
-            <div class="stat-block-row dim">Sidearm 2D6+2 | Body armour 4pts torso</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="pacing-note">
-        <div class="pacing-label">⏱ Pacing — 3:05 hard (moral choice)</div>
-        If unresolved at 3:05: have the final two barriers show red indicators. They have minutes, not ten. Choose now.
-      </div>
-    </div>
-
-    <!-- EPILOGUE -->
-    <div class="act-panel" id="ap-epilogue">
-      <div class="goal-box"><strong>Goal:</strong> One coda scene, 15 minutes, entirely dependent on the choice made.</div>
-      <div class="card">
-        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">If They Walked Away</div></div><span class="chevron">▼</span></div>
-        <div class="card-body">
-          <p>8,000 credits each. Transfer lands before they leave the building. Sable's debrief is 3 minutes long and slightly too warm. Three weeks later, one operative receives an anonymous transmission — just a photograph. The street outside the Terminus Bar. Every window in the surrounding blocks is dark. The street is empty. No people visible anywhere in the frame.</p>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">If They Exposed Veltris</div></div><span class="chevron">▼</span></div>
-        <div class="card-body">
-          <p>Reth makes the news for 18 hours before disappearing into rival corporate protective custody. Veltris stock drops 12% and recovers in 6 weeks. A subsidiary purchases the Sutter-Vane assets in liquidation. The new owners file within 60 days: "unusual biological material in sub-level infrastructure." They describe it as "commercially promising" and initiate a new research programme.</p>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">If They Destroyed the Plant</div></div><span class="chevron">▼</span></div>
-        <div class="card-body">
-          <p>Attributed to a degraded gas main. Official casualty count: nine. Actual count, three weeks later: twenty-three. Four of them are children. The Tech is paid 8,000 credits — Sable cannot prove anything. The operative who rigged the overload dreams about tunnels for the rest of their life. Not nightmares, exactly. Tunnels. The faint organic sweetness. Something patient, still down there, waiting. The secondary node in Sub-District 4 has no one watching it.</p>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">If Reth Survives</div></div><span class="chevron">▼</span></div>
-        <div class="card-body">
-          <p>The filament tracery on his hands fades over 6 weeks with treatment. If untreated — not documented. The data chip is out there. He was a data analyst. He knows what to do with information. One week after any ending, a notification appears on the Analyst's terminal — an anonymous tip about a Veltris acquisition in Sub-District 4. Deleted by an automated process before they can do more than open it.</p>
-          <p class="mt8 cyan-text bold">The next scenario is already beginning.</p>
+        <div class="ref-table" style="margin:0;">
+          <table style="width:100%;border-collapse:collapse;font-size:14px;">
+            <tr style="border-bottom:1px solid var(--border);"><th style="padding:8px 0;color:var(--text-sub);font-size:12px;text-transform:uppercase;letter-spacing:1px;">Player</th><th style="padding:8px 0;color:var(--text-sub);font-size:12px;text-transform:uppercase;letter-spacing:1px;">Archetype</th></tr>
+            <tr style="border-bottom:1px solid var(--border);"><td style="padding:9px 0;">Mateusz Sawicki</td><td style="color:var(--cyan);padding:9px 0;">The Fixer</td></tr>
+            <tr style="border-bottom:1px solid var(--border);"><td style="padding:9px 0;">Alex Walker</td><td style="color:var(--cyan);padding:9px 0;">The Ghost</td></tr>
+            <tr style="border-bottom:1px solid var(--border);"><td style="padding:9px 0;">Paul Looby</td><td style="color:var(--cyan);padding:9px 0;">The Muscle</td></tr>
+            <tr style="border-bottom:1px solid var(--border);"><td style="padding:9px 0;">Tom Wright</td><td style="color:var(--cyan);padding:9px 0;">The Tech</td></tr>
+            <tr style="border-bottom:1px solid var(--border);"><td style="padding:9px 0;">Ciaran McGrath</td><td style="color:var(--cyan);padding:9px 0;">The Medic</td></tr>
+            <tr><td style="padding:9px 0;">Elena Giordano</td><td style="color:var(--cyan);padding:9px 0;">The Analyst</td></tr>
+          </table>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ===== NPC SCREEN ===== -->
-  <div id="screen-npcs" class="screen">
-    <div id="npc-list">
-      <!-- NPCs rendered by JS -->
+  <!-- ===== ACTS ===== -->
+  <div class="screen" id="screen-acts">
+    <div class="act-tabs" id="act-tabs">
+      <div class="act-tab active" onclick="switchAct('intro',this)">Intro</div>
+      <div class="act-tab" onclick="switchAct('act1',this)">Act I</div>
+      <div class="act-tab" onclick="switchAct('act2',this)">Act II</div>
+      <div class="act-tab" onclick="switchAct('act3',this)">Act III</div>
+      <div class="act-tab" onclick="switchAct('epilogue',this)">Epilogue</div>
     </div>
+    <div id="act-content"></div>
   </div>
 
-  <!-- ===== CLUE SCREEN ===== -->
-  <div id="screen-clues" class="screen">
-    <div class="section-head">Essential Clues — scenario requires all of these</div>
+  <!-- ===== NPCS ===== -->
+  <div class="screen" id="screen-npcs">
+    <div id="npc-list"></div>
+  </div>
+
+  <!-- ===== CLUES ===== -->
+  <div class="screen" id="screen-clues">
+    <div class="section-head">Essential Clues — tap to cycle: pending → found → missed</div>
     <div id="clue-essential-list"></div>
-    <div class="section-head" style="margin-top:16px;">Optional Clues — reward thorough play</div>
+    <div class="section-head" style="margin-top:18px;">Optional Clues</div>
     <div id="clue-optional-list"></div>
-    <div class="section-head" style="margin-top:16px;">Fallback Triggers</div>
-    <div class="card">
-      <div class="card-body" style="display:block;">
-        <p class="bright bold">Missed the map?</p>
-        <p class="dim mb8">Bio-scanner shows elevated organic readings in one direction. BRP: Track 40% on filament density leads to the node.</p>
-        <p class="bright bold">Missed the Veltris files?</p>
-        <p class="dim mb8">Reth's verbal account covers the same ground fully when found.</p>
-        <p class="bright bold">Reth won't open the pod?</p>
-        <p class="dim">Ghost's Sub-D7 accent = automatic trust boost. Showing the photograph or quoting "it knows where the warmth is" will convince anyone.</p>
-      </div>
-    </div>
+    <div class="section-head" style="margin-top:18px;">Fallback Triggers</div>
+    <div class="card"><div class="card-body" style="display:block;">
+      <p><strong style="color:var(--amber);">Map missed?</strong> Bio-scanner shows elevated readings in one direction. BRP: Track 40%.</p>
+      <p><strong style="color:var(--amber);">Files missed?</strong> Reth's account covers the same ground verbally.</p>
+      <p><strong style="color:var(--amber);">Reth won't open pod?</strong> Ghost's Sub-D7 accent = auto trust. Show him the photograph or quote "it knows where the warmth is."</p>
+    </div></div>
   </div>
 
-  <!-- ===== HANDOUTS SCREEN ===== -->
-  <div id="screen-handouts" class="screen">
-    <p class="dim mb8" style="font-size:11px;">Tap to expand. Use fullscreen button to show handout to players.</p>
+  <!-- ===== HANDOUTS ===== -->
+  <div class="screen" id="screen-handouts">
     <div id="handout-list"></div>
   </div>
 
-  <!-- ===== PLAYERS SCREEN ===== -->
-  <div id="screen-players" class="screen">
+  <!-- ===== PLAYERS ===== -->
+  <div class="screen" id="screen-players">
     <div class="pc-grid" id="pc-grid"></div>
   </div>
 
-  <!-- ===== REFERENCE SCREEN ===== -->
-  <div id="screen-ref" class="screen">
+  <!-- ===== REFERENCE ===== -->
+  <div class="screen" id="screen-ref">
     <div class="act-tabs">
-      <button class="act-tab active" onclick="switchRef('san', this)">SAN</button>
-      <button class="act-tab" onclick="switchRef('skills', this)">Skills</button>
-      <button class="act-tab" onclick="switchRef('brp', this)">BRP</button>
-      <button class="act-tab" onclick="switchRef('entity', this)">Entity</button>
+      <div class="act-tab active" onclick="switchRef('san',this)">SAN</div>
+      <div class="act-tab" onclick="switchRef('skills',this)">Skill Rolls</div>
+      <div class="act-tab" onclick="switchRef('brp',this)">BRP Rules</div>
+      <div class="act-tab" onclick="switchRef('entity',this)">The Entity</div>
     </div>
-    <div id="rp-san" class="act-panel active">
-      <div class="section-head">Sanity Losses — Night Crawler</div>
-      <table class="ref-table">
-        <tr><th>Trigger</th><th>Fail</th><th>Pass</th></tr>
-        <tr><td>The photograph</td><td class="red">0</td><td class="red">1</td></tr>
-        <tr><td>First sight of filament growth</td><td class="red">1</td><td class="red">1D6</td></tr>
-        <tr><td>Filament contraction when cut</td><td class="red">0</td><td class="red">1</td></tr>
-        <tr><td>Entering the Feed Corridor</td><td class="red">1</td><td class="red">1D4</td></tr>
-        <tr><td>The three opened bodies</td><td class="red">1D4</td><td class="red">1D10</td></tr>
-        <tr><td>Drone footage gap</td><td class="red">0</td><td class="red">1</td></tr>
-        <tr><td>Extended conv. with Dr Chen</td><td class="red">0</td><td class="red">1D4</td></tr>
-        <tr><td>Containment floor — entity scale</td><td class="red">1D4</td><td class="red">1D10</td></tr>
-        <tr><td class="highlight bold">Primary node (direct view)</td><td class="red bold">1D10</td><td class="red bold">1D20</td></tr>
-        <tr><td>Primary node — critical fail</td><td colspan="2" class="red">+1D3 permanent SAN</td></tr>
-      </table>
-    </div>
-    <div id="rp-skills" class="act-panel">
-      <div class="section-head">Key Skill Rolls — Night Crawler</div>
-      <table class="ref-table">
-        <tr><th>Where</th><th>Roll</th><th>Result</th></tr>
-        <tr><td>Briefing</td><td class="cyan">Research/Law 30%</td><td>Notes NDA biological clause</td></tr>
-        <tr><td>Briefing</td><td class="cyan">Insight 40%</td><td>Sable withholding something large</td></tr>
-        <tr><td>The Slab</td><td class="cyan">P/FT</td><td>Vendor confirms Reth's direction (50 cr)</td></tr>
-        <tr><td>The Slab</td><td class="cyan">Spot/Elec 50%</td><td>Corporate surveillance blind spots</td></tr>
-        <tr><td>The Slab</td><td class="cyan">Track 40%</td><td>Follows the child</td></tr>
-        <tr><td>Terminus Bar</td><td class="cyan">Insight 40%</td><td>Reading Jed's approach correctly</td></tr>
-        <tr><td>Room 4</td><td class="cyan">Spot 40%</td><td>Pressure marks on notes</td></tr>
-        <tr><td>Room 4</td><td class="cyan">Research/Insight 40%</td><td>Map from Veltris plans</td></tr>
-        <tr><td>Room 4</td><td class="cyan">Photo/Art 40%</td><td>Photograph not doctored</td></tr>
-        <tr><td>Entry Shaft</td><td class="cyan">Elec/Lockpick 40%</td><td>Corporate bypass — not Reth</td></tr>
-        <tr><td>Junction</td><td class="cyan">Sci(Bio)/Med 40%</td><td>Bio-scanner: unclassified + MEMETIC</td></tr>
-        <tr><td>Watching Room</td><td class="cyan">Elec 35%/Comp 50%</td><td>Reads the Veltris files</td></tr>
-        <tr><td>Feed Corridor</td><td class="cyan">Listen/Spot 40%</td><td>Named rhythm in comms</td></tr>
-        <tr><td>Feed Corridor</td><td class="cyan">Med/Sci(Bio) 40%</td><td>Mechanism of opened chests</td></tr>
-        <tr><td>Pod 7</td><td class="cyan">Persuade/FT 50%</td><td>Convincing Reth to open door</td></tr>
-        <tr><td>Pod 7</td><td class="cyan">Medicine 50%</td><td>Filament integration timeline</td></tr>
-        <tr><td>Gallery</td><td class="cyan">Perc/Insight 50%</td><td>Dr Chen's wrong typing cadence</td></tr>
-        <tr><td>Gallery</td><td class="cyan">POW vs 16</td><td>Chen's proximity influence (secret)</td></tr>
-        <tr><td>60+ min tunnels</td><td class="red">POW vs 18</td><td>Entity environmental conditioning (secret)</td></tr>
-      </table>
-    </div>
-    <div id="rp-brp" class="act-panel">
-      <div class="section-head">BRP Quick Reference</div>
-      <table class="ref-table">
-        <tr><th>Level</th><th>Modifier</th></tr>
-        <tr><td>Easy</td><td class="green">× 2</td></tr>
-        <tr><td>Standard</td><td>× 1</td></tr>
-        <tr><td>Difficult</td><td class="amber-text">× ½</td></tr>
-        <tr><td>Very Difficult</td><td class="red">× ⅕</td></tr>
-      </table>
-      <table class="ref-table">
-        <tr><th>Result</th><th>Roll</th></tr>
-        <tr><td class="green">Critical</td><td>01–05 or ≤ 1/10 skill</td></tr>
-        <tr><td class="cyan">Special</td><td>≤ 1/5 skill</td></tr>
-        <tr><td>Success</td><td>≤ skill %</td></tr>
-        <tr><td class="amber-text">Failure</td><td>> skill %</td></tr>
-        <tr><td class="red">Fumble</td><td>96–00 (or >30 if skill <30)</td></tr>
-      </table>
-      <table class="ref-table">
-        <tr><th>STR+SIZ</th><th>Damage Modifier</th></tr>
-        <tr><td>2–12</td><td class="red">-1D6</td></tr>
-        <tr><td>13–16</td><td class="amber-text">-1D4</td></tr>
-        <tr><td>17–24</td><td>None</td></tr>
-        <tr><td>25–32</td><td class="green">+1D4</td></tr>
-        <tr><td>33–40</td><td class="green">+1D6</td></tr>
-      </table>
-    </div>
-    <div id="rp-entity" class="act-panel">
-      <div class="section-head">The Entity — The Night Crawler</div>
-      <div class="card" style="margin-bottom:10px;">
-        <div class="card-body" style="display:block;">
-          <p class="red-text bold">Nature</p>
-          <p class="mb8">Spawn of the Lurker at the Threshold. Semi-corporeal. Predates Neo-Ashford by centuries. Distributed filament network IS the entity. Primary node is its densest concentration.</p>
-          <p class="red-text bold">Sensory System</p>
-          <p class="mb8">Perceives through pressure differential, heat, and "intent" — the quality of directed attention in living beings. It registered the team's approach before they entered Sub-District 7. When the team looks at it, it perceives the looking.</p>
-          <p class="red-text bold">Combat</p>
-          <p class="mb8">Cannot be conventionally killed. Primary node: destroyed by Tech's overload, 200+ HP damage, or equivalent explosive. Cutting filaments: AP 2, HP 8 per metre-section — slows it, draws network attention to that location in 1D4 rounds. Does not chase in a straight line — anticipates through the tunnel network.</p>
-          <p class="red-text bold">Influence Mechanic</p>
-          <p>60+ cumulative minutes in tunnels: POW resistance vs POW 18. Fail: quiet pull toward lower levels — returning feels natural. Tell failing player PRIVATELY. Not mind control. Deep, slow environmental conditioning. How two of Scratch's people went back.</p>
-          <p class="mt8 amber-text italic">"If a player asks whether their character is affected: 'Your character feels fine. That is the problem.'"</p>
-        </div>
-      </div>
-    </div>
+    <div id="ref-content"></div>
   </div>
 
 </div><!-- /main -->
+</div><!-- /app -->
 
-<!-- BOTTOM NAV -->
-<div id="nav">
-  <button class="nav-btn active" id="nav-home" onclick="navTo('home')"><span class="icon">⌂</span>Home</button>
-  <button class="nav-btn" id="nav-acts" onclick="navTo('acts')"><span class="icon">🎭</span>Acts</button>
-  <button class="nav-btn" id="nav-npcs" onclick="navTo('npcs')"><span class="icon">👤</span>NPCs</button>
-  <button class="nav-btn" id="nav-clues" onclick="navTo('clues')"><span class="icon">🔍</span>Clues</button>
-  <button class="nav-btn" id="nav-handouts" onclick="navTo('handouts')"><span class="icon">📄</span>HO</button>
-  <button class="nav-btn" id="nav-players" onclick="navTo('players')"><span class="icon">♟</span>Players</button>
-  <button class="nav-btn" id="nav-ref" onclick="navTo('ref')"><span class="icon">📋</span>Ref</button>
-</div>
-
-<!-- FULLSCREEN HANDOUT OVERLAY -->
-<div id="handout-overlay">
-  <button id="handout-overlay-close" onclick="closeHandoutOverlay()">✕ Close</button>
-  <div id="handout-overlay-content"></div>
-</div>
-
-<!-- NPC PORTRAIT FULLSCREEN OVERLAY -->
-<div id="portrait-overlay">
-  <img id="portrait-overlay-img" src="" alt="NPC portrait">
-  <div id="portrait-overlay-bar">
-    <span id="portrait-overlay-name"></span>
-    <button id="portrait-overlay-close" onclick="closePortraitOverlay()">✕ Close</button>
+<!-- ===== PORTRAIT OVERLAY ===== -->
+<div class="overlay" id="portrait-overlay">
+  <div class="overlay-topbar">
+    <button class="overlay-back" onclick="closeOverlay('portrait')">← Back</button>
+    <div class="overlay-title" id="portrait-overlay-name"></div>
+    <button class="overlay-action-btn" id="portrait-shown-btn" onclick="markPortraitShown()">✓ Mark Shown</button>
+  </div>
+  <div class="overlay-content">
+    <img id="portrait-overlay-img" src="" alt="NPC Portrait" style="max-height:100%;max-width:100%;object-fit:contain;border-radius:8px;">
   </div>
 </div>
 
-<!-- SAN QUICK MODAL -->
+<!-- ===== HANDOUT OVERLAY ===== -->
+<div class="overlay" id="handout-overlay">
+  <div class="overlay-topbar">
+    <button class="overlay-back" onclick="closeOverlay('handout')">← Back</button>
+    <div class="overlay-title" id="handout-overlay-title"></div>
+    <button class="overlay-action-btn" id="handout-shown-btn" onclick="markHandoutShown()">✓ Mark Shown</button>
+  </div>
+  <div class="overlay-content">
+    <div id="handout-overlay-text"></div>
+  </div>
+</div>
+
+<!-- ===== SAN MODAL ===== -->
 <div id="san-modal">
-  <div id="san-modal-inner">
-    <div id="san-modal-title">⚠ Sanity Reference</div>
+  <div class="san-inner">
+    <div class="san-title">⚠ Sanity Reference</div>
     <table class="ref-table">
-      <tr><th>Trigger</th><th>Fail/Pass</th></tr>
-      <tr><td>Photograph</td><td class="red">0/1</td></tr>
-      <tr><td>Filament growth</td><td class="red">1/1D6</td></tr>
-      <tr><td>Filament contracts</td><td class="red">0/1</td></tr>
-      <tr><td>Feed Corridor entry</td><td class="red">1/1D4</td></tr>
-      <tr><td>Three bodies</td><td class="red">1D4/1D10</td></tr>
-      <tr><td>Drone gap</td><td class="red">0/1</td></tr>
-      <tr><td>Dr Chen (extended)</td><td class="red">0/1D4</td></tr>
-      <tr><td>Containment floor</td><td class="red">1D4/1D10</td></tr>
-      <tr><td class="highlight">Primary node</td><td class="red highlight">1D10/1D20</td></tr>
+      <thead><tr><th>Trigger</th><th>Fail</th><th>Pass</th></tr></thead>
+      <tbody>
+        <tr><td>The photograph</td><td class="c-red">0</td><td class="c-red">1</td></tr>
+        <tr><td>First filament growth</td><td class="c-red">1</td><td class="c-red">1D6</td></tr>
+        <tr><td>Filament contracts</td><td class="c-red">0</td><td class="c-red">1</td></tr>
+        <tr><td>Feed Corridor entry</td><td class="c-red">1</td><td class="c-red">1D4</td></tr>
+        <tr><td>Three opened bodies</td><td class="c-red">1D4</td><td class="c-red">1D10</td></tr>
+        <tr><td>Drone footage gap</td><td class="c-red">0</td><td class="c-red">1</td></tr>
+        <tr><td>Dr Chen (extended)</td><td class="c-red">0</td><td class="c-red">1D4</td></tr>
+        <tr><td>Containment floor</td><td class="c-red">1D4</td><td class="c-red">1D10</td></tr>
+        <tr><td style="color:var(--amber);font-weight:bold;">Primary node</td><td class="c-red" style="font-weight:bold;">1D10</td><td class="c-red" style="font-weight:bold;">1D20</td></tr>
+      </tbody>
     </table>
-    <button id="san-modal-close" onclick="closeSanModal()">Close</button>
+    <button class="btn btn-full" style="margin-top:16px;" onclick="document.getElementById('san-modal').classList.remove('active')">Close</button>
   </div>
 </div>
 
 <script>
-// ===== DATA =====
-
+// ============================================================
+// DATA
+// ============================================================
 const NPCS = [
   {
     name: 'Sable Morn',
@@ -1375,33 +1388,40 @@ let pcState = PCS.map(pc => ({
   status: { injured: false, insane: false, dead: false }
 }));
 
+let clueS
+
 let clueState = {};
 [...CLUES_ESSENTIAL, ...CLUES_OPTIONAL].forEach(c => { clueState[c.id] = 'none'; });
 
-// ===== TIMER =====
+let npcState = {};
+NPCS.forEach(n => { npcState[n.name] = { introduced: false, pinned: false }; });
+
+let handoutState = {};
+HANDOUTS.forEach(h => { handoutState[h.id] = { shown: false }; });
+
+let locationState = {};
+let sessionNotes = { intro: '', act1: '', act2: '', act3: '' };
+
+let pinnedItems = []; // { type, id, label }
+
+// ============================================================
+// TIMER
+// ============================================================
 let timerRunning = false;
-let totalSeconds = 210 * 60;
 let elapsed = 0;
+let totalSeconds = 210 * 60;
 let timerInterval = null;
-
-const CHECKPOINTS = [
-  { t: 15*60, label: 'ACT I', color: 'cyan', pl: 'pl-a1' },
-  { t: 70*60, label: 'ACT II', color: 'amber', pl: 'pl-a2' },
-  { t: 135*60, label: 'ACT III — RETH DUE', color: 'red', pl: 'pl-a3' },
-  { t: 185*60, label: 'MORAL CHOICE — NOW', color: 'red', pl: 'pl-ep' }
-];
-
-let lastAlertIdx = -1;
+let lastAlertFired = -1;
 
 function toggleTimer() {
   if (timerRunning) {
     clearInterval(timerInterval);
     timerRunning = false;
-    document.getElementById('btn-start-pause').textContent = '▶ RESUME';
+    document.getElementById('btn-start').textContent = '▶ Resume';
   } else {
     timerRunning = true;
-    document.getElementById('btn-start-pause').textContent = '⏸ PAUSE';
-    timerInterval = setInterval(tickTimer, 1000);
+    document.getElementById('btn-start').textContent = '⏸ Pause';
+    timerInterval = setInterval(tick, 1000);
   }
 }
 
@@ -1409,327 +1429,651 @@ function resetTimer() {
   clearInterval(timerInterval);
   timerRunning = false;
   elapsed = 0;
-  lastAlertIdx = -1;
-  document.getElementById('btn-start-pause').textContent = '▶ START';
-  document.getElementById('alert-banner').className = '';
-  updateTimerDisplay();
-  updateProgressBar();
+  lastAlertFired = -1;
+  document.getElementById('btn-start').textContent = '▶ Start';
+  document.getElementById('alert-bar').className = '';
+  updateTimer();
 }
 
-function tickTimer() {
+function tick() {
   elapsed++;
-  if (elapsed >= totalSeconds) {
-    clearInterval(timerInterval);
-    timerRunning = false;
-  }
-  updateTimerDisplay();
-  updateProgressBar();
-  checkCheckpoints();
+  if (elapsed >= totalSeconds) { clearInterval(timerInterval); timerRunning = false; }
+  updateTimer();
+  checkAlerts();
 }
 
-function formatTime(s) {
-  const h = Math.floor(s / 3600);
-  const m = Math.floor((s % 3600) / 60);
-  const sec = s % 60;
+function fmtTime(s) {
+  const h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = s%60;
   if (h > 0) return `${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
   return `${m}:${String(sec).padStart(2,'0')}`;
 }
 
-function updateTimerDisplay() {
-  const remaining = Math.max(0, totalSeconds - elapsed);
-  document.getElementById('timer-main').textContent = formatTime(remaining);
-  document.getElementById('timer-act').textContent = elapsed < 15*60 ? 'INTRO' :
-    elapsed < 70*60 ? 'ACT I' :
-    elapsed < 135*60 ? 'ACT II' :
-    elapsed < 185*60 ? 'ACT III' : 'EPILOGUE';
+function updateTimer() {
+  const rem = Math.max(0, totalSeconds - elapsed);
+  const el = document.getElementById('timer-main');
+  el.textContent = fmtTime(rem);
+  el.className = elapsed >= 185*60 ? 'danger' : elapsed >= 135*60 ? 'warn' : '';
+
+  document.getElementById('timer-act').textContent =
+    elapsed < 15*60 ? 'Intro' : elapsed < 70*60 ? 'Act I' :
+    elapsed < 135*60 ? 'Act II' : elapsed < 185*60 ? 'Act III' : 'Epilogue';
+
+  const pct = Math.min(100, (elapsed/totalSeconds)*100);
+  document.getElementById('progress-fill').style.width = pct+'%';
+
+  ['pl-intro','pl-a1','pl-a2','pl-a3','pl-ep'].forEach(id => {
+    document.getElementById(id).className = '';
+  });
+  const activeLabel = elapsed < 15*60 ? 'pl-intro' : elapsed < 70*60 ? 'pl-a1' :
+    elapsed < 135*60 ? 'pl-a2' : elapsed < 185*60 ? 'pl-a3' : 'pl-ep';
+  document.getElementById(activeLabel).className = 'active';
 }
 
-function updateProgressBar() {
-  const pct = Math.min(100, (elapsed / totalSeconds) * 100);
-  document.getElementById('progress-bar-fill').style.width = pct + '%';
-  const labels = ['pl-intro', 'pl-a1', 'pl-a2', 'pl-a3', 'pl-ep'];
-  labels.forEach(id => document.getElementById(id).className = '');
-  const active = elapsed < 15*60 ? 'pl-intro' : elapsed < 70*60 ? 'pl-a1' : elapsed < 135*60 ? 'pl-a2' : elapsed < 185*60 ? 'pl-a3' : 'pl-ep';
-  document.getElementById(active).className = 'active';
-}
-
-function checkCheckpoints() {
-  const banner = document.getElementById('alert-banner');
-  if (elapsed >= 135*60 && elapsed < 140*60 && lastAlertIdx < 2) {
-    lastAlertIdx = 2;
-    banner.textContent = '⚠ 2:15 — RETH MUST BE FOUND NOW';
-    banner.className = 'amber active';
-    setTimeout(() => { if (lastAlertIdx === 2) banner.className = ''; }, 30000);
+function checkAlerts() {
+  const bar = document.getElementById('alert-bar');
+  if (elapsed >= 135*60 && lastAlertFired < 1) {
+    lastAlertFired = 1;
+    bar.textContent = '⚠ 2:15 — RETH MUST BE FOUND NOW';
+    bar.className = 'show amber';
+    setTimeout(() => { if (lastAlertFired === 1) bar.className = ''; }, 30000);
   }
-  if (elapsed >= 185*60 && elapsed < 190*60 && lastAlertIdx < 3) {
-    lastAlertIdx = 3;
-    banner.textContent = '🔴 3:05 — MORAL CHOICE MUST BE MADE NOW';
-    banner.className = 'red active';
-    setTimeout(() => { if (lastAlertIdx === 3) banner.className = ''; }, 60000);
+  if (elapsed >= 185*60 && lastAlertFired < 2) {
+    lastAlertFired = 2;
+    bar.textContent = '🔴 3:05 — MORAL CHOICE NOW';
+    bar.className = 'show red';
   }
 }
 
-// ===== PORTRAIT FULLSCREEN =====
-function openPortraitOverlay(imgSrc, name, event) {
-  event.stopPropagation();
-  const overlay = document.getElementById('portrait-overlay');
-  document.getElementById('portrait-overlay-img').src = imgSrc;
-  document.getElementById('portrait-overlay-name').textContent = name;
-  overlay.classList.add('active');
-  document.body.style.overflow = 'hidden';
-}
-function closePortraitOverlay() {
-  document.getElementById('portrait-overlay').classList.remove('active');
-  document.body.style.overflow = '';
-}
-
-// ===== NAVIGATION =====
+// ============================================================
+// NAVIGATION
+// ============================================================
 function navTo(screen) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('screen-' + screen).classList.add('active');
-  document.getElementById('nav-' + screen).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('screen-'+screen).classList.add('active');
+  document.getElementById('nav-'+screen).classList.add('active');
+  document.getElementById('main').scrollTop = 0;
 }
 
-function toggleCard(header) {
-  const body = header.nextElementSibling;
-  const chevron = header.querySelector('.chevron');
+function toggleCard(head) {
+  const body = head.nextElementSibling;
+  const ch = head.querySelector('.chevron');
   body.classList.toggle('open');
-  if (chevron) chevron.classList.toggle('open');
+  if (ch) ch.classList.toggle('open');
 }
+
+// ============================================================
+// ACT CONTENT
+// ============================================================
+const ACT_DATA = {
+  intro: {
+    title: 'Introduction',
+    goal: 'Brief the team. Establish tone. Get them in the elevator, down into the Undertow.',
+    sections: [
+      { title: 'Opening Read-Aloud', content: `<p style="font-style:italic;font-size:16px;line-height:1.75;">"The elevator doesn't announce its floor. It just opens, and you're in a reception suite that smells of processed air and expensive polymer. The carpet absorbs sound. Everything is grey and clean. Outside the floor-to-ceiling windows, Neo-Ashford glitters in the acid haze forty storeys below."</p><p style="font-style:italic;font-size:16px;line-height:1.75;margin-top:12px;">"The woman waiting for you doesn't stand up. Late forties, expensive coat. Corporate augments visible as a faint ridge along her jaw. She looks at the wall slightly to your left when she speaks, as if watching something you can't see."</p><p style="color:var(--cyan);font-size:17px;font-weight:bold;margin-top:12px;">"Sit down. There's a job."</p>` },
+      { title: 'What Sable Tells Them', content: `<p>• Damos Reth, data analyst, AWOL in Sub-Districts 7–9</p><p>• Proprietary data-chip — chip is the priority, Reth secondary</p><p>• 8,000 credits each. Half now. Half on delivery</p><p>• NDA covers everything. 48-hour window</p><div class="callout callout-cyan" style="margin-top:12px;">BRP: Research/Law 30% — notices NDA biological clause. Sable: "Standard boilerplate. Don't worry about it."</div><div class="callout callout-amber">BRP: Insight 40% — Sable is withholding something large. She is not lying. She is simply not offering.</div><p style="margin-top:12px;"><strong style="color:var(--red);">Does NOT say:</strong> Why Reth left • Second Veltris team in tunnels • Biological clause means anything • She has authorised the team's termination</p>` },
+    ],
+    pacing: 'At 0:15 the team should be heading into Sub-District 7. If lingering, Sable ends the meeting and leaves.'
+  },
+  act1: {
+    title: 'Act I — The Job',
+    goal: 'Establish the Undertow. Plant seeds of wrongness. Get the team Reth's map. Deliver the photograph.',
+    locations: [
+      { id: 'slab', name: 'The Slab', sub: 'Elevated market — Sub-District 7 entry', content: `<p>Noise, heat, synthesised food and something oily. Neon catching rain-slick. And underneath — faint, sweet, wrong — the smell from drain grates.</p><div class="callout callout-cyan">BRP: Persuade/Fast Talk — vendor confirms Reth's direction. "Scared. Paying cash. Not talking to anyone." (50 credits)</div><div class="callout callout-cyan">⚠ ESSENTIAL: BRP: Spot/Electronics 50% — drone routes rerouted by someone corporate, carving blind spots toward Sub-D9</div><p style="margin-top:10px;"><strong style="color:var(--amber);">The Child → The Tech specifically:</strong> Note folded in hand: "Don't go to the plant. My dad went. He didn't come back the same." Paper smells of the tunnels.</p><p><strong style="color:var(--text-muted);">Rivet Teeth (Scratch):</strong> RED HERRING — not connected to entity. Territorial but will not initiate.</p>` },
+      { id: 'bar', name: 'The Terminus Bar', sub: 'Jed Osler. Room 4 upstairs.', content: `<p>Dim, warm, humid. Strip lighting. Clientele don't look up — which takes effort. Jed behind the bar.</p><div class="callout callout-cyan">BRP: Insight 40% — Jed is sizing the team up. Friendly+direct+cash = opens up. Flash Veltris logo = shut down permanently.</div><p style="margin-top:10px;"><strong>What Jed says if treated well:</strong></p><p>• Reth here 4 nights ago. Nervous, cash, two drinks unfinished</p><p>• Asking about "the disappearances"</p><p>• Paid for a week upstairs, room 4. Bag still there</p><p>• The organic smell: "started about a year ago. You stop smelling it."</p><p>• Ghost gets automatic warm reception</p><p>• Will not go below street level. "Some people come back from below and then go back down on their own. That's worse."</p><p style="margin-top:10px;color:var(--amber);font-weight:bold;">⚠ ESSENTIAL CLUE #2</p>` },
+      { id: 'room4', name: 'Room 4 — Reth's Squat', sub: 'The corkboard. The photograph.', content: `<p>Stale air and adrenaline-sweat. Blank data-chips. Handwritten notes on paper (unusual).</p><div class="callout callout-cyan">BRP: Spot 40% — notes torn where pen pressed too hard. Handwriting starts neat, becomes erratic.</div><p style="margin-top:10px;"><strong>The corkboard:</strong> Hand-drawn map, Sub-D9, drainage routes. One route in red. End: X and "MW pod 7"</p><div class="callout callout-cyan">BRP: Research/Insight 40% — map drawn from Veltris infrastructure plans. He knew where he was going. ⚠ ESSENTIAL CLUE #3</div><div class="callout callout-red" style="margin-top:12px;">☠ THE PHOTOGRAPH — SANITY CHECK<br>Something visible behind the apparent subject. It does not resolve. The impression it has moved — is still moving — is very difficult to dismiss.<br><strong>BRP: Sanity 0/1</strong></div>` },
+    ],
+    pacing: 'If over 10 min at 1:10, skip Rivet Teeth interaction, move child to bar staircase. Must land: blind spots, Jed's info, corkboard map.'
+  },
+  act2: {
+    title: 'Act II — The Undertow',
+    goal: 'Horror from atmospheric to visceral. Locate Reth. Reveal entity's reality. Force ascent.',
+    locations: [
+      { id: 'shaft', name: 'Entry Shaft', sub: '400m below street level', content: `<p>Temperature rising. Organic sweetness immediately stronger. Comms: rhythmic interference. Not a signal — a pattern.</p><div class="callout callout-cyan">BRP: Electronics/Lockpick 40% — bypass done with high-grade corporate suite. This was Veltris black ops. Not Reth.</div><div class="callout callout-red">▶ HORROR #1 — Drone feed shows large shape behind the group. When they look: nothing. Play back footage: the shape does not replay. Clean 4-second gap. BRP: Sanity 0/1</div>` },
+      { id: 'junction', name: 'The Junction', sub: 'Six tunnels converge — entity's outer edge', content: `<div class="callout callout-cyan">BRP: Sci(Bio)/Medicine 40% — bio-scanner: "organic: living: class: unclassified" → WARNING — POSSIBLE MEMETIC HAZARD</div><div class="callout callout-red">BRP: Sanity 1/1D6 — first sight of filament growth</div><p style="margin-top:10px;">If growth is cut: it does not bleed. Cut ends <strong>contract</strong> — slowly, deliberately. <span style="color:var(--red);">BRP: Sanity 0/1</span></p><p style="margin-top:10px;color:var(--amber);font-weight:bold;">⚠ ESSENTIAL CLUE #4 — entity physically present</p>` },
+      { id: 'watchroom', name: 'The Watching Room', sub: 'Terminal. Veltris files.', content: `<div class="callout callout-cyan">BRP: Electronics 35%/Computer 50% — reads partial Veltris files. ⚠ ESSENTIAL CLUE #5</div><p style="margin-top:10px;"><strong>Files reveal:</strong> Month 1-3: "anomaly" → "entity". Month 7: Feeding programme. Dr Chen assigned. Month 11: Security Team C did not return. Month 14: entity perceives directed observation. Month 16: Reth accessed files. "Recommend containment."</p><div class="callout callout-amber">BRP: Insight 40% — "recommend containment" does not mean "keep him safe." It never did.</div>` },
+      { id: 'corridor', name: 'The Feed Corridor', sub: 'Architecture. Bodies. The named rhythm.', content: `<div class="callout callout-red">BRP: Sanity 1/1D4 — entering. The growth has architectural intent.</div><p style="margin-top:10px;"><strong style="color:var(--amber);">▶ HORROR #2 — The Named Rhythm:</strong> Tell one player privately: "Your comm carries a sound underneath the interference. It sounds almost like your name, repeated very slowly."</p><div class="callout callout-red" style="margin-top:12px;">☠ THREE BODIES — Ribcages splayed outward like flowers. Not torn — unsealed. Something exited from inside. It took its time.<br>BRP: Medicine/Sci(Bio) 40% — mechanism identical across all three. ⚠ ESSENTIAL CLUE #6<br><strong>BRP: Sanity 1D4/1D10</strong></div>` },
+      { id: 'pod', name: 'Maintenance Pod 7 — Reth', sub: '"Who sent you." Not a question.', content: `<p>Heavy door, sealed inside. 15-second pause. Correct answer: anything that is not "Veltris."</p><div class="callout callout-cyan">BRP: Persuade/Fast Talk 50% — Ghost's Sub-D7 accent +20%. Show the photograph or quote "it knows where the warmth is" = instant open.</div><p style="margin-top:10px;"><strong>What Reth tells them: ⚠ ESSENTIAL CLUE #7</strong></p><p>• Veltris studied entity 18 months — it was already there when they bought Sutter-Vane</p><p>• "It feels intent. It knew I was frightened and it followed the fear."</p><p>• Dr Chen moved in permanently and stopped being entirely Dr Chen</p><p>• Refuses to go back through Veltris. Cannot be convinced.</p><p>• "There is a second node. Sub-District 4, two kilometres north. NOBODY KNOWS."</p><div class="callout callout-cyan" style="margin-top:10px;">▶ HORROR #4 — Reth's hands: filament tracery on both palms. BRP: Medicine 50% — reversible within 72 hours</div>` },
+    ],
+    optional: {
+      title: 'Kov and Sera — Second Veltris Team',
+      content: `<p>Skip if running behind. Both have seen the bodies and are also expendable.</p><div class="callout callout-amber">BRP: Persuade 50% — show them: (1) you know what Veltris's operation is, (2) they've seen the bodies, (3) nobody is coming to get either team out.</div><div class="callout callout-amber" style="margin-top:8px;">KOV (broken rib: physical -2, Move 8): STR 15|CON 14|HP 15 — Firearms 60%, Brawl 55%<br>SERA (exhausted: all -10%): STR 12|CON 11|HP 12 — Firearms 65%, SMG 60%<br>Body armour 4pts torso</div>`
+    },
+    pacing: 'Skip Kov/Sera if over 10 min at 2:00. Non-negotiables: Junction, Watching Room files, Three Bodies, Reth.'
+  },
+  act3: {
+    title: 'Act III — Ascent',
+    goal: 'Get out. Make the choice. Live with it.',
+    locations: [
+      { id: 'sublevel9', name: 'Sub-Level 9 — Containment Floor', sub: 'Two barriers failed. Two amber.', content: `<p>Filament covers lower third of room. Two failed barriers are grown through — not destroyed. Other two: amber.</p><div class="callout callout-red">BRP: Sanity 1D4/1D10 — seeing the scale of entity's physical presence</div><p style="margin-top:10px;"><strong style="color:var(--red);">THE PRIMARY NODE:</strong> Transit-bus sized. Radially symmetrical in no familiar way. Constantly in slow motion. No eyes. The sense of being perceived is overwhelming.</p><div class="callout callout-red">BRP: Sanity 1D10/1D20 — primary node. Critical fail (max d20): paralysed 1D4 rounds + 1D3 permanent SAN</div><p style="margin-top:10px;color:var(--amber);font-weight:bold;">Power cut = both barriers fail in 30 seconds</p>` },
+      { id: 'gallery', name: 'Observation Gallery — Dr Chen', sub: 'Do not skip this.', content: `<p>Dr Chen at terminal. Does not look up immediately. Not frightened. Genuinely fascinated.</p><p style="margin-top:10px;"><strong>Her answers:</strong></p><p>On entity: <em>"It has directions. Like a tide."</em></p><p>On containment: <em>"The barriers were always a delay."</em></p><p>On herself: <em>"I've been here fourteen weeks. I feel quite well."</em></p><p>On what to do: <em>"Whatever you decide, it will continue. You have been here approximately ninety minutes."</em></p><div class="callout callout-cyan">BRP: Perception/Insight 50% — her typing rhythm does not match any human keyboard cadence. ⚠ OPTIONAL CLUE E</div><div class="callout callout-red">BRP: Sanity 0/1D4 — extended conversation. BRP: POW resistance vs POW 16 — 5+ minutes. Roll secretly. Tell player privately.</div><p style="margin-top:10px;color:var(--amber);font-weight:bold;">GM TECHNIQUE: Look slightly past the player's shoulder. Hold it a beat longer than comfortable.</p>` },
+      { id: 'ascent', name: 'The Ascent', sub: '3 minutes. 4 security. Standing orders.', content: `<p>Industrial elevator, 3 min if uninterrupted. 4 security with standing orders: prevent <em>anything</em> leaving Sub-Level 9.</p><div class="callout callout-cyan">BRP: Stealth 50% — upper floors. -10% if bringing Reth without coaching first.</div><p style="margin-top:10px;">Security × 4: STR 13|HP 13 — Firearms 55%, Brawl 45% — Body armour 4pts torso</p>` },
+    ],
+    moral: {
+      title: 'THE MORAL CHOICE — Present with equal weight. No preferred outcome.',
+      options: [
+        { name: 'Walk Away', desc: 'Take the money. Sign the NDA. Say nothing. Entity contained ~6 more months. Secondary node in Sub-D4 established by then. What it costs: they will always know.', color: 'text-sub' },
+        { name: 'Expose Veltris', desc: 'Use chip data to go public. Veltris damaged. Containment goes offline as no one maintains it. Entity released with no one watching. What it costs: corporation damaged. Entity released.', color: 'amber' },
+        { name: 'Destroy the Plant', desc: 'Tech triggers power cell overload. 10 minutes to rig. Barriers fail immediately. Entity free in Sub-Level 9 — cannot reach upper floors in time. Node destroyed. But: power/water/heat to surrounding blocks cut. 15–30 civilian deaths. Four will be children.', color: 'red' },
+      ]
+    },
+    pacing: 'If unresolved at 3:05: barriers show red indicators. They have minutes. Choose.'
+  },
+  epilogue: {
+    title: 'Epilogue',
+    goal: 'One coda scene, 15 minutes. Tone entirely dependent on the choice.',
+    sections: [
+      { title: 'If They Walked Away', content: '<p>8,000 credits each. Sable's debrief: 3 minutes, slightly too warm. Three weeks later, one operative receives an anonymous transmission — just a photograph. The street outside the Terminus Bar. Every window dark. No people anywhere in the frame.</p>' },
+      { title: 'If They Exposed Veltris', content: '<p>Reth: news for 18 hours, then protective custody. Veltris drops 12%, recovers in 6 weeks. A subsidiary buys Sutter-Vane in liquidation. Within 60 days: "unusual biological material in sub-level infrastructure." They describe it as "commercially promising."</p>' },
+      { title: 'If They Destroyed the Plant', content: '<p>Gas main failure. Official casualties: 9. Actual count 3 weeks later: 23. Four are children. The Tech is paid 8,000 credits. The operative who rigged it dreams about tunnels for the rest of their life. Not nightmares, exactly. The secondary node in Sub-District 4 has no one watching it.</p>' },
+      { title: 'If Reth Survives', content: '<p>Filament tracery fades over 6 weeks with treatment. The data chip is out there. He was a data analyst. He knows what to do with information. One week later: notification on the Analyst's terminal — anonymous tip about a Veltris acquisition in Sub-District 4. Deleted before they can read it fully.</p><p style="color:var(--cyan);font-weight:bold;margin-top:12px;">The next scenario is already beginning.</p>' },
+    ]
+  }
+};
 
 function switchAct(id, btn) {
-  document.querySelectorAll('#screen-acts .act-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('#screen-acts .act-tab').forEach(b => b.classList.remove('active'));
-  document.getElementById('ap-' + id).classList.add('active');
-  btn.classList.add('active');
+  document.querySelectorAll('#act-tabs .act-tab').forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderActContent(id);
 }
 
 function switchRef(id, btn) {
-  document.querySelectorAll('#screen-ref .act-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('#screen-ref .act-tab').forEach(b => b.classList.remove('active'));
-  document.getElementById('rp-' + id).classList.add('active');
-  btn.classList.add('active');
+  document.querySelectorAll('#screen-ref .act-tab').forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderRefContent(id);
 }
 
-// ===== BUILD NPC CARDS =====
+function renderActContent(id) {
+  const data = ACT_DATA[id];
+  const container = document.getElementById('act-content');
+  let html = `<div class="section-title">${data.title}</div>`;
+  if (data.goal) html += `<div class="goal-box"><strong>Goal:</strong> ${data.goal}</div>`;
+
+  // Locations with visited state
+  if (data.locations) {
+    data.locations.forEach(loc => {
+      const visited = locationState[loc.id] || false;
+      html += `<div class="loc-item ${visited ? 'visited' : ''}" id="loc-${loc.id}" onclick="toggleLocation('${loc.id}')">
+        <div class="loc-check">${visited ? '✓' : ''}</div>
+        <div style="flex:1;">
+          <div class="loc-name">${loc.name}</div>
+          <div class="loc-sub">${loc.sub}</div>
+        </div>
+        <button onclick="event.stopPropagation(); toggleLocDetail('detail-${loc.id}')" class="btn btn-sm" style="margin-left:8px;">Details</button>
+      </div>
+      <div id="detail-${loc.id}" style="display:none;margin:-4px 0 12px 0;padding:16px 18px;background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r) var(--r);">${loc.content}</div>`;
+    });
+  }
+
+  // Sections (for intro/epilogue)
+  if (data.sections) {
+    data.sections.forEach(sec => {
+      html += `<div class="card"><div class="card-head" onclick="toggleCard(this)">
+        <div class="card-head-text"><div class="card-title">${sec.title}</div></div>
+        <span class="chevron">▼</span>
+      </div><div class="card-body">${sec.content}</div></div>`;
+    });
+  }
+
+  // Optional encounter (Act II)
+  if (data.optional) {
+    html += `<div class="card"><div class="card-head" onclick="toggleCard(this)">
+      <div class="card-head-text"><div class="card-title">${data.optional.title}</div><div class="card-sub">Optional — skip if running behind</div></div>
+      <span class="chevron">▼</span>
+    </div><div class="card-body">${data.optional.content}</div></div>`;
+  }
+
+  // Moral choice (Act III)
+  if (data.moral) {
+    html += `<div class="card" style="border-color:rgba(255,192,64,0.4);">
+      <div class="card-head" onclick="toggleCard(this)">
+        <div class="card-head-text"><div class="card-title" style="color:var(--amber);">${data.moral.title}</div></div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="card-body">`;
+    data.moral.options.forEach(opt => {
+      const col = opt.color === 'red' ? 'var(--red)' : opt.color === 'amber' ? 'var(--amber)' : 'var(--text-sub)';
+      html += `<div style="border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px;">
+        <div style="font-size:16px;font-weight:bold;color:${col};margin-bottom:8px;">${opt.name}</div>
+        <div style="font-size:14px;color:var(--text);line-height:1.6;">${opt.desc}</div>
+      </div>`;
+    });
+    html += '<div style="margin-top:4px;padding:12px 14px;background:rgba(255,85,85,0.08);border-left:4px solid var(--red);border-radius:0 var(--r) var(--r) 0;font-size:14px;color:#ff8888;line-height:1.55;">If players try all three: the maths don't work. 10 min to rig + Reth + firefight upstairs exceeds any safe timeline. Two of three. Not all three.</div>';
+    html += '</div></div>';
+  }
+
+  // Notes
+  const noteKey = id === 'act1' ? 'act1' : id === 'act2' ? 'act2' : id === 'act3' ? 'act3' : 'intro';
+  html += `<div style="margin-top:16px;">
+    <div class="section-head">GM Notes — ${data.title}</div>
+    <textarea class="notes-area" placeholder="Session notes for this act..." oninput="sessionNotes['${noteKey}']=this.value">${sessionNotes[noteKey] || ''}</textarea>
+  </div>`;
+
+  // Pacing
+  if (data.pacing) {
+    html += `<div class="callout callout-amber" style="margin-top:14px;"><strong>⏱ PACING:</strong> ${data.pacing}</div>`;
+  }
+
+  container.innerHTML = html;
+}
+
+function toggleLocation(id) {
+  locationState[id] = !locationState[id];
+  saveState();
+  renderActContent(document.querySelector('#act-tabs .act-tab.active').textContent.toLowerCase().replace('act ', 'act').replace(' ', ''));
+}
+
+function toggleLocDetail(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+// ============================================================
+// NPCs
+// ============================================================
 function buildNPCs() {
   const container = document.getElementById('npc-list');
-  container.innerHTML = NPCS.map((npc, i) => {
-    // Extract img src from portrait HTML for the fullscreen handler
+  container.innerHTML = NPCS.map(npc => {
     const srcMatch = npc.portrait ? npc.portrait.match(/src="([^"]+)"/) : null;
     const imgSrc = srcMatch ? srcMatch[1] : '';
-    const tapHandler = imgSrc
-      ? `onclick="openPortraitOverlay('${imgSrc}', '${npc.name}', event)"`
-      : '';
-    return `
-    <div class="card">
-      <div class="card-header" onclick="toggleCard(this)" style="align-items:flex-start; gap:10px;">
-        <div class="npc-portrait" ${tapHandler}>${npc.portrait || ''}</div>
-        <div style="flex:1; min-width:0;">
-          <div class="card-title">${npc.name}</div>
-          <div class="card-subtitle">${npc.role}</div>
-          <div class="card-subtitle" style="margin-top:3px; color:var(--text-dim);">${npc.act}</div>
-          <span class="card-tag disp-${npc.disp}" style="display:inline-block; margin-top:8px;">${npc.dispLabel}</span>
+    const state = npcState[npc.name] || {};
+    const introduced = state.introduced || false;
+    const pinned = pinnedItems.some(p => p.id === npc.name);
+
+    return `<div class="npc-card ${introduced ? 'introduced' : ''}" id="npc-${npc.name.replace(/ /g,'_')}">
+      <div class="npc-head" onclick="toggleNpcCard(this)">
+        ${imgSrc ? `<div class="npc-portrait-thumb" onclick="event.stopPropagation(); openPortrait('${imgSrc}', '${npc.name}')">
+          ${npc.portrait}
+          <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.75);color:var(--cyan);font-size:10px;text-align:center;padding:5px 2px;font-family:var(--font);letter-spacing:1px;text-transform:uppercase;">⛶ Show</div>
+        </div>` : ''}
+        <div class="npc-meta">
+          <div class="npc-name">${npc.name}</div>
+          <div class="npc-role">${npc.role} · ${npc.act}</div>
+          <div class="npc-badges">
+            <span class="tag tag-${npc.disp === 'hostile' ? 'red' : npc.disp === 'hidden' ? 'purple' : npc.disp === 'compromised' ? 'cyan' : 'grey'}">${npc.dispLabel}</span>
+            <span class="npc-introduced-badge">✓ Introduced</span>
+            ${pinned ? '<span class="tag tag-amber">📌 Pinned</span>' : ''}
+          </div>
         </div>
-        <span class="chevron" style="margin-top:4px;">▼</span>
+        <span class="chevron">▼</span>
       </div>
-      <div class="card-body">
-        <div class="label">Physical</div>
-        <div class="value">${npc.physical}</div>
-        <div class="label">Motivation</div>
-        <div class="value">${npc.motivation}</div>
-        <div class="label">What They Know</div>
-        <div class="value">${npc.knows}</div>
-        <div class="label">Stat Block</div>
-        <div class="stat-block" style="white-space:pre-line;font-size:12px;">${npc.stats}</div>
+      <div class="npc-body" style="display:none;border-top:1px solid var(--border);">
+        <div class="npc-label">Physical</div>
+        <div class="npc-value">${npc.physical}</div>
+        <div class="npc-label">Motivation</div>
+        <div class="npc-value">${npc.motivation}</div>
+        <div class="npc-label">What They Know</div>
+        <div class="npc-value">${npc.knows}</div>
+        <div class="npc-label">Stat Block</div>
+        <div class="stat-block">${npc.stats}</div>
+        <div class="npc-actions">
+          <button class="btn btn-green" onclick="markIntroduced('${npc.name}')">
+            ${introduced ? '✓ Introduced' : 'Mark Introduced'}
+          </button>
+          ${imgSrc ? `<button class="btn btn-cyan" onclick="openPortrait('${imgSrc}','${npc.name}')">⛶ Show Portrait</button>` : ''}
+          <button class="btn" onclick="togglePin('npc','${npc.name}','${npc.name}')">
+            ${pinned ? '📌 Unpin' : '📌 Pin'}
+          </button>
+        </div>
       </div>
     </div>`;
   }).join('');
 }
 
-// ===== BUILD CLUE TRACKER =====
-function buildClues() {
-  const eList = document.getElementById('clue-essential-list');
-  const oList = document.getElementById('clue-optional-list');
-  eList.innerHTML = CLUES_ESSENTIAL.map(c => buildClueItem(c, true)).join('');
-  oList.innerHTML = CLUES_OPTIONAL.map(c => buildClueItem(c, false)).join('');
+function toggleNpcCard(head) {
+  const body = head.nextElementSibling;
+  const ch = head.querySelector('.chevron');
+  body.style.display = body.style.display === 'none' ? 'block' : 'none';
+  if (ch) ch.classList.toggle('open', body.style.display !== 'none');
 }
 
-function buildClueItem(c, essential) {
-  const state = clueState[c.id];
-  const checkClass = state === 'found' ? 'found' : state === 'missed' ? 'missed' : '';
-  const checkChar = state === 'found' ? '✓' : state === 'missed' ? '✕' : '';
-  return `
-    <div class="clue-item ${essential ? 'clue-essential' : 'clue-optional'}" onclick="cycleClue('${c.id}')">
-      <div class="clue-check ${checkClass}">${checkChar}</div>
-      <div class="clue-info">
-        <div class="clue-name">${c.name}</div>
-        <div class="clue-loc">📍 ${c.location} · ${c.how}</div>
-        <div class="clue-reveal">${c.reveals}</div>
-      </div>
+function markIntroduced(name) {
+  npcState[name] = npcState[name] || {};
+  npcState[name].introduced = !npcState[name].introduced;
+  saveState();
+  buildNPCs();
+}
+
+// ============================================================
+// PORTRAITS
+// ============================================================
+let currentPortraitName = '';
+
+function openPortrait(src, name) {
+  currentPortraitName = name;
+  document.getElementById('portrait-overlay-img').src = src;
+  document.getElementById('portrait-overlay-name').textContent = name;
+  const state = npcState[name] || {};
+  const btn = document.getElementById('portrait-shown-btn');
+  btn.textContent = state.shownPortrait ? '✓ Shown' : 'Mark Shown to Players';
+  btn.className = 'overlay-action-btn' + (state.shownPortrait ? ' shown' : '');
+  document.getElementById('portrait-overlay').classList.add('active');
+}
+
+function markPortraitShown() {
+  npcState[currentPortraitName] = npcState[currentPortraitName] || {};
+  npcState[currentPortraitName].shownPortrait = true;
+  const btn = document.getElementById('portrait-shown-btn');
+  btn.textContent = '✓ Shown';
+  btn.className = 'overlay-action-btn shown';
+  saveState();
+}
+
+function closeOverlay(type) {
+  document.getElementById(type + '-overlay').classList.remove('active');
+}
+
+// ============================================================
+// CLUES
+// ============================================================
+function buildClues() {
+  document.getElementById('clue-essential-list').innerHTML = CLUES_ESSENTIAL.map(c => clueHTML(c, 'essential')).join('');
+  document.getElementById('clue-optional-list').innerHTML = CLUES_OPTIONAL.map(c => clueHTML(c, 'optional')).join('');
+  updateClueBadge();
+}
+
+function clueHTML(c, type) {
+  const state = clueState[c.id] || 'none';
+  const icon = state === 'found' ? '✓' : state === 'missed' ? '✕' : '';
+  return `<div class="clue-item ${state}" id="clue-${c.id}" onclick="cycleClue('${c.id}')">
+    <div class="clue-toggle">${icon}</div>
+    <div style="flex:1;">
+      <div class="clue-name">${c.name} ${type === 'essential' ? '<span style="color:var(--amber);font-size:12px;">⚠ ESSENTIAL</span>' : ''}</div>
+      <div class="clue-where">📍 ${c.location} · ${c.how}</div>
+      <div class="clue-reveals">${c.reveals}</div>
     </div>
-  `;
+  </div>`;
 }
 
 function cycleClue(id) {
   const states = ['none', 'found', 'missed'];
-  const i = states.indexOf(clueState[id]);
-  clueState[id] = states[(i + 1) % states.length];
-  buildClues();
+  clueState[id] = states[(states.indexOf(clueState[id] || 'none') + 1) % 3];
   saveState();
+  buildClues();
 }
 
-// ===== BUILD HANDOUTS =====
+function updateClueBadge() {
+  const found = Object.values(clueState).filter(v => v === 'found').length;
+  const total = CLUES_ESSENTIAL.length;
+  const badge = document.getElementById('badge-clues');
+  if (badge) {
+    badge.textContent = `${found}/${total}`;
+    badge.className = 'nav-badge' + (found === total ? ' ' : found > 0 ? ' amber' : ' red');
+  }
+}
+
+// ============================================================
+// HANDOUTS
+// ============================================================
+let currentHandoutId = '';
+
 function buildHandouts() {
   const container = document.getElementById('handout-list');
-  container.innerHTML = HANDOUTS.map((h, i) => `
-    <div class="handout-card">
-      <div class="handout-header" onclick="toggleHandout(${i})">
-        <div>
+  container.innerHTML = HANDOUTS.map(h => {
+    const shown = handoutState[h.id] && handoutState[h.id].shown;
+    return `<div class="handout-item ${shown ? 'shown' : ''}" id="ho-${h.id}">
+      <div class="handout-head" onclick="toggleHandout('hob-${h.id}', this)">
+        <div style="flex:1;">
           <div class="handout-id">${h.id} · ${h.when}</div>
           <div class="handout-title">${h.title}</div>
         </div>
-        <span class="chevron" id="hchev-${i}">▼</span>
+        <div class="handout-shown-badge">✓ Shown</div>
+        <span class="chevron" style="margin-left:10px;">▼</span>
       </div>
-      <div class="handout-body" id="hbody-${i}">
-        <div class="handout-content ${h.style === 'terminal' ? 'terminal' : h.style === 'handwritten' ? 'handwritten' : ''}">
-          <button class="fullscreen-btn" onclick="showHandoutFullscreen(${i})">⛶ Show Players</button>${h.content}</div>
+      <div class="handout-body" id="hob-${h.id}">
+        <div class="handout-text ${h.style === 'terminal' ? 'terminal' : h.style === 'handwritten' ? 'handwritten' : ''}">${h.content}</div>
+        <div class="handout-actions">
+          <button class="btn btn-cyan" onclick="openHandout('${h.id}')">⛶ Show Full Screen</button>
+          <button class="btn ${shown ? 'btn-green' : ''}" onclick="markHandoutShownById('${h.id}')">
+            ${shown ? '✓ Shown to Players' : 'Mark Shown'}
+          </button>
+        </div>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
-function toggleHandout(i) {
-  const body = document.getElementById('hbody-' + i);
-  const chev = document.getElementById('hchev-' + i);
+function toggleHandout(bodyId, head) {
+  const body = document.getElementById(bodyId);
+  const ch = head.querySelector('.chevron');
   body.classList.toggle('open');
-  chev.classList.toggle('open');
+  if (ch) ch.classList.toggle('open');
 }
 
-function showHandoutFullscreen(i) {
-  const h = HANDOUTS[i];
-  const overlay = document.getElementById('handout-overlay');
-  const content = document.getElementById('handout-overlay-content');
-  content.textContent = h.content;
-  content.className = h.style === 'terminal' ? 'terminal' : '';
-  overlay.classList.add('active');
+function openHandout(id) {
+  const h = HANDOUTS.find(h => h.id === id);
+  if (!h) return;
+  currentHandoutId = id;
+  document.getElementById('handout-overlay-title').textContent = h.title;
+  const textEl = document.getElementById('handout-overlay-text');
+  textEl.textContent = h.content;
+  textEl.className = h.style === 'terminal' ? 'terminal' : '';
+  const shown = handoutState[id] && handoutState[id].shown;
+  const btn = document.getElementById('handout-shown-btn');
+  btn.textContent = shown ? '✓ Shown' : 'Mark Shown to Players';
+  btn.className = 'overlay-action-btn' + (shown ? ' shown' : '');
+  document.getElementById('handout-overlay').classList.add('active');
 }
 
-function closeHandoutOverlay() {
-  document.getElementById('handout-overlay').classList.remove('active');
+function markHandoutShown() {
+  markHandoutShownById(currentHandoutId);
+  const btn = document.getElementById('handout-shown-btn');
+  btn.textContent = '✓ Shown';
+  btn.className = 'overlay-action-btn shown';
 }
 
-// ===== BUILD PC TRACKER =====
-function buildPCs() {
+function markHandoutShownById(id) {
+  handoutState[id] = handoutState[id] || {};
+  handoutState[id].shown = true;
+  saveState();
+  buildHandouts();
+}
+
+// ============================================================
+// PLAYERS
+// ============================================================
+function buildPlayers() {
   const grid = document.getElementById('pc-grid');
   grid.innerHTML = pcState.map((pc, i) => `
     <div class="pc-card">
       <div class="pc-name">${pc.name}</div>
       <div class="pc-player">${pc.player}</div>
-      <div class="stat-row">
-        <div class="stat-box">
-          <div class="stat-box-label">HP</div>
-          <div class="stat-box-val" id="hp-val-${i}" style="color:${hpColor(pc.hp, pc.maxHp)}">${pc.hp}</div>
+      <div class="stat-bars">
+        <div class="stat-bar">
+          <div class="stat-bar-label">HP</div>
+          <div class="stat-bar-val" id="hp-d-${i}" style="color:${hpCol(pc.hp,pc.maxHp)}">${pc.hp}</div>
         </div>
-        <div class="stat-box">
-          <div class="stat-box-label">SAN</div>
-          <div class="stat-box-val" id="san-val-${i}" style="color:${sanColor(pc.san, pc.maxSan)}">${pc.san}</div>
+        <div class="stat-bar">
+          <div class="stat-bar-label">SAN</div>
+          <div class="stat-bar-val" id="san-d-${i}" style="color:${sanCol(pc.san,pc.maxSan)}">${pc.san}</div>
         </div>
-        <div class="stat-box">
-          <div class="stat-box-label">PP</div>
-          <div class="stat-box-val" id="pp-val-${i}">${pc.pp}</div>
+        <div class="stat-bar">
+          <div class="stat-bar-label">PP</div>
+          <div class="stat-bar-val" id="pp-d-${i}">${pc.pp}</div>
         </div>
       </div>
-      <div class="stat-controls">
-        <span class="stat-label">HP</span>
-        <button class="stat-ctrl-btn" onclick="adjustStat(${i},'hp',-1)">−</button>
-        <span class="stat-num" id="hp-n-${i}">${pc.hp}</span>
-        <button class="stat-ctrl-btn" onclick="adjustStat(${i},'hp',1)">+</button>
+      ${['hp','san','pp'].map(stat => `
+      <div class="stat-adjuster">
+        <span class="adj-label">${stat.toUpperCase()}</span>
+        <button class="adj-btn" onclick="adj(${i},'${stat}',-1)">−</button>
+        <span class="adj-val" id="${stat}-n-${i}">${pc[stat]}</span>
+        <button class="adj-btn" onclick="adj(${i},'${stat}',1)">+</button>
+      </div>`).join('')}
+      <div class="pc-statuses">
+        <div class="pc-status ${pc.status.injured ? 'injured' : ''}" onclick="toggleStatus(${i},'injured')">Injured</div>
+        <div class="pc-status ${pc.status.insane  ? 'insane'  : ''}" onclick="toggleStatus(${i},'insane')">Insane</div>
+        <div class="pc-status ${pc.status.dead    ? 'dead'    : ''}" onclick="toggleStatus(${i},'dead')">Dead</div>
       </div>
-      <div class="stat-controls">
-        <span class="stat-label">SAN</span>
-        <button class="stat-ctrl-btn" onclick="adjustStat(${i},'san',-1)">−</button>
-        <span class="stat-num" id="san-n-${i}">${pc.san}</span>
-        <button class="stat-ctrl-btn" onclick="adjustStat(${i},'san',1)">+</button>
-      </div>
-      <div class="stat-controls">
-        <span class="stat-label">PP</span>
-        <button class="stat-ctrl-btn" onclick="adjustStat(${i},'pp',-1)">−</button>
-        <span class="stat-num" id="pp-n-${i}">${pc.pp}</span>
-        <button class="stat-ctrl-btn" onclick="adjustStat(${i},'pp',1)">+</button>
-      </div>
-      <div class="status-tags">
-        <span class="status-tag ${pc.status.injured ? 'active-injured' : ''}" onclick="toggleStatus(${i},'injured')">Injured</span>
-        <span class="status-tag ${pc.status.insane ? 'active-insane' : ''}" onclick="toggleStatus(${i},'insane')">Insane</span>
-        <span class="status-tag ${pc.status.dead ? 'active-dead' : ''}" onclick="toggleStatus(${i},'dead')">Dead</span>
-      </div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
-function hpColor(hp, max) {
-  const pct = hp / max;
-  if (pct > 0.5) return 'var(--green)';
-  if (pct > 0.25) return 'var(--amber)';
-  return 'var(--red)';
-}
+function hpCol(v,m) { const p=v/m; return p>.5?'var(--green)':p>.25?'var(--amber)':'var(--red)'; }
+function sanCol(v,m){ const p=v/m; return p>.6?'var(--text)':p>.3?'var(--amber)':'var(--red)'; }
 
-function sanColor(san, max) {
-  const pct = san / max;
-  if (pct > 0.6) return 'var(--text-bright)';
-  if (pct > 0.3) return 'var(--amber)';
-  return 'var(--red)';
-}
-
-function adjustStat(i, stat, delta) {
-  const pc = pcState[i];
-  pc[stat] = Math.max(0, Math.min(pc['max' + stat.charAt(0).toUpperCase() + stat.slice(1)] || 99, pc[stat] + delta));
-  document.getElementById(stat + '-n-' + i).textContent = pc[stat];
-  document.getElementById(stat + '-val-' + i).textContent = pc[stat];
-  if (stat === 'hp') document.getElementById('hp-val-' + i).style.color = hpColor(pc.hp, pc.maxHp);
-  if (stat === 'san') document.getElementById('san-val-' + i).style.color = sanColor(pc.san, pc.maxSan);
+function adj(i, stat, d) {
+  const maxKey = 'max'+stat.charAt(0).toUpperCase()+stat.slice(1);
+  pcState[i][stat] = Math.max(0, Math.min(pcState[i][maxKey]||99, pcState[i][stat]+d));
+  document.getElementById(stat+'-n-'+i).textContent = pcState[i][stat];
+  document.getElementById(stat+'-d-'+i).textContent = pcState[i][stat];
+  if (stat==='hp') document.getElementById(stat+'-d-'+i).style.color = hpCol(pcState[i].hp, pcState[i].maxHp);
+  if (stat==='san') document.getElementById(stat+'-d-'+i).style.color = sanCol(pcState[i].san, pcState[i].maxSan);
   saveState();
 }
 
 function toggleStatus(i, status) {
   pcState[i].status[status] = !pcState[i].status[status];
-  buildPCs();
   saveState();
+  buildPlayers();
 }
 
-// ===== SAN MODAL =====
-function showSanModal() {
-  document.getElementById('san-modal').classList.add('active');
-}
-function closeSanModal() {
-  document.getElementById('san-modal').classList.remove('active');
+// ============================================================
+// REFERENCE
+// ============================================================
+const REF_DATA = {
+  san: `<table class="ref-table"><thead><tr><th>Trigger</th><th>Fail</th><th>Pass</th></tr></thead><tbody>
+    <tr><td>The photograph</td><td class="c-red">0</td><td class="c-red">1</td></tr>
+    <tr><td>First filament growth</td><td class="c-red">1</td><td class="c-red">1D6</td></tr>
+    <tr><td>Filament contracts when cut</td><td class="c-red">0</td><td class="c-red">1</td></tr>
+    <tr><td>Entering Feed Corridor</td><td class="c-red">1</td><td class="c-red">1D4</td></tr>
+    <tr><td>Three opened bodies</td><td class="c-red">1D4</td><td class="c-red">1D10</td></tr>
+    <tr><td>Drone footage gap</td><td class="c-red">0</td><td class="c-red">1</td></tr>
+    <tr><td>Dr Chen (extended conv.)</td><td class="c-red">0</td><td class="c-red">1D4</td></tr>
+    <tr><td>Containment floor scale</td><td class="c-red">1D4</td><td class="c-red">1D10</td></tr>
+    <tr><td style="color:var(--amber);font-weight:bold;">Primary node (direct)</td><td class="c-red c-amber" style="color:var(--amber);font-weight:bold;">1D10</td><td class="c-red" style="color:var(--red);font-weight:bold;">1D20</td></tr>
+    <tr><td>Primary node — critical fail</td><td colspan="2" class="c-red">+1D3 permanent SAN loss</td></tr>
+  </tbody></table>`,
+
+  skills: `<table class="ref-table"><thead><tr><th>Where</th><th>Roll</th><th>Result</th></tr></thead><tbody>
+    <tr><td>Briefing</td><td class="c-cyan">Research/Law 30%</td><td>Notes NDA biological clause</td></tr>
+    <tr><td>Briefing</td><td class="c-cyan">Insight 40%</td><td>Sable withholding something large</td></tr>
+    <tr><td>The Slab</td><td class="c-cyan">Persuade/FT</td><td>Vendor confirms Reth's direction (50 credits)</td></tr>
+    <tr><td>The Slab</td><td class="c-cyan">Spot/Electronics 50%</td><td>Corporate surveillance blind spots ⚠</td></tr>
+    <tr><td>The Slab</td><td class="c-cyan">Track 40%</td><td>Follows the child</td></tr>
+    <tr><td>Terminus Bar</td><td class="c-cyan">Insight 40%</td><td>Reading Jed correctly</td></tr>
+    <tr><td>Room 4</td><td class="c-cyan">Spot 40%</td><td>Pressure marks on notes</td></tr>
+    <tr><td>Room 4</td><td class="c-cyan">Research/Insight 40%</td><td>Map drawn from Veltris plans ⚠</td></tr>
+    <tr><td>Room 4</td><td class="c-cyan">Photography/Art 40%</td><td>Photo not doctored</td></tr>
+    <tr><td>Entry shaft</td><td class="c-cyan">Electronics/Lockpick 40%</td><td>Corporate bypass — not Reth</td></tr>
+    <tr><td>Junction</td><td class="c-cyan">Sci(Bio)/Medicine 40%</td><td>Bio-scanner: MEMETIC HAZARD ⚠</td></tr>
+    <tr><td>Watching Room</td><td class="c-cyan">Electronics 35%/Computer 50%</td><td>Reads Veltris files ⚠</td></tr>
+    <tr><td>Feed Corridor</td><td class="c-cyan">Listen/Spot 40%</td><td>Named rhythm in comms</td></tr>
+    <tr><td>Feed Corridor</td><td class="c-cyan">Medicine/Sci(Bio) 40%</td><td>Mechanism of opened chests ⚠</td></tr>
+    <tr><td>Pod 7</td><td class="c-cyan">Persuade/FT 50%</td><td>Convincing Reth to open door</td></tr>
+    <tr><td>Pod 7</td><td class="c-cyan">Medicine 50%</td><td>Filament integration timeline</td></tr>
+    <tr><td>Gallery</td><td class="c-cyan">Perception/Insight 50%</td><td>Dr Chen's wrong typing cadence</td></tr>
+    <tr><td>Gallery</td><td class="c-cyan">POW vs POW 16</td><td>Chen proximity influence (roll secretly)</td></tr>
+    <tr><td>60+ min tunnels</td><td class="c-red" style="font-weight:bold;">POW vs POW 18</td><td>Entity environmental conditioning (secretly)</td></tr>
+  </tbody></table>`,
+
+  brp: `<div class="section-head">Difficulty Levels</div>
+  <table class="ref-table"><thead><tr><th>Level</th><th>Modifier</th></tr></thead><tbody>
+    <tr><td>Easy</td><td class="c-green">× 2</td></tr>
+    <tr><td>Standard</td><td>× 1</td></tr>
+    <tr><td>Difficult</td><td class="c-amber">× ½</td></tr>
+    <tr><td>Very Difficult</td><td class="c-red">× ⅕</td></tr>
+  </tbody></table>
+  <div class="section-head" style="margin-top:16px;">Success Levels</div>
+  <table class="ref-table"><thead><tr><th>Result</th><th>Roll</th></tr></thead><tbody>
+    <tr><td class="c-green">Critical</td><td>01–05 or ≤ 1/10 skill</td></tr>
+    <tr><td class="c-cyan">Special</td><td>≤ 1/5 skill</td></tr>
+    <tr><td>Success</td><td>≤ skill %</td></tr>
+    <tr><td class="c-amber">Failure</td><td>> skill %</td></tr>
+    <tr><td class="c-red">Fumble</td><td>96–00 (or >30 if skill <30)</td></tr>
+  </tbody></table>
+  <div class="section-head" style="margin-top:16px;">Damage Modifiers</div>
+  <table class="ref-table"><thead><tr><th>STR+SIZ</th><th>DB</th></tr></thead><tbody>
+    <tr><td>2–12</td><td class="c-red">-1D6</td></tr>
+    <tr><td>13–16</td><td class="c-amber">-1D4</td></tr>
+    <tr><td>17–24</td><td>None</td></tr>
+    <tr><td>25–32</td><td class="c-green">+1D4</td></tr>
+    <tr><td>33–40</td><td class="c-green">+1D6</td></tr>
+  </tbody></table>`,
+
+  entity: `<div class="callout callout-red" style="margin-bottom:14px;"><strong>Nature:</strong> Spawn of the Lurker at the Threshold. Semi-corporeal. Predates Neo-Ashford by centuries. Distributed filament network IS the entity.</div>
+  <div class="callout callout-amber" style="margin-bottom:14px;"><strong>Sensory System:</strong> Perceives pressure differential, heat, and "intent" — the quality of directed attention. It registered the team before they entered Sub-District 7. When the team looks at it, it perceives the looking.</div>
+  <div class="callout callout-red" style="margin-bottom:14px;"><strong>Combat:</strong> Cannot be killed conventionally. Primary node: destroyed by Tech's overload, 200+ HP damage, or equivalent explosive. Cutting filaments: AP 2, HP 8/metre — slows it, draws attention in 1D4 rounds. Does NOT chase in straight lines — anticipates through tunnel network.</div>
+  <div class="callout callout-amber"><strong>Influence (60+ min in tunnels):</strong> POW resistance vs POW 18. Fail: quiet pull toward lower levels — returning feels natural. Tell failing player PRIVATELY.<br><br><em>"Your character feels fine. That is the problem."</em></div>`
+};
+
+function renderRefContent(id) {
+  document.getElementById('ref-content').innerHTML = REF_DATA[id] || '';
 }
 
-// ===== STATE PERSISTENCE =====
+// ============================================================
+// PINS
+// ============================================================
+function togglePin(type, id, label) {
+  const idx = pinnedItems.findIndex(p => p.id === id);
+  if (idx >= 0) pinnedItems.splice(idx, 1);
+  else pinnedItems.push({ type, id, label });
+  saveState();
+  buildPinnedArea();
+  if (type === 'npc') buildNPCs();
+}
+
+function buildPinnedArea() {
+  const area = document.getElementById('pinned-area');
+  if (!pinnedItems.length) { area.innerHTML = ''; return; }
+  area.innerHTML = `<div class="pinned-label">📌 Pinned</div>
+  <div class="pinned-items">${pinnedItems.map(p => `
+    <div class="pinned-item" onclick="handlePinClick('${p.type}','${p.id}')">
+      ${p.label}
+      <span class="pin-remove" onclick="event.stopPropagation();togglePin('${p.type}','${p.id}','${p.label}')">✕</span>
+    </div>`).join('')}</div>`;
+}
+
+function handlePinClick(type, id) {
+  if (type === 'npc') navTo('npcs');
+}
+
+// ============================================================
+// SAN MODAL
+// ============================================================
+function showSanModal() { document.getElementById('san-modal').classList.add('active'); }
+
+// ============================================================
+// PERSISTENCE
+// ============================================================
 function saveState() {
   try {
-    localStorage.setItem('nc91_pcs', JSON.stringify(pcState));
-    localStorage.setItem('nc91_clues', JSON.stringify(clueState));
+    localStorage.setItem('nc91_v2', JSON.stringify({
+      clueState, npcState, handoutState, locationState,
+      sessionNotes, pinnedItems,
+      pcs: pcState.map(p => ({ hp:p.hp, san:p.san, pp:p.pp, status:p.status }))
+    }));
   } catch(e) {}
 }
 
 function loadState() {
   try {
-    const pcs = localStorage.getItem('nc91_pcs');
-    if (pcs) pcState = JSON.parse(pcs);
-    const clues = localStorage.getItem('nc91_clues');
-    if (clues) clueState = JSON.parse(clues);
+    const raw = localStorage.getItem('nc91_v2');
+    if (!raw) return;
+    const s = JSON.parse(raw);
+    if (s.clueState)    Object.assign(clueState, s.clueState);
+    if (s.npcState)     Object.assign(npcState, s.npcState);
+    if (s.handoutState) Object.assign(handoutState, s.handoutState);
+    if (s.locationState)Object.assign(locationState, s.locationState);
+    if (s.sessionNotes) Object.assign(sessionNotes, s.sessionNotes);
+    if (s.pinnedItems)  pinnedItems = s.pinnedItems;
+    if (s.pcs) s.pcs.forEach((p,i) => {
+      if (pcState[i]) { pcState[i].hp=p.hp; pcState[i].san=p.san; pcState[i].pp=p.pp; pcState[i].status=p.status; }
+    });
   } catch(e) {}
 }
 
-// ===== INIT =====
+// ============================================================
+// INIT
+// ============================================================
 loadState();
 buildNPCs();
 buildClues();
 buildHandouts();
-buildPCs();
-updateTimerDisplay();
+buildPlayers();
+buildPinnedArea();
+updateTimer();
+renderActContent('intro');
+renderRefContent('san');
+updateClueBadge();
 </script>
 </body>
 </html>
