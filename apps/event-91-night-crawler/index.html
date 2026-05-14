@@ -461,6 +461,21 @@
   .ref-table .cyan { color: var(--cyan); }
   .ref-table .red { color: var(--red); }
 
+  /* NPC PORTRAIT */
+  .npc-portrait {
+    width: 100%;
+    max-width: 120px;
+    height: 155px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: #0a0a0f;
+  }
+  .npc-portrait svg { display: block; }
+  .npc-card-inner { display: flex; gap: 12px; align-items: flex-start; }
+  .npc-card-text { flex: 1; min-width: 0; }
+
   /* STAT BLOCK */
   .stat-block {
     background: var(--surface2);
@@ -1163,7 +1178,8 @@ const NPCS = [
     motivation: 'Professional completion. Not ideologically committed to the entity programme — committed to Veltris\'s continued operation and her position within it.',
     knows: 'Everything. The feeding schedule. The containment failures. Dr Chen\'s condition. The secondary node. The termination order on the player team — she authorised it before the briefing.',
     stats: 'STR 10 | CON 12 | SIZ 10 | INT 16 | POW 14 | DEX 12 | APP 14\nHP 11 | PP 14 | DB None | Move 10\nPersuade 70%, Fast Talk 65%, Insight 70%, Intimidate 55%, Spot 50%\nAttacks: Concealed sidearm (40%), 2D6 (draws only in extremis)\nSPECIAL: Panic protocol — combat stims (+15% physical, 1D6 rounds) + direct line to Veltris black ops (8-min response).',
-    hp: 11, maxHp: 11
+    hp: 11, maxHp: 11,
+    portrait: `<svg viewBox="0 0 120 155" xmlns="http://www.w3.org/2000/svg" width="120" height="155"><rect width="120" height="155" fill="#0f0f18"/><line x1="0" y1="155" x2="120" y2="0" stroke="#1a1a28" stroke-width="0.5"/><path d="M15,155 L15,105 Q20,95 30,92 L45,88 L60,84 L75,88 L90,92 Q100,95 105,105 L105,155" fill="#1a1820" stroke="#c8c0b0" stroke-width="0.8"/><path d="M45,88 L52,78 L60,84 L68,78 L75,88" fill="#1a1820" stroke="#c8c0b0" stroke-width="0.8"/><path d="M30,92 L38,80 L45,88" fill="none" stroke="#908880" stroke-width="0.5"/><path d="M90,92 L82,80 L75,88" fill="none" stroke="#908880" stroke-width="0.5"/><path d="M48,78 Q50,68 52,65 L60,63 L68,65 Q70,68 72,78" fill="#c8b898" stroke="#806858" stroke-width="0.5"/><ellipse cx="60" cy="48" rx="28" ry="32" fill="#c8b898" stroke="#806858" stroke-width="0.7"/><path d="M32,38 Q30,20 35,14 Q45,5 60,4 Q75,5 85,14 Q90,20 88,38" fill="#d0d0d8" stroke="#a0a0b0" stroke-width="0.7"/><path d="M33,24 Q45,18 60,17 Q75,18 87,24" fill="none" stroke="#b8b8c8" stroke-width="0.4"/><path d="M37,58 Q40,62 44,64 Q48,65 50,64" fill="none" stroke="#a0c8e0" stroke-width="1.2"/><ellipse cx="47" cy="45" rx="7" ry="4.5" fill="#f0ece0" stroke="#504040" stroke-width="0.6"/><ellipse cx="49" cy="45" rx="3.5" ry="3.5" fill="#303040"/><circle cx="47.5" cy="45" r="1.5" fill="#e8e8f8"/><line x1="40" y1="42" x2="54" y2="42" stroke="#504040" stroke-width="0.8"/><ellipse cx="73" cy="45" rx="7" ry="4.5" fill="#f0ece0" stroke="#504040" stroke-width="0.6"/><ellipse cx="75" cy="45" rx="3.5" ry="3.5" fill="#303040"/><circle cx="73.5" cy="45" r="1.5" fill="#e8e8f8"/><line x1="66" y1="42" x2="80" y2="42" stroke="#504040" stroke-width="0.8"/><path d="M57,50 Q55,55 56,58 Q58,60 60,59 Q62,60 64,58 Q65,55 63,50" fill="none" stroke="#907060" stroke-width="0.6"/><path d="M51,66 Q55,64 60,64 Q65,64 69,66" fill="none" stroke="#806050" stroke-width="0.8"/><ellipse cx="42" cy="62" rx="6" ry="2" fill="none" stroke="#00c8e8" stroke-width="0.8" opacity="0.7"/></svg>`
   },
   {
     name: 'Damos Reth',
@@ -1175,7 +1191,8 @@ const NPCS = [
     motivation: 'Survival first. Exposure of what Veltris has done, second. Realistic about his odds. Does not frame the situation heroically.',
     knows: 'Full entity programme history. Feeding schedule. Containment failures. Dr Chen\'s condition. The secondary node in Sub-District 4 ("two kilometres north — nobody knows"). The 47 disappearances.',
     stats: 'STR 10 | CON 10 | SIZ 11 | INT 16 | POW 11 | DEX 11 | APP 12\nHP 11 | PP 8 (depleted) | DB None | Move 7 (four days in a pod)\nResearch 70%, Computer Use 65%, Data Analysis 60%, Insight 55%\nAttacks: None.\nSPECIAL: Early-stage filament integration in both palms. Reversible with treatment within 72 hours.',
-    hp: 11, maxHp: 11
+    hp: 11, maxHp: 11,
+    portrait: `<svg viewBox="0 0 120 155" xmlns="http://www.w3.org/2000/svg" width="120" height="155"><rect width="120" height="155" fill="#0f0f18"/><line x1="0" y1="0" x2="120" y2="155" stroke="#181828" stroke-width="0.5"/><path d="M8,155 L8,100 Q12,88 25,85 L40,82 L60,79 L80,82 L95,85 Q108,88 112,100 L112,155" fill="#1c1c28" stroke="#808090" stroke-width="0.7"/><path d="M25,85 L32,95 L30,115" fill="none" stroke="#505060" stroke-width="0.4"/><rect x="42" y="92" width="16" height="10" rx="1" fill="none" stroke="#6080a0" stroke-width="0.6"/><path d="M40,82 L47,71 L60,79 L73,71 L80,82" fill="#1c1c28" stroke="#808090" stroke-width="0.7"/><path d="M49,71 Q51,62 53,60 L60,58 L67,60 Q69,62 71,71" fill="#b89878" stroke="#786050" stroke-width="0.5"/><ellipse cx="60" cy="40" rx="26" ry="30" fill="#b89878" stroke="#786050" stroke-width="0.7"/><path d="M34,30 Q32,12 38,7 Q48,0 60,0 Q72,0 82,7 Q88,12 86,30" fill="#2a2020" stroke="#181010" stroke-width="0.6"/><path d="M48,1 Q46,5 48,10" fill="none" stroke="#2a2020" stroke-width="0.5"/><path d="M65,0 Q67,6 65,11" fill="none" stroke="#2a2020" stroke-width="0.5"/><ellipse cx="47" cy="38" rx="7" ry="4" fill="#e8e0d0" stroke="#504030" stroke-width="0.6"/><circle cx="47" cy="38" r="3" fill="#2a2018"/><circle cx="48.5" cy="36.5" r="0.8" fill="#f0f0e0"/><line x1="40" y1="35" x2="54" y2="35" stroke="#504030" stroke-width="0.7"/><ellipse cx="73" cy="38" rx="7" ry="4" fill="#e8e0d0" stroke="#504030" stroke-width="0.6"/><circle cx="73" cy="38" r="3" fill="#2a2018"/><circle cx="74.5" cy="36.5" r="0.8" fill="#f0f0e0"/><line x1="66" y1="35" x2="80" y2="35" stroke="#504030" stroke-width="0.7"/><path d="M40,26 Q50,24 55,25" fill="none" stroke="#907060" stroke-width="0.4"/><path d="M65,25 Q70,24 78,26" fill="none" stroke="#907060" stroke-width="0.4"/><path d="M42,56 Q50,60 60,61 Q70,60 78,56" fill="none" stroke="#60483c" stroke-width="0.6"/><circle cx="48" cy="60" r="0.5" fill="#504040"/><circle cx="56" cy="62" r="0.5" fill="#504040"/><circle cx="64" cy="62" r="0.5" fill="#504040"/><circle cx="72" cy="60" r="0.5" fill="#504040"/><path d="M57,43 Q55,49 57,52 Q60,54 63,52 Q65,49 63,43" fill="none" stroke="#907060" stroke-width="0.5"/><path d="M50,58 Q55,56 60,56 Q65,56 70,58" fill="none" stroke="#705040" stroke-width="0.7"/><path d="M8,130 Q15,128 20,125 L18,140 Q15,148 12,150" fill="#d0b888" stroke="#a08060" stroke-width="0.5"/><path d="M10,132 Q14,130 18,128" fill="none" stroke="#00b8d8" stroke-width="0.6" opacity="0.7"/><path d="M9,136 Q13,134 17,133" fill="none" stroke="#00b8d8" stroke-width="0.5" opacity="0.6"/><path d="M9,140 Q13,139 16,138" fill="none" stroke="#00b8d8" stroke-width="0.4" opacity="0.5"/></svg>`
   },
   {
     name: 'Jed Osler',
@@ -1187,7 +1204,8 @@ const NPCS = [
     motivation: 'The bar. The regulars. The routine that holds everything together. They are anchored to the specific geography of their life.',
     knows: 'Reth\'s movements and questions. The disappearances by name and timeframe — cluster near the plant. The organic smell, when it started. People who came back from below street level and then went back down on their own.',
     stats: 'STR 13 | CON 14 | SIZ 12 | INT 14 | POW 13 | DEX 13 | APP 12\nHP 14 | PP 13 | DB None | Move 10\nInsight 70%, Streetwise 65%, Spot 55%, Persuade 55%, Brawl 50%\nAttacks: Prosthetic arm (50%), 1D6+1 | Baton behind bar (40%), 1D8\nSPECIAL: Will not go below street level under any circumstances. Not fear — a decision made long ago.',
-    hp: 14, maxHp: 14
+    hp: 14, maxHp: 14,
+    portrait: `<svg viewBox="0 0 120 155" xmlns="http://www.w3.org/2000/svg" width="120" height="155"><rect width="120" height="155" fill="#0f0f18"/><path d="M0,155 L0,100 Q5,85 20,80 L45,76 L60,73 L75,76 L100,80 Q115,85 120,100 L120,155" fill="#1e1c20" stroke="#909090" stroke-width="0.8"/><path d="M20,80 L26,70 L34,75" fill="none" stroke="#606060" stroke-width="0.4"/><path d="M100,80 L94,70 L86,75" fill="none" stroke="#606060" stroke-width="0.4"/><rect x="0" y="80" width="22" height="8" rx="2" fill="#504840" stroke="#a09080" stroke-width="0.7"/><rect x="0" y="90" width="22" height="8" rx="2" fill="#484038" stroke="#a09080" stroke-width="0.7"/><rect x="0" y="100" width="22" height="8" rx="2" fill="#403830" stroke="#a09080" stroke-width="0.7"/><circle cx="11" cy="84" r="2" fill="#c09060" stroke="#e0b080" stroke-width="0.5"/><circle cx="11" cy="94" r="2" fill="#c09060" stroke="#e0b080" stroke-width="0.5"/><line x1="11" y1="84" x2="11" y2="94" stroke="#d0a060" stroke-width="0.8"/><rect x="1" y="108" width="5" height="10" rx="1" fill="#504840" stroke="#a09080" stroke-width="0.5"/><rect x="7" y="107" width="5" height="11" rx="1" fill="#504840" stroke="#a09080" stroke-width="0.5"/><rect x="13" y="107" width="5" height="11" rx="1" fill="#504840" stroke="#a09080" stroke-width="0.5"/><path d="M47,73 Q49,63 51,61 L60,59 L69,61 Q71,63 73,73" fill="#b09070" stroke="#786050" stroke-width="0.5"/><ellipse cx="60" cy="42" rx="29" ry="32" fill="#b09070" stroke="#786050" stroke-width="0.8"/><path d="M31,32 Q29,14 36,8 Q46,0 60,0 Q74,0 84,8 Q91,14 89,32" fill="#484840" stroke="#303030" stroke-width="0.6"/><path d="M37,8 Q40,15 39,24" fill="none" stroke="#a0a098" stroke-width="0.5"/><path d="M83,8 Q80,15 81,24" fill="none" stroke="#a0a098" stroke-width="0.5"/><ellipse cx="47" cy="40" rx="7" ry="4.5" fill="#e8dcc8" stroke="#504030" stroke-width="0.6"/><circle cx="47" cy="40" r="3.2" fill="#2c1c0c"/><circle cx="48.5" cy="38.5" r="0.8" fill="#f0e8d8"/><line x1="40" y1="37" x2="54" y2="37" stroke="#504030" stroke-width="0.7"/><ellipse cx="73" cy="40" rx="7" ry="4.5" fill="#e8dcc8" stroke="#504030" stroke-width="0.6"/><circle cx="73" cy="40" r="3.2" fill="#2c1c0c"/><circle cx="74.5" cy="38.5" r="0.8" fill="#f0e8d8"/><line x1="66" y1="37" x2="80" y2="37" stroke="#504030" stroke-width="0.7"/><path d="M56,47 Q53,53 55,57 Q58,60 60,59 Q62,60 65,57 Q67,53 64,47" fill="none" stroke="#907060" stroke-width="0.7"/><path d="M34,42 Q35,46 38,48" fill="none" stroke="#907060" stroke-width="0.3"/><path d="M86,42 Q85,46 82,48" fill="none" stroke="#907060" stroke-width="0.3"/><path d="M50,63 Q55,61 60,61 Q65,61 70,63" fill="none" stroke="#705040" stroke-width="0.8"/></svg>`
   },
   {
     name: 'Dr Yava Chen',
@@ -1199,7 +1217,8 @@ const NPCS = [
     motivation: 'The entity. She genuinely believes it is the most significant discovery in human history. She no longer thinks about her career, former colleagues, or what she was before fourteen weeks underground.',
     knows: 'Everything documented — growth rate, sensory mechanism, feeding response, proximity effects, the secondary node in Sub-District 4 ("the lateral extension"), the slow influence on the surrounding population ("environmental expression").',
     stats: 'STR 9 | CON 12 | SIZ 10 | INT 18 | POW 16 | DEX 10 | APP 11\nHP 11 | PP 16 | DB None | Move 9\nScience (Biology) 85%, Research 80%, Medicine 50%, Insight 60%\nAttacks: None.\nSPECIAL: 5+ min conversation → POW resistance vs POW 16. Fail: 1 SAN loss. Roll secretly. Tell affected player privately.',
-    hp: 11, maxHp: 11
+    hp: 11, maxHp: 11,
+    portrait: `<svg viewBox="0 0 120 155" xmlns="http://www.w3.org/2000/svg" width="120" height="155"><rect width="120" height="155" fill="#060c0c"/><path d="M10,80 Q30,60 50,70 Q70,80 90,60 Q110,40 120,50" fill="none" stroke="#003828" stroke-width="0.4" opacity="0.5"/><path d="M0,100 Q20,80 40,90 Q60,100 80,80 Q100,60 120,70" fill="none" stroke="#003828" stroke-width="0.4" opacity="0.4"/><path d="M5,155 L5,105 Q10,90 25,87 L40,83 L60,80 L80,83 L95,87 Q110,90 115,105 L115,155" fill="#0c1414" stroke="#607870" stroke-width="0.7"/><path d="M40,83 L48,73 L60,80 L72,73 L80,83" fill="#0c1414" stroke="#607870" stroke-width="0.7"/><path d="M49,73 Q51,63 53,61 L60,59 L67,61 Q69,63 71,73" fill="#b0a888" stroke="#807860" stroke-width="0.5"/><ellipse cx="60" cy="42" rx="27" ry="31" fill="#b0a888" stroke="#807860" stroke-width="0.7"/><path d="M33,30 Q31,12 38,6 Q47,0 60,0 Q73,0 82,6 Q89,12 87,30" fill="#909090" stroke="#707070" stroke-width="0.6"/><path d="M36,16 Q47,20 60,21 Q73,20 84,16" fill="none" stroke="#787878" stroke-width="0.4"/><ellipse cx="47" cy="41" rx="9" ry="6" fill="none" stroke="#c0b890" stroke-width="0.8"/><ellipse cx="73" cy="41" rx="9" ry="6" fill="none" stroke="#c0b890" stroke-width="0.8"/><line x1="56" y1="40" x2="64" y2="40" stroke="#c0b890" stroke-width="0.7"/><line x1="35" y1="39" x2="38" y2="38" stroke="#c0b890" stroke-width="0.6"/><line x1="82" y1="39" x2="85" y2="38" stroke="#c0b890" stroke-width="0.6"/><ellipse cx="47" cy="41" rx="6" ry="3.5" fill="#e8e0c8" stroke="#504030" stroke-width="0.4"/><circle cx="47" cy="41" r="2.8" fill="#202820"/><circle cx="47" cy="41" r="2.6" fill="none" stroke="#00a890" stroke-width="0.4" opacity="0.5"/><circle cx="47.5" cy="40.5" r="0.7" fill="#e0ece8"/><ellipse cx="73" cy="41" rx="6" ry="3.5" fill="#e8e0c8" stroke="#504030" stroke-width="0.4"/><circle cx="73" cy="41" r="2.8" fill="#202820"/><circle cx="73" cy="41" r="2.6" fill="none" stroke="#00a890" stroke-width="0.4" opacity="0.5"/><circle cx="73.5" cy="40.5" r="0.7" fill="#e0ece8"/><path d="M41,36 Q47,34 53,36" fill="none" stroke="#705840" stroke-width="0.5"/><path d="M67,36 Q73,34 79,36" fill="none" stroke="#705840" stroke-width="0.5"/><path d="M57,46 Q55,52 57,55 Q60,57 63,55 Q65,52 63,46" fill="none" stroke="#907860" stroke-width="0.5"/><path d="M50,62 Q55,60 60,60 Q65,60 70,62" fill="none" stroke="#705840" stroke-width="0.7"/><path d="M52,63 Q56,65 60,65 Q64,65 68,63" fill="none" stroke="#60503050" stroke-width="0.4"/><path d="M90,110 L95,100 L100,93 L106,89 L110,94 L108,100" fill="#b0a888" stroke="#807860" stroke-width="0.5"/><path d="M100,93 L104,86 L106,83" fill="none" stroke="#807860" stroke-width="0.4"/><path d="M103,93 L107,87 L109,85" fill="none" stroke="#807860" stroke-width="0.4"/></svg>`
   },
   {
     name: 'Scratch',
@@ -1211,7 +1230,8 @@ const NPCS = [
     motivation: 'Her people\'s safety. Losing gang members to disappearances for 8 months. Knows it is not other gangs.',
     knows: 'Missing residents by name and date. Disappearances cluster near drainage access points closest to the plant. Two gang members came back "not right" — then both walked back to the plant voluntarily at 3 a.m. three weeks ago and did not return. RED HERRING — not connected to entity.',
     stats: 'STR 12 | CON 12 | SIZ 10 | INT 15 | POW 13 | DEX 17 | APP 13\nHP 12 | PP 13 | DB None | Move 12\nStreetwise 70%, Dodge 65%, Spot 60%, Brawl 55%, Stealth 55%, Fast Talk 50%\nAttacks: Reflex-augmented strike (55%), 1D6 | Blade (45%), 1D6+1\nSPECIAL: First round of combat she did not initiate — DEX counts as 20 for Strike Rank.',
-    hp: 12, maxHp: 12
+    hp: 12, maxHp: 12,
+    portrait: `<svg viewBox="0 0 120 155" xmlns="http://www.w3.org/2000/svg" width="120" height="155"><rect width="120" height="155" fill="#080808"/><path d="M5,155 L5,100 Q8,85 22,80 L42,76 L60,73 L78,76 L98,80 Q112,85 115,100 L115,155" fill="#141418" stroke="#707868" stroke-width="0.7"/><path d="M22,80 L25,72 L32,76" fill="none" stroke="#404040" stroke-width="0.4"/><path d="M98,80 L95,72 L88,76" fill="none" stroke="#404040" stroke-width="0.4"/><path d="M42,76 L50,65 L60,73 L70,65 L78,76" fill="#141418" stroke="#707868" stroke-width="0.7"/><path d="M115,120 L115,140 L112,145" fill="#b89870" stroke="#807050" stroke-width="0.5"/><rect x="110" y="128" width="10" height="4" rx="1" fill="#303828" stroke="#60a840" stroke-width="0.8"/><line x1="112" y1="130" x2="118" y2="130" stroke="#50c830" stroke-width="0.4"/><path d="M49,65 Q51,56 53,54 L60,52 L67,54 Q69,56 71,65" fill="#b89870" stroke="#786050" stroke-width="0.5"/><ellipse cx="60" cy="38" rx="26" ry="28" fill="#b89870" stroke="#786050" stroke-width="0.7"/><path d="M34,28 Q33,12 40,6 Q49,0 60,0 Q71,0 80,6 Q87,12 86,28" fill="#1c1410" stroke="#0c0c08" stroke-width="0.6"/><circle cx="46" cy="38" r="9" fill="#1a1008" stroke="#c08020" stroke-width="1.2"/><circle cx="46" cy="38" r="6" fill="#ffb000" opacity="0.3"/><circle cx="46" cy="38" r="3.5" fill="#ff9000" opacity="0.6"/><circle cx="46" cy="38" r="1.5" fill="#fff0a0"/><circle cx="46" cy="38" r="7" fill="none" stroke="#c08030" stroke-width="0.5"/><ellipse cx="74" cy="38" rx="7" ry="4.5" fill="#e8d8b8" stroke="#504030" stroke-width="0.6"/><circle cx="74" cy="38" r="3.2" fill="#281808"/><circle cx="75.5" cy="36.5" r="0.8" fill="#f0e8d0"/><line x1="67" y1="35" x2="81" y2="35" stroke="#504030" stroke-width="0.7"/><path d="M39,32 Q44,29 50,31" fill="none" stroke="#504030" stroke-width="0.6"/><path d="M70,31 Q76,29 81,32" fill="none" stroke="#504030" stroke-width="0.6"/><path d="M57,44 Q55,50 57,53 Q60,55 63,53 Q65,50 63,44" fill="none" stroke="#906850" stroke-width="0.5"/><path d="M51,58 Q56,57 60,57 Q64,57 69,58" fill="none" stroke="#705040" stroke-width="0.7"/></svg>`
   }
 ];
 
@@ -1484,13 +1504,15 @@ function buildNPCs() {
   const container = document.getElementById('npc-list');
   container.innerHTML = NPCS.map((npc, i) => `
     <div class="card">
-      <div class="card-header" onclick="toggleCard(this)">
-        <div>
+      <div class="card-header" onclick="toggleCard(this)" style="align-items:flex-start; gap:10px;">
+        <div class="npc-portrait">${npc.portrait || ''}</div>
+        <div style="flex:1; min-width:0;">
           <div class="card-title">${npc.name}</div>
-          <div class="card-subtitle">${npc.role} · ${npc.act}</div>
+          <div class="card-subtitle">${npc.role}</div>
+          <div class="card-subtitle" style="margin-top:3px; color:var(--text-dim);">${npc.act}</div>
+          <span class="card-tag disp-${npc.disp}" style="display:inline-block; margin-top:6px;">${npc.dispLabel}</span>
         </div>
-        <span class="card-tag disp-${npc.disp}">${npc.dispLabel}</span>
-        <span class="chevron" style="margin-left:8px;">▼</span>
+        <span class="chevron" style="margin-top:4px;">▼</span>
       </div>
       <div class="card-body">
         <div class="label">Physical</div>
