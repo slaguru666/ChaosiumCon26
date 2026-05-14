@@ -1509,6 +1509,364 @@ function toggleCard(head) {
 // ============================================================
 const ACT_DATA = JSON.parse(document.getElementById('act-data-json').textContent);
 const REF_DATA = JSON.parse(document.getElementById('ref-data-json').textContent);
+function switchAct(id, btn) {
+  document.querySelectorAll('#act-tabs .act-tab').forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderActContent(id);
+}
+
+function switchRef(id, btn) {
+  document.querySelectorAll('#screen-ref .act-tab').forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderRefContent(id);
+}
+
+function renderActContent(id) {
+  const data = ACT_DATA[id];
+  const container = document.getElementById('act-content');
+  let html = `<div class="section-title">${data.title}</div>`;
+  if (data.goal) html += `<div class="goal-box"><strong>Goal:</strong> ${data.goal}</div>`;
+
+  // Locations with visited state
+  if (data.locations) {
+    data.locations.forEach(loc => {
+      const visited = locationState[loc.id] || false;
+      html += `<div class="loc-item ${visited ? 'visited' : ''}" id="loc-${loc.id}" onclick="toggleLocation('${loc.id}')">
+        <div class="loc-check">${visited ? '✓' : ''}</div>
+        <div style="flex:1;">
+          <div class="loc-name">${loc.name}</div>
+          <div class="loc-sub">${loc.sub}</div>
+        </div>
+        <button onclick="event.stopPropagation(); toggleLocDetail('detail-${loc.id}')" class="btn btn-sm" style="margin-left:8px;">Details</button>
+      </div>
+      <div id="detail-${loc.id}" style="display:none;margin:-4px 0 12px 0;padding:16px 18px;background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r) var(--r);">${loc.content}</div>`;
+    });
+  }
+
+  // Sections (for intro/epilogue)
+  if (data.sections) {
+    data.sections.forEach(sec => {
+      html += `<div class="card"><div class="card-head" onclick="toggleCard(this)">
+        <div class="card-head-text"><div class="card-title">${sec.title}</div></div>
+        <span class="chevron">▼</span>
+      </div><div class="card-body">${sec.content}</div></div>`;
+    });
+  }
+
+  // Optional encounter (Act II)
+  if (data.optional) {
+    html += `<div class="card"><div class="card-head" onclick="toggleCard(this)">
+      <div class="card-head-text"><div class="card-title">${data.optional.title}</div><div class="card-sub">Optional — skip if running behind</div></div>
+      <span class="chevron">▼</span>
+    </div><div class="card-body">${data.optional.content}</div></div>`;
+  }
+
+  // Moral choice (Act III)
+  if (data.moral) {
+    html += `<div class="card" style="border-color:rgba(255,192,64,0.4);">
+      <div class="card-head" onclick="toggleCard(this)">
+        <div class="card-head-text"><div class="card-title" style="color:var(--amber);">${data.moral.title}</div></div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="card-body">`;
+    data.moral.options.forEach(opt => {
+      const col = opt.color === 'red' ? 'var(--red)' : opt.color === 'amber' ? 'var(--amber)' : 'var(--text-sub)';
+      html += `<div style="border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px;">
+        <div style="font-size:16px;font-weight:bold;color:${col};margin-bottom:8px;">${opt.name}</div>
+        <div style="font-size:14px;color:var(--text);line-height:1.6;">${opt.desc}</div>
+      </div>`;
+    });
+    html += '<div style="margin-top:4px;padding:12px 14px;background:rgba(255,85,85,0.08);border-left:4px solid var(--red);border-radius:0 var(--r) var(--r) 0;font-size:14px;color:#ff8888;line-height:1.55;">If players try all three: the maths don\'t work. 10 min to rig + Reth + firefight upstairs exceeds any safe timeline. Two of three. Not all three.</div>';
+    html += '</div></div>';
+  }
+
+  // Notes
+  const noteKey = id === 'act1' ? 'act1' : id === 'act2' ? 'act2' : id === 'act3' ? 'act3' : 'intro';
+  html += `<div style="margin-top:16px;">
+    <div class="section-head">GM Notes — ${data.title}</div>
+    <textarea class="notes-area" placeholder="Session notes for this act..." oninput="sessionNotes['${noteKey}']=this.value">${sessionNotes[noteKey] || ''}</textarea>
+  </div>`;
+
+  // Pacing
+  if (data.pacing) {
+    html += `<div class="callout callout-amber" style="margin-top:14px;"><strong>⏱ PACING:</strong> ${data.pacing}</div>`;
+  }
+
+  container.innerHTML = html;
+}
+
+function toggleLocation(id) {
+  locationState[id] = !locationState[id];
+  saveState();
+  renderActContent(document.querySelector('#act-tabs .act-tab.active').textContent.toLowerCase().replace('act ', 'act').replace(' ', ''));
+}
+
+function toggleLocDetail(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+// ============================================================
+// NPCs
+// ============================================================
+function buildNPCs() {
+  const container = document.getElementById('npc-list');
+  container.innerHTML = NPCS.map(npc => {
+    const srcMatch = npc.portrait ? npc.portrait.match(/src="([^"]+)"/) : null;
+    const imgSrc = srcMatch ? srcMatch[1] : '';
+    const state = npcState[npc.name] || {};
+    const introduced = state.introduced || false;
+    const pinned = pinnedItems.some(p => p.id === npc.name);
+
+    return `<div class="npc-card ${introduced ? 'introduced' : ''}" id="npc-${npc.name.replace(/ /g,'_')}">
+      <div class="npc-head" onclick="toggleNpcCard(this)">
+        ${imgSrc ? `<div class="npc-portrait-thumb" onclick="event.stopPropagation(); openPortrait('${imgSrc}', '${npc.name}')">
+          ${npc.portrait}
+          <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.75);color:var(--cyan);font-size:10px;text-align:center;padding:5px 2px;font-family:var(--font);letter-spacing:1px;text-transform:uppercase;">⛶ Show</div>
+        </div>` : ''}
+        <div class="npc-meta">
+          <div class="npc-name">${npc.name}</div>
+          <div class="npc-role">${npc.role} · ${npc.act}</div>
+          <div class="npc-badges">
+            <span class="tag tag-${npc.disp === 'hostile' ? 'red' : npc.disp === 'hidden' ? 'purple' : npc.disp === 'compromised' ? 'cyan' : 'grey'}">${npc.dispLabel}</span>
+            <span class="npc-introduced-badge">✓ Introduced</span>
+            ${pinned ? '<span class="tag tag-amber">📌 Pinned</span>' : ''}
+          </div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="npc-body" style="display:none;border-top:1px solid var(--border);">
+        <div class="npc-label">Physical</div>
+        <div class="npc-value">${npc.physical}</div>
+        <div class="npc-label">Motivation</div>
+        <div class="npc-value">${npc.motivation}</div>
+        <div class="npc-label">What They Know</div>
+        <div class="npc-value">${npc.knows}</div>
+        <div class="npc-label">Stat Block</div>
+        <div class="stat-block">${npc.stats}</div>
+        <div class="npc-actions">
+          <button class="btn btn-green" onclick="markIntroduced('${npc.name}')">
+            ${introduced ? '✓ Introduced' : 'Mark Introduced'}
+          </button>
+          ${imgSrc ? `<button class="btn btn-cyan" onclick="openPortrait('${imgSrc}','${npc.name}')">⛶ Show Portrait</button>` : ''}
+          <button class="btn" onclick="togglePin('npc','${npc.name}','${npc.name}')">
+            ${pinned ? '📌 Unpin' : '📌 Pin'}
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleNpcCard(head) {
+  const body = head.nextElementSibling;
+  const ch = head.querySelector('.chevron');
+  body.style.display = body.style.display === 'none' ? 'block' : 'none';
+  if (ch) ch.classList.toggle('open', body.style.display !== 'none');
+}
+
+function markIntroduced(name) {
+  npcState[name] = npcState[name] || {};
+  npcState[name].introduced = !npcState[name].introduced;
+  saveState();
+  buildNPCs();
+}
+
+// ============================================================
+// PORTRAITS
+// ============================================================
+let currentPortraitName = '';
+
+function openPortrait(src, name) {
+  currentPortraitName = name;
+  document.getElementById('portrait-overlay-img').src = src;
+  document.getElementById('portrait-overlay-name').textContent = name;
+  const state = npcState[name] || {};
+  const btn = document.getElementById('portrait-shown-btn');
+  btn.textContent = state.shownPortrait ? '✓ Shown' : 'Mark Shown to Players';
+  btn.className = 'overlay-action-btn' + (state.shownPortrait ? ' shown' : '');
+  document.getElementById('portrait-overlay').classList.add('active');
+}
+
+function markPortraitShown() {
+  npcState[currentPortraitName] = npcState[currentPortraitName] || {};
+  npcState[currentPortraitName].shownPortrait = true;
+  const btn = document.getElementById('portrait-shown-btn');
+  btn.textContent = '✓ Shown';
+  btn.className = 'overlay-action-btn shown';
+  saveState();
+}
+
+function closeOverlay(type) {
+  document.getElementById(type + '-overlay').classList.remove('active');
+}
+
+// ============================================================
+// CLUES
+// ============================================================
+function buildClues() {
+  document.getElementById('clue-essential-list').innerHTML = CLUES_ESSENTIAL.map(c => clueHTML(c, 'essential')).join('');
+  document.getElementById('clue-optional-list').innerHTML = CLUES_OPTIONAL.map(c => clueHTML(c, 'optional')).join('');
+  updateClueBadge();
+}
+
+function clueHTML(c, type) {
+  const state = clueState[c.id] || 'none';
+  const icon = state === 'found' ? '✓' : state === 'missed' ? '✕' : '';
+  return `<div class="clue-item ${state}" id="clue-${c.id}" onclick="cycleClue('${c.id}')">
+    <div class="clue-toggle">${icon}</div>
+    <div style="flex:1;">
+      <div class="clue-name">${c.name} ${type === 'essential' ? '<span style="color:var(--amber);font-size:12px;">⚠ ESSENTIAL</span>' : ''}</div>
+      <div class="clue-where">📍 ${c.location} · ${c.how}</div>
+      <div class="clue-reveals">${c.reveals}</div>
+    </div>
+  </div>`;
+}
+
+function cycleClue(id) {
+  const states = ['none', 'found', 'missed'];
+  clueState[id] = states[(states.indexOf(clueState[id] || 'none') + 1) % 3];
+  saveState();
+  buildClues();
+}
+
+function updateClueBadge() {
+  const found = Object.values(clueState).filter(v => v === 'found').length;
+  const total = CLUES_ESSENTIAL.length;
+  const badge = document.getElementById('badge-clues');
+  if (badge) {
+    badge.textContent = `${found}/${total}`;
+    badge.className = 'nav-badge' + (found === total ? ' ' : found > 0 ? ' amber' : ' red');
+  }
+}
+
+// ============================================================
+// HANDOUTS
+// ============================================================
+let currentHandoutId = '';
+
+function buildHandouts() {
+  const container = document.getElementById('handout-list');
+  container.innerHTML = HANDOUTS.map(h => {
+    const shown = handoutState[h.id] && handoutState[h.id].shown;
+    return `<div class="handout-item ${shown ? 'shown' : ''}" id="ho-${h.id}">
+      <div class="handout-head" onclick="toggleHandout('hob-${h.id}', this)">
+        <div style="flex:1;">
+          <div class="handout-id">${h.id} · ${h.when}</div>
+          <div class="handout-title">${h.title}</div>
+        </div>
+        <div class="handout-shown-badge">✓ Shown</div>
+        <span class="chevron" style="margin-left:10px;">▼</span>
+      </div>
+      <div class="handout-body" id="hob-${h.id}">
+        <div class="handout-text ${h.style === 'terminal' ? 'terminal' : h.style === 'handwritten' ? 'handwritten' : ''}">${h.content}</div>
+        <div class="handout-actions">
+          <button class="btn btn-cyan" onclick="openHandout('${h.id}')">⛶ Show Full Screen</button>
+          <button class="btn ${shown ? 'btn-green' : ''}" onclick="markHandoutShownById('${h.id}')">
+            ${shown ? '✓ Shown to Players' : 'Mark Shown'}
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleHandout(bodyId, head) {
+  const body = document.getElementById(bodyId);
+  const ch = head.querySelector('.chevron');
+  body.classList.toggle('open');
+  if (ch) ch.classList.toggle('open');
+}
+
+function openHandout(id) {
+  const h = HANDOUTS.find(h => h.id === id);
+  if (!h) return;
+  currentHandoutId = id;
+  document.getElementById('handout-overlay-title').textContent = h.title;
+  const textEl = document.getElementById('handout-overlay-text');
+  textEl.textContent = h.content;
+  textEl.className = h.style === 'terminal' ? 'terminal' : '';
+  const shown = handoutState[id] && handoutState[id].shown;
+  const btn = document.getElementById('handout-shown-btn');
+  btn.textContent = shown ? '✓ Shown' : 'Mark Shown to Players';
+  btn.className = 'overlay-action-btn' + (shown ? ' shown' : '');
+  document.getElementById('handout-overlay').classList.add('active');
+}
+
+function markHandoutShown() {
+  markHandoutShownById(currentHandoutId);
+  const btn = document.getElementById('handout-shown-btn');
+  btn.textContent = '✓ Shown';
+  btn.className = 'overlay-action-btn shown';
+}
+
+function markHandoutShownById(id) {
+  handoutState[id] = handoutState[id] || {};
+  handoutState[id].shown = true;
+  saveState();
+  buildHandouts();
+}
+
+// ============================================================
+// PLAYERS
+// ============================================================
+function buildPlayers() {
+  const grid = document.getElementById('pc-grid');
+  grid.innerHTML = pcState.map((pc, i) => `
+    <div class="pc-card">
+      <div class="pc-name">${pc.name}</div>
+      <div class="pc-player">${pc.player}</div>
+      <div class="stat-bars">
+        <div class="stat-bar">
+          <div class="stat-bar-label">HP</div>
+          <div class="stat-bar-val" id="hp-d-${i}" style="color:${hpCol(pc.hp,pc.maxHp)}">${pc.hp}</div>
+        </div>
+        <div class="stat-bar">
+          <div class="stat-bar-label">SAN</div>
+          <div class="stat-bar-val" id="san-d-${i}" style="color:${sanCol(pc.san,pc.maxSan)}">${pc.san}</div>
+        </div>
+        <div class="stat-bar">
+          <div class="stat-bar-label">PP</div>
+          <div class="stat-bar-val" id="pp-d-${i}">${pc.pp}</div>
+        </div>
+      </div>
+      ${['hp','san','pp'].map(stat => `
+      <div class="stat-adjuster">
+        <span class="adj-label">${stat.toUpperCase()}</span>
+        <button class="adj-btn" onclick="adj(${i},'${stat}',-1)">−</button>
+        <span class="adj-val" id="${stat}-n-${i}">${pc[stat]}</span>
+        <button class="adj-btn" onclick="adj(${i},'${stat}',1)">+</button>
+      </div>`).join('')}
+      <div class="pc-statuses">
+        <div class="pc-status ${pc.status.injured ? 'injured' : ''}" onclick="toggleStatus(${i},'injured')">Injured</div>
+        <div class="pc-status ${pc.status.insane  ? 'insane'  : ''}" onclick="toggleStatus(${i},'insane')">Insane</div>
+        <div class="pc-status ${pc.status.dead    ? 'dead'    : ''}" onclick="toggleStatus(${i},'dead')">Dead</div>
+      </div>
+    </div>`).join('');
+}
+
+function hpCol(v,m) { const p=v/m; return p>.5?'var(--green)':p>.25?'var(--amber)':'var(--red)'; }
+function sanCol(v,m){ const p=v/m; return p>.6?'var(--text)':p>.3?'var(--amber)':'var(--red)'; }
+
+function adj(i, stat, d) {
+  const maxKey = 'max'+stat.charAt(0).toUpperCase()+stat.slice(1);
+  pcState[i][stat] = Math.max(0, Math.min(pcState[i][maxKey]||99, pcState[i][stat]+d));
+  document.getElementById(stat+'-n-'+i).textContent = pcState[i][stat];
+  document.getElementById(stat+'-d-'+i).textContent = pcState[i][stat];
+  if (stat==='hp') document.getElementById(stat+'-d-'+i).style.color = hpCol(pcState[i].hp, pcState[i].maxHp);
+  if (stat==='san') document.getElementById(stat+'-d-'+i).style.color = sanCol(pcState[i].san, pcState[i].maxSan);
+  saveState();
+}
+
+function toggleStatus(i, status) {
+  pcState[i].status[status] = !pcState[i].status[status];
+  saveState();
+  buildPlayers();
+}
+
+// ============================================================
+// REFERENCE
+// ============================================================
 function renderRefContent(id) {
   document.getElementById('ref-content').innerHTML = REF_DATA[id] || '';
 }
