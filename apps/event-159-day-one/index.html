@@ -431,13 +431,49 @@ html, body {
 }
 .npc-head:hover { background: var(--surface-hi); }
 
+/* Portrait crop from the portrait sheet (4 cols × 2 rows) */
 .npc-portrait-thumb {
   width: 76px; min-width: 76px; height: 100px;
   border-radius: 5px; overflow: hidden;
   border: 1px solid var(--border); background: var(--bg);
   flex-shrink: 0; position: relative; cursor: pointer;
 }
-.npc-portrait-thumb svg { width: 100%; height: 100%; display: block; }
+.npc-portrait-thumb img {
+  width: 400%; height: 200%;
+  position: absolute; display: block;
+  image-rendering: auto;
+}
+
+/* Location artwork images */
+.loc-artwork {
+  width: 100%; max-height: 220px; object-fit: cover;
+  object-position: center 20%;
+  border-radius: var(--r); margin: 10px 0 4px;
+  display: block; border: 1px solid var(--border);
+  cursor: pointer; transition: opacity 0.15s;
+}
+.loc-artwork:hover { opacity: 0.85; }
+
+/* Cover/hero image */
+.cover-img {
+  width: 100%; border-radius: var(--r); display: block;
+  margin-bottom: 14px; border: 1px solid var(--border);
+  max-height: 200px; object-fit: cover; object-position: center 40%;
+  cursor: pointer;
+}
+
+/* Art gallery grid */
+.art-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 600px) { .art-grid { grid-template-columns: 1fr; } }
+.art-tile { position: relative; border-radius: var(--r); overflow: hidden; border: 1px solid var(--border); cursor: pointer; }
+.art-tile img { width: 100%; display: block; transition: transform 0.2s; }
+.art-tile:hover img { transform: scale(1.03); }
+.art-tile-label {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: rgba(0,0,0,0.72); padding: 8px 12px;
+  font-size: 12px; color: var(--text-sub); text-transform: uppercase; letter-spacing: 1px;
+}
+.art-tile-act { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
 
 .npc-meta  { flex: 1; min-width: 0; }
 .npc-name  { font-size: 16px; font-weight: bold; }
@@ -717,6 +753,7 @@ hr.divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; 
   <div class="nav-item"        id="nav-players"  onclick="navTo('players')"> <span class="nav-icon">♟</span><span class="nav-label">Players</span></div>
   <div class="nav-divider"></div>
   <div class="nav-item"        id="nav-ref"      onclick="navTo('ref')">     <span class="nav-icon">📋</span><span class="nav-label">Ref</span></div>
+  <div class="nav-item"        id="nav-art"      onclick="navTo('art')">     <span class="nav-icon">🖼</span><span class="nav-label">Art</span></div>
 </nav>
 
 <!-- MAIN -->
@@ -724,6 +761,8 @@ hr.divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; 
 
 <!-- ===== HOME ===== -->
 <div id="screen-home" class="screen active">
+  <img src="assets/159-ART-09-portraits.png" class="cover-img" onclick="navTo('art')" title="Tap to view all artwork" alt="Day One — character portraits">
+
   <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
     <button class="btn btn-red" style="flex:1;min-width:120px;" onclick="toggleTimer()" id="btn-home-start">▶ START SESSION</button>
     <button class="btn btn-amber" onclick="resetTimer()">↺ Reset</button>
@@ -738,6 +777,7 @@ hr.divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; 
     <div class="dash-tile"       onclick="navTo('handouts')"><div class="dash-tile-icon">📄</div><div class="dash-tile-label">Handouts</div></div>
     <div class="dash-tile"       onclick="navTo('players')"><div class="dash-tile-icon">♟</div><div class="dash-tile-label">Players</div></div>
     <div class="dash-tile"       onclick="navTo('ref')"><div class="dash-tile-icon">📋</div><div class="dash-tile-label">Ref</div></div>
+    <div class="dash-tile"       onclick="navTo('art')" style="border-color:rgba(255,204,0,0.35);"><div class="dash-tile-icon">🖼</div><div class="dash-tile-label" style="color:var(--amber);">Artwork</div></div>
   </div>
 
   <div class="status-panel">
@@ -820,9 +860,9 @@ hr.divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; 
     <div class="section-title">Act I — Something Is Wrong <span class="tag tag-grey">~60 min</span></div>
     <div class="goal-box"><strong>Goal:</strong> Establish confusion. Make first contact. Trigger the Market breaking. Players form a group. The nature of what they're dealing with is suspected but not confirmed.</div>
     <div class="section-head">Locations</div>
-    <div class="loc-item" onclick="toggleLoc(this)"><div class="loc-check"></div><div><div class="loc-name">Bus Crash — Southwark St</div><div class="loc-sub">Convergence point · First infected present</div></div></div>
-    <div class="loc-item" onclick="toggleLoc(this)"><div class="loc-check"></div><div><div class="loc-name">Borough Market</div><div class="loc-sub">Fatima's stall · Improvised weapons · The break happens here</div></div></div>
-    <div class="loc-item" onclick="toggleLoc(this)"><div class="loc-check"></div><div><div class="loc-name">Jubilee Walkway</div><div class="loc-sub">Figure in the river · Maggie's route · First SAN roll</div></div></div>
+    <div class="loc-item" onclick="toggleLoc(this)"><div class="loc-check"></div><div style="flex:1;"><div class="loc-name">Bus Crash — Southwark St</div><div class="loc-sub">Convergence point · First infected present</div><img src="assets/159-ART-02-bus-crash.png" class="loc-artwork" onclick="event.stopPropagation();showArtwork('assets/159-ART-02-bus-crash.png','Bus Crash — Southwark Street')" alt="Bus crash scene"></div></div>
+    <div class="loc-item" onclick="toggleLoc(this)"><div class="loc-check"></div><div style="flex:1;"><div class="loc-name">Borough Market</div><div class="loc-sub">Fatima's stall · Improvised weapons · The break happens here</div><img src="assets/159-ART-03-market.png" class="loc-artwork" onclick="event.stopPropagation();showArtwork('assets/159-ART-03-market.png','Borough Market — The Break')" alt="Borough Market"></div></div>
+    <div class="loc-item" onclick="toggleLoc(this)"><div class="loc-check"></div><div style="flex:1;"><div class="loc-name">Jubilee Walkway</div><div class="loc-sub">Figure in the river · Maggie's route · First SAN roll</div><img src="assets/159-ART-04-river-figure.png" class="loc-artwork" onclick="event.stopPropagation();showArtwork('assets/159-ART-04-river-figure.png','The Figure in the River')" alt="Figure in the river"></div></div>
     <div class="loc-item" onclick="toggleLoc(this)"><div class="loc-check"></div><div><div class="loc-name">The Shard Lobby</div><div class="loc-sub">Olu's position · Radio · CCTV · Roof vantage</div></div></div>
     <div class="section-head mt12">Key Beats</div>
     <div class="card"><div class="card-head" onclick="toggleCard(this)"><div><div class="card-title">The High-Vis Man</div><div class="card-sub">First infected — passive until touched</div></div><span class="chevron">▼</span></div>
@@ -859,8 +899,8 @@ hr.divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; 
     <div class="section-title">Act II — The Long Walk South <span class="tag tag-grey">~90 min</span></div>
     <div class="goal-box"><strong>Goal:</strong> Moral choices compound. Drone stream reveals scale. Reanimation of a known person is the act hinge. Cordon fragment triggers Act III decision.</div>
     <div class="section-head">Locations</div>
-    <div class="loc-item" onclick="toggleLoc(this)"><div class="loc-check"></div><div><div class="loc-name">Bermondsey Street</div><div class="loc-sub">False calm · Scavenge opportunity · Pharmacy conflict</div></div></div>
-    <div class="loc-item" onclick="toggleLoc(this)"><div class="loc-check"></div><div><div class="loc-name">The Blue Anchor (Pub)</div><div class="loc-sub">12 survivors · Danny is infected · Sharif auto-detects if present</div></div></div>
+    <div class="loc-item" onclick="toggleLoc(this)"><div class="loc-check"></div><div style="flex:1;"><div class="loc-name">Bermondsey Street</div><div class="loc-sub">False calm · Scavenge opportunity · Pharmacy conflict</div><img src="assets/159-ART-05-bermondsey.png" class="loc-artwork" onclick="event.stopPropagation();showArtwork('assets/159-ART-05-bermondsey.png','Bermondsey Street')" alt="Bermondsey Street"></div></div>
+    <div class="loc-item" onclick="toggleLoc(this)"><div class="loc-check"></div><div style="flex:1;"><div class="loc-name">The Blue Anchor (Pub)</div><div class="loc-sub">12 survivors · Danny is infected · Sharif auto-detects if present</div><img src="assets/159-ART-06-blue-anchor.png" class="loc-artwork" onclick="event.stopPropagation();showArtwork('assets/159-ART-06-blue-anchor.png','The Blue Anchor')" alt="The Blue Anchor pub interior"></div></div>
     <div class="loc-item" onclick="toggleLoc(this)"><div class="loc-check"></div><div><div class="loc-name">Bermondsey Pharmacy</div><div class="loc-sub">Declan + Ryan looting · Human conflict · Ryan may be bitten</div></div></div>
     <div class="loc-item" onclick="toggleLoc(this)"><div class="loc-check"></div><div><div class="loc-name">Guy's Hospital Car Park</div><div class="loc-sub">High ground · St Thomas' visible — overwhelmed · Dead end if surrounded</div></div></div>
     <div class="section-head mt12">Key Beats</div>
@@ -902,12 +942,14 @@ hr.divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; 
     <div class="section-head">The Two Routes</div>
     <div class="card"><div class="card-head" onclick="toggleCard(this)"><div><div class="card-title">Tower Bridge</div><div class="card-sub">On foot — civilian group controls access</div></div><span class="chevron">▼</span></div>
     <div class="card-body" style="display:none;">
+      <img src="assets/159-ART-07-tower-bridge.png" class="loc-artwork" onclick="showArtwork('assets/159-ART-07-tower-bridge.png','Tower Bridge — Pete and the Bridge Group')" alt="Tower Bridge approach" style="max-height:180px;">
       <p><span class="text-amber bold">PETE</span> (50s, site foreman, fire axe) controls the gatehouse with 6–8 civilians. He is letting people through — after questioning. He will refuse anyone he believes is infected or lying.</p>
       <p>He is not a villain. He is broken-steady. [BRP: Persuade — pass to move through. Psychology — reads his state: he has already turned two infected people away and dealt with the consequences.]</p>
       <p class="text-red">If Pete refuses someone: the group must choose. Leave them, or risk the bridge. No third option is provided. Players may invent one.</p>
     </div></div>
     <div class="card"><div class="card-head" onclick="toggleCard(this)"><div><div class="card-title">Bankside Pier — The RIB</div><div class="card-sub">Via Blackfriars underpass — heavily infected</div></div><span class="chevron">▼</span></div>
     <div class="card-body" style="display:none;">
+      <img src="assets/159-ART-08-pier-rib.png" class="loc-artwork" onclick="showArtwork('assets/159-ART-08-pier-rib.png','Bankside Pier — The RIB')" alt="Bankside Pier RIB" style="max-height:180px;object-position:center center;">
       <p>6-metre rigid inflatable at Bankside Pier. Holds 10. Key in locked pier office. Engine starts on third try.</p>
       <p>Route requires the Blackfriars underpass — dark since noon, 12+ infected inside.</p>
       <div class="callout callout-red">SAN 1d4/1d8 — moving through the underpass (darkness + density + moaning).</div>
@@ -1053,6 +1095,64 @@ hr.divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; 
   </div></div>
 </div>
 
+<!-- ===== ART GALLERY ===== -->
+<div id="screen-art" class="screen">
+  <div class="section-title">Artwork — Day One</div>
+  <div class="callout callout-amber" style="margin-bottom:16px;">Reportage ink sketch style. Tap any image to view fullscreen or show to players.</div>
+
+  <div class="section-head">Cover</div>
+  <div class="art-grid" style="margin-bottom:16px;">
+    <div class="art-tile" style="grid-column:1/-1;" onclick="showArtwork('assets/159-ART-09-portraits.png','The Survivors — Character Portraits')">
+      <img src="assets/159-ART-09-portraits.png" alt="Character portraits" style="max-height:220px;object-fit:cover;object-position:center top;">
+      <div class="art-tile-label">The Survivors — Eight Portraits<div class="art-tile-act">All Acts · 159-ART-09</div></div>
+    </div>
+  </div>
+
+  <div class="section-head">Act I — Something Is Wrong</div>
+  <div class="art-grid" style="margin-bottom:16px;">
+    <div class="art-tile" onclick="showArtwork('assets/159-ART-02-bus-crash.png','Bus Crash — Southwark Street')">
+      <img src="assets/159-ART-02-bus-crash.png" alt="Bus crash">
+      <div class="art-tile-label">Bus Crash — Southwark St<div class="art-tile-act">Act I · 159-ART-02</div></div>
+    </div>
+    <div class="art-tile" onclick="showArtwork('assets/159-ART-03-market.png','Borough Market — The Break')">
+      <img src="assets/159-ART-03-market.png" alt="Borough Market">
+      <div class="art-tile-label">Borough Market — The Break<div class="art-tile-act">Act I · 159-ART-03</div></div>
+    </div>
+    <div class="art-tile" style="grid-column:1/-1;" onclick="showArtwork('assets/159-ART-04-river-figure.png','The Figure in the River')">
+      <img src="assets/159-ART-04-river-figure.png" alt="Figure in river" style="max-height:260px;object-fit:cover;">
+      <div class="art-tile-label">The Figure in the River<div class="art-tile-act">Act I · 159-ART-04</div></div>
+    </div>
+  </div>
+
+  <div class="section-head">Act II — The Long Walk South</div>
+  <div class="art-grid" style="margin-bottom:16px;">
+    <div class="art-tile" onclick="showArtwork('assets/159-ART-05-bermondsey.png','Bermondsey Street')">
+      <img src="assets/159-ART-05-bermondsey.png" alt="Bermondsey Street">
+      <div class="art-tile-label">Bermondsey Street<div class="art-tile-act">Act II · 159-ART-05</div></div>
+    </div>
+    <div class="art-tile" onclick="showArtwork('assets/159-ART-06-blue-anchor.png','The Blue Anchor')">
+      <img src="assets/159-ART-06-blue-anchor.png" alt="Blue Anchor pub">
+      <div class="art-tile-label">The Blue Anchor<div class="art-tile-act">Act II · 159-ART-06</div></div>
+    </div>
+  </div>
+
+  <div class="section-head">Act III — The Bridge or the River</div>
+  <div class="art-grid" style="margin-bottom:16px;">
+    <div class="art-tile" onclick="showArtwork('assets/159-ART-07-tower-bridge.png','Tower Bridge — Pete and the Bridge Group')">
+      <img src="assets/159-ART-07-tower-bridge.png" alt="Tower Bridge">
+      <div class="art-tile-label">Tower Bridge — Pete &amp; the Group<div class="art-tile-act">Act III · 159-ART-07</div></div>
+    </div>
+    <div class="art-tile" onclick="showArtwork('assets/159-ART-08-pier-rib.png','Bankside Pier — The RIB')">
+      <img src="assets/159-ART-08-pier-rib.png" alt="Bankside Pier RIB">
+      <div class="art-tile-label">Bankside Pier — The RIB<div class="art-tile-act">Act III · 159-ART-08</div></div>
+    </div>
+    <div class="art-tile" style="grid-column:1/-1;" onclick="showArtwork('assets/159-ART-01-cover.png','Aerial View — South Bank, Day One')">
+      <img src="assets/159-ART-01-cover.png" alt="Aerial view" style="max-height:200px;object-fit:cover;">
+      <div class="art-tile-label">Aerial View — South Bank<div class="art-tile-act">Cover · 159-ART-01</div></div>
+    </div>
+  </div>
+</div>
+
 </div><!-- /main -->
 
 <!-- NHS ALERT FULLSCREEN -->
@@ -1095,291 +1195,69 @@ hr.divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; 
 //  DATA
 // ============================================================
 
+// Portrait sheet: 4 cols × 2 rows. pc = {col, row}
+// Top row: Fatima(0,0), Callum(1,0), Olu-uniform(2,0), Gordon(3,0)
+// Bot row: Pete(0,1), Priya(1,1), Sharif/Maggie(2,1), Tom(3,1)
 const NPCS = [
   {
-    id: 'fatima',
-    name: 'Fatima Osei',
-    role: 'Borough Market stall owner',
-    act: 'Act I onwards',
-    disp: 'neutral',
-    dispLabel: 'Neutral → Ally',
-    dispColor: 'amber',
+    id: 'fatima', name: 'Fatima Osei', role: 'Borough Market stall owner',
+    act: 'Act I onwards', disp: 'neutral', dispLabel: 'Neutral → Ally', dispColor: 'amber',
+    pc: {col:0, row:0},
     physical: 'Nigerian-British, 50s. Broad shoulders, close-cropped grey hair. Market apron over a heavy coat. Moving with complete economy of motion. Her expression is not frightened. It is alert.',
     motivation: 'Lock up the van, assess what this actually is, survive. Not sentimental. Not panicking.',
     knows: 'Market layout, every exit. Has a locked supply van (driver missing, she has the spare key). Has seen riots, the 2011 disorder, a gas explosion. This is different, and she will say so directly.',
     stats: 'STR 13 | CON 14 | SIZ 11 | DEX 12 | INT 17 | POW 15\nHP 13 | MP 15\nPersuade 75% | Drive 60% | First Aid 55% | Spot Hidden 70%\nAttack: Cleaver 50%, 1d6+1d4',
-    hook: 'She has a locked supply van — driver has gone missing into the crowd.',
-    portrait: `<svg viewBox="0 0 76 100" xmlns="http://www.w3.org/2000/svg" style="background:#0c0b0b">
-      <rect width="76" height="100" fill="#0c0b0b"/>
-      <!-- Head -->
-      <ellipse cx="38" cy="28" rx="16" ry="18" fill="none" stroke="#c8a870" stroke-width="1.5"/>
-      <!-- Close-cropped hair — hatching -->
-      <path d="M22 22 Q38 10 54 22" fill="none" stroke="#c8a870" stroke-width="2"/>
-      <path d="M24 18 Q38 8 52 18" fill="none" stroke="#c8a870" stroke-width="1"/>
-      <!-- Eyes — alert, direct -->
-      <line x1="29" y1="27" x2="35" y2="27" stroke="#c8a870" stroke-width="1.5"/>
-      <line x1="41" y1="27" x2="47" y2="27" stroke="#c8a870" stroke-width="1.5"/>
-      <circle cx="32" cy="27" r="2" fill="#c8a870"/>
-      <circle cx="44" cy="27" r="2" fill="#c8a870"/>
-      <!-- Nose -->
-      <path d="M36 30 L34 36 L38 37 L42 36 L40 30" fill="none" stroke="#c8a870" stroke-width="1"/>
-      <!-- Mouth — firm line -->
-      <line x1="32" y1="39" x2="44" y2="39" stroke="#c8a870" stroke-width="1.5"/>
-      <!-- Neck -->
-      <line x1="33" y1="46" x2="33" y2="54" stroke="#c8a870" stroke-width="1.2"/>
-      <line x1="43" y1="46" x2="43" y2="54" stroke="#c8a870" stroke-width="1.2"/>
-      <!-- Shoulders — broad -->
-      <path d="M10 68 Q12 55 33 54 L43 54 Q64 55 66 68" fill="none" stroke="#c8a870" stroke-width="1.5"/>
-      <!-- Apron strings -->
-      <line x1="30" y1="58" x2="24" y2="82" stroke="#c8a870" stroke-width="1"/>
-      <line x1="46" y1="58" x2="52" y2="82" stroke="#c8a870" stroke-width="1"/>
-      <line x1="24" y1="82" x2="52" y2="82" stroke="#c8a870" stroke-width="1"/>
-      <!-- Coat crosshatch -->
-      <path d="M10 68 L10 95 L66 95 L66 68" fill="none" stroke="#c8a870" stroke-width="1"/>
-      <line x1="20" y1="70" x2="20" y2="94" stroke="#c8a870" stroke-width="0.5"/>
-      <line x1="30" y1="70" x2="30" y2="94" stroke="#c8a870" stroke-width="0.5"/>
-      <line x1="46" y1="70" x2="46" y2="94" stroke="#c8a870" stroke-width="0.5"/>
-      <line x1="56" y1="70" x2="56" y2="94" stroke="#c8a870" stroke-width="0.5"/>
-      <!-- Name label -->
-      <text x="38" y="99" text-anchor="middle" font-size="5" fill="#706050" font-family="monospace">FATIMA</text>
-    </svg>`
+    hook: 'She has a locked supply van — driver has gone missing into the crowd.'
   },
   {
-    id: 'callum',
-    name: 'Callum Fraser',
-    role: 'Metropolitan Police constable',
-    act: 'Act I onwards',
-    disp: 'neutral',
-    dispLabel: 'Neutral → Friendly',
-    dispColor: 'blue',
+    id: 'callum', name: 'Callum Fraser', role: 'Metropolitan Police constable',
+    act: 'Act I onwards', disp: 'neutral', dispLabel: 'Neutral → Friendly', dispColor: 'blue',
+    pc: {col:1, row:0},
     physical: 'Male, 28, Scottish. Uniform, no PPE. Baton, PAVA, radio. Looking for someone to tell him what to do.',
     motivation: 'Follow protocol. When protocol fails, follow the most competent person in the room.',
     knows: 'First reports came from Elephant & Castle at 7:14 AM — two hours before the alert. He heard it on his radio before comms went patchy. Has not shared this yet.',
     stats: 'STR 13 | CON 12 | SIZ 13 | DEX 11 | INT 13 | POW 12\nHP 13 | MP 12\nLaw 45% | Persuade 55% | Spot Hidden 60% | Brawl 55%\nBaton 55%, 1d6 | PAVA spray (CON resist or blinded 1d3 rounds)',
-    hook: 'His radio is the key information delivery mechanism. Fragment: "first reports... Elephant... 07:14"',
-    portrait: `<svg viewBox="0 0 76 100" xmlns="http://www.w3.org/2000/svg" style="background:#0c0b0b">
-      <rect width="76" height="100" fill="#0c0b0b"/>
-      <!-- Head -->
-      <ellipse cx="38" cy="27" rx="14" ry="16" fill="none" stroke="#8888cc" stroke-width="1.5"/>
-      <!-- Police cap -->
-      <rect x="22" y="13" width="32" height="6" rx="2" fill="none" stroke="#8888cc" stroke-width="1.5"/>
-      <line x1="18" y1="16" x2="58" y2="16" stroke="#8888cc" stroke-width="1"/>
-      <!-- Cap badge squiggle -->
-      <path d="M34 15 L36 13 L38 15 L40 13 L42 15" fill="none" stroke="#8888cc" stroke-width="1"/>
-      <!-- Eyes — lost, searching -->
-      <line x1="28" y1="26" x2="34" y2="26" stroke="#8888cc" stroke-width="1.5"/>
-      <line x1="42" y1="26" x2="48" y2="26" stroke="#8888cc" stroke-width="1.5"/>
-      <circle cx="31" cy="26" r="1.5" fill="#8888cc"/>
-      <circle cx="45" cy="26" r="1.5" fill="#8888cc"/>
-      <!-- Worried brow lines -->
-      <line x1="28" y1="23" x2="34" y2="22" stroke="#8888cc" stroke-width="1"/>
-      <line x1="42" y1="22" x2="48" y2="23" stroke="#8888cc" stroke-width="1"/>
-      <!-- Mouth — tight -->
-      <path d="M33 36 Q38 34 43 36" fill="none" stroke="#8888cc" stroke-width="1.2"/>
-      <!-- Neck + collar -->
-      <line x1="34" y1="43" x2="34" y2="52" stroke="#8888cc" stroke-width="1.2"/>
-      <line x1="42" y1="43" x2="42" y2="52" stroke="#8888cc" stroke-width="1.2"/>
-      <!-- Uniform shoulders -->
-      <path d="M8 66 Q12 53 34 52 L42 52 Q64 53 68 66" fill="none" stroke="#8888cc" stroke-width="1.5"/>
-      <!-- Epaulette lines -->
-      <line x1="10" y1="58" x2="22" y2="55" stroke="#8888cc" stroke-width="1"/>
-      <line x1="66" y1="58" x2="54" y2="55" stroke="#8888cc" stroke-width="1"/>
-      <!-- Radio on chest -->
-      <rect x="30" y="60" width="8" height="12" rx="1" fill="none" stroke="#8888cc" stroke-width="1"/>
-      <line x1="34" y1="60" x2="34" y2="58" stroke="#8888cc" stroke-width="1"/>
-      <!-- Shirt/uniform body -->
-      <path d="M8 66 L8 95 L68 95 L68 66" fill="none" stroke="#8888cc" stroke-width="1"/>
-      <line x1="38" y1="66" x2="38" y2="95" stroke="#8888cc" stroke-width="0.8"/>
-      <text x="38" y="99" text-anchor="middle" font-size="5" fill="#706050" font-family="monospace">CALLUM</text>
-    </svg>`
+    hook: 'His radio is the key information delivery mechanism. Fragment: "first reports... Elephant... 07:14"'
   },
   {
-    id: 'sharif',
-    name: 'Dr. Yasmin Sharif',
-    role: 'NHS Emergency Medicine Consultant, off-duty',
-    act: 'Act II',
-    disp: 'friendly',
-    dispLabel: 'Friendly',
-    dispColor: 'green',
+    id: 'sharif', name: 'Dr. Yasmin Sharif', role: 'NHS Emergency Medicine Consultant, off-duty',
+    act: 'Act II', disp: 'friendly', dispLabel: 'Friendly', dispColor: 'green',
+    pc: {col:2, row:1},
     physical: 'Mixed British-Pakistani, mid 40s. Dark trousers, walking boots, good coat. Reading glasses pushed up on her head. Moves with unhurried efficiency.',
     motivation: 'Get to St Thomas\' to help. She is wrong about this. Players may need to talk her out of it.',
     knows: 'This is neurological. Reanimation is a motor function cascade. Will say: "Most of them are not survivable." Can identify infected with Medicine roll vs 40%.',
     stats: 'STR 9 | CON 13 | SIZ 10 | DEX 13 | INT 18 | POW 15\nHP 12 | MP 15\nMedicine 85% | First Aid 90% | Persuade 60% | Psychology 70%\nMedical treatment: restores 1d3 HP per successful First Aid',
-    hook: 'She wants to reach St Thomas\' — visibly overwhelmed from the car park. Players must reason her out of it or lose the group\'s best medic.',
-    portrait: `<svg viewBox="0 0 76 100" xmlns="http://www.w3.org/2000/svg" style="background:#0c0b0b">
-      <rect width="76" height="100" fill="#0c0b0b"/>
-      <!-- Head -->
-      <ellipse cx="38" cy="26" rx="14" ry="17" fill="none" stroke="#44dd88" stroke-width="1.5"/>
-      <!-- Hair — pulled back, dark -->
-      <path d="M24 20 Q38 5 52 20" fill="none" stroke="#44dd88" stroke-width="2"/>
-      <path d="M50 20 Q56 30 54 40" fill="none" stroke="#44dd88" stroke-width="1"/>
-      <!-- Reading glasses pushed up on head -->
-      <rect x="26" y="12" width="9" height="5" rx="2" fill="none" stroke="#44dd88" stroke-width="1"/>
-      <rect x="41" y="12" width="9" height="5" rx="2" fill="none" stroke="#44dd88" stroke-width="1"/>
-      <line x1="35" y1="14" x2="41" y2="14" stroke="#44dd88" stroke-width="1"/>
-      <!-- Eyes — calm, direct -->
-      <line x1="28" y1="25" x2="34" y2="25" stroke="#44dd88" stroke-width="1.5"/>
-      <line x1="42" y1="25" x2="48" y2="25" stroke="#44dd88" stroke-width="1.5"/>
-      <circle cx="31" cy="25" r="2" fill="#44dd88"/>
-      <circle cx="45" cy="25" r="2" fill="#44dd88"/>
-      <!-- Nose -->
-      <path d="M37 28 L35 34 L38 35 L41 34 L39 28" fill="none" stroke="#44dd88" stroke-width="1"/>
-      <!-- Mouth — neutral, closed -->
-      <line x1="33" y1="38" x2="43" y2="38" stroke="#44dd88" stroke-width="1.2"/>
-      <!-- Neck -->
-      <line x1="34" y1="43" x2="34" y2="52" stroke="#44dd88" stroke-width="1.2"/>
-      <line x1="42" y1="43" x2="42" y2="52" stroke="#44dd88" stroke-width="1.2"/>
-      <!-- Good coat, civilian -->
-      <path d="M10 67 Q14 53 34 52 L42 52 Q62 53 66 67" fill="none" stroke="#44dd88" stroke-width="1.5"/>
-      <!-- Coat lapels -->
-      <path d="M34 52 L28 65" fill="none" stroke="#44dd88" stroke-width="1"/>
-      <path d="M42 52 L48 65" fill="none" stroke="#44dd88" stroke-width="1"/>
-      <!-- Coat body crosshatch -->
-      <path d="M10 67 L10 95 L66 95 L66 67" fill="none" stroke="#44dd88" stroke-width="1"/>
-      <line x1="18" y1="68" x2="14" y2="94" stroke="#44dd88" stroke-width="0.5"/>
-      <line x1="28" y1="68" x2="26" y2="94" stroke="#44dd88" stroke-width="0.5"/>
-      <line x1="48" y1="68" x2="50" y2="94" stroke="#44dd88" stroke-width="0.5"/>
-      <line x1="58" y1="68" x2="62" y2="94" stroke="#44dd88" stroke-width="0.5"/>
-      <text x="38" y="99" text-anchor="middle" font-size="5" fill="#706050" font-family="monospace">DR. SHARIF</text>
-    </svg>`
+    hook: 'She wants to reach St Thomas\' — visibly overwhelmed from the car park. Players must reason her out of it or lose the group\'s best medic.'
   },
   {
-    id: 'marcus',
-    name: 'Marcus',
-    role: 'Livestreamer, 19, on a Lime bike',
-    act: 'Act I onwards',
-    disp: 'chaotic',
-    dispLabel: 'Friendly / Liability',
-    dispColor: 'orange',
+    id: 'marcus', name: 'Marcus', role: 'Livestreamer, 19, on a Lime bike',
+    act: 'Act I onwards', disp: 'chaotic', dispLabel: 'Friendly / Liability', dispColor: 'orange',
+    pc: {col:1, row:1},
     physical: 'Black British, 19. Hoodie hood up. Lime bike he hasn\'t let go of. Phone on a selfie stick, running live to 41,000 viewers. Terror resolving into content-creator energy because he doesn\'t know another way.',
     motivation: 'Keep streaming. Terrified of what happens when the battery dies.',
     knows: 'His live chat (41,000 watching) is feeding him real-time information. Someone in chat has drone footage of the city. Someone claims military presence gathering at London Bridge. Phone at 31%.',
     stats: 'STR 10 | CON 11 | SIZ 11 | DEX 14 | INT 14 | POW 11\nHP 11 | MP 11\nComputer/Tech 65% | Fast Talk 55% | Spot Hidden 45% | Ride (cycle) 60%\nNot a combatant — do not put him in combat.',
-    hook: 'His drone stream is Clue 6 — aerial view of how far the chaos has spread. Phone battery is 31% and dropping.',
-    portrait: `<svg viewBox="0 0 76 100" xmlns="http://www.w3.org/2000/svg" style="background:#0c0b0b">
-      <rect width="76" height="100" fill="#0c0b0b"/>
-      <!-- Hoodie hood up -->
-      <path d="M16 30 Q16 8 38 8 Q60 8 60 30" fill="none" stroke="#ff8844" stroke-width="2"/>
-      <path d="M16 30 Q18 40 24 44" fill="none" stroke="#ff8844" stroke-width="1.5"/>
-      <path d="M60 30 Q58 40 52 44" fill="none" stroke="#ff8844" stroke-width="1.5"/>
-      <!-- Head inside hood -->
-      <ellipse cx="38" cy="28" rx="13" ry="15" fill="none" stroke="#ff8844" stroke-width="1.2"/>
-      <!-- Eyes — wide, scared, but performing calm -->
-      <line x1="29" y1="25" x2="35" y2="25" stroke="#ff8844" stroke-width="1.5"/>
-      <line x1="41" y1="25" x2="47" y2="25" stroke="#ff8844" stroke-width="1.5"/>
-      <circle cx="32" cy="25" r="2.5" fill="#ff8844"/>
-      <circle cx="44" cy="25" r="2.5" fill="#ff8844"/>
-      <!-- Pupils — slightly wide (fear) -->
-      <circle cx="32" cy="25" r="1" fill="#0c0b0b"/>
-      <circle cx="44" cy="25" r="1" fill="#0c0b0b"/>
-      <!-- Mouth — forced smile that doesn't reach -->
-      <path d="M32 36 Q38 40 44 36" fill="none" stroke="#ff8844" stroke-width="1.2"/>
-      <!-- Phone on selfie stick — the defining visual -->
-      <line x1="52" y1="15" x2="64" y2="45" stroke="#ff8844" stroke-width="1.5"/>
-      <rect x="56" y="8" width="14" height="22" rx="2" fill="none" stroke="#ff8844" stroke-width="1.5"/>
-      <!-- Screen glow -->
-      <rect x="57" y="9" width="12" height="18" rx="1" fill="rgba(255,136,68,0.1)" stroke="#ff8844" stroke-width="0.5"/>
-      <text x="63" y="21" text-anchor="middle" font-size="4" fill="#ff8844">LIVE</text>
-      <!-- Hoodie body -->
-      <path d="M16 48 L10 95 L66 95 L60 48" fill="none" stroke="#ff8844" stroke-width="1.2"/>
-      <line x1="38" y1="48" x2="38" y2="95" stroke="#ff8844" stroke-width="0.8"/>
-      <!-- Hood strings -->
-      <line x1="34" y1="44" x2="32" y2="52" stroke="#ff8844" stroke-width="0.8"/>
-      <line x1="42" y1="44" x2="44" y2="52" stroke="#ff8844" stroke-width="0.8"/>
-      <text x="38" y="99" text-anchor="middle" font-size="5" fill="#706050" font-family="monospace">MARCUS</text>
-    </svg>`
+    hook: 'His drone stream is Clue 6 — aerial view of how far the chaos has spread. Phone battery is 31% and dropping.'
   },
   {
-    id: 'helen',
-    name: 'Helen',
-    role: 'Retired civil servant — extraordinary calm',
-    act: 'Act II onwards',
-    disp: 'hidden',
-    dispLabel: 'Denial → Revelation',
-    dispColor: 'purple',
+    id: 'helen', name: 'Helen', role: 'Retired civil servant — extraordinary calm',
+    act: 'Act II onwards', disp: 'hidden', dispLabel: 'Denial → Revelation', dispColor: 'purple',
+    pc: {col:2, row:1},
     physical: 'White British, late 60s. Well-dressed for a day out — good coat, sensible shoes (excellent for walking), National Theatre tote bag. Reading glasses on a chain. Calm that reads as either extraordinary grace or dissociation.',
     motivation: 'She keeps saying it\'s a gas leak. She is not stupid. She knows what this is. She is buying herself time to accept it.',
     knows: 'Cabinet Office — thirty years. Will not confirm unless directly asked. If trusted, will say: "There\'s a protocol for this. If they haven\'t activated it, something went wrong before the alert." Knows Meridian Biosciences as a contractor she saw on a briefing. Has keys to a private members\' club: food, wine, panic room with emergency radio.',
     stats: 'STR 8 | CON 11 | SIZ 10 | DEX 10 | INT 17 | POW 16\nHP 11 | MP 16\nPersuade 65% | Psychology 70% | History/Law 55% | First Aid 40%',
-    hook: 'THE MOMENT: She does something remarkable at the right time. Step in front of an infected. Walk calmly into danger because nobody else will. Play it straight. She does not explain it.',
-    portrait: `<svg viewBox="0 0 76 100" xmlns="http://www.w3.org/2000/svg" style="background:#0c0b0b">
-      <rect width="76" height="100" fill="#0c0b0b"/>
-      <!-- Head -->
-      <ellipse cx="38" cy="27" rx="14" ry="16" fill="none" stroke="#cc88ff" stroke-width="1.5"/>
-      <!-- Hair — neat, set -->
-      <path d="M24 22 Q38 10 52 22" fill="none" stroke="#cc88ff" stroke-width="2"/>
-      <path d="M22 28 Q22 18 28 18" fill="none" stroke="#cc88ff" stroke-width="1"/>
-      <path d="M54 28 Q54 18 48 18" fill="none" stroke="#cc88ff" stroke-width="1"/>
-      <!-- Reading glasses on chain -->
-      <ellipse cx="31" cy="27" rx="4" ry="3" fill="none" stroke="#cc88ff" stroke-width="1"/>
-      <ellipse cx="45" cy="27" rx="4" ry="3" fill="none" stroke="#cc88ff" stroke-width="1"/>
-      <line x1="35" y1="27" x2="41" y2="27" stroke="#cc88ff" stroke-width="1"/>
-      <!-- Chain loop down -->
-      <path d="M27 28 Q24 36 28 42" fill="none" stroke="#cc88ff" stroke-width="0.8" stroke-dasharray="2,2"/>
-      <path d="M49 28 Q52 36 48 42" fill="none" stroke="#cc88ff" stroke-width="0.8" stroke-dasharray="2,2"/>
-      <!-- Eyes — watchful intelligence -->
-      <circle cx="31" cy="27" r="1.5" fill="#cc88ff"/>
-      <circle cx="45" cy="27" r="1.5" fill="#cc88ff"/>
-      <!-- Calm mouth — slight upward curve -->
-      <path d="M32 37 Q38 40 44 37" fill="none" stroke="#cc88ff" stroke-width="1.2"/>
-      <!-- Neck -->
-      <line x1="34" y1="43" x2="34" y2="52" stroke="#cc88ff" stroke-width="1.2"/>
-      <line x1="42" y1="43" x2="42" y2="52" stroke="#cc88ff" stroke-width="1.2"/>
-      <!-- Good coat -->
-      <path d="M10 67 Q14 53 34 52 L42 52 Q62 53 66 67" fill="none" stroke="#cc88ff" stroke-width="1.5"/>
-      <path d="M10 67 L8 95 L68 95 L66 67" fill="none" stroke="#cc88ff" stroke-width="1"/>
-      <!-- Tote bag strap over shoulder -->
-      <line x1="42" y1="54" x2="54" y2="78" stroke="#cc88ff" stroke-width="1.5"/>
-      <rect x="50" y="74" width="16" height="14" rx="2" fill="none" stroke="#cc88ff" stroke-width="1"/>
-      <!-- National Theatre tote label squiggle -->
-      <path d="M52 79 L64 79" fill="none" stroke="#cc88ff" stroke-width="0.5"/>
-      <path d="M52 82 L60 82" fill="none" stroke="#cc88ff" stroke-width="0.5"/>
-      <text x="38" y="99" text-anchor="middle" font-size="5" fill="#706050" font-family="monospace">HELEN</text>
-    </svg>`
+    hook: 'THE MOMENT: She does something remarkable at the right time. Step in front of an infected. Walk calmly into danger because nobody else will. Play it straight. She does not explain it.'
   },
   {
-    id: 'pete',
-    name: 'Pete',
-    role: 'Bridge Group leader — Tower Bridge gatehouse',
-    act: 'Act III',
-    disp: 'neutral',
-    dispLabel: 'Neutral → Hostile if pushed',
-    dispColor: 'red',
+    id: 'pete', name: 'Pete', role: 'Bridge Group leader — Tower Bridge gatehouse',
+    act: 'Act III', disp: 'neutral', dispLabel: 'Neutral → Hostile if pushed', dispColor: 'red',
+    pc: {col:0, row:1},
     physical: 'Male, 50s, white British. Site-manager build — broad, competent hands, steel-toed boots. Hi-vis with "FOREMAN" on the back, worn from habit. Fire axe resting against his leg, not raised.',
     motivation: 'Keep the bridge clear. Protect the people behind him. He has made hard decisions today and will make more. Not a villain. Not wrong.',
     knows: 'The north bank is not safe either. The cordon is real — someone in his group has a radio. He hasn\'t told the people with him.',
     stats: 'STR 14 | CON 13 | SIZ 14 | DEX 11 | INT 14 | POW 13\nHP 14 | MP 13\nPersuade 60% | Spot Hidden 65% | Psychology 55% | Brawl 60%\nFire axe 60%, 1d8+1d4',
-    hook: 'He is doing exactly what anyone responsible would do. Arguing with him should feel like arguing with a mirror.',
-    portrait: `<svg viewBox="0 0 76 100" xmlns="http://www.w3.org/2000/svg" style="background:#0c0b0b">
-      <rect width="76" height="100" fill="#0c0b0b"/>
-      <!-- Head — broad, set jaw -->
-      <ellipse cx="38" cy="26" rx="15" ry="16" fill="none" stroke="#ff3333" stroke-width="1.5"/>
-      <!-- Short cropped hair — site worker -->
-      <path d="M23 22 Q38 12 53 22" fill="#0c0b0b" stroke="#ff3333" stroke-width="1.5"/>
-      <line x1="24" y1="20" x2="52" y2="20" stroke="#ff3333" stroke-width="1"/>
-      <line x1="26" y1="17" x2="50" y2="17" stroke="#ff3333" stroke-width="0.8"/>
-      <!-- Eyes — steady, broken-steady, not cruel -->
-      <line x1="27" y1="24" x2="33" y2="24" stroke="#ff3333" stroke-width="1.5"/>
-      <line x1="43" y1="24" x2="49" y2="24" stroke="#ff3333" stroke-width="1.5"/>
-      <circle cx="30" cy="24" r="2" fill="#ff3333"/>
-      <circle cx="46" cy="24" r="2" fill="#ff3333"/>
-      <!-- Set jaw — tight mouth -->
-      <line x1="31" y1="36" x2="45" y2="36" stroke="#ff3333" stroke-width="2"/>
-      <!-- Strong jaw line crosshatch -->
-      <line x1="23" y1="38" x2="26" y2="42" stroke="#ff3333" stroke-width="0.8"/>
-      <line x1="24" y1="36" x2="27" y2="40" stroke="#ff3333" stroke-width="0.8"/>
-      <!-- Neck — thick -->
-      <line x1="32" y1="42" x2="30" y2="53" stroke="#ff3333" stroke-width="1.5"/>
-      <line x1="44" y1="42" x2="46" y2="53" stroke="#ff3333" stroke-width="1.5"/>
-      <!-- Hi-vis vest "FOREMAN" -->
-      <path d="M8 68 Q10 53 30 53 L46 53 Q66 53 68 68" fill="none" stroke="#ff3333" stroke-width="2"/>
-      <rect x="8" y="68" width="60" height="26" fill="none" stroke="#ffcc00" stroke-width="1.5"/>
-      <text x="38" y="83" text-anchor="middle" font-size="6" fill="#ffcc00" font-family="monospace">FOREMAN</text>
-      <!-- Fire axe resting at side -->
-      <line x1="64" y1="56" x2="66" y2="95" stroke="#ff3333" stroke-width="1.5"/>
-      <path d="M60 56 L70 56 L70 62 L64 62 Z" fill="none" stroke="#ff3333" stroke-width="1.2"/>
-      <text x="38" y="99" text-anchor="middle" font-size="5" fill="#706050" font-family="monospace">PETE</text>
-    </svg>`
+    hook: 'He is doing exactly what anyone responsible would do. Arguing with him should feel like arguing with a mirror.'
   }
 ];
 
@@ -1572,10 +1450,16 @@ function switchAct(id, btn){
 // ============================================================
 function renderNPCs(){
   const list = document.getElementById('npc-list');
-  list.innerHTML = NPCS.map(n=>`
+  list.innerHTML = NPCS.map(n=>{
+    const thumbW=76, thumbH=100;
+    const imgLeft = -(thumbW * n.pc.col);
+    const imgTop  = -(thumbH * n.pc.row);
+    return `
     <div class="npc-card ${npcIntroduced[n.id]?'introduced':''}" id="npc-${n.id}">
       <div class="npc-head" onclick="toggleNPC('${n.id}')">
-        <div class="npc-portrait-thumb" onclick="event.stopPropagation();showPortrait('${n.id}')">${n.portrait}</div>
+        <div class="npc-portrait-thumb" onclick="event.stopPropagation();showPortrait('${n.id}')">
+          <img src="assets/159-ART-09-portraits.png" style="left:${imgLeft}px;top:${imgTop}px;" alt="${n.name}">
+        </div>
         <div class="npc-meta">
           <div class="npc-name">${n.name}</div>
           <div class="npc-role">${n.role}</div>
@@ -1602,7 +1486,7 @@ function renderNPCs(){
           <button class="btn btn-sm" onclick="showPortrait('${n.id}')">🖼 Show Portrait</button>
         </div>
       </div>
-    </div>`).join('');
+    </div>`}).join('');
 }
 function toggleNPC(id){
   const body = document.getElementById('nb-'+id);
@@ -1617,10 +1501,32 @@ function toggleIntroduced(id){
 function showPortrait(id){
   const n = NPCS.find(x=>x.id===id);
   if(!n) return;
+  const W=228, H=300;
+  const imgLeft = -(W * n.pc.col);
+  const imgTop  = -(H * n.pc.row);
   const ho = document.getElementById('ho-overlay');
   const inner = document.getElementById('ho-inner');
   inner.className = '';
-  inner.innerHTML = `<div style="text-align:center;margin-bottom:16px;"><span class="tag tag-amber">${n.name}</span></div><div style="display:flex;justify-content:center;">${n.portrait.replace('width="76"','width="240"').replace('height="100"','height="320"')}</div><div style="text-align:center;margin-top:12px;font-size:13px;color:var(--text-sub);">${n.role}</div>`;
+  inner.innerHTML = `
+    <div style="text-align:center;margin-bottom:14px;"><span class="tag tag-amber">${n.name}</span><span class="small text-muted" style="margin-left:8px;">${n.role}</span></div>
+    <div style="display:flex;justify-content:center;">
+      <div style="width:${W}px;height:${H}px;overflow:hidden;border-radius:8px;border:1px solid var(--border);position:relative;">
+        <img src="assets/159-ART-09-portraits.png" style="width:${W*4}px;height:${H*2}px;position:absolute;left:${imgLeft}px;top:${imgTop}px;" alt="${n.name}">
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:12px;font-size:13px;color:var(--text-sub);">${n.physical.split('.')[0]}.</div>`;
+  ho.classList.add('open');
+}
+function showArtwork(src, label){
+  const ho = document.getElementById('ho-overlay');
+  const inner = document.getElementById('ho-inner');
+  inner.className = '';
+  inner.style.background = 'transparent';
+  inner.style.border = 'none';
+  inner.style.padding = '0';
+  inner.innerHTML = `
+    <div style="text-align:center;margin-bottom:10px;"><span class="tag tag-amber">${label}</span></div>
+    <img src="${src}" style="width:100%;border-radius:8px;display:block;" alt="${label}">`;
   ho.classList.add('open');
 }
 
@@ -1710,6 +1616,10 @@ function markShown(i){
 }
 function closeHO(){
   document.getElementById('ho-overlay').classList.remove('open');
+  const inner = document.getElementById('ho-inner');
+  inner.style.background = '';
+  inner.style.border = '';
+  inner.style.padding = '';
 }
 
 // ============================================================
