@@ -1,0 +1,1693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Event 91 – The Night Crawler | GM App</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a24;
+    --surface3: #22222e;
+    --border: #2a2a3a;
+    --cyan: #00e5ff;
+    --amber: #ffb700;
+    --red: #ff3d3d;
+    --green: #00e676;
+    --purple: #b388ff;
+    --text: #d0d0e0;
+    --text-dim: #7070a0;
+    --text-bright: #f0f0ff;
+    --font: 'Courier New', monospace;
+    --radius: 6px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; min-height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+
+  /* HEADER */
+  #header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    position: relative;
+  }
+  #header-title { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; }
+  #header-scenario { font-size: 14px; color: var(--cyan); font-weight: bold; }
+  #timer-display {
+    text-align: right;
+    min-width: 90px;
+  }
+  #timer-main { font-size: 22px; color: var(--amber); font-weight: bold; letter-spacing: 1px; }
+  #timer-act { font-size: 10px; color: var(--text-dim); text-transform: uppercase; }
+
+  /* PROGRESS BAR */
+  #progress-container {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 6px 12px;
+    flex-shrink: 0;
+  }
+  #progress-bar-bg {
+    background: var(--surface3);
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 3px;
+  }
+  #progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--cyan), var(--amber));
+    border-radius: 3px;
+    transition: width 1s linear;
+    width: 0%;
+  }
+  #progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #progress-labels span.active { color: var(--amber); }
+
+  /* MAIN CONTENT */
+  #main { flex: 1; overflow-y: auto; overflow-x: hidden; }
+
+  /* SCREENS */
+  .screen { display: none; padding: 12px; }
+  .screen.active { display: block; }
+
+  /* BOTTOM NAV */
+  #nav {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-shrink: 0;
+  }
+  .nav-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    padding: 10px 4px 8px;
+    cursor: pointer;
+    font-family: var(--font);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    transition: color 0.15s;
+    min-height: 52px;
+  }
+  .nav-btn .icon { font-size: 18px; }
+  .nav-btn.active { color: var(--cyan); border-top: 2px solid var(--cyan); }
+  .nav-btn:active { background: var(--surface2); }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 12px 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
+  }
+  .card-header:active { background: var(--surface2); }
+  .card-title { font-size: 13px; color: var(--text-bright); font-weight: bold; }
+  .card-subtitle { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .card-tag {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    flex-shrink: 0;
+  }
+  .card-body { padding: 12px 14px; border-top: 1px solid var(--border); display: none; }
+  .card-body.open { display: block; }
+  .chevron { color: var(--text-dim); font-size: 12px; transition: transform 0.2s; }
+  .chevron.open { transform: rotate(180deg); }
+
+  /* DISPOSITION COLORS */
+  .disp-friendly { background: rgba(0,230,118,0.15); color: var(--green); border: 1px solid rgba(0,230,118,0.3); }
+  .disp-neutral { background: rgba(255,183,0,0.15); color: var(--amber); border: 1px solid rgba(255,183,0,0.3); }
+  .disp-hostile { background: rgba(255,61,61,0.15); color: var(--red); border: 1px solid rgba(255,61,61,0.3); }
+  .disp-hidden { background: rgba(179,136,255,0.15); color: var(--purple); border: 1px solid rgba(179,136,255,0.3); }
+  .disp-compromised { background: rgba(0,229,255,0.15); color: var(--cyan); border: 1px solid rgba(0,229,255,0.3); }
+
+  /* ACT TAGS */
+  .act1-tag { background: rgba(0,229,255,0.1); color: var(--cyan); border: 1px solid rgba(0,229,255,0.2); }
+  .act2-tag { background: rgba(255,183,0,0.1); color: var(--amber); border: 1px solid rgba(255,183,0,0.2); }
+  .act3-tag { background: rgba(255,61,61,0.1); color: var(--red); border: 1px solid rgba(255,61,61,0.2); }
+
+  /* TYPOGRAPHY WITHIN CARDS */
+  .card-body p { margin-bottom: 8px; line-height: 1.5; }
+  .card-body p:last-child { margin-bottom: 0; }
+  .label { color: var(--text-dim); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
+  .value { color: var(--text-bright); font-size: 13px; margin-bottom: 10px; }
+  .mechanic {
+    background: var(--surface3);
+    border-left: 3px solid var(--cyan);
+    padding: 8px 10px;
+    margin: 8px 0;
+    font-size: 12px;
+    color: var(--cyan);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  .san-note {
+    background: var(--surface3);
+    border-left: 3px solid var(--red);
+    padding: 8px 10px;
+    margin: 8px 0;
+    font-size: 12px;
+    color: var(--red);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  .clue-essential { border-left: 3px solid var(--amber); }
+  .clue-optional { border-left: 3px solid var(--purple); }
+  .pacing-note {
+    background: var(--surface3);
+    border: 1px solid var(--amber);
+    border-radius: var(--radius);
+    padding: 10px 12px;
+    margin-top: 12px;
+    font-size: 12px;
+  }
+  .pacing-note .pacing-label { color: var(--amber); font-weight: bold; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+
+  /* DASHBOARD */
+  .dash-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .dash-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 10px;
+    text-align: center;
+    cursor: pointer;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .dash-btn:active { background: var(--surface2); }
+  .dash-btn .dash-icon { font-size: 22px; display: block; margin-bottom: 5px; }
+  .dash-btn.cyan-btn { border-color: rgba(0,229,255,0.3); color: var(--cyan); }
+  .dash-btn.amber-btn { border-color: rgba(255,183,0,0.3); color: var(--amber); }
+
+  /* TIMER CONTROL */
+  .timer-controls { display: flex; gap: 8px; margin-bottom: 14px; }
+  .timer-btn {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: background 0.15s;
+  }
+  .timer-btn.primary { border-color: var(--cyan); color: var(--cyan); }
+  .timer-btn.warn { border-color: var(--amber); color: var(--amber); }
+  .timer-btn:active { background: var(--surface2); }
+
+  /* CLUE TRACKER */
+  .clue-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+  }
+  .clue-item:active { background: var(--surface2); }
+  .clue-check {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    transition: all 0.2s;
+    margin-top: 1px;
+  }
+  .clue-check.found { border-color: var(--green); background: rgba(0,230,118,0.2); color: var(--green); }
+  .clue-check.missed { border-color: var(--red); background: rgba(255,61,61,0.2); color: var(--red); }
+  .clue-info { flex: 1; }
+  .clue-name { color: var(--text-bright); font-size: 13px; font-weight: bold; margin-bottom: 3px; }
+  .clue-loc { color: var(--text-dim); font-size: 11px; margin-bottom: 4px; }
+  .clue-reveal { color: var(--text); font-size: 12px; line-height: 1.4; }
+  .clue-fallback { color: var(--amber); font-size: 11px; margin-top: 5px; font-style: italic; }
+  .section-head {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding: 4px 0 8px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 10px;
+  }
+
+  /* HP TRACKER */
+  .pc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .pc-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px;
+  }
+  .pc-name { font-size: 11px; color: var(--cyan); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; font-weight: bold; }
+  .pc-player { font-size: 10px; color: var(--text-dim); margin-bottom: 8px; }
+  .stat-row { display: flex; gap: 6px; margin-bottom: 6px; }
+  .stat-box { flex: 1; background: var(--surface2); border-radius: 4px; padding: 6px 4px; text-align: center; }
+  .stat-box-label { font-size: 9px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat-box-val { font-size: 16px; color: var(--text-bright); font-weight: bold; line-height: 1.2; }
+  .stat-controls { display: flex; align-items: center; gap: 6px; margin-bottom: 2px; }
+  .stat-controls .stat-label { font-size: 10px; color: var(--text-dim); width: 28px; text-transform: uppercase; }
+  .stat-ctrl-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-size: 14px;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .stat-ctrl-btn:active { background: var(--surface3); }
+  .stat-num { font-size: 16px; color: var(--text-bright); font-weight: bold; min-width: 30px; text-align: center; }
+  .status-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .status-tag {
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    user-select: none;
+  }
+  .status-tag.active-injured { border-color: var(--amber); color: var(--amber); background: rgba(255,183,0,0.1); }
+  .status-tag.active-insane { border-color: var(--purple); color: var(--purple); background: rgba(179,136,255,0.1); }
+  .status-tag.active-dead { border-color: var(--red); color: var(--red); background: rgba(255,61,61,0.1); }
+
+  /* HANDOUTS */
+  .handout-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .handout-header {
+    padding: 12px 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .handout-header:active { background: var(--surface2); }
+  .handout-id { font-size: 10px; color: var(--text-dim); }
+  .handout-title { font-size: 13px; color: var(--amber); font-weight: bold; }
+  .handout-body {
+    display: none;
+    padding: 0;
+  }
+  .handout-body.open { display: block; }
+  .handout-content {
+    background: #12100e;
+    border-top: 1px solid var(--border);
+    padding: 16px;
+    font-size: 12px;
+    line-height: 1.7;
+    color: #c8c0a8;
+    white-space: pre-wrap;
+    font-family: 'Courier New', monospace;
+    position: relative;
+  }
+  .handout-content.terminal {
+    background: #080d0d;
+    color: #00bb88;
+    font-size: 11px;
+  }
+  .handout-content.handwritten {
+    background: #1a1510;
+    color: #d4c090;
+    font-family: Georgia, serif;
+    font-style: italic;
+  }
+  .fullscreen-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-dim);
+    padding: 4px 8px;
+    font-size: 10px;
+    cursor: pointer;
+    font-family: var(--font);
+  }
+
+  /* FULLSCREEN HANDOUT OVERLAY */
+  #handout-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #12100e;
+    z-index: 1000;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  #handout-overlay.active { display: flex; flex-direction: column; }
+  #handout-overlay-close {
+    align-self: flex-end;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--amber);
+    padding: 8px 16px;
+    font-family: var(--font);
+    font-size: 12px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #handout-overlay-content {
+    font-size: 15px;
+    line-height: 1.9;
+    color: #d4c090;
+    white-space: pre-wrap;
+    font-family: Georgia, serif;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  #handout-overlay-content.terminal {
+    font-family: 'Courier New', monospace;
+    color: #00cc99;
+    font-size: 13px;
+    background: #060d0d;
+    padding: 20px;
+    border-radius: 6px;
+  }
+
+  /* REFERENCE SCREEN */
+  .ref-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+  .ref-table th {
+    background: var(--surface2);
+    color: var(--text-dim);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 7px 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .ref-table td {
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.4;
+  }
+  .ref-table tr:last-child td { border-bottom: none; }
+  .ref-table .highlight { color: var(--amber); }
+  .ref-table .cyan { color: var(--cyan); }
+  .ref-table .red { color: var(--red); }
+
+  /* STAT BLOCK */
+  .stat-block {
+    background: var(--surface2);
+    border-radius: 4px;
+    padding: 10px;
+    margin: 8px 0;
+    font-size: 12px;
+    line-height: 1.8;
+  }
+  .stat-block-row { color: var(--text-dim); margin-bottom: 2px; }
+  .stat-block-row span { color: var(--text); }
+
+  /* ALERT BANNER */
+  #alert-banner {
+    display: none;
+    padding: 10px 12px;
+    font-size: 13px;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    animation: pulse 1s infinite;
+  }
+  #alert-banner.amber { background: rgba(255,183,0,0.2); color: var(--amber); border-bottom: 1px solid var(--amber); }
+  #alert-banner.red { background: rgba(255,61,61,0.2); color: var(--red); border-bottom: 1px solid var(--red); }
+  #alert-banner.active { display: block; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+  /* ACT SELECTOR */
+  .act-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+  .act-tab {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-family: var(--font);
+    font-size: 11px;
+    color: var(--text-dim);
+    cursor: pointer;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    flex-shrink: 0;
+  }
+  .act-tab.active { border-color: var(--cyan); color: var(--cyan); }
+  .act-tab:active { background: var(--surface2); }
+  .act-panel { display: none; }
+  .act-panel.active { display: block; }
+
+  /* GOAL BOX */
+  .goal-box {
+    background: var(--surface2);
+    border-left: 3px solid var(--cyan);
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    color: var(--text-dim);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    line-height: 1.5;
+  }
+  .goal-box strong { color: var(--cyan); }
+
+  /* SCROLL HELPERS */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: var(--surface); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* MODAL */
+  #san-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 900;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  #san-modal.active { display: flex; }
+  #san-modal-inner {
+    background: var(--surface);
+    border: 1px solid var(--red);
+    border-radius: var(--radius);
+    padding: 20px;
+    max-width: 400px;
+    width: 100%;
+  }
+  #san-modal-title { color: var(--red); font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 14px; }
+  #san-modal-close { background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; color: var(--text-dim); padding: 8px 16px; font-family: var(--font); font-size: 12px; cursor: pointer; margin-top: 14px; width: 100%; text-transform: uppercase; letter-spacing: 1px; }
+
+  .separator { height: 1px; background: var(--border); margin: 12px 0; }
+  .small-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+  .dim { color: var(--text-dim); }
+  .bright { color: var(--text-bright); }
+  .cyan-text { color: var(--cyan); }
+  .amber-text { color: var(--amber); }
+  .red-text { color: var(--red); }
+  .green-text { color: var(--green); }
+  .bold { font-weight: bold; }
+  .mt8 { margin-top: 8px; }
+  .mb8 { margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div id="header">
+  <div>
+    <div id="header-title">Event 91 · BRP</div>
+    <div id="header-scenario">The Night Crawler</div>
+  </div>
+  <div id="timer-display">
+    <div id="timer-main">3:30:00</div>
+    <div id="timer-act" id="timer-act-label">Session</div>
+  </div>
+</div>
+
+<!-- ALERT BANNER -->
+<div id="alert-banner"></div>
+
+<!-- PROGRESS BAR -->
+<div id="progress-container">
+  <div id="progress-bar-bg"><div id="progress-bar-fill"></div></div>
+  <div id="progress-labels">
+    <span id="pl-intro">Intro</span>
+    <span id="pl-a1">Act I</span>
+    <span id="pl-a2">Act II</span>
+    <span id="pl-a3">Act III</span>
+    <span id="pl-ep">Ep</span>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main">
+
+  <!-- ===== HOME SCREEN ===== -->
+  <div id="screen-home" class="screen active">
+    <div class="timer-controls">
+      <button class="timer-btn primary" id="btn-start-pause" onclick="toggleTimer()">▶ START</button>
+      <button class="timer-btn" onclick="resetTimer()">↺ RESET</button>
+      <button class="timer-btn warn" onclick="showSanModal()">⚠ SAN</button>
+    </div>
+    <div class="dash-grid">
+      <div class="dash-btn cyan-btn" onclick="navTo('acts')"><span class="dash-icon">🎭</span>Acts</div>
+      <div class="dash-btn amber-btn" onclick="navTo('npcs')"><span class="dash-icon">👤</span>NPCs</div>
+      <div class="dash-btn" onclick="navTo('clues')"><span class="dash-icon">🔍</span>Clues</div>
+      <div class="dash-btn" onclick="navTo('handouts')"><span class="dash-icon">📄</span>Handouts</div>
+      <div class="dash-btn" onclick="navTo('players')"><span class="dash-icon">♟</span>Players</div>
+      <div class="dash-btn" onclick="navTo('ref')"><span class="dash-icon">📋</span>Reference</div>
+    </div>
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div><div class="card-title">Session Checkpoints</div><div class="card-subtitle">Hard deadlines during play</div></div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="card-body">
+        <table class="ref-table">
+          <tr><th>Clock</th><th>Checkpoint</th></tr>
+          <tr><td class="cyan">0:15</td><td>Briefing done — team in Sub-District 7</td></tr>
+          <tr><td>1:10</td><td>Reth's squat found — map in hand</td></tr>
+          <tr><td>2:00</td><td>Junction passed — bodies found</td></tr>
+          <tr><td class="highlight bold">2:15 ⚠</td><td class="highlight">RETH FOUND — hard deadline</td></tr>
+          <tr><td>2:45</td><td>Ascending through Sutter-Vane</td></tr>
+          <tr><td class="red bold">3:05 ⚠</td><td class="red">MORAL CHOICE — hard deadline</td></tr>
+          <tr><td>3:20</td><td>Epilogue coda running</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div><div class="card-title">One-Minute Briefing</div><div class="card-subtitle">Read this to the table before play</div></div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="card-body">
+        <p class="bright">"This is a corporate horror scenario. There is nothing that can be conventionally defeated. The goal is not to win — it is to make a decision you can live with."</p>
+        <p class="mt8">"There will be Sanity rolls. When you lose SAN, roleplay it — even just one line. That is the only rule I will ask you to hold."</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div><div class="card-title">Players</div><div class="card-subtitle">Mateusz · Alex · Paul · Tom · Ciaran · Elena</div></div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="card-body">
+        <table class="ref-table">
+          <tr><th>Player</th><th>Archetype</th></tr>
+          <tr><td>Mateusz Sawicki</td><td class="cyan">The Fixer</td></tr>
+          <tr><td>Alex Walker</td><td class="cyan">The Ghost</td></tr>
+          <tr><td>Paul Looby</td><td class="cyan">The Muscle</td></tr>
+          <tr><td>Tom Wright</td><td class="cyan">The Tech</td></tr>
+          <tr><td>Ciaran McGrath</td><td class="cyan">The Medic</td></tr>
+          <tr><td>Elena Giordano</td><td class="cyan">The Analyst</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ACTS SCREEN ===== -->
+  <div id="screen-acts" class="screen">
+    <div class="act-tabs">
+      <button class="act-tab active" onclick="switchAct('intro', this)">Intro</button>
+      <button class="act-tab" onclick="switchAct('act1', this)">Act I</button>
+      <button class="act-tab" onclick="switchAct('act2', this)">Act II</button>
+      <button class="act-tab" onclick="switchAct('act3', this)">Act III</button>
+      <button class="act-tab" onclick="switchAct('epilogue', this)">Epilogue</button>
+    </div>
+
+    <!-- INTRO -->
+    <div class="act-panel active" id="ap-intro">
+      <div class="goal-box"><strong>Goal:</strong> Brief the team. Establish tone. Get them in the elevator, down into the Undertow.</div>
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">Opening Read-Aloud</div></div><span class="chevron">▼</span></div>
+        <div class="card-body">
+          <p class="bright">"The elevator doesn't announce its floor. It just opens, and you're in a reception suite that smells of processed air and expensive polymer. The carpet absorbs sound. Everything is grey and clean. Outside the floor-to-ceiling windows, Neo-Ashford glitters in the acid haze forty storeys below."</p>
+          <p class="mt8 bright">"The woman waiting for you doesn't stand up. Late forties, expensive coat. Corporate augments visible as a faint ridge along her jaw — subdermal comms. She looks at the wall slightly to your left when she speaks, as if watching something you can't see."</p>
+          <p class="mt8 cyan-text bold">"Sit down. There's a job."</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">What Sable Tells Them</div></div><span class="chevron">▼</span></div>
+        <div class="card-body">
+          <p>• Damos Reth, data analyst, AWOL in Sub-Districts 7–9</p>
+          <p>• Proprietary data-chip — chip is the priority, Reth secondary</p>
+          <p>• 8,000 credits each. Half now. Half on delivery</p>
+          <p>• NDA covers everything they see. 48-hour window</p>
+          <div class="separator"></div>
+          <p class="red-text bold">What Sable does NOT say:</p>
+          <p>• Why Reth ran</p>
+          <p>• A second Veltris team is already in the tunnels</p>
+          <p>• The biological clause in the NDA means anything</p>
+          <p>• She has already authorised their termination if they surface with the full story</p>
+          <div class="mechanic">BRP: Research / Law 30% — notices NDA biological clause. Sable: "Standard boilerplate. Don't worry about it."</div>
+          <div class="mechanic">BRP: Insight 40% — Sable is withholding something large. She is not lying; she is simply not offering.</div>
+        </div>
+      </div>
+      <div class="pacing-note">
+        <div class="pacing-label">⏱ Pacing — 15 min</div>
+        Let players ask questions. Answer factually and minimally. At 0:15 they should be heading down into Sub-District 7.
+      </div>
+    </div>
+
+    <!-- ACT 1 -->
+    <div class="act-panel" id="ap-act1">
+      <div class="goal-box"><strong>Goal:</strong> Establish the Undertow. Plant seeds of wrongness. Give the team Reth's map. Deliver the photograph.</div>
+
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">The Slab</div><div class="card-subtitle">Elevated market — Sub-District 7 entry</div></div><span class="act1-tag card-tag">Act I</span><span class="chevron">▼</span></div>
+        <div class="card-body">
+          <p class="dim">Noise, heat, synthesised food and something oily. Neon catching rain-slick. And underneath — faint, sweet, wrong — the smell, rising from drain grates.</p>
+          <div class="separator"></div>
+          <div class="mechanic">BRP: Persuade / Fast Talk — vendor confirms Reth's direction. "Scared. Paying cash. Not talking to anyone." (50 credits)</div>
+          <div class="mechanic">BRP: Spot / Electronics 50% — drone patrol routes rerouted by someone corporate, carving blind spots toward Sub-District 9. ⚠ ESSENTIAL CLUE #1</div>
+          <p class="mt8 amber-text bold">The Child → The Tech specifically</p>
+          <p>Folds a note: "Don't go to the plant. My dad went. He didn't come back the same." Paper has the organic smell. Child is ~9, gone before anyone can follow.</p>
+          <div class="mechanic">BRP: Track 40% — child lives in a stairwell 200m east. Father: Gavrel Muss. Vanished 3 weeks ago. Came back for one day. Walked back down at 3am.</div>
+          <p class="mt8 dim">Rivet Teeth gang — 3–4 members. Watching but will NOT initiate. Leader: Scratch. <span class="amber-text">RED HERRING — not connected to entity.</span></p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">The Terminus Bar</div><div class="card-subtitle">Jed Osler. Room 4 upstairs.</div></div><span class="act1-tag card-tag">Act I</span><span class="chevron">▼</span></div>
+        <div class="card-body">
+          <p class="dim">Dim, warm, humid. Strip lighting. Six booths. Clientele don't look up — which takes effort.</p>
+          <div class="mechanic">BRP: Insight 40% — Jed is sizing the team up. Friendly + direct + cash = opens up. Flash Veltris logo or threaten = shut down permanently.</div>
+          <div class="separator"></div>
+          <p class="bright bold">What Jed says (if treated well):</p>
+          <p>• Reth was here 4 nights ago. Nervous, cash, two drinks unfinished</p>
+          <p>• Asking about "the disappearances"</p>
+          <p>• Paid for a week upstairs, room 4. Bag still there</p>
+          <p>• The organic smell started ~1 year ago. "You stop smelling it eventually."</p>
+          <p>• Ghost gets automatic warm reception</p>
+          <p>• Will not go below street level for any price. "People who come back from below... some of them go back on their own. That's worse."</p>
+          <p class="mt8 amber-text bold">⚠ ESSENTIAL CLUE #2</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">Room 4 — Reth's Squat</div><div class="card-subtitle">The corkboard. The photograph.</div></div><span class="act1-tag card-tag">Act I</span><span class="chevron">▼</span></div>
+        <div class="card-body">
+          <p class="dim">Stale air and adrenaline-sweat. Chaos left by someone frightened and thinking fast. Blank data-chips. Handwritten notes on paper.</p>
+          <div class="mechanic">BRP: Spot 40% — notes torn where pen pressed too hard. Handwriting starts neat, becomes erratic.</div>
+          <p class="mt8 bright bold">The corkboard:</p>
+          <p>Hand-drawn map of Sub-District 9. Drainage tunnel routes. One route highlighted in red. End of route: X and "MW pod 7"</p>
+          <div class="mechanic">BRP: Research / Insight 40% — map drawn from Veltris infrastructure plans. He knew where he was going before he ran. ⚠ ESSENTIAL CLUE #3</div>
+          <div class="separator"></div>
+          <p class="red-text bold">☠ THE PHOTOGRAPH — SANITY CHECK</p>
+          <p>Pinned to bottom of corkboard. Drainage tunnel photo. Behind the apparent subject: something large. It does not resolve into anything recognisable. The impression it has moved — is still moving — is very difficult to dismiss.</p>
+          <div class="san-note">BRP: Sanity 0/1 — the shape does not belong in the world you thought you were in.</div>
+          <div class="mechanic">BRP: Photography / Art 40% — photograph is NOT doctored. Whatever is in it was there. OPTIONAL CLUE A</div>
+        </div>
+      </div>
+
+      <div class="pacing-note">
+        <div class="pacing-label">⏱ Pacing — 1:10 hard</div>
+        Skip Rivet Teeth if over. Move child to bar staircase. Must have: blind spots, Jed's info, corkboard map. If 15+ min left at squat — let them sit with the photograph. Do not rush it.
+      </div>
+    </div>
+
+    <!-- ACT 2 -->
+    <div class="act-panel" id="ap-act2">
+      <div class="goal-box"><strong>Goal:</strong> Horror from atmospheric to visceral. Locate Reth. Reveal the entity's reality. Force the decision to ascend.</div>
+
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">Entry Shaft</div><div class="card-subtitle">400m below street level</div></div><span class="act2-tag card-tag">Act II</span><span class="chevron">▼</span></div>
+        <div class="card-body">
+          <p class="dim">Access hatch forced recently and badly repaired. Temperature rising as they descend. Organic sweetness immediately stronger. Comms: rhythmic interference. Not a signal. A pattern.</p>
+          <div class="mechanic">BRP: Electronics / Lockpick 40% — bypass done with high-grade corporate hacking suite. This was Veltris black ops. Not Reth.</div>
+          <p class="mt8 amber-text">▶ HORROR ESCALATION #1 (before Junction)</p>
+          <p>The Tech's drone shows a large shape behind the group — large, not animal, not machinery. When they look: nothing. Play back footage: the shape does not replay. The recording has a clean gap of 4 seconds.</p>
+          <div class="san-note">BRP: Sanity 0/1 — the gap in the recording is more disturbing than the shape would have been.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">The Junction</div><div class="card-subtitle">The entity's outer edge</div></div><span class="act2-tag card-tag">Act II</span><span class="chevron">▼</span></div>
+        <div class="card-body">
+          <p class="dim">Six tunnels converge. Walls, ceiling, support columns: covered in pale filamentous growth — organic, faintly luminescent, warm to the touch. The silence is full. Occupied by attention.</p>
+          <div class="mechanic">BRP: Science (Bio) / Medicine 40% — not fungal, not bacterial, no known taxonomy. Bio-scanner: "organic: living: class: unclassified" → then: "WARNING — POSSIBLE MEMETIC HAZARD" (yellow text).</div>
+          <div class="san-note">BRP: Sanity 1/1D6 — first sight of the filament growth.</div>
+          <p class="mt8 amber-text bold">If the growth is cut:</p>
+          <p>It does not bleed. The cut ends contract — slowly, deliberately, like a creature reacting to pain in slow motion.</p>
+          <div class="san-note">BRP: Sanity 0/1 — witnessing the contraction (only if a player cuts it).</div>
+          <p class="mt8 amber-text bold">⚠ ESSENTIAL CLUE #4 — entity is physically present</p>
+          <p class="purple-text dim">OPTIONAL CLUE B — MEMETIC HAZARD flag implies Veltris knew before Sutter-Vane acquisition</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">The Watching Room</div><div class="card-subtitle">Reth's terminal. The Veltris files.</div></div><span class="act2-tag card-tag">Act II</span><span class="chevron">▼</span></div>
+        <div class="card-body">
+          <p class="dim">Old decommissioned control room. Portable terminal on, battery 12%. Doorframe has filament residue, cleared in direction of Feed Corridor.</p>
+          <div class="mechanic">BRP: Electronics 35% / Computer Use 50% — reads the partial Veltris files. ⚠ ESSENTIAL CLUE #5</div>
+          <p class="mt8 bright bold">Files reveal:</p>
+          <p>• Month 1–3: "biological anomaly" → reclassified as "entity"</p>
+          <p>• Month 7: Feeding programme operational. Dr Chen assigned lead</p>
+          <p>• Month 11: Security Team C did not return from containment response</p>
+          <p>• Month 14: Entity perceives directed observation. Dr Chen: "adjust our relationship with the concept of observation"</p>
+          <p>• Month 16: Reth accessed files. "Recommend containment."</p>
+          <div class="mechanic">BRP: Insight 40% — "recommend containment" does not mean "keep him safe." It never did.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">The Feed Corridor</div><div class="card-subtitle">Architecture. Bodies. The named rhythm.</div></div><span class="act2-tag card-tag">Act II</span><span class="chevron">▼</span></div>
+        <div class="card-body">
+          <p class="dim">Filament growth structured almost architecturally — arching buttresses, lateral formations like ribs. This space has been remodelled. The shapes have a quality of intention.</p>
+          <div class="san-note">BRP: Sanity 1/1D4 — entering the Feed Corridor. The purposefulness of the architecture.</div>
+          <p class="mt8 amber-text bold">▶ HORROR ESCALATION #2 — The Named Rhythm</p>
+          <p>Tell one player privately: "Your comm is carrying a sound. Underneath the interference. It sounds almost like your name, repeated very slowly." This is not a transmission. It is something older.</p>
+          <div class="mechanic">BRP: Listen / Spot 40% — to notice the name-rhythm. Other characters notice interference but not the specific quality.</div>
+          <div class="separator"></div>
+          <p class="red-text bold">☠ THE THREE BODIES</p>
+          <p>Three sets of remains in decomposed Veltris security gear. Each torso opened not from violence but from within. Ribcages splayed outward like flowers in bloom. No blood. Chest cavities empty and clean, with dried filament residue along interior edges.</p>
+          <div class="mechanic">BRP: Medicine / Science (Bio) 40% — the ribcages were not broken. They were unsealed. Something exited from inside. It took its time. The mechanism is identical across all three. ⚠ ESSENTIAL CLUE #6</div>
+          <div class="san-note">BRP: Sanity 1D4/1D10 — seeing the opened bodies.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">Maintenance Pod 7 — Finding Reth</div><div class="card-subtitle">"Who sent you." Not a question.</div></div><span class="act2-tag card-tag">Act II</span><span class="chevron">▼</span></div>
+        <div class="card-body">
+          <p class="dim">Heavy maintenance pod door, sealed from inside with a metal bar. 15-second pause after knocking. Correct answer: anything that is not "Veltris."</p>
+          <div class="mechanic">BRP: Persuade / Fast Talk 50% — Ghost's Sub-D7 accent: +20%. Showing the photograph or quoting "it knows where the warmth is" will convince anyone.</div>
+          <div class="separator"></div>
+          <p class="bright bold">What Reth tells them: ⚠ ESSENTIAL CLUE #7</p>
+          <p>• Veltris studying the entity for 18 months — it was already there when they bought Sutter-Vane</p>
+          <p>• "It knows you're here. It knew before you arrived. It feels weight, warmth — it feels intent. It followed the fear."</p>
+          <p>• Dr Chen moved in permanently and stopped being entirely Dr Chen</p>
+          <p>• He refuses to go back through Veltris. He means this. Cannot be convinced.</p>
+          <p>• "There is a second node. Sub-District 4, two kilometres north. NOBODY KNOWS."</p>
+          <div class="separator"></div>
+          <p class="amber-text bold">▶ HORROR ESCALATION #4 — Reth's Hands</p>
+          <p>Subcutaneous filament tracery on both palms — pale threads beneath skin, following the tendons.</p>
+          <div class="mechanic">BRP: Medicine 50% — early-stage integration. Reversible with treatment within 72 hours. The Medic's hook about thoracic tissue connects here. OPTIONAL CLUE D</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">Kov and Sera — Second Veltris Team</div><div class="card-subtitle">Optional — skip if running behind</div></div><span class="act2-tag card-tag">Act II</span><span class="chevron">▼</span></div>
+        <div class="card-body">
+          <div class="mechanic">BRP: Spot / Perception 40% — movement in side tunnel. Two heat signatures ~30m ahead on bio-scanner.</div>
+          <p class="mt8">Black-ops contractors. Orders: recover Reth, eliminate players. But: Kov has broken rib (audible), Sera hasn't slept in 36 hours. Both have seen the bodies.</p>
+          <div class="mechanic">BRP: Persuade 50% — leverage: (1) team knows what Veltris's operation is; (2) they've both seen the bodies; (3) nobody is coming to get either team out.</div>
+          <div class="separator"></div>
+          <div class="stat-block">
+            <div class="stat-block-row cyan-text bold">KOV (broken rib: all physical -2, Move 8)</div>
+            <div class="stat-block-row dim">STR 15 | CON 14 | SIZ 14 | INT 12 | POW 11 | DEX 13</div>
+            <div class="stat-block-row dim">HP <span>15</span> | PP <span>11</span> | DB <span>+1D4</span></div>
+            <div class="stat-block-row dim">Firearms (Pistol) 60%, Brawl 55%, Dodge 45%</div>
+            <div class="stat-block-row dim">Sidearm 2D6+2 | Body armour 4pts torso</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-block-row cyan-text bold">SERA (exhausted: all rolls -10%)</div>
+            <div class="stat-block-row dim">STR 12 | CON 11 | SIZ 11 | INT 14 | POW 12 | DEX 15</div>
+            <div class="stat-block-row dim">HP <span>12</span> | PP <span>12</span> | DB <span>None</span></div>
+            <div class="stat-block-row dim">Firearms (Pistol) 65%, SMG 60%, Dodge 55%</div>
+            <div class="stat-block-row dim">Sidearm / SMG 2D6+2 | Body armour 4pts torso</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pacing-note">
+        <div class="pacing-label">⏱ Pacing — 2:15 hard (Reth found)</div>
+        Skip Kov/Sera if over 10 min late at 2:00. Non-negotiables: Junction (entity), Watching Room files (corporate), Three Bodies (mechanism), Reth (full story).
+      </div>
+    </div>
+
+    <!-- ACT 3 -->
+    <div class="act-panel" id="ap-act3">
+      <div class="goal-box"><strong>Goal:</strong> Get out. Make the choice. Live with it. Fast pace. No new information — only consequences.</div>
+
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">Sub-Level 9 — Containment Floor</div><div class="card-subtitle">Two barriers failed. Two amber.</div></div><span class="act3-tag card-tag">Act III</span><span class="chevron">▼</span></div>
+        <div class="card-body">
+          <p class="dim">Filament growth covers the lower third of the room. Two dead barrier rigs — grown through, the way a tree grows through a fence. The other two glow amber.</p>
+          <div class="san-note">BRP: Sanity 1D4/1D10 — seeing the containment floor and the scale of entity's physical presence.</div>
+          <p class="mt8 red-text bold">☠ THE PRIMARY NODE</p>
+          <p>Through reinforced glass at the far end: approximately transit-bus sized. Radially symmetrical — not in any familiar way. Constantly in slow motion. No eyes. The sense of being perceived is overwhelming regardless.</p>
+          <div class="san-note">BRP: Sanity 1D10/1D20 — primary node. Critical fail (max d20): paralysed 1D4 rounds + 1D3 permanent SAN loss.</div>
+          <p class="mt8 amber-text bold">Power: If power is cut → both remaining barriers fail in 30 seconds.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">Observation Gallery — Dr Chen</div><div class="card-subtitle">Do not skip this if at all possible.</div></div><span class="act3-tag card-tag">Act III</span><span class="chevron">▼</span></div>
+        <div class="card-body">
+          <p class="dim">Reinforced glass room overlooking containment. Dr Chen at a terminal. Does not look up immediately. Finishes a line of notes first. Not frightened. Not hostile. Fascinated.</p>
+          <div class="separator"></div>
+          <p class="bright bold">Her answers:</p>
+          <p class="dim">On the entity: <span class="bright">"It has been here since before the city. It has directions. Like a tide."</span></p>
+          <p class="dim">On containment: <span class="bright">"The barriers were always a delay. It wasn't contained. It was being given time."</span></p>
+          <p class="dim">On herself: <span class="bright">"I've been here fourteen weeks. I feel quite well."</span></p>
+          <p class="dim">On what to do: <span class="bright">"Whatever you decide, it will continue. You have been here approximately ninety minutes."</span></p>
+          <div class="mechanic">BRP: Perception / Insight 50% — her typing rhythm does not match any human keyboard cadence. Consistent, structured, nothing she learned from any human source. OPTIONAL CLUE E</div>
+          <div class="san-note">BRP: Sanity 0/1D4 — extended conversation with Dr Chen. The wrongness accumulates. She is not monstrous. She is someone who has been remade slowly and is not unhappy about it.</div>
+          <div class="mechanic">BRP: POW resistance vs POW 16 — 5+ minutes of conversation. Fail: 1 SAN loss from subtle cognitive alignment. Roll secretly. Tell the affected player privately.</div>
+          <p class="mt8 amber-text">GM TECHNIQUE: When playing Chen, look slightly past the player's shoulder. Hold it a beat longer than comfortable. Don't theatricalise it.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">THE MORAL CHOICE</div><div class="card-subtitle">Three options. No clean answer.</div></div><span class="act3-tag card-tag">Act III</span><span class="chevron">▼</span></div>
+        <div class="card-body">
+          <p class="amber-text bold">PRESENT ALL THREE WITH EQUAL WEIGHT. Do not telegraph a preferred outcome.</p>
+          <div class="separator"></div>
+          <p class="bright bold">Option 1 — Walk Away</p>
+          <p>Take the money. Sign the NDA. Say nothing. Entity remains imperfectly contained. Breaches final barriers in ~6 months. Secondary node in Sub-District 4 established by then.</p>
+          <p class="dim">Cost: The team knows. They will always know.</p>
+          <div class="separator"></div>
+          <p class="bright bold">Option 2 — Expose Veltris</p>
+          <p>Use chip data to go public or to a rival corp. Veltris takes the damage. Programme shut down. Containment systems go offline as no one maintains them. Entity begins slow spread again with no one watching.</p>
+          <p class="dim">Cost: Corporation damaged. Entity released. Nobody knows what they're dealing with.</p>
+          <div class="separator"></div>
+          <p class="bright bold">Option 3 — Destroy the Plant</p>
+          <p>Tech triggers catastrophic power cell overload. 10 minutes to rig. During those 10 minutes: barriers fail as power rerouted. Entity free in Sub-Level 9 — cannot reach upper floors in time. Explosion destroys primary node. Filaments wither over weeks. Secondary node in Sub-D4 unaffected.</p>
+          <p class="dim">Cost: Power/water/heat/medical to surrounding blocks goes out. ~15–30 civilian deaths. Four will be children.</p>
+          <div class="separator"></div>
+          <p class="red-text bold">If players try all three: the maths don't work. 10 min to rig + Reth + firefight upstairs exceeds any safe timeline. Two of three. Not all three.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">Upper Floor Security</div><div class="card-subtitle">4 personnel. Standing orders.</div></div><span class="act3-tag card-tag">Act III</span><span class="chevron">▼</span></div>
+        <div class="card-body">
+          <p>3 Veltris researchers (non-combatant). 4 Veltris security — standing orders: prevent anything leaving Sub-Level 9. Anything.</p>
+          <div class="mechanic">BRP: Stealth 50% — moving through upper floors. -10% if bringing Reth without coaching him first.</div>
+          <div class="stat-block">
+            <div class="stat-block-row cyan-text bold">VELTRIS SECURITY × 4</div>
+            <div class="stat-block-row dim">STR 13 | CON 12 | SIZ 12 | INT 11 | POW 10 | DEX 12</div>
+            <div class="stat-block-row dim">HP <span>13</span> | PP <span>10</span> | DB <span>None</span> | Move <span>10</span></div>
+            <div class="stat-block-row dim">Firearms (Pistol) 55%, Brawl 45%, Spot 40%, Dodge 40%</div>
+            <div class="stat-block-row dim">Sidearm 2D6+2 | Body armour 4pts torso</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pacing-note">
+        <div class="pacing-label">⏱ Pacing — 3:05 hard (moral choice)</div>
+        If unresolved at 3:05: have the final two barriers show red indicators. They have minutes, not ten. Choose now.
+      </div>
+    </div>
+
+    <!-- EPILOGUE -->
+    <div class="act-panel" id="ap-epilogue">
+      <div class="goal-box"><strong>Goal:</strong> One coda scene, 15 minutes, entirely dependent on the choice made.</div>
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">If They Walked Away</div></div><span class="chevron">▼</span></div>
+        <div class="card-body">
+          <p>8,000 credits each. Transfer lands before they leave the building. Sable's debrief is 3 minutes long and slightly too warm. Three weeks later, one operative receives an anonymous transmission — just a photograph. The street outside the Terminus Bar. Every window in the surrounding blocks is dark. The street is empty. No people visible anywhere in the frame.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">If They Exposed Veltris</div></div><span class="chevron">▼</span></div>
+        <div class="card-body">
+          <p>Reth makes the news for 18 hours before disappearing into rival corporate protective custody. Veltris stock drops 12% and recovers in 6 weeks. A subsidiary purchases the Sutter-Vane assets in liquidation. The new owners file within 60 days: "unusual biological material in sub-level infrastructure." They describe it as "commercially promising" and initiate a new research programme.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">If They Destroyed the Plant</div></div><span class="chevron">▼</span></div>
+        <div class="card-body">
+          <p>Attributed to a degraded gas main. Official casualty count: nine. Actual count, three weeks later: twenty-three. Four of them are children. The Tech is paid 8,000 credits — Sable cannot prove anything. The operative who rigged the overload dreams about tunnels for the rest of their life. Not nightmares, exactly. Tunnels. The faint organic sweetness. Something patient, still down there, waiting. The secondary node in Sub-District 4 has no one watching it.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header" onclick="toggleCard(this)"><div><div class="card-title">If Reth Survives</div></div><span class="chevron">▼</span></div>
+        <div class="card-body">
+          <p>The filament tracery on his hands fades over 6 weeks with treatment. If untreated — not documented. The data chip is out there. He was a data analyst. He knows what to do with information. One week after any ending, a notification appears on the Analyst's terminal — an anonymous tip about a Veltris acquisition in Sub-District 4. Deleted by an automated process before they can do more than open it.</p>
+          <p class="mt8 cyan-text bold">The next scenario is already beginning.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== NPC SCREEN ===== -->
+  <div id="screen-npcs" class="screen">
+    <div id="npc-list">
+      <!-- NPCs rendered by JS -->
+    </div>
+  </div>
+
+  <!-- ===== CLUE SCREEN ===== -->
+  <div id="screen-clues" class="screen">
+    <div class="section-head">Essential Clues — scenario requires all of these</div>
+    <div id="clue-essential-list"></div>
+    <div class="section-head" style="margin-top:16px;">Optional Clues — reward thorough play</div>
+    <div id="clue-optional-list"></div>
+    <div class="section-head" style="margin-top:16px;">Fallback Triggers</div>
+    <div class="card">
+      <div class="card-body" style="display:block;">
+        <p class="bright bold">Missed the map?</p>
+        <p class="dim mb8">Bio-scanner shows elevated organic readings in one direction. BRP: Track 40% on filament density leads to the node.</p>
+        <p class="bright bold">Missed the Veltris files?</p>
+        <p class="dim mb8">Reth's verbal account covers the same ground fully when found.</p>
+        <p class="bright bold">Reth won't open the pod?</p>
+        <p class="dim">Ghost's Sub-D7 accent = automatic trust boost. Showing the photograph or quoting "it knows where the warmth is" will convince anyone.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== HANDOUTS SCREEN ===== -->
+  <div id="screen-handouts" class="screen">
+    <p class="dim mb8" style="font-size:11px;">Tap to expand. Use fullscreen button to show handout to players.</p>
+    <div id="handout-list"></div>
+  </div>
+
+  <!-- ===== PLAYERS SCREEN ===== -->
+  <div id="screen-players" class="screen">
+    <div class="pc-grid" id="pc-grid"></div>
+  </div>
+
+  <!-- ===== REFERENCE SCREEN ===== -->
+  <div id="screen-ref" class="screen">
+    <div class="act-tabs">
+      <button class="act-tab active" onclick="switchRef('san', this)">SAN</button>
+      <button class="act-tab" onclick="switchRef('skills', this)">Skills</button>
+      <button class="act-tab" onclick="switchRef('brp', this)">BRP</button>
+      <button class="act-tab" onclick="switchRef('entity', this)">Entity</button>
+    </div>
+    <div id="rp-san" class="act-panel active">
+      <div class="section-head">Sanity Losses — Night Crawler</div>
+      <table class="ref-table">
+        <tr><th>Trigger</th><th>Fail</th><th>Pass</th></tr>
+        <tr><td>The photograph</td><td class="red">0</td><td class="red">1</td></tr>
+        <tr><td>First sight of filament growth</td><td class="red">1</td><td class="red">1D6</td></tr>
+        <tr><td>Filament contraction when cut</td><td class="red">0</td><td class="red">1</td></tr>
+        <tr><td>Entering the Feed Corridor</td><td class="red">1</td><td class="red">1D4</td></tr>
+        <tr><td>The three opened bodies</td><td class="red">1D4</td><td class="red">1D10</td></tr>
+        <tr><td>Drone footage gap</td><td class="red">0</td><td class="red">1</td></tr>
+        <tr><td>Extended conv. with Dr Chen</td><td class="red">0</td><td class="red">1D4</td></tr>
+        <tr><td>Containment floor — entity scale</td><td class="red">1D4</td><td class="red">1D10</td></tr>
+        <tr><td class="highlight bold">Primary node (direct view)</td><td class="red bold">1D10</td><td class="red bold">1D20</td></tr>
+        <tr><td>Primary node — critical fail</td><td colspan="2" class="red">+1D3 permanent SAN</td></tr>
+      </table>
+    </div>
+    <div id="rp-skills" class="act-panel">
+      <div class="section-head">Key Skill Rolls — Night Crawler</div>
+      <table class="ref-table">
+        <tr><th>Where</th><th>Roll</th><th>Result</th></tr>
+        <tr><td>Briefing</td><td class="cyan">Research/Law 30%</td><td>Notes NDA biological clause</td></tr>
+        <tr><td>Briefing</td><td class="cyan">Insight 40%</td><td>Sable withholding something large</td></tr>
+        <tr><td>The Slab</td><td class="cyan">P/FT</td><td>Vendor confirms Reth's direction (50 cr)</td></tr>
+        <tr><td>The Slab</td><td class="cyan">Spot/Elec 50%</td><td>Corporate surveillance blind spots</td></tr>
+        <tr><td>The Slab</td><td class="cyan">Track 40%</td><td>Follows the child</td></tr>
+        <tr><td>Terminus Bar</td><td class="cyan">Insight 40%</td><td>Reading Jed's approach correctly</td></tr>
+        <tr><td>Room 4</td><td class="cyan">Spot 40%</td><td>Pressure marks on notes</td></tr>
+        <tr><td>Room 4</td><td class="cyan">Research/Insight 40%</td><td>Map from Veltris plans</td></tr>
+        <tr><td>Room 4</td><td class="cyan">Photo/Art 40%</td><td>Photograph not doctored</td></tr>
+        <tr><td>Entry Shaft</td><td class="cyan">Elec/Lockpick 40%</td><td>Corporate bypass — not Reth</td></tr>
+        <tr><td>Junction</td><td class="cyan">Sci(Bio)/Med 40%</td><td>Bio-scanner: unclassified + MEMETIC</td></tr>
+        <tr><td>Watching Room</td><td class="cyan">Elec 35%/Comp 50%</td><td>Reads the Veltris files</td></tr>
+        <tr><td>Feed Corridor</td><td class="cyan">Listen/Spot 40%</td><td>Named rhythm in comms</td></tr>
+        <tr><td>Feed Corridor</td><td class="cyan">Med/Sci(Bio) 40%</td><td>Mechanism of opened chests</td></tr>
+        <tr><td>Pod 7</td><td class="cyan">Persuade/FT 50%</td><td>Convincing Reth to open door</td></tr>
+        <tr><td>Pod 7</td><td class="cyan">Medicine 50%</td><td>Filament integration timeline</td></tr>
+        <tr><td>Gallery</td><td class="cyan">Perc/Insight 50%</td><td>Dr Chen's wrong typing cadence</td></tr>
+        <tr><td>Gallery</td><td class="cyan">POW vs 16</td><td>Chen's proximity influence (secret)</td></tr>
+        <tr><td>60+ min tunnels</td><td class="red">POW vs 18</td><td>Entity environmental conditioning (secret)</td></tr>
+      </table>
+    </div>
+    <div id="rp-brp" class="act-panel">
+      <div class="section-head">BRP Quick Reference</div>
+      <table class="ref-table">
+        <tr><th>Level</th><th>Modifier</th></tr>
+        <tr><td>Easy</td><td class="green">× 2</td></tr>
+        <tr><td>Standard</td><td>× 1</td></tr>
+        <tr><td>Difficult</td><td class="amber-text">× ½</td></tr>
+        <tr><td>Very Difficult</td><td class="red">× ⅕</td></tr>
+      </table>
+      <table class="ref-table">
+        <tr><th>Result</th><th>Roll</th></tr>
+        <tr><td class="green">Critical</td><td>01–05 or ≤ 1/10 skill</td></tr>
+        <tr><td class="cyan">Special</td><td>≤ 1/5 skill</td></tr>
+        <tr><td>Success</td><td>≤ skill %</td></tr>
+        <tr><td class="amber-text">Failure</td><td>> skill %</td></tr>
+        <tr><td class="red">Fumble</td><td>96–00 (or >30 if skill <30)</td></tr>
+      </table>
+      <table class="ref-table">
+        <tr><th>STR+SIZ</th><th>Damage Modifier</th></tr>
+        <tr><td>2–12</td><td class="red">-1D6</td></tr>
+        <tr><td>13–16</td><td class="amber-text">-1D4</td></tr>
+        <tr><td>17–24</td><td>None</td></tr>
+        <tr><td>25–32</td><td class="green">+1D4</td></tr>
+        <tr><td>33–40</td><td class="green">+1D6</td></tr>
+      </table>
+    </div>
+    <div id="rp-entity" class="act-panel">
+      <div class="section-head">The Entity — The Night Crawler</div>
+      <div class="card" style="margin-bottom:10px;">
+        <div class="card-body" style="display:block;">
+          <p class="red-text bold">Nature</p>
+          <p class="mb8">Spawn of the Lurker at the Threshold. Semi-corporeal. Predates Neo-Ashford by centuries. Distributed filament network IS the entity. Primary node is its densest concentration.</p>
+          <p class="red-text bold">Sensory System</p>
+          <p class="mb8">Perceives through pressure differential, heat, and "intent" — the quality of directed attention in living beings. It registered the team's approach before they entered Sub-District 7. When the team looks at it, it perceives the looking.</p>
+          <p class="red-text bold">Combat</p>
+          <p class="mb8">Cannot be conventionally killed. Primary node: destroyed by Tech's overload, 200+ HP damage, or equivalent explosive. Cutting filaments: AP 2, HP 8 per metre-section — slows it, draws network attention to that location in 1D4 rounds. Does not chase in a straight line — anticipates through the tunnel network.</p>
+          <p class="red-text bold">Influence Mechanic</p>
+          <p>60+ cumulative minutes in tunnels: POW resistance vs POW 18. Fail: quiet pull toward lower levels — returning feels natural. Tell failing player PRIVATELY. Not mind control. Deep, slow environmental conditioning. How two of Scratch's people went back.</p>
+          <p class="mt8 amber-text italic">"If a player asks whether their character is affected: 'Your character feels fine. That is the problem.'"</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- BOTTOM NAV -->
+<div id="nav">
+  <button class="nav-btn active" id="nav-home" onclick="navTo('home')"><span class="icon">⌂</span>Home</button>
+  <button class="nav-btn" id="nav-acts" onclick="navTo('acts')"><span class="icon">🎭</span>Acts</button>
+  <button class="nav-btn" id="nav-npcs" onclick="navTo('npcs')"><span class="icon">👤</span>NPCs</button>
+  <button class="nav-btn" id="nav-clues" onclick="navTo('clues')"><span class="icon">🔍</span>Clues</button>
+  <button class="nav-btn" id="nav-handouts" onclick="navTo('handouts')"><span class="icon">📄</span>HO</button>
+  <button class="nav-btn" id="nav-players" onclick="navTo('players')"><span class="icon">♟</span>Players</button>
+  <button class="nav-btn" id="nav-ref" onclick="navTo('ref')"><span class="icon">📋</span>Ref</button>
+</div>
+
+<!-- FULLSCREEN HANDOUT OVERLAY -->
+<div id="handout-overlay">
+  <button id="handout-overlay-close" onclick="closeHandoutOverlay()">✕ Close</button>
+  <div id="handout-overlay-content"></div>
+</div>
+
+<!-- SAN QUICK MODAL -->
+<div id="san-modal">
+  <div id="san-modal-inner">
+    <div id="san-modal-title">⚠ Sanity Reference</div>
+    <table class="ref-table">
+      <tr><th>Trigger</th><th>Fail/Pass</th></tr>
+      <tr><td>Photograph</td><td class="red">0/1</td></tr>
+      <tr><td>Filament growth</td><td class="red">1/1D6</td></tr>
+      <tr><td>Filament contracts</td><td class="red">0/1</td></tr>
+      <tr><td>Feed Corridor entry</td><td class="red">1/1D4</td></tr>
+      <tr><td>Three bodies</td><td class="red">1D4/1D10</td></tr>
+      <tr><td>Drone gap</td><td class="red">0/1</td></tr>
+      <tr><td>Dr Chen (extended)</td><td class="red">0/1D4</td></tr>
+      <tr><td>Containment floor</td><td class="red">1D4/1D10</td></tr>
+      <tr><td class="highlight">Primary node</td><td class="red highlight">1D10/1D20</td></tr>
+    </table>
+    <button id="san-modal-close" onclick="closeSanModal()">Close</button>
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+
+const NPCS = [
+  {
+    name: 'Sable Morn',
+    role: 'Veltris Handler',
+    disp: 'hidden',
+    dispLabel: 'Hidden Agenda',
+    act: 'Intro / Epilogue',
+    physical: 'Female-presenting, late 40s. Expensive coat, precisely fitted. Subdermal comms visible as a faint ridge along the jaw. Grey-silver hair worn back. Moves without wasted motion. Her eyes rest slightly past the person she is addressing.',
+    motivation: 'Professional completion. Not ideologically committed to the entity programme — committed to Veltris\'s continued operation and her position within it.',
+    knows: 'Everything. The feeding schedule. The containment failures. Dr Chen\'s condition. The secondary node. The termination order on the player team — she authorised it before the briefing.',
+    stats: 'STR 10 | CON 12 | SIZ 10 | INT 16 | POW 14 | DEX 12 | APP 14\nHP 11 | PP 14 | DB None | Move 10\nPersuade 70%, Fast Talk 65%, Insight 70%, Intimidate 55%, Spot 50%\nAttacks: Concealed sidearm (40%), 2D6 (draws only in extremis)\nSPECIAL: Panic protocol — combat stims (+15% physical, 1D6 rounds) + direct line to Veltris black ops (8-min response).',
+    hp: 11, maxHp: 11
+  },
+  {
+    name: 'Damos Reth',
+    role: 'Rogue Analyst',
+    disp: 'neutral',
+    dispLabel: 'Frightened',
+    act: 'Act II (Pod 7)',
+    physical: 'Male, mid-30s, thin, unshaven. Corporate data-vest over civilian clothes not changed in six days. Dark circles. Hands that do not stop moving. Subcutaneous filament tracery on both palms — pale threads beneath the skin, visible in good light.',
+    motivation: 'Survival first. Exposure of what Veltris has done, second. Realistic about his odds. Does not frame the situation heroically.',
+    knows: 'Full entity programme history. Feeding schedule. Containment failures. Dr Chen\'s condition. The secondary node in Sub-District 4 ("two kilometres north — nobody knows"). The 47 disappearances.',
+    stats: 'STR 10 | CON 10 | SIZ 11 | INT 16 | POW 11 | DEX 11 | APP 12\nHP 11 | PP 8 (depleted) | DB None | Move 7 (four days in a pod)\nResearch 70%, Computer Use 65%, Data Analysis 60%, Insight 55%\nAttacks: None.\nSPECIAL: Early-stage filament integration in both palms. Reversible with treatment within 72 hours.',
+    hp: 11, maxHp: 11
+  },
+  {
+    name: 'Jed Osler',
+    role: 'Terminus Bar Tender',
+    disp: 'neutral',
+    dispLabel: 'Guarded / Warm',
+    act: 'Act I (Bar)',
+    physical: 'Non-binary, 50s. Prosthetic left arm — old hydraulic model, chunky segmented fingers, quiet servo whine on grip and release. Medium height, broad shoulders. The stillness of someone who has seen everything and chosen not to comment.',
+    motivation: 'The bar. The regulars. The routine that holds everything together. They are anchored to the specific geography of their life.',
+    knows: 'Reth\'s movements and questions. The disappearances by name and timeframe — cluster near the plant. The organic smell, when it started. People who came back from below street level and then went back down on their own.',
+    stats: 'STR 13 | CON 14 | SIZ 12 | INT 14 | POW 13 | DEX 13 | APP 12\nHP 14 | PP 13 | DB None | Move 10\nInsight 70%, Streetwise 65%, Spot 55%, Persuade 55%, Brawl 50%\nAttacks: Prosthetic arm (50%), 1D6+1 | Baton behind bar (40%), 1D8\nSPECIAL: Will not go below street level under any circumstances. Not fear — a decision made long ago.',
+    hp: 14, maxHp: 14
+  },
+  {
+    name: 'Dr Yava Chen',
+    role: 'Lead Researcher — Compromised',
+    disp: 'compromised',
+    dispLabel: 'Compromised',
+    act: 'Act III (Gallery)',
+    physical: 'Female, early 60s. Academic bearing. Grey hair, reading glasses she takes off to look at things and puts back on to look at people. Perfectly formed sentences with slightly too much space between the words.',
+    motivation: 'The entity. She genuinely believes it is the most significant discovery in human history. She no longer thinks about her career, former colleagues, or what she was before fourteen weeks underground.',
+    knows: 'Everything documented — growth rate, sensory mechanism, feeding response, proximity effects, the secondary node in Sub-District 4 ("the lateral extension"), the slow influence on the surrounding population ("environmental expression").',
+    stats: 'STR 9 | CON 12 | SIZ 10 | INT 18 | POW 16 | DEX 10 | APP 11\nHP 11 | PP 16 | DB None | Move 9\nScience (Biology) 85%, Research 80%, Medicine 50%, Insight 60%\nAttacks: None.\nSPECIAL: 5+ min conversation → POW resistance vs POW 16. Fail: 1 SAN loss. Roll secretly. Tell affected player privately.',
+    hp: 11, maxHp: 11
+  },
+  {
+    name: 'Scratch',
+    role: 'Rivet Teeth Gang Leader',
+    disp: 'neutral',
+    dispLabel: 'Territorial / Negotiable',
+    act: 'Act I (The Slab)',
+    physical: 'Young woman, late teens to early 20s. Fast-twitch reflex tap in right arm (interface seam still slightly raised, still new). Optical replacement left eye — amber glow in low light. Moves like someone who calculates exit routes as a habit.',
+    motivation: 'Her people\'s safety. Losing gang members to disappearances for 8 months. Knows it is not other gangs.',
+    knows: 'Missing residents by name and date. Disappearances cluster near drainage access points closest to the plant. Two gang members came back "not right" — then both walked back to the plant voluntarily at 3 a.m. three weeks ago and did not return. RED HERRING — not connected to entity.',
+    stats: 'STR 12 | CON 12 | SIZ 10 | INT 15 | POW 13 | DEX 17 | APP 13\nHP 12 | PP 13 | DB None | Move 12\nStreetwise 70%, Dodge 65%, Spot 60%, Brawl 55%, Stealth 55%, Fast Talk 50%\nAttacks: Reflex-augmented strike (55%), 1D6 | Blade (45%), 1D6+1\nSPECIAL: First round of combat she did not initiate — DEX counts as 20 for Strike Rank.',
+    hp: 12, maxHp: 12
+  }
+];
+
+const CLUES_ESSENTIAL = [
+  { id: 'e1', name: 'Surveillance Blind Spots', location: 'The Slab', how: 'BRP: Spot / Electronics 50%', reveals: 'Someone with corporate clearance is hiding the entity\'s footprint from above. Not a gang — this is deliberate and sustained.' },
+  { id: 'e2', name: 'Jed\'s Information', location: 'Terminus Bar', how: 'BRP: Persuade / Insight 40%', reveals: 'Reth was here 4 nights ago. Room 4. The smell started ~1 year ago. People who came back from below street level and then went back on their own.' },
+  { id: 'e3', name: 'Reth\'s Corkboard Map', location: 'Room 4 (Reth\'s squat)', how: 'Visual — on corkboard', reveals: 'Navigation to Maintenance Wash Pod 7. Red route through Sub-Level drainage. Without this, the team moves blind in Sub-Level 9.' },
+  { id: 'e4', name: 'Filament Growth — Entity Present', location: 'The Junction', how: 'Visual + Bio-scanner', reveals: 'The entity is real, distributed, alive, and very old. Not a biological anomaly. Something that has been growing toward the city for centuries. "MEMETIC HAZARD" flag.' },
+  { id: 'e5', name: 'Partial Veltris Internal Files', location: 'The Watching Room', how: 'BRP: Electronics 35% / Computer Use 50%', reveals: 'Corporate involvement confirmed. Feeding programme. Dr Chen on-site. Security Team C did not return. Month 16: Reth "recommend containment." He was marked for removal, not rescue.' },
+  { id: 'e6', name: 'The Three Opened Bodies', location: 'Feed Corridor', how: 'Visual + BRP: Medicine / Sci(Bio) 40%', reveals: 'Security Team C. Ribcages unsealed from within. Something exited these bodies from the inside. It took its time. This is what the entity does to human beings.' },
+  { id: 'e7', name: 'Reth\'s Account', location: 'Maintenance Pod 7', how: 'Roleplay', reveals: 'The full story. Feeding programme. Dr Chen. "It feels intent." Secondary node in Sub-District 4. "Nobody knows." He refuses to go back through Veltris and cannot be convinced.' }
+];
+
+const CLUES_OPTIONAL = [
+  { id: 'o1', name: 'The Photograph', location: 'Room 4', how: 'Visual — pinned to corkboard', reveals: 'Physical evidence. The shape does not resolve. The photograph is not doctored. SAN trigger.' },
+  { id: 'o2', name: 'MEMETIC HAZARD Flag', location: 'The Junction (bio-scanner)', how: 'BRP: Science(Bio)/Medicine 40%, sustained', reveals: 'Veltris equipment already has a warning category for this. The programme predates the Sutter-Vane acquisition.' },
+  { id: 'o3', name: 'The Named Rhythm', location: 'Feed Corridor', how: 'Tell one player privately', reveals: 'The entity knows the team individually. It perceived their directed attention before they arrived.' },
+  { id: 'o4', name: "Reth's Filament Tracery", location: 'Maintenance Pod 7', how: 'BRP: Medicine 50%', reveals: 'Early-stage filament integration. Reversible within 72 hours. The Medic\'s personal hook connects here: "growing inward" — the entry mechanism is slow and subcutaneous.' },
+  { id: 'o5', name: "Dr Chen's Typing Rhythm", location: 'Observation Gallery', how: 'BRP: Perception / Insight 50%', reveals: 'Her typing cadence does not match any human keyboard pattern. Consistent, structured, learned from a non-human source. What extended proximity does to a person.' },
+  { id: 'o6', name: "Scratch's Account", location: 'The Slab', how: 'BRP: Insight 40% (approach her correctly)', reveals: 'Gang members disappeared near drain grates closest to the plant. Two came back "not right" — then walked back voluntarily at 3 a.m. The entity\'s influence on the surface population.' }
+];
+
+const HANDOUTS = [
+  {
+    id: '91-H00-A',
+    title: 'Veltris Mission Briefing',
+    when: 'Pre-game — Sable hands this across the table',
+    style: 'normal',
+    content: `VELTRIS SOLUTIONS — CONTRACTOR BRIEFING DOCUMENT
+Classification: COMMERCIAL CONFIDENCE
+Issued by: Contract Services Division | Authorised Signatory: S. Morn
+
+You have been engaged by Veltris Solutions for a time-limited retrieval operation under Standard Contractor Agreement VC-7.
+
+OBJECTIVE: Locate and return to Company custody one (1) Company employee, Damos Reth (Employee ID VLT-39471-R), currently AWOL from assigned role. Reth is believed to be operating in Sub-Districts 7 or 9, Neo-Ashford. Last recorded transit-chip ping: Sub-District 7 Transit Terminus (Pod 7-South), 23:18, four days prior.
+
+SECONDARY OBJECTIVE: Recover one (1) encrypted data-chip in Reth's possession. The chip is Company property under standing intellectual property provisions.
+
+TIMELINE: Forty-eight (48) hours from briefing.
+
+COMPENSATION: Credits 8,000 per operative on completion of primary OR secondary objective. Partial completion (secondary objective only) qualifies for full payment.
+
+NON-DISCLOSURE: All information encountered during this operation is covered under NDA Clause 7 (full). See Attachment B for scope.
+
+Particular note — Clause 7(f): any biological or organic material encountered in the course of operations is deemed Company property subject to standard IP provisions. Do not remove, sample, or retain any such material without written Company authorisation.
+
+Questions regarding scope should be directed to S. Morn directly.`
+  },
+  {
+    id: '91-H00-B',
+    title: 'Dossier — Damos Reth',
+    when: 'Pre-game — with H00-A',
+    style: 'normal',
+    content: `SUBJECT: RETH, DAMOS
+Employee ID: VLT-39471-R
+Role: Data Analyst, Supply Chain Intelligence Division
+
+[PHOTOGRAPH — corporate headshot, mid-30s, professional, looking fractionally off-camera]
+
+Age: 34
+Resident: Arcology Level 14, Veltris-Midari Block (assigned accommodation)
+Tenure: 6 years, 4 months
+Threat Classification: NON-VIOLENT
+
+No combat augments on record. No weapons permit.
+
+Performance history: Above-average across all review periods. No disciplinary incidents prior to current AWOL status. No known personal contacts in Sub-Districts 7–9.
+
+The Company prefers undamaged return.`
+  },
+  {
+    id: '91-H01-A',
+    title: "Reth's Handwritten Notes",
+    when: 'Act I — found in Room 4. Crumple lightly before handing out.',
+    style: 'handwritten',
+    content: `Day 1 — Out of the building. Paid cash. Don't use the chip. Room above a bar, Sub-7. Safe enough.
+SV-9 files are real. I have copies. Month 16 says "recommend containment." I know what that means.
+The 47 disappearances. I counted them. It's been 18 months.
+
+Day 2 — It knows where the warmth is.
+
+Day 3 — Drawn the sub-level map from SV-9 infrastructure files. If I have to go further down, I know where to go. MW pod 7 is sealed. They won't look there.
+It knows where the warmth is.
+It knows where the warmth is.
+It knows where the warmth is.
+
+There is a second one.
+LOOK AT THE NORTHERN FILES. Sub-District 4. Two kilometres north.
+NOBODY KNOWS.`
+  },
+  {
+    id: '91-H01-B',
+    title: 'The Photograph (Description Card)',
+    when: 'Act I — hand separately from other notes. Do NOT show until the moment.',
+    style: 'normal',
+    content: `A photograph taken in a drainage tunnel, framed on a section of curved wall. Whatever the photograph was intended to show is in the foreground — a drainage junction marker, perhaps, or an identification plate.
+
+Behind it, something is visible.
+
+It is large. It is not machinery. It is not debris. It does not correspond to any animal shape. It is not a trick of the light — the light is consistent across the frame. The shape has internal structure — you can see that much — but the structure does not map onto anything your mind has a category for.
+
+You have been looking at it for thirty seconds.
+
+You feel that you have been making progress in understanding it, and then you realise you have been looking at the same point in the photograph for the entire thirty seconds and have not moved your eyes.`
+  },
+  {
+    id: '91-H02-A',
+    title: 'Partial Veltris Internal Files',
+    when: 'Act II — found in The Watching Room. Print low-contrast, as if from a dim terminal.',
+    style: 'terminal',
+    content: `VELTRIS INTERNAL — CLASSIFICATION: RESTRICTED
+SV-9 PROGRAMME STATUS LOG — PARTIAL EXTRACT
+Access via portable terminal — Battery 12% — Some entries corrupted
+
+Month 1: Biological anomaly confirmed, sub-level 9. Growth rate ~18m/month. No identifiable taxonomy. Feeding response confirmed when biomass introduced. Recommend continued observation.
+
+Month 3: Anomaly reclassified as 'entity' per Dr. Chen's recommendation — evidence of deliberate environmental modification. Entity appears to exhibit directed growth toward thermal sources.
+
+Month 7: Feeding programme approved and operational. Dr. Chen assigned programme lead. Three staff members report sleep disruption and intrusive auditory phenomena — reassigned to surface roles.
+
+Month 11: Three containment events recorded. Events 1 and 2 resolved. Event 3 ongoing. Security Team C [corrupted — 3 names missing] did not return from containment response. Dr. Chen requests full-time on-site residency. Staff rotation suspended.
+
+Month 14: Entity appears to perceive directed observation. Growth rate in observed sections temporarily increases during active monitoring. Nature of sensory apparatus unknown. Dr. Chen recommends we "adjust our relationship with the concept of observation."
+
+Month 16: Employee VLT-39471-R (Reth, D.) accessed restricted SV-9 files via Tier 4 clearance gap. Files copied to personal storage device. Recommend containment.
+
+[END OF ACCESSIBLE ENTRIES — further content requires Tier 6 decryption: estimated 4–6 hours]`
+  }
+];
+
+const PCS = [
+  { name: 'The Fixer', player: 'Mateusz Sawicki', hp: 12, maxHp: 12, pp: 13, maxPp: 13, san: 65, maxSan: 65 },
+  { name: 'The Ghost', player: 'Alex Walker', hp: 12, maxHp: 12, pp: 12, maxPp: 12, san: 60, maxSan: 60 },
+  { name: 'The Muscle', player: 'Paul Looby', hp: 16, maxHp: 16, pp: 11, maxPp: 11, san: 55, maxSan: 55 },
+  { name: 'The Tech', player: 'Tom Wright', hp: 12, maxHp: 12, pp: 12, maxPp: 12, san: 60, maxSan: 60 },
+  { name: 'The Medic', player: 'Ciaran McGrath', hp: 13, maxHp: 13, pp: 14, maxPp: 14, san: 70, maxSan: 70 },
+  { name: 'The Analyst', player: 'Elena Giordano', hp: 11, maxHp: 11, pp: 13, maxPp: 13, san: 65, maxSan: 65 }
+];
+
+let pcState = PCS.map(pc => ({
+  ...pc,
+  status: { injured: false, insane: false, dead: false }
+}));
+
+let clueState = {};
+[...CLUES_ESSENTIAL, ...CLUES_OPTIONAL].forEach(c => { clueState[c.id] = 'none'; });
+
+// ===== TIMER =====
+let timerRunning = false;
+let totalSeconds = 210 * 60;
+let elapsed = 0;
+let timerInterval = null;
+
+const CHECKPOINTS = [
+  { t: 15*60, label: 'ACT I', color: 'cyan', pl: 'pl-a1' },
+  { t: 70*60, label: 'ACT II', color: 'amber', pl: 'pl-a2' },
+  { t: 135*60, label: 'ACT III — RETH DUE', color: 'red', pl: 'pl-a3' },
+  { t: 185*60, label: 'MORAL CHOICE — NOW', color: 'red', pl: 'pl-ep' }
+];
+
+let lastAlertIdx = -1;
+
+function toggleTimer() {
+  if (timerRunning) {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    document.getElementById('btn-start-pause').textContent = '▶ RESUME';
+  } else {
+    timerRunning = true;
+    document.getElementById('btn-start-pause').textContent = '⏸ PAUSE';
+    timerInterval = setInterval(tickTimer, 1000);
+  }
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  elapsed = 0;
+  lastAlertIdx = -1;
+  document.getElementById('btn-start-pause').textContent = '▶ START';
+  document.getElementById('alert-banner').className = '';
+  updateTimerDisplay();
+  updateProgressBar();
+}
+
+function tickTimer() {
+  elapsed++;
+  if (elapsed >= totalSeconds) {
+    clearInterval(timerInterval);
+    timerRunning = false;
+  }
+  updateTimerDisplay();
+  updateProgressBar();
+  checkCheckpoints();
+}
+
+function formatTime(s) {
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+  if (h > 0) return `${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+  return `${m}:${String(sec).padStart(2,'0')}`;
+}
+
+function updateTimerDisplay() {
+  const remaining = Math.max(0, totalSeconds - elapsed);
+  document.getElementById('timer-main').textContent = formatTime(remaining);
+  document.getElementById('timer-act').textContent = elapsed < 15*60 ? 'INTRO' :
+    elapsed < 70*60 ? 'ACT I' :
+    elapsed < 135*60 ? 'ACT II' :
+    elapsed < 185*60 ? 'ACT III' : 'EPILOGUE';
+}
+
+function updateProgressBar() {
+  const pct = Math.min(100, (elapsed / totalSeconds) * 100);
+  document.getElementById('progress-bar-fill').style.width = pct + '%';
+  const labels = ['pl-intro', 'pl-a1', 'pl-a2', 'pl-a3', 'pl-ep'];
+  labels.forEach(id => document.getElementById(id).className = '');
+  const active = elapsed < 15*60 ? 'pl-intro' : elapsed < 70*60 ? 'pl-a1' : elapsed < 135*60 ? 'pl-a2' : elapsed < 185*60 ? 'pl-a3' : 'pl-ep';
+  document.getElementById(active).className = 'active';
+}
+
+function checkCheckpoints() {
+  const banner = document.getElementById('alert-banner');
+  if (elapsed >= 135*60 && elapsed < 140*60 && lastAlertIdx < 2) {
+    lastAlertIdx = 2;
+    banner.textContent = '⚠ 2:15 — RETH MUST BE FOUND NOW';
+    banner.className = 'amber active';
+    setTimeout(() => { if (lastAlertIdx === 2) banner.className = ''; }, 30000);
+  }
+  if (elapsed >= 185*60 && elapsed < 190*60 && lastAlertIdx < 3) {
+    lastAlertIdx = 3;
+    banner.textContent = '🔴 3:05 — MORAL CHOICE MUST BE MADE NOW';
+    banner.className = 'red active';
+    setTimeout(() => { if (lastAlertIdx === 3) banner.className = ''; }, 60000);
+  }
+}
+
+// ===== NAVIGATION =====
+function navTo(screen) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('screen-' + screen).classList.add('active');
+  document.getElementById('nav-' + screen).classList.add('active');
+}
+
+function toggleCard(header) {
+  const body = header.nextElementSibling;
+  const chevron = header.querySelector('.chevron');
+  body.classList.toggle('open');
+  if (chevron) chevron.classList.toggle('open');
+}
+
+function switchAct(id, btn) {
+  document.querySelectorAll('#screen-acts .act-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#screen-acts .act-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('ap-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function switchRef(id, btn) {
+  document.querySelectorAll('#screen-ref .act-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#screen-ref .act-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('rp-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ===== BUILD NPC CARDS =====
+function buildNPCs() {
+  const container = document.getElementById('npc-list');
+  container.innerHTML = NPCS.map((npc, i) => `
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div>
+          <div class="card-title">${npc.name}</div>
+          <div class="card-subtitle">${npc.role} · ${npc.act}</div>
+        </div>
+        <span class="card-tag disp-${npc.disp}">${npc.dispLabel}</span>
+        <span class="chevron" style="margin-left:8px;">▼</span>
+      </div>
+      <div class="card-body">
+        <div class="label">Physical</div>
+        <div class="value">${npc.physical}</div>
+        <div class="label">Motivation</div>
+        <div class="value">${npc.motivation}</div>
+        <div class="label">What They Know</div>
+        <div class="value">${npc.knows}</div>
+        <div class="label">Stat Block</div>
+        <div class="stat-block" style="white-space:pre-line;font-size:11px;color:var(--text-dim);">${npc.stats}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===== BUILD CLUE TRACKER =====
+function buildClues() {
+  const eList = document.getElementById('clue-essential-list');
+  const oList = document.getElementById('clue-optional-list');
+  eList.innerHTML = CLUES_ESSENTIAL.map(c => buildClueItem(c, true)).join('');
+  oList.innerHTML = CLUES_OPTIONAL.map(c => buildClueItem(c, false)).join('');
+}
+
+function buildClueItem(c, essential) {
+  const state = clueState[c.id];
+  const checkClass = state === 'found' ? 'found' : state === 'missed' ? 'missed' : '';
+  const checkChar = state === 'found' ? '✓' : state === 'missed' ? '✕' : '';
+  return `
+    <div class="clue-item ${essential ? 'clue-essential' : 'clue-optional'}" onclick="cycleClue('${c.id}')">
+      <div class="clue-check ${checkClass}">${checkChar}</div>
+      <div class="clue-info">
+        <div class="clue-name">${c.name}</div>
+        <div class="clue-loc">📍 ${c.location} · ${c.how}</div>
+        <div class="clue-reveal">${c.reveals}</div>
+      </div>
+    </div>
+  `;
+}
+
+function cycleClue(id) {
+  const states = ['none', 'found', 'missed'];
+  const i = states.indexOf(clueState[id]);
+  clueState[id] = states[(i + 1) % states.length];
+  buildClues();
+  saveState();
+}
+
+// ===== BUILD HANDOUTS =====
+function buildHandouts() {
+  const container = document.getElementById('handout-list');
+  container.innerHTML = HANDOUTS.map((h, i) => `
+    <div class="handout-card">
+      <div class="handout-header" onclick="toggleHandout(${i})">
+        <div>
+          <div class="handout-id">${h.id} · ${h.when}</div>
+          <div class="handout-title">${h.title}</div>
+        </div>
+        <span class="chevron" id="hchev-${i}">▼</span>
+      </div>
+      <div class="handout-body" id="hbody-${i}">
+        <div class="handout-content ${h.style === 'terminal' ? 'terminal' : h.style === 'handwritten' ? 'handwritten' : ''}">
+          <button class="fullscreen-btn" onclick="showHandoutFullscreen(${i})">⛶ Show Players</button>${h.content}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleHandout(i) {
+  const body = document.getElementById('hbody-' + i);
+  const chev = document.getElementById('hchev-' + i);
+  body.classList.toggle('open');
+  chev.classList.toggle('open');
+}
+
+function showHandoutFullscreen(i) {
+  const h = HANDOUTS[i];
+  const overlay = document.getElementById('handout-overlay');
+  const content = document.getElementById('handout-overlay-content');
+  content.textContent = h.content;
+  content.className = h.style === 'terminal' ? 'terminal' : '';
+  overlay.classList.add('active');
+}
+
+function closeHandoutOverlay() {
+  document.getElementById('handout-overlay').classList.remove('active');
+}
+
+// ===== BUILD PC TRACKER =====
+function buildPCs() {
+  const grid = document.getElementById('pc-grid');
+  grid.innerHTML = pcState.map((pc, i) => `
+    <div class="pc-card">
+      <div class="pc-name">${pc.name}</div>
+      <div class="pc-player">${pc.player}</div>
+      <div class="stat-row">
+        <div class="stat-box">
+          <div class="stat-box-label">HP</div>
+          <div class="stat-box-val" id="hp-val-${i}" style="color:${hpColor(pc.hp, pc.maxHp)}">${pc.hp}</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-label">SAN</div>
+          <div class="stat-box-val" id="san-val-${i}" style="color:${sanColor(pc.san, pc.maxSan)}">${pc.san}</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-label">PP</div>
+          <div class="stat-box-val" id="pp-val-${i}">${pc.pp}</div>
+        </div>
+      </div>
+      <div class="stat-controls">
+        <span class="stat-label">HP</span>
+        <button class="stat-ctrl-btn" onclick="adjustStat(${i},'hp',-1)">−</button>
+        <span class="stat-num" id="hp-n-${i}">${pc.hp}</span>
+        <button class="stat-ctrl-btn" onclick="adjustStat(${i},'hp',1)">+</button>
+      </div>
+      <div class="stat-controls">
+        <span class="stat-label">SAN</span>
+        <button class="stat-ctrl-btn" onclick="adjustStat(${i},'san',-1)">−</button>
+        <span class="stat-num" id="san-n-${i}">${pc.san}</span>
+        <button class="stat-ctrl-btn" onclick="adjustStat(${i},'san',1)">+</button>
+      </div>
+      <div class="stat-controls">
+        <span class="stat-label">PP</span>
+        <button class="stat-ctrl-btn" onclick="adjustStat(${i},'pp',-1)">−</button>
+        <span class="stat-num" id="pp-n-${i}">${pc.pp}</span>
+        <button class="stat-ctrl-btn" onclick="adjustStat(${i},'pp',1)">+</button>
+      </div>
+      <div class="status-tags">
+        <span class="status-tag ${pc.status.injured ? 'active-injured' : ''}" onclick="toggleStatus(${i},'injured')">Injured</span>
+        <span class="status-tag ${pc.status.insane ? 'active-insane' : ''}" onclick="toggleStatus(${i},'insane')">Insane</span>
+        <span class="status-tag ${pc.status.dead ? 'active-dead' : ''}" onclick="toggleStatus(${i},'dead')">Dead</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function hpColor(hp, max) {
+  const pct = hp / max;
+  if (pct > 0.5) return 'var(--green)';
+  if (pct > 0.25) return 'var(--amber)';
+  return 'var(--red)';
+}
+
+function sanColor(san, max) {
+  const pct = san / max;
+  if (pct > 0.6) return 'var(--text-bright)';
+  if (pct > 0.3) return 'var(--amber)';
+  return 'var(--red)';
+}
+
+function adjustStat(i, stat, delta) {
+  const pc = pcState[i];
+  pc[stat] = Math.max(0, Math.min(pc['max' + stat.charAt(0).toUpperCase() + stat.slice(1)] || 99, pc[stat] + delta));
+  document.getElementById(stat + '-n-' + i).textContent = pc[stat];
+  document.getElementById(stat + '-val-' + i).textContent = pc[stat];
+  if (stat === 'hp') document.getElementById('hp-val-' + i).style.color = hpColor(pc.hp, pc.maxHp);
+  if (stat === 'san') document.getElementById('san-val-' + i).style.color = sanColor(pc.san, pc.maxSan);
+  saveState();
+}
+
+function toggleStatus(i, status) {
+  pcState[i].status[status] = !pcState[i].status[status];
+  buildPCs();
+  saveState();
+}
+
+// ===== SAN MODAL =====
+function showSanModal() {
+  document.getElementById('san-modal').classList.add('active');
+}
+function closeSanModal() {
+  document.getElementById('san-modal').classList.remove('active');
+}
+
+// ===== STATE PERSISTENCE =====
+function saveState() {
+  try {
+    localStorage.setItem('nc91_pcs', JSON.stringify(pcState));
+    localStorage.setItem('nc91_clues', JSON.stringify(clueState));
+  } catch(e) {}
+}
+
+function loadState() {
+  try {
+    const pcs = localStorage.getItem('nc91_pcs');
+    if (pcs) pcState = JSON.parse(pcs);
+    const clues = localStorage.getItem('nc91_clues');
+    if (clues) clueState = JSON.parse(clues);
+  } catch(e) {}
+}
+
+// ===== INIT =====
+loadState();
+buildNPCs();
+buildClues();
+buildHandouts();
+buildPCs();
+updateTimerDisplay();
+</script>
+</body>
+</html>
