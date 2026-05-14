@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event 92 – Last Train to Coney Island | GM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#090909;--surface:#0f0f0f;--surface-hi:#141414;--surface-top:#1c1c1c;
+  --border:#1e1e1e;--border-hi:#2e2e2e;--text:#c8c4b8;--text-sub:#8a8680;--text-muted:#555550;
+  --amber:#c8860a;--amber-hi:#e8a020;--amber-dim:#7a5308;--orange:#e8640a;
+  --red-act:#c93535;--blue-act:#1a7fc4;--green-act:#2d8a3e;--purple-act:#7b3fa0;
+  --red:#cc3333;--green:#4a9a4a;
+  --keeper-bg:#0a110a;--keeper-brd:#1a3a1a;--keeper-txt:#7aaa7a;
+  --ra-bg:#110d00;--ra-brd:#7a5510;--ra-txt:#d4a84a;
+  --font-mono:'Share Tech Mono','Courier New',monospace;
+  --font-serif:'Special Elite',serif;--r:4px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font-mono);font-size:14px;line-height:1.5;overflow:hidden;-webkit-tap-highlight-color:transparent}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:3px}::-webkit-scrollbar-thumb:hover{background:#3a3a3a}
+#app{display:grid;grid-template-rows:52px 1fr;grid-template-columns:200px 1fr;grid-template-areas:"header header""sidebar main";height:100vh;overflow:hidden}
+@media(max-width:800px){#app{grid-template-columns:1fr;grid-template-rows:52px 1fr 52px;grid-template-areas:"header""main""sidebar"}
+#sidebar{flex-direction:row;overflow-x:auto;overflow-y:hidden;border-right:none;border-top:1px solid var(--border)}
+.act-label-hd{display:none}.scene-btn span{display:none}.scene-btn{min-width:36px;justify-content:center}}
+#header{grid-area:header;background:var(--surface);border-bottom:2px solid var(--border-hi);display:flex;align-items:center;padding:0 16px;gap:12px}
+#hdr-badge{font-size:10px;color:var(--text-muted);letter-spacing:.15em;text-transform:uppercase;white-space:nowrap}
+#hdr-title{font-family:var(--font-serif);font-size:17px;color:var(--amber-hi);letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#hdr-spacer{flex:1}
+#tab-bar{display:flex;height:52px;gap:0}
+.tab-btn{background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;padding:0 14px;font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;color:var(--text-muted);height:52px;white-space:nowrap;transition:color .15s,border-color .15s}
+.tab-btn:hover{color:var(--text)}.tab-btn.active{color:var(--amber);border-bottom-color:var(--amber)}
+#hdr-nav{display:flex;gap:6px;flex-shrink:0}
+.nav-arrow{background:none;border:1px solid var(--border-hi);border-radius:var(--r);color:var(--text-muted);cursor:pointer;padding:4px 10px;font-size:10px;font-family:var(--font-mono);white-space:nowrap;transition:all .15s}
+.nav-arrow:hover{color:var(--text);border-color:var(--border-hi)}
+#sidebar{grid-area:sidebar;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden}
+.act-block{padding:8px 0 4px}
+.act-label-hd{font-size:9px;color:var(--amber-dim);letter-spacing:.15em;font-weight:bold;padding:4px 12px 3px;text-transform:uppercase}
+.scene-btn{width:100%;background:transparent;border:none;border-left:2px solid transparent;cursor:pointer;padding:5px 10px 5px 12px;text-align:left;display:flex;align-items:center;gap:6px;color:var(--text-muted);font-family:var(--font-mono);transition:all .15s;margin-left:-2px}
+.scene-btn:hover{background:var(--surface-hi);color:var(--text)}.scene-btn.active{background:rgba(200,134,10,.10);color:var(--amber)}
+.scene-btn .dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0;opacity:.5;transition:opacity .15s}
+.scene-btn.active .dot{opacity:1}
+.scene-btn .slabel{font-size:11px;line-height:1.3;flex:1}.scene-btn .sdur{font-size:9px;color:var(--text-muted);margin-top:1px}
+.sidebar-footer{margin-top:auto;padding:8px 12px;border-top:1px solid var(--border);font-size:9px;color:#2a2a2a}
+#main{grid-area:main;overflow-y:auto;padding:20px 24px}
+.panel{display:none;max-width:840px}.panel.active{display:block}
+.scene-act{font-size:10px;letter-spacing:.18em;margin-bottom:6px;text-transform:uppercase}
+.scene-title{font-family:var(--font-serif);font-size:22px;color:#e8e4d8;letter-spacing:.04em;margin-bottom:8px}
+.scene-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.badge{font-size:10px;background:var(--surface-hi);border:1px solid var(--border-hi);border-radius:var(--r);padding:2px 8px;white-space:nowrap}
+.badge.clue{color:#5a8a5a;background:#0a1a0a;border-color:#1a3a1a}.badge.san{color:#8a3a3a;background:#1a0a0a;border-color:#3a1a1a}
+.read-aloud{background:var(--ra-bg);border:1px solid var(--ra-brd);border-left:4px solid var(--orange);border-radius:var(--r);padding:14px 18px;margin-bottom:18px}
+.ra-label{font-size:9px;color:var(--orange);letter-spacing:.18em;font-weight:bold;margin-bottom:10px}
+.ra-text{font-family:var(--font-serif);font-size:14px;color:var(--ra-txt);line-height:1.85;white-space:pre-line}
+.content-block{background:var(--surface-hi);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;margin-bottom:18px}
+.block-label{font-size:9px;color:var(--text-muted);letter-spacing:.15em;margin-bottom:10px;text-transform:uppercase}
+.content-text{font-size:13px;color:var(--text-sub);line-height:1.9;white-space:pre-line}
+.mech-table{border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:18px}
+.mech-hd{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(0,1fr) minmax(0,2.5fr);background:var(--surface-top);padding:6px 12px;gap:12px;border-bottom:1px solid var(--border)}
+.mech-hd div{font-size:9px;color:var(--text-muted);letter-spacing:.12em;text-transform:uppercase}
+.mech-row{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(0,1fr) minmax(0,2.5fr);padding:10px 12px;gap:12px;border-bottom:1px solid #161616}
+.mech-row:last-child{border-bottom:none}.mech-row:nth-child(odd){background:var(--surface-hi)}.mech-row:nth-child(even){background:#121212}
+.mech-skill{font-size:12px;color:#7ab4e8;line-height:1.4}.mech-diff{font-size:11px;line-height:1.4}
+.mech-diff.hard{color:#c8782a}.mech-diff.auto{color:#6a9a6a}.mech-diff.normal{color:var(--text-muted)}
+.mech-out{font-size:12px;color:var(--text-sub);line-height:1.5}
+.san-block{border:1px solid #2a1a1a;border-radius:var(--r);overflow:hidden;margin-bottom:18px}
+.san-row{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;gap:16px;border-bottom:1px solid #2a1a1a}
+.san-row:last-child{border-bottom:none}.san-row:nth-child(odd){background:#130a0a}.san-row:nth-child(even){background:#160c0c}
+.san-evt{font-size:12px;color:#a08080}.san-loss{font-size:12px;color:var(--red);font-family:var(--font-serif);font-weight:bold;white-space:nowrap}
+.clue-list{display:flex;flex-direction:column;gap:5px;margin-bottom:18px}
+.clue-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:var(--surface-hi);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;transition:all .15s}
+.clue-item:hover{background:var(--surface-top)}.clue-item.done{background:#0d160d;border-color:#1a3a1a;opacity:.65}
+.clue-chk{width:16px;height:16px;border:1px solid #3a3a3a;border-radius:2px;background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.clue-item.done .clue-chk{border-color:#4a8a4a;background:#1a4a1a}
+.clue-name{font-size:12px;color:#8aba8a}.clue-item.done .clue-name{color:#5a7a5a;text-decoration:line-through}
+.clue-handout{font-size:9px;color:#5a7a9a;background:#0a1220;border:1px solid #1a2a4a;border-radius:2px;padding:1px 5px;margin-left:6px;vertical-align:middle}
+.clue-desc{font-size:11px;color:#5a5a55;line-height:1.5;margin-top:2px}
+.keeper-note{background:var(--keeper-bg);border:1px solid var(--keeper-brd);border-left:4px solid #2d6a2d;border-radius:var(--r);padding:12px 16px}
+.kn-label{font-size:9px;color:#3a7a3a;letter-spacing:.15em;margin-bottom:7px;text-transform:uppercase}.kn-text{font-size:12px;color:var(--keeper-txt);line-height:1.7}
+.scene-fnav{display:flex;gap:10px;margin-top:22px;padding-top:14px;border-top:1px solid var(--border)}
+.fnav-btn{background:var(--surface-hi);border:1px solid var(--border-hi);border-radius:var(--r);color:var(--text-muted);cursor:pointer;padding:7px 14px;font-size:11px;font-family:var(--font-mono);transition:all .15s;white-space:nowrap}
+.fnav-btn:hover{color:var(--text);border-color:#3a3a3a}.fnav-btn.next{color:var(--amber);border-color:var(--amber-dim)}.fnav-btn.next:hover{background:rgba(200,134,10,.1)}
+.npc-card{background:var(--surface-hi);border:1px solid var(--border);border-radius:var(--r);margin-bottom:10px;overflow:hidden;cursor:pointer;transition:border-color .15s}
+.npc-card:hover{border-color:var(--border-hi)}.npc-card.open{border-color:#383838}
+.npc-head{padding:12px 16px;display:flex;align-items:center;gap:12px}
+.npc-name{font-family:var(--font-serif);font-size:15px;color:#e8e4d8}.npc-role{font-size:11px;color:var(--text-muted);margin-top:2px}
+.npc-deploy-tag{font-size:9px;color:#4a7a9a;background:#0a1a2a;border:1px solid #1a3a5a;border-radius:3px;padding:2px 8px;white-space:nowrap}
+.npc-chevron{color:var(--text-muted);font-size:13px;margin-left:auto;flex-shrink:0}
+.npc-body{border-top:1px solid var(--border);padding:14px 16px;display:none}.npc-card.open .npc-body{display:block}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+@media(max-width:600px){.two-col{grid-template-columns:1fr}}
+.mini-label{font-size:9px;color:var(--text-muted);letter-spacing:.12em;margin-bottom:5px;text-transform:uppercase}.mini-text{font-size:12px;color:var(--text-sub);line-height:1.6}
+.stat-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.stat-pill{background:var(--surface-top);border:1px solid var(--border-hi);border-radius:3px;padding:4px 10px}
+.stat-pill .sl{font-size:9px;color:var(--text-muted)}.stat-pill .sv{font-size:14px;color:#7ab4e8;font-weight:bold}
+.stat-extras{font-size:11px;color:var(--text-muted);margin-bottom:10px}
+.inv-card{background:var(--surface-hi);border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px;overflow:hidden;cursor:pointer;transition:border-color .15s}
+.inv-card:hover{border-color:var(--border-hi)}.inv-card.open{border-color:#383838}
+.inv-head{padding:10px 16px;display:flex;align-items:center;gap:10px}
+.inv-name{font-family:var(--font-serif);font-size:14px;color:#e8e4d8}
+.inv-role-tag{font-size:10px;color:var(--text-muted);background:var(--surface-top);border:1px solid var(--border-hi);border-radius:2px;padding:1px 6px}
+.swing-tag{color:#7a5a9a;background:#1a0a2a;border-color:#3a1a5a}
+.inv-san-ctrl{display:flex;align-items:center;gap:4px;margin-left:auto;flex-shrink:0}
+.san-lbl{font-size:9px;color:var(--text-muted);text-align:center;margin-bottom:3px}
+.san-box{display:flex;align-items:center;gap:3px}
+.san-mod{width:20px;height:20px;border:1px solid var(--border-hi);border-radius:2px;cursor:pointer;font-size:13px;line-height:1;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);transition:all .15s}
+.san-mod.minus{background:#1a0a0a;border-color:#3a1a1a;color:#c04444}.san-mod.plus{background:#0a1a0a;border-color:#1a3a1a;color:#44c044}
+.san-mod:hover{opacity:.8}
+.san-val{font-size:20px;font-family:var(--font-serif);font-weight:bold;min-width:32px;text-align:center;border:1px solid var(--border-hi);background:var(--surface-top);border-radius:3px;padding:0 4px}
+.san-base{font-size:10px;color:var(--text-muted)}.inv-chevron{color:var(--text-muted);font-size:13px;flex-shrink:0;margin-left:4px}
+.inv-body{border-top:1px solid var(--border);padding:14px 16px;display:none}.inv-card.open .inv-body{display:block}
+.hook-box{font-size:11px;color:#7a8a7a;background:var(--keeper-bg);border:1px solid var(--keeper-brd);border-radius:3px;padding:8px 12px;margin-bottom:12px;line-height:1.6}
+.hook-lbl{font-size:9px;color:#4a7a4a;letter-spacing:.12em;display:block;margin-bottom:4px;text-transform:uppercase}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:12px}
+.stat-cell{background:var(--surface-top);border:1px solid var(--border-hi);border-radius:3px;padding:5px 6px;text-align:center}
+.stat-cell .sk{font-size:9px;color:var(--text-muted)}.stat-cell .sv{font-size:15px;color:var(--text);font-weight:bold}
+.derived-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.der-pill{background:#0d1a0d;border:1px solid #1a3a1a;border-radius:3px;padding:3px 9px}
+.der-k{font-size:9px;color:#4a7a4a}.der-v{font-size:11px;color:#8aba8a;margin-left:3px}
+.skills-text{font-size:11px;color:#7a9a8a;line-height:1.7;margin-bottom:10px}
+.trigger-box{background:#130a0a;border:1px solid #3a1a1a;border-radius:3px;padding:7px 10px}
+.trig-lbl{font-size:9px;color:#7a3a3a;letter-spacing:.12em;margin-bottom:3px;text-transform:uppercase}.trig-text{font-size:11px;color:#9a6a6a;line-height:1.7}
+.san-bar-wrap{height:3px;background:#1a1a1a;border-radius:2px;overflow:hidden;margin-top:6px}
+.san-bar{height:100%;border-radius:2px;transition:width .3s,background .3s}
+.handout-list{width:130px;flex-shrink:0}.handout-list-lbl{font-size:9px;color:var(--text-muted);letter-spacing:.12em;margin-bottom:8px;text-transform:uppercase}
+.hdoc-btn{width:100%;background:transparent;border:1px solid var(--border);border-radius:var(--r);cursor:pointer;padding:7px 9px;text-align:left;margin-bottom:4px;font-family:var(--font-mono);transition:all .15s}
+.hdoc-btn:hover{background:var(--surface-hi)}.hdoc-btn.active{background:var(--surface-hi);border-color:var(--border-hi)}
+.hdoc-num{font-size:9px;color:var(--text-muted);margin-bottom:2px}.hdoc-name{font-size:11px;color:var(--text);line-height:1.3}
+.handout-view{flex:1}.hv-title{font-family:var(--font-serif);font-size:16px;color:#e8e4d8;margin-bottom:3px}
+.hv-note{font-size:11px;color:var(--text-muted);font-style:italic;margin-bottom:14px}
+.hv-paper{background:var(--surface-hi);border:1px solid var(--border-hi);border-radius:var(--r);padding:20px 22px}
+.hv-text{font-family:var(--font-serif);font-size:14px;color:#c8a860;line-height:1.9;white-space:pre-wrap}
+.clues-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.clues-count{font-size:11px;color:var(--green);background:#0a1a0a;border:1px solid #1a3a1a;border-radius:3px;padding:3px 10px}
+.act-clue-group{margin-bottom:18px}
+.act-clue-hd{font-size:10px;letter-spacing:.15em;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid transparent;text-transform:uppercase}
+.reset-btn{background:none;border:1px solid #2a1a1a;border-radius:3px;color:#5a3a3a;cursor:pointer;padding:5px 12px;font-size:10px;font-family:var(--font-mono);transition:all .15s;margin-top:6px}
+.reset-btn:hover{border-color:#4a2a2a;color:#8a4a4a}
+.san-ref-table{border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:24px}
+.san-ref-hd{display:grid;grid-template-columns:1fr auto;background:var(--surface-top);padding:7px 14px;gap:14px;border-bottom:1px solid var(--border)}
+.san-ref-hd div{font-size:9px;color:var(--text-muted);letter-spacing:.12em;text-transform:uppercase}
+.san-ref-row{display:grid;grid-template-columns:1fr auto;padding:9px 14px;gap:14px;border-bottom:1px solid #161616}
+.san-ref-row:last-child{border-bottom:none}.san-ref-row:nth-child(odd){background:var(--surface-hi)}.san-ref-row:nth-child(even){background:#121212}
+.san-ref-evt{font-size:12px;color:var(--text-sub)}.san-ref-loss{font-size:13px;font-family:var(--font-serif);font-weight:bold;text-align:right;white-space:nowrap}
+.inv-san-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+@media(max-width:700px){.inv-san-grid{grid-template-columns:repeat(2,1fr)}}
+.inv-san-card{border:1px solid transparent;border-radius:var(--r);padding:12px}
+.isc-name{font-size:11px;color:var(--text-muted);margin-bottom:7px;line-height:1.3}
+.isc-ctrl{display:flex;align-items:center;gap:6px;margin-bottom:7px}
+.isc-val{font-family:var(--font-serif);font-size:24px;font-weight:bold;flex:1;text-align:center}
+.isc-base{font-size:10px;color:var(--text-muted)}
+#handouts-panel.active{display:flex;gap:16px}
+</style>
+</head>
+<body>
+<div id="app">
+<header id="header">
+  <div id="hdr-badge">EVENT 92 · COC 7e · 1979</div>
+  <div id="hdr-title">THE LAST TRAIN TO CONEY ISLAND</div>
+  <div id="hdr-spacer"></div>
+  <div id="tab-bar">
+    <button class="tab-btn active" data-tab="scene">SCENE</button>
+    <button class="tab-btn" data-tab="npcs">NPCs</button>
+    <button class="tab-btn" data-tab="investigators">CREW</button>
+    <button class="tab-btn" data-tab="handouts">DOCS</button>
+    <button class="tab-btn" data-tab="clues">CLUES</button>
+    <button class="tab-btn" data-tab="san">SAN</button>
+  </div>
+  <div id="hdr-nav">
+    <button class="nav-arrow" id="btn-prev">← PREV</button>
+    <button class="nav-arrow" id="btn-next">NEXT →</button>
+  </div>
+</header>
+<nav id="sidebar"></nav>
+<main id="main">
+  <div id="scene-panel" class="panel active"></div>
+  <div id="npcs-panel" class="panel"></div>
+  <div id="investigators-panel" class="panel"></div>
+  <div id="handouts-panel" class="panel"></div>
+  <div id="clues-panel" class="panel"></div>
+  <div id="san-panel" class="panel"></div>
+</main>
+</div>
+<script>
+const ACT_COLORS={intro:"#e8640a",act1:"#c93535",act2:"#1a7fc4",act3:"#2d8a3e",epilogue:"#7b3fa0"};
+const ACT_LABELS={intro:"INTRO",act1:"ACT 1",act2:"ACT 2",act3:"ACT 3",epilogue:"END"};
+const ACT_NAME={intro:"Introduction",act1:"The Bronx Run",act2:"The Manhattan Trap",act3:"The Last Train",epilogue:"Epilogue"};
+const SAN_COLORS=["","#6b8a6b","#8a8a4a","#a07030","#c03030","#e01010"];
+const SCENES=[
+{id:"intro",act:"intro",actLabel:"INTRODUCTION",title:"Van Cortlandt Park",duration:"20 min",
+readAloud:`Van Cortlandt Park, midnight. The floodlights carve a brutal circle out of the Bronx dark. Inside that circle, it's a sea of colours — nine delegates from every gang in the city, standing shoulder to shoulder, unarmed. Cyrus is up on the bandstand, his voice carrying over the crowd without a mic.\n\n"Can you count, suckers?" he yells.\n\nThe crowd roars. But down in the press of bodies, something feels wrong. The air is too hot, too still — like the dead quiet before a train hits the platform. Then a sharp crack echoes across the park. Cyrus falls. A voice near you screams: "The Coney Island Warriors! They shot him!" And then the police sirens start.`,
+content:`SPOT HIDDEN: During Cyrus's speech, several inner-ring Riffs make the same gesture — three fingers curled, medallion touched to forehead, repeated like reflex. Note who notices.\n\nTHE SHOT: Sudden. No build. Real violence is like that. In the half-second before the crowd processes it, a Riff screams: "Warriors — they shot Cyrus!"\n\nTHE TOKEN: Cyrus does not die instantly. One investigator close enough can reach him. He says once, clearly: "Don't let it reach the end of the line." He presses the brass token into their palm.\n\nCREED IN THE CROWD: One investigator (Keeper's choice) glimpses a face moving against the fleeing bodies — calm, unhurried, watching with mild professional interest. Gone before it can be studied.\n\nThe floodlights die the instant the first siren sounds. The generator is still running. Drive the investigators out of the park immediately.`,
+mechanics:[],keeperNote:"Keep this scene fast and disorienting. Twenty minutes of table time maximum. Do not let players deliberate. The city closes the moment Cyrus falls.",
+clueIds:["token"],sanEvents:[]},
+{id:"a1_cemetery",act:"act1",actLabel:"ACT 1 — THE BRONX RUN",title:"1-1: Cemetery Rail Cut",duration:"~10 min",readAloud:null,
+content:`Fastest route south cuts through a cemetery access road beside the rail embankment. Wheels knows it. Others need Navigate.\n\nA Riffs lookout is dead — seated against a retaining wall as though he sat down and stopped. No wound. No bruising. Eyes open. Irises burned flat silver — not reflective, just silver, like old cutlery. Cannot have been dead more than two hours.`,
+mechanics:[{skill:"Medicine / First Aid",diff:"Normal (Doc auto)",diffClass:"auto",outcome:"No wound, no trauma, no cause. Core temp unexpectedly cold. The biological system simply ceased."},{skill:"Occult",diff:"Hard",diffClass:"hard",outcome:"Seated position — hands open, face west — matches voluntary consciousness-transfer postures in obscure esoteric texts."},{skill:"Spot Hidden",diff:"Normal",diffClass:"normal",outcome:"Matchbook half-wedged under a rail tie. Spiral over three parallel lines — the Choir sigil. Spray recognises it immediately."}],
+keeperNote:"Do not explain the silver eyes. Let them sit. Log who examined the body — Doc's reading will matter later.",
+clueIds:["matchbook","lookout_notebook"],sanEvents:[{evt:"Examining the silver eyes",loss:"0/1",lvl:1}]},
+{id:"a1_witness",act:"act1",actLabel:"ACT 1 — THE BRONX RUN",title:"1-2: The Witness",duration:"~8 min",readAloud:null,
+content:`Cornered in a stairwell near the first station: young man, no prominent colours, separated from his crew in the chaos.\n\nHe saw the shooter. Small, pale, non-descript — not the Warriors' colours. Already moving toward the exit BEFORE Cyrus fell. Lips moving the whole time — not shouting, whispering — rhythm like counting. He looked like someone arriving on schedule.\n\nHe will not testify anywhere. But he confirms the Warriors did not fire that shot.`,
+mechanics:[{skill:"Fast Talk",diff:"Normal",diffClass:"normal",outcome:"He talks. Gives the full description above."},{skill:"Intimidate",diff:"Normal",diffClass:"normal",outcome:"He talks faster. Adds: the shooter's eyes didn't look right in the dark — like the light wasn't catching them properly."}],
+keeperNote:"This NPC exists to confirm the investigators aren't imagining things and to plant the chanting detail. Don't let players spend too long here.",
+clueIds:["witness_note"],sanEvents:[]},
+{id:"a1_butchers",act:"act1",actLabel:"ACT 1 — THE BRONX RUN",title:"1-3: Gun Hill Butchers",duration:"~10 min",readAloud:null,
+content:`Twelve members of the Gun Hill Butchers — bats, pipes, at least one firearm. Running the citywide bounty on the Warriors.`,
+mechanics:[{skill:"Run — CON vs 55 / Navigate",diff:"Normal",diffClass:"normal",outcome:"Lose them through the rail yard. Costs time and cohesion."},{skill:"Talk down — Fast Talk",diff:"Hard if recognised",diffClass:"hard",outcome:"Possible with conviction and enough confusion about identity."},{skill:"Fight",diff:"—",diffClass:"normal",outcome:"Loud, costly. Police arrive in 1D6 minutes. Two or three down and the rest lose conviction."},{skill:"Split — Stealth vs Spot Hidden",diff:"Opposed",diffClass:"normal",outcome:"1D3 investigators clear cleanly. Rest need a second roll."}],
+keeperNote:"Injuries expected here. Deaths are not — Act 1. If combat goes badly, give investigators an escape route.",
+clueIds:[],sanEvents:[]},
+{id:"a1_sweep",act:"act1",actLabel:"ACT 1 — THE BRONX RUN",title:"1-4: Transit Sweep",duration:"~10 min",readAloud:null,
+content:`Transit Police unit — three officers, Doyle's voice on radio — sweeping the turnstile area. Wheels can route through service access, bypassing the concourse entirely.\n\nFIRST MYTHOS INTRUSION: Whoever carries the token notices the train windows reflected in the dark tunnel glass show passengers — full cars, every seat occupied, nobody moving. When the train pulls in and the doors open: empty cars.\n\nToken-holder gets a fragment — less than a second — a tall figure in conductor's uniform, face a featureless pale oval, punching tickets on thin material that is not paper. Does not linger. Does not repeat.`,
+mechanics:[{skill:"Locksmith or Navigate (Wheels)",diff:"Normal",diffClass:"normal",outcome:"Service access route. Avoids the sweep entirely."},{skill:"Stealth (without Wheels)",diff:"Hard",diffClass:"hard",outcome:"Platform via fare gates without being IDed."}],
+keeperNote:"Keep the reflection vision brief and underdescribed. One sentence. Don't linger. Something wrong at the edge of vision, not a set piece.",
+clueIds:[],sanEvents:[{evt:"Platform reflection passengers",loss:"0/1",lvl:1},{evt:"Token vision — faceless conductor",loss:"1/1D4",lvl:2}]},
+{id:"a1_train",act:"act1",actLabel:"ACT 1 — THE BRONX RUN",title:"1-5: First Train South",duration:"~12 min",readAloud:null,
+content:`The train is moving. First moment since the park to think.\n\nPA briefly carries something like a broadcast, then cuts to a rhythmic counting in a low register that stops when anyone focuses on it.\n\nThe car immediately ahead remains dark and fully empty for the entire Bronx run. At the first Manhattan station it is lit normally and occupied. No explanation.\n\nBreathing room. Let investigators compare notes, examine the matchbook and token. Doc can share the note he has been carrying if the moment feels right.`,
+mechanics:[],keeperNote:"Doc's note ('Union Square / transfer / voice in static / do not ride the last car') should come out here if it hasn't already. Let the player choose the moment.",
+clueIds:["shell_casing"],sanEvents:[]},
+{id:"a2_96th",act:"act2",actLabel:"ACT 2 — THE MANHATTAN TRAP",title:"2-1: 96th Street Station",duration:"~20 min",
+readAloud:`The platform at 96th Street is dead quiet, echoing with the drip of dirty water and the distant hum of the third rail. You've made it into Manhattan, but the city feels like a trap waiting to spring. From a grate above you, the muffled sound of a portable radio bleeds through: a velvet-smooth female voice drifting down.\n\n"To all our friends out in the night… the Coney Island Warriors are making a run for it. They think they can ride the rails home. But the train is hungry tonight, babies. And we're collecting fares."\n\nThen the police whistles blow from the north entrance, and the heavy thud of combat boots echoes down the stairs. The turnstiles ahead are locked. You've got five seconds.`,
+content:`Police cordon — Doyle's unit — closed the main exit. SPLIT THE TABLE into two groups for 10–15 minutes.\n\n— GROUP A: PHYSICAL ROUTE (Wheels leads) —\nService tunnel south. Walls freshly chalked with large, deliberate geometric patterns extending as far as the flashlight carries. These are binding wards.\n\n— GROUP B: SOCIAL ROUTE (Swan or Doc leads) —\nVelvet Lizzies — five women, Dolores leads (stolen Riffs medallion). Promised Choir protection to flag the Warriors. Operating from fear, not conviction. She can be reached.\n\nDOLORES (if persuaded): "Cyrus wasn't calling the summit just to be king. He was building an army — because he'd found out what the Choir was actually summoning underneath the city. He wanted every set in the five boroughs pointed at it. Someone in the Choir figured that out and moved first."`,
+mechanics:[{skill:"Occult (Spray auto on matchbook recognition)",diff:"Normal",diffClass:"normal",outcome:"Binding wards. Several broken — chalk smeared or scraped deliberately. Cyrus's death shattered the primary ward. The secondary line is crumbling."},{skill:"Cthulhu Mythos",diff:"Hard",diffClass:"hard",outcome:"Ward notation found in no published texts. Whatever was sealed here was sealed before the first tunnel was dug."},{skill:"Psychology (Dolores)",diff:"Hard",diffClass:"hard",outcome:"She's operating from fear. She can be reached."},{skill:"Persuade or Fast Talk (Dolores)",diff:"Normal if Psych passed",diffClass:"normal",outcome:"Gives the revelation about Cyrus building an army. Also: Cyrus had been meeting a voice on pirate radio for months."}],
+keeperNote:"The split is critical — it creates the feeling of the city closing. Run Group B quickly so they don't sit idle. Reunite before Scene 2-4.",
+clueIds:["wards_discovery","dolores_info"],sanEvents:[]},
+{id:"a2_wards",act:"act2",actLabel:"ACT 2 — THE MANHATTAN TRAP",title:"2-2: The Binding Wards",duration:"Layered",readAloud:null,
+content:`This beat layers across multiple Act 2 scenes as investigators pass through tunnels. The chalk markings recur throughout the Manhattan system at irregular intervals.\n\nWhen enough have been seen and investigators compare notes: the marks form a city-wide containment structure. The subway system was comprehensively warded — the entire grid converted, gradually, over decades.\n\nThe wards are failing, station by station, cascading south from Van Cortlandt Park.`,
+mechanics:[{skill:"Occult or Cthulhu Mythos (cumulative)",diff:"Normal after multiple sightings",diffClass:"normal",outcome:"City-wide sigil network. Subway system = containment structure. Failing from north to south since midnight."}],
+keeperNote:"Wheels: examining the ward placements near service areas, he'll recognise deep MTA access was needed to install these over years. He knew this system and never saw who did this.",
+clueIds:[],sanEvents:[]},
+{id:"a2_broadcast",act:"act2",actLabel:"ACT 2 — THE MANHATTAN TRAP",title:"2-3: The Broadcast",duration:"~8 min",readAloud:null,
+content:`Velvet Static's broadcast finds them — via radio, PA system, or bodega speaker. Transmitting their current route and descriptions in real-time.\n\nFIRST: Sounds like a pirate station. Then the traffic updates are specifically about them, accurate to their current location.\n\nSECOND: Hard Listen — a second voice beneath Sandy's: low, uninflected, counting. Stations. Distances. Names. Not street names. GIVEN NAMES. Birth certificate names. Names some haven't used in years.`,
+mechanics:[{skill:"Listen",diff:"Hard",diffClass:"hard",outcome:"Second voice beneath the broadcast: counting. Stations, distances, then the investigators' real names — not street names. Given names."}],
+keeperNote:"Use the real names from the character sheets when you read the second voice. Two encounters maximum — don't overuse the broadcast.",
+clueIds:[],sanEvents:[{evt:"Broadcast uses investigators' real names",loss:"1/1D4",lvl:2}]},
+{id:"a2_darkride",act:"act2",actLabel:"ACT 2 — THE MANHATTAN TRAP",title:"2-4: The Dark Ride",duration:"~10 min",readAloud:null,
+content:`The train stops between stations. Lights fail. Emergency lighting after ten seconds — red-orange and dim.\n\nSomething knocks on the outside of the car. Twice. Then from the next car forward. Then from beneath the floor.\n\nWhen Wheels checks the emergency floor hatch: the chalk wards continue on the tunnel wall — intact, in both directions, as far as the flashlight carries. These have not been scrubbed.\n\nThe train resumes after 90 seconds. Wheels notes: this stretch has been officially decommissioned for three months. No crew assigned.`,
+mechanics:[],keeperNote:"Pace the knocking — pause after each one. Let the silence do the work. 90 seconds of in-game silence is much shorter at the table than it sounds.",
+clueIds:[],sanEvents:[{evt:"Knocking on exterior of tunnel car",loss:"0/1",lvl:1},{evt:"Intact wards extending into darkness both directions",loss:"1/1D4",lvl:2}]},
+{id:"a2_unionsquare",act:"act2",actLabel:"ACT 2 — THE MANHATTAN TRAP",title:"2-5: Union Square Cache",duration:"~15 min",readAloud:null,
+content:`Maintenance room off the Union Square transfer complex. Wheels locates it. Locked. Single work bulb on an extension cord.\n\n1. ROUTE MAPS — subway lines annotated with dates, stations circled. The circles align exactly with the ward locations Spray has been cataloguing for two years without knowing why.\n\n2. RITUAL TIMETABLE — handwritten. Final entry: "Summit / death of the anchor / gate opens at end of line / six hours to full manifestation." ANCHOR underlined three times. Cyrus was the anchor. His death was the mechanism.\n\n3. CASSETTE TAPE — Sony tape, "C — last argument." Working Walkman on the shelf.\n\nTHE CASSETTE:\n[Cyrus]: "I'm not surrendering authority. I'm proposing a working arrangement."\n[Creed/Conductor — distorted, grinding harmonic beneath]: "You don't understand the thing below the rails, Cyrus. You don't lead it. You schedule it."\n[Cyrus]: "Then I'll schedule it."\n[Creed/Conductor]: "No. You'll be the lock. And we will find a key."\n[Metal scraping. Long silence. Recording ends.]`,
+mechanics:[{skill:"Locksmith (Wheels)",diff:"Hard",diffClass:"hard",outcome:"Door opens cleanly."},{skill:"Spot Hidden",diff:"Normal",diffClass:"normal",outcome:"Bolt-cutter in nearby tool cage — can open the door without Locksmith."}],
+keeperNote:"DO NOT CUT THIS SCENE. This is the heart of Act 2. After this: (1) Cyrus's death was ritual mechanism. (2) They were framed for the token. (3) Deadline 6AM. After 7AM: no known procedure.",
+clueIds:["route_maps","ritual_timetable","cassette"],sanEvents:[{evt:"Reading the ritual timetable fully",loss:"1/1D6",lvl:3}]},
+{id:"a2_freeze",act:"act2",actLabel:"ACT 2 — THE MANHATTAN TRAP",title:"2-6: The Platform Freeze",duration:"~5 min",readAloud:null,
+content:`The platform carries its normal trickle of late commuters. Everything looks ordinary.\n\nThen every person stops simultaneously. Not slowly — INSTANTLY. Mid-step. Mid-sentence. Mid-reach.\n\nSix seconds exactly.\n\nA train arrives not on any schedule. Passes through without stopping. Every car lit, every car occupied, every passenger facing forward at exactly the same angle.\n\nThe stopped people resume as though nothing happened. The investigators are not frozen. They are the only ones who saw it.`,
+mechanics:[],keeperNote:"Count the six seconds out loud at the table if you can manage it without breaking immersion. The physical discomfort of that silence is the scene.",
+clueIds:[],sanEvents:[{evt:"Platform freeze / ghost train",loss:"1/1D6",lvl:3}]},
+{id:"a3_brooklyn",act:"act3",actLabel:"ACT 3 — THE LAST TRAIN",title:"3-1: Brooklyn Approach",duration:"~12 min",readAloud:null,
+content:`Last workable southbound train. In the adjacent car: three teenagers in prom formal wear, clean and laughing, sharing a flask. Untouched by the night. A parallel city where nothing went wrong. Rook looks at them and thinks about Marco — name this moment if her player hasn't.\n\n— CREED'S PARLEY —\nAt an unlit stop, Creed boards. Sits across the aisle from the nearest investigator. Sets his revolver on his knee, pointed away. Speaks quietly.\n\nHis offer: the token, in exchange for the Warriors' names cleared. He is entirely credible. He is lying about every element.\n\nIf refused: he nods, stands, moves to the next car. Does not look back.`,
+mechanics:[{skill:"Psychology",diff:"Hard",diffClass:"hard",outcome:"He is not negotiating. He is measuring — which investigators might be turned, which need removing, whether the token can be retrieved without further cost."},{skill:"Spot Hidden",diff:"Normal",diffClass:"normal",outcome:"The revolver barrel is blackened. The round in the chamber carries the same tar-like residue as the shell casing from the summit. Same type of round that killed Cyrus."}],
+keeperNote:"Play Creed calm and patient here — not menacing. Let the Spot Hidden reveal do the menacing. The horror is that his offer is almost credible.",
+clueIds:[],sanEvents:[]},
+{id:"a3_strike",act:"act3",actLabel:"ACT 3 — THE LAST TRAIN",title:"3-2: The Cult Strike",duration:"~15 min",readAloud:null,
+content:`Creed's team boards at the final stop — four Third Rail Choir enforcers plus Sister Vale. Goal: retrieve the token, eliminate witnesses.\n\nRun this as a moving fight through connecting cars, ending as the train enters Stillwell Avenue.\n\n— SISTER VALE —\nDoes not fight unless an enforcer dies in front of her. If isolated from Creed — physically or by playing her the cassette tape — a successful Persuade may turn her. She is not certain the emergence is salvation. The tape is the crack that Cyrus hoped someone would find.`,
+mechanics:[{skill:"Persuade (Vale)",diff:"Hard",diffClass:"hard",outcome:"Vale turns. Will help seal the shrine — she knows it better than anyone."},{skill:"Play cassette to Vale",diff:"Automatic trigger",diffClass:"auto",outcome:"Reduces Persuade to Normal difficulty. She knew Cyrus. The tape shakes her."}],
+keeperNote:"Keep this fight moving — don't let it bog into a static exchange. The enforcers are competent but not supernatural. They can be beaten.",
+clueIds:[],sanEvents:[]},
+{id:"a3_terminal",act:"act3",actLabel:"ACT 3 — THE LAST TRAIN",title:"3-3: Stillwell Terminal",duration:"~18 min",
+readAloud:`You've made it. The last train screeches to a halt, and the doors hiss open near the Stillwell Avenue terminal. You can smell the salt of Coney Island — but between you and the beach is the old maintenance yard.\n\nThe air down here tastes like copper and ozone. Heavy power cables snake across the flooded tracks like black veins, pulsing faintly with light. Standing in the centre of a rusted iron sigil — the same spiral from the token, the matchbook, the tunnel walls, rendered here in actual iron rails warped over decades into a shape that is not accidental — is Lester Creed, his gun drawn. But he's not looking at you.\n\nHe's looking at the towering silhouette coalescing out of cinders, sparks, and shadow: a thing in a conductor's uniform, reaching toward him with a hand assembled from crackling voltage.`,
+content:`The maintenance rails have warped, over decades, into the Third Rail Choir sigil rendered in iron at the scale of a room. Spray is the first to see it.\n\nPower surges periodically without warning. The black water on the tunnel floor conducts freely.\n\n— THE BREAKER BOX —\nMounted on the far wall: 1920s-era electrical hardware. Shrine's anchor point. Concentric chalk rings, ritual objects, transit ephemera going back thirty years surround it. The relay at its centre is missing.\n\nA single empty slot, machined to an unusual specification. The brass token fits it exactly. It was always meant to.\n\n— THE BLACK CONDUCTOR —\nDoes not arrive with drama. It is simply THERE. Tall figure assembled from cinders, ticket stubs, fraying wire, decades of soot — wearing the silhouette of a transit worker. Where a face should be, light bends away.\n\nVoice comes from PA speakers, tunnel acoustics, and the investigators' own chests simultaneously.\n\n"This is the last stop. All passengers must exit here."`,
+mechanics:[{skill:"POW roll (token placement)",diff:"Normal",diffClass:"normal",outcome:"SUCCESS: Gate sealed. Electrical discharge incapacitates enforcers. Creed does not survive the arc if present. SAN cost: 1D8 permanent."},{skill:"POW roll (token placement) — FAIL",diff:"Normal",diffClass:"normal",outcome:"Second investigator must assist (combined POW roll), or manifestation timeline advances 30 minutes."}],
+keeperNote:"DO NOT DESCRIBE THE BLACK CONDUCTOR AT LENGTH. One sentence. Two at most. The investigators have been building toward this all night — the accumulated dread is doing most of the work. Brevity is the horror.",
+clueIds:[],sanEvents:[{evt:"First full sight of the Black Conductor",loss:"1D6/1D20",lvl:4},{evt:"Sight — full-night exposure",loss:"1D4/1D10",lvl:3},{evt:"Sealing the line — token placement",loss:"1D8 PERMANENT",lvl:5},{evt:"Taking the Bargain",loss:"1D10 (costs stop mattering)",lvl:5}]},
+{id:"epilogue",act:"epilogue",actLabel:"EPILOGUE",title:"Dawn on the Beach",duration:"15 min",readAloud:null,
+content:`Address each investigator personally. Close their hooks.\n\n— OUTCOME A: EXPOSE THE TRUTH —\nThe Riffs stand down by dawn. Masai hears the cassette — gang justice turns on Creed. The Warriors walk the Coney Island boardwalk as the light comes up. Rook gets home before Marco wakes up.\n\n— OUTCOME B: SEAL THE LINE —\nThe gate is sealed in a way that will never make the papers. The marked investigator does not tell the others what they felt when the power went through the token. Doc eventually learns the Riff runner was discharged from Kings County without record.\n\n— OUTCOME C / FAILURE: THE LONG DEFEAT —\nThe investigators reach the beach. Every arriving train over the following days carries one more passenger than the manifest shows. Sandy Drucker stops sleeping and broadcasts around the clock. Marion Vale does not report for her transit shift and is not found for eleven days.`,
+mechanics:[],keeperNote:"Spend a sentence on each investigator's personal hook. Don't rush the epilogue — it's fifteen minutes of earned space after everything the night took from these characters.",
+clueIds:[],sanEvents:[]}
+];
+const CLUES=[
+{id:"token",act:"intro",label:"Brass Token",desc:"Warm, spiral-engraved. Fits Stillwell breaker relay exactly. Pressed into an investigator's palm by Cyrus as he died.",handout:"H5"},
+{id:"shell_casing",act:"act1",label:"Black Shell Casing",desc:"Tar-like residue — not standard gunpowder. Ritual preparation. Found at summit grounds if searched.",handout:null},
+{id:"matchbook",act:"act1",label:"Third Rail Choir Matchbook",desc:"Spiral over three parallel lines — the Choir sigil. Found near the silver-eyed lookout's body.",handout:null},
+{id:"lookout_notebook",act:"act1",label:"Lookout's Notebook",desc:'"Union Square / transfer / voice in static / do not ride the last car." Found searching the body.',handout:"H2"},
+{id:"witness_note",act:"act1",label:"Witness Description",desc:"Shooter: small, pale, not Warriors. Lips moving — counting. Already moving toward exit before the shot.",handout:"H6"},
+{id:"wards_discovery",act:"act2",label:"Binding Ward Network",desc:"Chalk sigils = city-wide containment structure across the entire subway grid. Failing south from Van Cortlandt.",handout:null},
+{id:"dolores_info",act:"act2",label:"Dolores's Testimony",desc:"Cyrus was building an army to confront what the Choir was summoning. The Choir found out and moved first.",handout:null},
+{id:"route_maps",act:"act2",label:"Cyrus's Route Maps",desc:"Subway lines annotated with dates + circled stations. Circles align exactly with Spray's sketchbook ward locations.",handout:null},
+{id:"ritual_timetable",act:"act2",label:"Ritual Timetable",desc:"Anchor = Cyrus. Death opens gate. Full manifestation ~06:00. Token closes gate at Stillwell BEFORE 06:00.",handout:"H4"},
+{id:"cassette",act:"act2",label:"Cassette Tape — C",desc:"\"You don't lead it. You schedule it.\" Creed/Conductor voice distorted. Proves ritual murder. Names Stillwell.",handout:"H3"}
+];
+const SAN_TABLE=[
+{evt:"Silver-eyed corpse",loss:"0/1",lvl:1},{evt:"Token vision — faceless conductor",loss:"1/1D4",lvl:2},
+{evt:"Platform reflection passengers",loss:"0/1",lvl:1},{evt:"Broadcast uses investigators' real names",loss:"1/1D4",lvl:2},
+{evt:"Knocking on exterior of tunnel car",loss:"0/1",lvl:1},{evt:"Intact wards extending into darkness",loss:"1/1D4",lvl:2},
+{evt:"Ritual timetable read fully",loss:"1/1D6",lvl:3},{evt:"Platform freeze / ghost train",loss:"1/1D6",lvl:3},
+{evt:"First full sight of the Black Conductor",loss:"1D6/1D20",lvl:4},{evt:"Conductor sight — full-night exposure",loss:"1D4/1D10",lvl:3},
+{evt:"Sealing the line — token placement",loss:"1D8 PERMANENT",lvl:5},{evt:"Taking the Bargain",loss:"1D10 (costs stop mattering)",lvl:5}
+];
+const NPCS=[
+{id:"creed",name:"Lester Creed",role:"Main Antagonist — Third Rail Choir Vessel",deploy:"Act 1 glimpse → Act 2 parley → Act 3 confrontation",
+appearance:"Slight, pale, appears mid-30s. Polite. Professionally forgettable. Lips sometimes move slightly without sound.",
+truth:"A vessel. The Black Conductor has been accessing the world through his nervous system long enough that the original Creed is largely habit. Does not sleep. Occasionally confuses which decade he is in.",
+stats:[{l:"Fighting (Brawl)",v:"70%"},{l:"Firearms (Handgun)",v:"65%"},{l:"Dodge",v:"60%"},{l:"Fast Talk",v:"80%"},{l:"Psychology",v:"70%"},{l:"Occult",v:"85%"}],
+extras:"HP: 15 · SAN: N/A · Armour: 2 pts (unnatural resilience)",
+note:"Deploy precisely. ONE glimpse Act 1. ONE parley Act 2. Full confrontation Act 3 only. He should feel like a slow and inevitable arrival."},
+{id:"masai",name:"Masai",role:"Riffs War Captain — Hostile / Possible Final Ally",deploy:"Background Acts 1–2 · Possible ally Act 3 (Outcome A)",
+appearance:"28. Blunt, aggressive, immediately hostile. Broadcasting Warriors' descriptions since midnight.",
+truth:"Not a cultist. Furious at being manipulated. If he hears the cassette tape his anger turns toward Creed. The city's best chance at gang-wide justice.",
+stats:[],extras:"No combat stats needed. Pressure element, not a fight.",
+note:"Keep him dangerous right up until he becomes an ally. Do not soften prematurely."},
+{id:"vale",name:"Sister Marion Vale",role:"Third Rail Choir Elder — Act 3 Only",deploy:"Act 3 scenes only",
+appearance:"61. Transit worker uniform. Quiet. Composed. Has achieved some kind of peace about what she's done.",
+truth:"Maintains the breaker shrine beneath Stillwell. In correspondence with the entity since age 38. Her certainty about the emergence being salvation is no longer stable — the tape cracks it.",
+stats:[],extras:"Does not fight unless enforcer dies in front of her. Persuade Hard / cassette reduces to Normal.",
+note:"Frightening in the way a true believer with doubts is frightening — not the violence, the calm."},
+{id:"doyle",name:"Sgt. Frank Doyle",role:"Transit Police — Hostile Non-Cultist",deploy:"Acts 1–2 · Background radio presence throughout",
+appearance:"44. 20-year man, Vietnam before that. Exhausted. Believes completely the Warriors are cop-killers.",
+truth:"Not corrupt. Not a cultist. Will not hear the truth tonight. A tired man doing a job in a city that has given him few reasons for optimism.",
+stats:[],extras:"Chase and evade — never fight. Getting past Doyle without a body is always the goal.",
+note:"Two intersections in Act 2. His tragedy is being right about the danger and wrong about the source."},
+{id:"velvet",name:"Velvet Static (Sandy Drucker)",role:"Pirate Radio Voice — Human Mouthpiece",deploy:"Acts 2–3 broadcast scenes. Never physically present.",
+appearance:"27. Bronx accent. Unlicensed FM transmitter in a condemned Harlem building.",
+truth:"Not a knowing cultist. Accepted Choir protection when her legitimate arrangement collapsed. Has never consciously heard the second voice that runs beneath hers on-air.",
+stats:[],extras:"Voice element only. Not a combat NPC.",
+note:"When reading the second voice during broadcast scenes, drop your register significantly. The counting rhythm should feel mechanical, not threatening."},
+{id:"cyrus",name:"Cyrus",role:"Dead Catalyst — Gramercy Riffs War Chief",deploy:"Introduction (dies) · Cassette recording only after",
+appearance:"32. Dead at Introduction. Heard only on the cassette tape in Act 2.",
+truth:"Was building an army against the entity, not serving it. His summit purpose: unify every set as a force capable of stopping what the Choir was summoning.",
+stats:[],extras:"Voice on cassette only. Intelligent, cautious, genuine.",
+note:"On the cassette: keep his voice steady and careful, not broken. He knew the risk. He ran it anyway."}
+];
+const INVESTIGATORS=[
+{id:"swan",name:'Leon "Swan" Mercer',role:"War Chief",quote:"Cyrus told me once that I had the kind of face people follow.",
+hook:"Cyrus made eye contact with Swan the moment before he was shot. Swan is certain Cyrus was already afraid of something before the bullet came.",
+stats:{STR:60,CON:70,SIZ:60,DEX:60,INT:80,POW:50,APP:50,EDU:40},derived:{SAN:50,HP:13,MP:10,Luck:50,DB:"+1D4",Build:1},
+skills:"Fighting (Brawl) 60%, Fast Talk 50%, Psychology 60%, Dodge 50%, Intimidate 45%, Navigate 30%, Persuade 45%, Spot Hidden 45%, Stealth 40%, Listen 40%",
+triggers:"Losing a Warrior under command (–1D4) · Extent of Cyrus cult involvement (–1D6) · Black Conductor sight (–1D10)"},
+{id:"spray",name:'Daryl "Spray" Soto',role:"Tagger / Scout",quote:"You want to know this city? Read the walls. The walls remember everything.",
+hook:"Has a sketchbook full of tunnel graffiti — at least three pages contain Third Rail Choir sigils. Has been mapping the cult's ritual sites for years without knowing it.",
+stats:{STR:40,CON:50,SIZ:50,DEX:80,INT:70,POW:60,APP:50,EDU:40},derived:{SAN:60,HP:10,MP:12,Luck:55,DB:"None",Build:0},
+skills:"Art/Craft (Graffiti) 60%, Spot Hidden 60%, Stealth 60%, Dodge 60%, Climb 50%, Listen 50%, Jump 40%, Fighting (Brawl) 30%",
+triggers:"Realising he's been mapping cult sites for years (–1D4) · Chalk-work that responds to his presence (–1D6)"},
+{id:"rook",name:'Ruth "Rook" Alvarez',role:"Fighter",quote:"I don't want a war. But I will absolutely finish one.",
+hook:"Kid brother Marco, 12, alone in their Coney Island apartment. Carries a blade she wasn't supposed to bring. The Black Conductor learns about Marco when it learns her name.",
+stats:{STR:70,CON:60,SIZ:50,DEX:70,INT:60,POW:50,APP:50,EDU:40},derived:{SAN:50,HP:11,MP:10,Luck:50,DB:"None",Build:0},
+skills:"Fighting (Knife) 70%, Intimidate 60%, Dodge 60%, Jump 50%, Throw 50%, Fighting (Brawl) 40%, Stealth 40%, First Aid 40%",
+triggers:"Harm to civilian child (–1D6) · Marco's name in the broadcast (–1D8)"},
+{id:"wheels",name:'Eddie "Wheels" Carbone',role:"Transit Runner",quote:"They built this system to move people. They left a lot of doors unlocked.",
+hook:"A sealed IND platform he knows has been accessed recently — the lock he installed two years ago has been changed by someone who knew what they were doing.",
+stats:{STR:50,CON:60,SIZ:60,DEX:60,INT:70,POW:50,APP:50,EDU:60},derived:{SAN:50,HP:12,MP:10,Luck:45,DB:"None",Build:0},
+skills:"Navigate 70%, Mechanical Repair 60%, Locksmith 50%, Dodge 50%, Drive Auto 40%, Listen 40%, Fighting (Brawl) 40%, Stealth 40%",
+triggers:"Depth of cult's MTA infiltration (–1D4) · Sealed platform interior (–1D8)"},
+{id:"doc",name:'Malik "Doc" Green',role:"Street Medic",quote:"I've stitched up enough of you to know that fear always bleeds the same colour.",
+hook:"Carries a photograph of a Riff runner he treated 3 weeks ago. On the reverse: 'Union Square / transfer / voice in static / do not ride the last car.' Has told no one.",
+stats:{STR:50,CON:50,SIZ:60,DEX:60,INT:70,POW:70,APP:50,EDU:60},derived:{SAN:70,HP:11,MP:14,Luck:60,DB:"None",Build:0},
+skills:"First Aid 70%, Medicine 50%, Persuade 60%, Psychology 50%, Listen 50%, Spot Hidden 40%, Dodge 40%, Fighting (Brawl) 30%",
+triggers:"Victim in same dissociative state as Riff runner (–1D4) · Runner vanished from hospital without record (–1D6)"},
+{id:"mercy",name:'Tina "Mercy" Velez',role:"Runaway / Swing",quote:"I don't have a set anymore. I have a destination.",
+hook:"Formerly with the Turnstiles (absorbed by Choir). Knows 3 Choir safehouses along the route — all traps. Witnessed Lester Creed wearing a dead man's face.",
+stats:{STR:40,CON:50,SIZ:40,DEX:70,INT:60,POW:60,APP:80,EDU:40},derived:{SAN:60,HP:9,MP:12,Luck:65,DB:"–1D4",Build:-1},
+skills:"Charm 70%, Stealth 60%, Dodge 60%, Sleight of Hand 50%, Fast Talk 50%, Listen 40%, Psychology 40%, Fighting (Brawl) 30%",
+triggers:"Proof Choir dissolved her set (–1D4) · Creed's physical transformation (–1D8)"}
+];
+const HANDOUTS=[
+{id:"h1",num:"01",title:"Police Bulletin",note:"Photocopied, slightly skewed. Official seal smeared lower left.",
+text:"NYPD / TRANSIT DIVISION — PRIORITY NOTICE\n02:15 AM\n\nWANTED FOR QUESTIONING IN CONNECTION WITH\nTHE HOMICIDE OF 'CYRUS' — VAN CORTLANDT PARK\n\nCONEY ISLAND WARRIORS DELEGATION\nConsider armed and extremely dangerous.\n\nReport sightings immediately to:\nTransit District 12 — Sgt. F. Doyle — Radio channel 6"},
+{id:"h2",num:"02",title:"Lookout's Notebook",note:"Selected page. Cramped, hurried handwriting.",
+text:"- check in at WL by 11:30\n- STAY OFF LAST CAR\n- if it asks you something, do not answer\n- Union Square / transfer / voice in static\n- tokens keep the count off you. carry one\n- silver means it already came through"},
+{id:"h3",num:"03",title:"Cassette Transcript",note:"Typed on a ruled index card, edges soft from handling.",
+text:'"...you don\'t understand the thing below the rails, Cyrus.\nYou don\'t lead it. You schedule it."\n\n[sound of metal scraping on metal]\n\n"...if the island line stays open, it wakes hungry."\n\n[static]\n\n"I wanted to use it."\n\n[long pause]\n\n"Everyone does."'},
+{id:"h4",num:"04",title:"Ritual Timetable",note:"Yellow legal paper. Handwriting shifts mid-page — written at different times over years.",
+text:"Station sequence confirmed:\n  Woodlawn → 96th → Union Sq → DeKalb → Stillwell\n\nSummit:              24th / midnight\nDeath of anchor:     24th–25th, 00:00\nGate opens:          +6 hours post-death\nFull manifestation:  ~06:00 / 25th\n\nToken closes gate at breaker shrine (Stillwell)\nif placed before full manifestation.\n\nAfter 06:00 — containment only.\nAfter 07:00 — no known procedure.\n\nDO NOT LET CREED REACH THE TERMINAL."},
+{id:"h5",num:"05",title:"The Brass Token",note:"Physical prop recommended. Otherwise illustrated card.",
+text:"A standard New York City subway token — brass,\nslightly larger than correct.\n\nFace: standard Y-shape cutout.\nReverse: a spiral-track engraving running from the\nouter rim to the centre.\n\nAt the spiral's terminus: three tiny punched holes,\npositioned to match the cult's three-finger hand sign,\nrendered in metal.\n\nIt is warm. It has been warm since Cyrus pressed it\ninto your palm. It does not cool.\nYou have checked."},
+{id:"h6",num:"06",title:"Witness Description",note:"Scrawled on torn brown paper bag.",
+text:"small guy / pale / not Warriors colours\nalready moving BEFORE the shot\nlips moving the whole time —\nnot yelling, not calling out —\nsomething quiet, like counting\n\nhe looked like he was right on time"}
+];
+const ACT_ORDER=["intro","act1","act2","act3","epilogue"];
+let currentScene=SCENES[0],activeTab="scene",checkedClues={},openNpc=null,openInv=null,activeHandout=HANDOUTS[0].id;
+let sanValues=Object.fromEntries(INVESTIGATORS.map(i=>[i.id,i.derived.SAN]));
+const $=id=>document.getElementById(id);
+function buildSidebar(){
+  const sb=$("sidebar");sb.innerHTML="";
+  ACT_ORDER.forEach(act=>{
+    const scenes=SCENES.filter(s=>s.act===act),color=ACT_COLORS[act];
+    const block=document.createElement("div");block.className="act-block";
+    block.innerHTML=`<div class="act-label-hd" style="color:${color}">${ACT_LABELS[act]}</div>`;
+    scenes.forEach(s=>{
+      const btn=document.createElement("button");
+      btn.className="scene-btn"+(s.id===currentScene.id?" active":"");
+      btn.style.borderLeftColor=s.id===currentScene.id?color:`${color}44`;
+      btn.innerHTML=`<div class="dot"></div><div><div class="slabel">${s.title}</div><div class="sdur">${s.duration}</div></div>`;
+      btn.onclick=()=>{currentScene=s;renderAll();};
+      block.appendChild(btn);
+    });
+    sb.appendChild(block);
+  });
+  const f=document.createElement("div");f.className="sidebar-footer";f.textContent="CoC 7e · 1979 NYC · 3–5 hrs";sb.appendChild(f);
+}
+function buildScenePanel(){
+  const s=currentScene,color=ACT_COLORS[s.act];
+  let h=`<div class="scene-act" style="color:${color}">${s.actLabel}</div><div class="scene-title">${s.title}</div><div class="scene-meta"><span class="badge">⏱ ${s.duration}</span>`;
+  if(s.clueIds.length)h+=`<span class="badge clue">◆ ${s.clueIds.length} clue${s.clueIds.length>1?"s":""}</span>`;
+  if(s.sanEvents.length)h+=`<span class="badge san">! ${s.sanEvents.length} SAN event${s.sanEvents.length>1?"s":""}</span>`;
+  h+="</div>";
+  if(s.readAloud)h+=`<div class="read-aloud" style="border-left-color:${color}"><div class="ra-label" style="color:${color}">▶ READ ALOUD TO PLAYERS</div><div class="ra-text">${s.readAloud}</div></div>`;
+  h+=`<div class="content-block"><div class="block-label">Scene Notes</div><div class="content-text">${s.content}</div></div>`;
+  if(s.mechanics.length){
+    h+=`<div class="block-label" style="font-size:9px;color:var(--text-muted);letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px">Skill Rolls</div><div class="mech-table"><div class="mech-hd"><div>Skill</div><div>Difficulty</div><div>Outcome</div></div>`;
+    s.mechanics.forEach(m=>h+=`<div class="mech-row"><div class="mech-skill">${m.skill}</div><div class="mech-diff ${m.diffClass}">${m.diff}</div><div class="mech-out">${m.outcome}</div></div>`);
+    h+="</div>";
+  }
+  if(s.sanEvents.length){
+    h+=`<div class="block-label" style="font-size:9px;color:var(--text-muted);letter-spacing:.15em;text-transform:uppercase;margin:14px 0 8px">SAN Events This Scene</div><div class="san-block">`;
+    s.sanEvents.forEach(e=>h+=`<div class="san-row"><div class="san-evt">${e.evt}</div><div class="san-loss" style="color:${SAN_COLORS[e.lvl]||'#cc3333'}">${e.loss}</div></div>`);
+    h+="</div>";
+  }
+  if(s.clueIds.length){
+    h+=`<div class="block-label" style="font-size:9px;color:var(--text-muted);letter-spacing:.15em;text-transform:uppercase;margin:14px 0 8px">Available Clues</div><div class="clue-list">`;
+    s.clueIds.forEach(cid=>{const c=CLUES.find(x=>x.id===cid);if(!c)return;const done=checkedClues[cid];h+=`<div class="clue-item${done?" done":""}" onclick="toggleClue('${cid}');renderAll()"><div class="clue-chk">${done?'<span style="color:#6aba6a;font-size:10px">✓</span>':''}</div><div><div class="clue-name">${c.label}${c.handout?`<span class="clue-handout">${c.handout}</span>`:""}</div><div class="clue-desc">${c.desc}</div></div></div>`;});
+    h+="</div>";
+  }
+  if(s.keeperNote)h+=`<div class="keeper-note"><div class="kn-label">◈ Keeper Only</div><div class="kn-text">${s.keeperNote}</div></div>`;
+  const idx=SCENES.findIndex(x=>x.id===s.id),prev=SCENES[idx-1],next=SCENES[idx+1];
+  h+=`<div class="scene-fnav">`;
+  if(prev)h+=`<button class="fnav-btn" onclick="currentScene=SCENES[${idx-1}];renderAll()">← ${prev.title}</button>`;
+  h+=`<div style="flex:1"></div>`;
+  if(next)h+=`<button class="fnav-btn next" style="border-color:${color}44;color:${color}" onclick="currentScene=SCENES[${idx+1}];renderAll()">${next.title} →</button>`;
+  h+="</div>";
+  $("scene-panel").innerHTML=h;
+}
+function buildNpcPanel(){
+  let h=`<div style="font-family:var(--font-serif);font-size:16px;color:#e8e4d8;margin-bottom:4px">Non-Player Characters</div><div style="font-size:11px;color:var(--text-muted);margin-bottom:18px">Click any NPC to expand full details</div>`;
+  NPCS.forEach(n=>{
+    const open=openNpc===n.id;
+    h+=`<div class="npc-card${open?" open":""}" onclick="openNpc=openNpc==='${n.id}'?null:'${n.id}';renderAll()"><div class="npc-head"><div><div class="npc-name">${n.name}</div><div class="npc-role">${n.role}</div></div><span class="npc-deploy-tag">${n.deploy}</span><span class="npc-chevron">${open?"▲":"▼"}</span></div>`;
+    if(open){
+      h+=`<div class="npc-body"><div class="two-col"><div><div class="mini-label">Appearance</div><div class="mini-text">${n.appearance}</div></div><div><div class="mini-label">Keeper Truth</div><div class="mini-text">${n.truth}</div></div></div>`;
+      if(n.stats.length){h+=`<div class="mini-label">Combat Stats</div><div class="stat-pills">`;n.stats.forEach(s=>h+=`<div class="stat-pill"><div class="sl">${s.l}</div><div class="sv">${s.v}</div></div>`);h+=`</div><div class="stat-extras">${n.extras}</div>`;}
+      else if(n.extras)h+=`<div class="stat-extras" style="margin-bottom:10px">${n.extras}</div>`;
+      h+=`<div class="keeper-note"><div class="kn-label">◈ Keeper Note</div><div class="kn-text">${n.note}</div></div></div>`;
+    }
+    h+=`</div>`;
+  });
+  $("npcs-panel").innerHTML=h;
+}
+function buildInvPanel(){
+  let h=`<div style="font-family:var(--font-serif);font-size:16px;color:#e8e4d8;margin-bottom:4px">The Coney Island Warriors</div><div style="font-size:11px;color:var(--text-muted);margin-bottom:18px">Click to expand. Adjust SAN with ± buttons. Mercy is the swing/replacement investigator.</div>`;
+  INVESTIGATORS.forEach(inv=>{
+    const open=openInv===inv.id,cur=sanValues[inv.id]||0,pct=(cur/inv.derived.SAN)*100;
+    const sanCol=pct>70?"#4a9a4a":pct>40?"#9a7a20":pct>20?"#9a4a20":"#c02020";
+    const isMercy=inv.id==="mercy";
+    h+=`<div class="inv-card${open?" open":""}"${isMercy&&!open?" style=\"border-color:#2a1a3a\"":""}><div class="inv-head" onclick="openInv=openInv==='${inv.id}'?null:'${inv.id}';renderAll()"><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap"><span class="inv-name">${inv.name}</span><span class="inv-role-tag${isMercy?" swing-tag":""}">${isMercy?"SWING":inv.role}</span></div><div style="font-size:11px;color:var(--text-muted);margin-top:2px;font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">"${inv.quote}"</div></div><div class="inv-san-ctrl" onclick="event.stopPropagation()"><div><div class="san-lbl">SAN</div><div class="san-box"><button class="san-mod minus" onclick="sanValues['${inv.id}']=Math.max(0,(sanValues['${inv.id}']||0)-1);renderAll()">−</button><div class="san-val" style="color:${sanCol}">${cur}</div><button class="san-mod plus" onclick="sanValues['${inv.id}']=Math.min(99,(sanValues['${inv.id}']||0)+1);renderAll()">+</button></div><div class="san-base" style="text-align:center">/${inv.derived.SAN}</div></div></div><span class="inv-chevron">${open?"▲":"▼"}</span></div>`;
+    if(open){
+      h+=`<div class="inv-body"><div class="hook-box"><span class="hook-lbl">Personal Hook</span>${inv.hook}</div><div class="stats-grid">`;
+      Object.entries(inv.stats).forEach(([k,v])=>h+=`<div class="stat-cell"><div class="sk">${k}</div><div class="sv">${v}</div></div>`);
+      h+=`</div><div class="derived-row">`;
+      Object.entries(inv.derived).forEach(([k,v])=>h+=`<div class="der-pill"><span class="der-k">${k}:</span><span class="der-v">${v}</span></div>`);
+      h+=`</div><div class="mini-label">Key Skills</div><div class="skills-text">${inv.skills}</div><div class="trigger-box"><div class="trig-lbl">! SAN Triggers</div><div class="trig-text">${inv.triggers}</div></div></div>`;
+    }
+    h+=`</div>`;
+  });
+  $("investigators-panel").innerHTML=h;
+}
+function buildHandoutsPanel(){
+  const hd=HANDOUTS.find(h=>h.id===activeHandout)||HANDOUTS[0];
+  let listH=`<div class="handout-list"><div class="handout-list-lbl">Documents</div>`;
+  HANDOUTS.forEach(h=>listH+=`<button class="hdoc-btn${h.id===activeHandout?" active":""}" onclick="activeHandout='${h.id}';buildHandoutsPanel()"><div class="hdoc-num">DOC ${h.num}</div><div class="hdoc-name">${h.title}</div></button>`);
+  listH+=`</div>`;
+  $("handouts-panel").innerHTML=listH+`<div class="handout-view"><div class="hv-title">${hd.title}</div><div class="hv-note">${hd.note}</div><div class="hv-paper"><pre class="hv-text">${hd.text}</pre></div><div style="margin-top:10px;font-size:10px;color:#3a3a3a">Print or read directly to players where appropriate.</div></div>`;
+}
+function buildCluesPanel(){
+  const fc=Object.values(checkedClues).filter(Boolean).length;
+  let h=`<div class="clues-hd"><div><div style="font-family:var(--font-serif);font-size:16px;color:#e8e4d8;margin-bottom:3px">Evidence Tracker</div><div style="font-size:11px;color:var(--text-muted)">Check off clues as players acquire them.</div></div><div class="clues-count">${fc} / ${CLUES.length} found</div></div>`;
+  ACT_ORDER.forEach(act=>{
+    const ac=CLUES.filter(c=>c.act===act);if(!ac.length)return;
+    const color=ACT_COLORS[act];
+    h+=`<div class="act-clue-group"><div class="act-clue-hd" style="color:${color};border-bottom-color:${color}33">${ACT_LABELS[act]} — ${ACT_NAME[act]}</div>`;
+    ac.forEach(c=>{const done=checkedClues[c.id];h+=`<div class="clue-item${done?" done":""}" onclick="toggleClue('${c.id}');renderAll()"><div class="clue-chk">${done?'<span style="color:#6aba6a;font-size:10px">✓</span>':''}</div><div style="flex:1"><div class="clue-name">${c.label}${c.handout?`<span class="clue-handout">${c.handout}</span>`:""}</div><div class="clue-desc">${c.desc}</div></div></div>`;});
+    h+=`</div>`;
+  });
+  h+=`<button class="reset-btn" onclick="checkedClues={};renderAll()">RESET ALL CLUES</button>`;
+  $("clues-panel").innerHTML=h;
+}
+function buildSanPanel(){
+  let h=`<div style="font-family:var(--font-serif);font-size:16px;color:#e8e4d8;margin-bottom:4px">Sanity Reference</div><div style="font-size:11px;color:var(--text-muted);margin-bottom:18px">Costs by event. Higher values = greater Mythos exposure.</div><div class="san-ref-table"><div class="san-ref-hd"><div>Event</div><div>Loss</div></div>`;
+  SAN_TABLE.forEach((row,i)=>h+=`<div class="san-ref-row"><div class="san-ref-evt">${row.evt}</div><div class="san-ref-loss" style="color:${SAN_COLORS[row.lvl]||'#cc3333'}">${row.loss}</div></div>`);
+  h+=`</div><div style="font-family:var(--font-serif);font-size:15px;color:#e8e4d8;margin-bottom:12px">Current SAN by Investigator</div><div class="inv-san-grid">`;
+  INVESTIGATORS.forEach(inv=>{
+    const cur=sanValues[inv.id]||0,pct=(cur/inv.derived.SAN)*100;
+    const sanCol=pct>70?"#4a9a4a":pct>40?"#9a7a20":pct>20?"#9a4a20":"#c02020";
+    const bgCol=pct>70?"#0a160a":pct>40?"#160e00":pct>20?"#160800":"#1a0a0a";
+    h+=`<div class="inv-san-card" style="background:${bgCol};border-color:${sanCol}33"><div class="isc-name">${inv.name}</div><div class="isc-ctrl"><button class="san-mod minus" onclick="sanValues['${inv.id}']=Math.max(0,(sanValues['${inv.id}']||0)-1);renderAll()">−</button><div class="isc-val" style="color:${sanCol}">${cur}<span class="isc-base">/${inv.derived.SAN}</span></div><button class="san-mod plus" onclick="sanValues['${inv.id}']=Math.min(99,(sanValues['${inv.id}']||0)+1);renderAll()">+</button></div><div class="san-bar-wrap"><div class="san-bar" style="width:${Math.min(100,pct)}%;background:${sanCol}"></div></div></div>`;
+  });
+  h+=`</div><button class="reset-btn" style="margin-top:12px" onclick="INVESTIGATORS.forEach(i=>sanValues[i.id]=i.derived.SAN);renderAll()">RESET ALL SAN</button>`;
+  $("san-panel").innerHTML=h;
+}
+function renderAll(){
+  buildSidebar();
+  const idx=SCENES.findIndex(s=>s.id===currentScene.id),prev=SCENES[idx-1],next=SCENES[idx+1];
+  $("btn-prev").disabled=!prev;$("btn-prev").style.opacity=prev?"1":"0.3";
+  $("btn-next").disabled=!next;$("btn-next").style.opacity=next?"1":"0.3";
+  document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+  const tabEl=$(activeTab+"-panel")||$("scene-panel");
+  tabEl.classList.add("active");
+  const color=ACT_COLORS[currentScene.act];
+  document.querySelectorAll(".tab-btn").forEach(b=>{
+    b.classList.toggle("active",b.dataset.tab===activeTab);
+    b.style.borderBottomColor=b.dataset.tab===activeTab?color:"transparent";
+    b.style.color=b.dataset.tab===activeTab?color:"";
+  });
+  if(activeTab==="scene")buildScenePanel();
+  else if(activeTab==="npcs")buildNpcPanel();
+  else if(activeTab==="investigators")buildInvPanel();
+  else if(activeTab==="handouts")buildHandoutsPanel();
+  else if(activeTab==="clues")buildCluesPanel();
+  else if(activeTab==="san")buildSanPanel();
+  const m=$("main");if(m)m.scrollTop=0;
+}
+function toggleClue(id){checkedClues[id]=!checkedClues[id];}
+document.querySelectorAll(".tab-btn").forEach(btn=>btn.addEventListener("click",()=>{activeTab=btn.dataset.tab;renderAll();}));
+$("btn-prev").addEventListener("click",()=>{const i=SCENES.findIndex(s=>s.id===currentScene.id);if(i>0){currentScene=SCENES[i-1];renderAll();}});
+$("btn-next").addEventListener("click",()=>{const i=SCENES.findIndex(s=>s.id===currentScene.id);if(i<SCENES.length-1){currentScene=SCENES[i+1];renderAll();}});
+renderAll();
+</script>
+</body>
+</html>
