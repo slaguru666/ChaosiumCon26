@@ -201,7 +201,7 @@ const ACT_COLORS={intro:"#c8860a",act1:"#c93535",act2:"#4a7ab8",act3:"#8b3fa0",e
 const SAN_COLORS=["","#6b8a6b","#8a8a4a","#a07030","#c03030","#e01010"];
 
 const SCENES=[
-{id:"intro",act:"intro",actLabel:"INTRODUCTION",title:"Miss Pruitt's Office",duration:"15 min",
+{id:"intro",img:"../../scenarios/art/event-93/scene-library.png",act:"intro",actLabel:"INTRODUCTION",title:"Miss Pruitt's Office",duration:"15 min",
 readAloud:`44 West 53rd Street, 3rd Floor. Friday afternoon.
 
 Miss Hazel Pruitt is a small, efficient woman in her fifties who smokes like a chimney and has the thousand-yard stare of someone who has worked for eccentric academics far too long. She hands each of you a carbon copy of the same telegram and says:
@@ -231,7 +231,7 @@ mechanics:[
 keeperNote:"Keep this brisk — 15 minutes. The comedy is in Miss Pruitt's exhausted normalcy. Don't let investigators spend time investigating the office. There's nothing here. The scenario is out there. Let them go.\n\nKey quote: 'I don't ask what the books are about. I just catalogue them.'\n\nIF INVESTIGATORS SKIP THE BLUE ORCHID: They miss Delia's briefing (recoverable from Whitmore), the newspaper clipping (findable in Ashworth's library), and Lucky's automatic rapport with the music world. What is irreplaceable: the warm scene before things go dark, and the tonal contrast it creates. The Herald still appears. The scenario is survivable without Act One. It loses its texture.",
 clueIds:["telegram","newspaper"],sanEvents:[]},
 
-{id:"a1_blueorchid",act:"act1",actLabel:"ACT ONE — HOT JAZZ AND COLD LEADS",title:"The Blue Orchid Jazz Club",duration:"45 min",
+{id:"a1_blueorchid",img:"../../scenarios/art/event-93/scene-blue-orchid.png",act:"act1",actLabel:"ACT ONE — HOT JAZZ AND COLD LEADS",title:"The Blue Orchid Jazz Club",duration:"45 min",
 readAloud:`The Blue Orchid is everything the city should be and mostly isn't — warm amber light, cigarette smoke thick as good wool, a six-piece band playing something that makes your feet move before your brain approves. The walls are close. The tables are closer. Everyone here is very beautiful and very tired.
 
 Delia Monroe is at the microphone, and the room belongs entirely to her.`,
@@ -268,7 +268,7 @@ mechanics:[
 keeperNote:"The Blue Orchid is warm and wonderful and Delia is the most competent person in the scenario. Let investigators enjoy her. Do not rush this scene.\n\nIf the table is doing well on time: let Lucky play a set with the house band. Costs five minutes. Worth it for Lucky's player and for establishing what the scenario takes away.\n\nKey line for Delia: 'I told the Professor to stay away from the brownstone. She thanked me and went. That's the thing about Whitmore — she's always very polite before she does something completely insane.'",
 clueIds:["newspaper","herald_glimpse"],sanEvents:[]},
 
-{id:"a2_drawing",act:"act2",actLabel:"ACT TWO — THE BROWNSTONE",title:"2-1: The Drawing Room",duration:"15 min",
+{id:"a2_drawing",img:"../../scenarios/art/event-93/scene-portraits-dogs.png",act:"act2",actLabel:"ACT TWO — THE BROWNSTONE",title:"2-1: The Drawing Room",duration:"15 min",
 readAloud:`A handsome four-storey townhouse on East 64th Street. Dark windows. A brass knocker in the shape of an eye. The front door is unlocked.
 
 You step into the drawing room. Dust sheets over the furniture. Oil portraits in heavy gilded frames on the dark walls — the portraits of a man who wanted to be taken seriously. In each one, where the subject's face should be, there is simply a hole. A precise, oval excision. The body remains, elegantly dressed, caught mid-gesture for eternity.
@@ -297,7 +297,7 @@ mechanics:[
 keeperNote:"Don't rush past the dog portrait. It will get a laugh. Let it. Then let the silence come back in. The comedy and the horror are the same instrument playing different notes.\n\nThe empty frame (removed, not cut) is an optional extra detail — it was Ashworth's self-portrait. He took it down himself, after the Nov 2nd journal entry. He couldn't look at it anymore.",
 clueIds:["portraits"],sanEvents:[{evt:"Gallery of faceless portraits",loss:"0/1",lvl:1}]},
 
-{id:"a2_library",act:"act2",actLabel:"ACT TWO — THE BROWNSTONE",title:"2-2: The Library",duration:"25 min",
+{id:"a2_library",img:"../../scenarios/art/event-93/scene-library.png",act:"act2",actLabel:"ACT TWO — THE BROWNSTONE",title:"2-2: The Library",duration:"25 min",
 readAloud:`The library is a serious room — floor-to-ceiling shelves, green-shaded reading lamps, the smell of pipe tobacco and old paper. It is the room of a man who wanted to be taken seriously and owned the props for it.
 
 On the central desk: a leather-bound journal, lying open.
@@ -333,7 +333,7 @@ mechanics:[
 keeperNote:"The Codex is the single most important object in the scenario. Handle it. Hold on it. The oilcloth should be handed to the player if possible — give them the prop.\n\nThe oval mirror: mention it once as set dressing. Don't point to it. Investigators who ask about it: old, gilt-framed, slightly too large for the space. The kind of mirror a vain man keeps. One of the investigators should remember it when Whitmore describes the banishment.\n\nThe empty self-portrait in the drawing room connects here: Nov 2nd, he couldn't look at his own reflection anymore.\n\nIF INVESTIGATORS TRY TO BURN THE CODEX: Stop them — Whitmore: \'You cannot burn it. I tried. The paper doesn\'t catch. Believe me, I would have done it by now.\' The Codex cannot be destroyed before the banishment. Afterwards: Whitmore takes it, claims to know someone who can dispose of it properly. (She does not. Vermont bank vault. Fine for approximately thirty years.)",
 clueIds:["journal","codex","mirror"],sanEvents:[{evt:"Studying the Faceless Codex — failed roll",loss:"1/1D6",lvl:2}]},
 
-{id:"a2_basement",act:"act2",actLabel:"ACT TWO — THE BROWNSTONE",title:"2-3: The Basement — Whitmore Found",duration:"20 min",
+{id:"a2_basement",img:"../../scenarios/art/event-93/scene-basement.png",act:"act2",actLabel:"ACT TWO — THE BROWNSTONE",title:"2-3: The Basement — Whitmore Found",duration:"20 min",
 readAloud:`The basement stairs lead down into cold stone. At the bottom: a chalk circle on the floor, mostly smeared. Candles burned to nothing. The smell of chalk and old fear.
 
 In the centre of the chalk circle, tied to a straight-backed wooden chair, blindfolded, with what appear to be earplugs carefully inserted: Professor Edna Whitmore. She is alive. Her visible hands are trembling.
@@ -369,7 +369,7 @@ mechanics:[
 keeperNote:"This scene does two things: delivers the banishment information and introduces Whitmore as a character. Don't rush the character. She is funny, guilty, brilliant, and frightened. The joke about the blindfold should get a laugh before she continues.\n\nWhitmore's SAN is currently 40. She is operating on the professional equivalent of willpower. She holds together through the scenario. She may not hold together after.",
 clueIds:["whitmore","banishment"],sanEvents:[]},
 
-{id:"a2_herald",act:"act2",actLabel:"ACT TWO — THE BROWNSTONE",title:"2-4: The Herald Returns",duration:"10 min",
+{id:"a2_herald",img:"../../scenarios/art/event-93/scene-portraits.png",act:"act2",actLabel:"ACT TWO — THE BROWNSTONE",title:"2-4: The Herald Returns",duration:"10 min",
 readAloud:`There is a sound from upstairs. A footstep placed slightly wrong — not a creak in the boards, but something that knows where the boards are and is trying to approximate walking correctly.
 
 Then a pause.
@@ -407,7 +407,7 @@ mechanics:[
 keeperNote:"The vase apology lands differently for different tables. Some laugh hard. Some laugh and immediately look away. The ones who look away have already understood what Henderson is. Watch for that.\n\nHe is the emotional spine of the scenario. Henderson's final line in Act Three — 'Tell my wife the cat needs feeding on Thursdays. She always forgets.' — must be earned here. The investigators need to know he's in there before that line can land.",
 clueIds:[],sanEvents:[{evt:"Herald's face resettling (close view)",loss:"0/1D3",lvl:2},{evt:"Herald speaks with Ashworth's voice",loss:"0/1D4",lvl:2}]},
 
-{id:"a3_circle",act:"act3",actLabel:"ACT THREE — THE WATCHER IN THE GLASS",title:"3-1: Completing the Circle",duration:"20 min",
+{id:"a3_circle",img:"../../scenarios/art/event-93/scene-mirror-hero.png",act:"act3",actLabel:"ACT THREE — THE WATCHER IN THE GLASS",title:"3-1: Completing the Circle",duration:"20 min",
 readAloud:null,
 content:`THE TASK: Restore the chalk ritual circle on the basement floor. Whitmore leads; investigators assist.
 
@@ -438,7 +438,7 @@ mechanics:[
 keeperNote:"Run this as simultaneous action. Circle-completers narrate their work; Herald-handlers narrate the containment. The ticking is in the background — not foregrounded. Don't mechanically count down. Let it sit as background dread.\n\nThe moment the circle closes: pause. Let the temperature change land. Then read Act Three Scene 2's read-aloud.",
 clueIds:[],sanEvents:[{evt:"Herald speaks with Ashworth's voice (Act Three)",loss:"0/1D4",lvl:2},{evt:"Failed Occult roll during circle work",loss:"1/1D4",lvl:2}]},
 
-{id:"a3_watcher",act:"act3",actLabel:"ACT THREE — THE WATCHER IN THE GLASS",title:"3-2: The Watcher Arrives",duration:"35 min",
+{id:"a3_watcher",img:"../../scenarios/art/event-93/scene-basement.png",act:"act3",actLabel:"ACT THREE — THE WATCHER IN THE GLASS",title:"3-2: The Watcher Arrives",duration:"35 min",
 readAloud:`The temperature drops first — not to cold, but to wrong. The shadows in the corner of the room stop behaving. Then you see it, and your brain performs a small, polite act of mercy by refusing to fully process what it is.
 
 It is tall. It is not quite standing. It has faces — several of them, worn one atop the other like pages in a book. The outermost is recent. You recognise it as Reginald Ashworth from his newspaper photograph.
@@ -503,7 +503,7 @@ clueIds:[],sanEvents:[
 {evt:"Banishment succeeds",loss:"GAIN +1D6",lvl:1}
 ]},
 
-{id:"epilogue",act:"epilogue",actLabel:"EPILOGUE",title:"Aftermath — One Week Later",duration:"15 min",
+{id:"epilogue",img:"../../scenarios/art/event-93/scene-library.png",act:"epilogue",actLabel:"EPILOGUE",title:"Aftermath — One Week Later",duration:"15 min",
 readAloud:null,
 content:`Address each investigator and NPC personally. Spend at least one sentence on each. Do not abbreviate.
 
@@ -541,7 +541,7 @@ const CLUES=[
 {id:"journal",act:"act2",label:"Ashworth's Journal",desc:"Traces his descent. Key entries establish the midnight deadline and confirm: Henderson is being worn. 'I AM SO SORRY.'",handout:"H2"},
 {id:"codex",act:"act2",label:"The Faceless Codex",desc:"Pre-Columbian glyph-adjacent text. Failed SAN roll: 'The Face is a door. The door can be opened from either side.' Describes summoning AND dismissal. Key to banishment.",handout:"H3"},
 {id:"mirror",act:"act2",label:"The Oval Mirror — Library Wall",desc:"Gilt-framed, oval, slightly too large for the space. Required for the banishment ritual. Investigators should note it now.",handout:null},
-{id:"whitmore",act:"act2",label:"Whitmore — Alive in the Basement",desc:"Blindfolded, earplugged, tied to a chair. Has done this to herself. Delivers the complete banishment method: Codex + this room + one who does not look away.",handout:null},
+{id:"whitmore",portrait:"../../scenarios/art/event-93/npc-whitmore.png",act:"act2",label:"Whitmore — Alive in the Basement",desc:"Blindfolded, earplugged, tied to a chair. Has done this to herself. Delivers the complete banishment method: Codex + this room + one who does not look away.",handout:null},
 {id:"banishment",act:"act2",label:"The Banishment Method",desc:"Three requirements: the Codex, this room, one investigator holds mirror before Watcher without looking away while three others read the incantation.",handout:null}
 ];
 
@@ -560,7 +560,7 @@ const SAN_TABLE=[
 ];
 
 const NPCS=[
-{id:"delia",name:'Delia "Diamond" Monroe',role:"Reluctant Ally — Information Broker",deploy:"Act One only",
+{id:"delia",portrait:"../../scenarios/art/event-93/npc-delia.png",name:'Delia "Diamond" Monroe',role:"Reluctant Ally — Information Broker",deploy:"Act One only",
 appearance:"34. Elegant. Emerald drop earrings. Voice like dark honey. Eyes that have seen too much and forgiven it anyway. She wears composure like armour.",
 truth:"She attended one of Ashworth's early salons out of curiosity, felt something wrong within an hour, and left. She has never told anyone. She knows this may have mattered. She will not say this.",
 stats:[{l:"Persuade",v:"85%"},{l:"Psychology",v:"70%"},{l:"Charm",v:"80%"},{l:"Spot Hidden",v:"65%"},{l:"Fast Talk",v:"60%"}],
@@ -577,14 +577,14 @@ appearance:"55. Iron-grey bun. Reading glasses on a chain. Perpetual cigarette. 
 truth:"Has worked for an occultist for twenty years and learned to simply get on with it. Does not ask what the books are about. Just catalogues them. This may be the wisest possible response.",
 stats:[],extras:"Human. No combat. Never leaves the office. Would not leave for any reason.",
 note:"Key quote: 'I don't ask what the books are about. I just catalogue them.'\n\nShe is pure comedy and pure competence simultaneously. She has been in the haunted house the entire time and is perfectly fine."},
-{id:"herald",name:"The Herald — Mr. Charles Henderson",role:"Antagonist / Tragic Figure",deploy:"Act One (glimpsed) → Act Two (confrontation) → Act Three (final moment)",
+{id:"herald",portrait:"../../scenarios/art/event-93/npc-herald.png",name:"The Herald — Mr. Charles Henderson",role:"Antagonist / Tragic Figure",deploy:"Act One (glimpsed) → Act Two (confrontation) → Act Three (final moment)",
 appearance:"Thin man, grey suit. His face moves slightly more than faces should — a constant minor resettling, like a mask seeking purchase. His eyes are Ashworth's. His hands, when he forgets himself, are his own.",
 truth:"Charles Henderson, 44, insurance clerk, Brooklyn. Wife: Margaret. Tabby cat. Attended Ashworth's final salon because Ashworth owed him money and the party seemed a good opportunity to raise the subject. He is still in there. Not much of him. Enough.",
 stats:[{l:"Fighting (Brawl)",v:"45%"},{l:"Stare (POW vs POW)",v:"SAN 0/1D3"},{l:"Stealth",v:"60%"}],
 extras:"STR 70 · CON 60 · SIZ 65 · DEX 50 · POW 45 · HP 12 · SAN N/A\nGrapple: Fighting 45%, 1D6 crush per round. Voice of Ashworth: SAN 0/1D4.\nCannot be meaningfully killed — only contained or persuaded.",
 note:"Everything in this scenario builds toward his final line: 'Tell my wife the cat needs feeding on Thursdays. She always forgets.'\n\nFor it to land, investigators must know he's in there before it arrives. That moment begins in the drawing room when he apologises for the vase. The apology is the seed. The final line is what grows from it."}
 ,
-{id:"watcher",name:"The Skinless Watcher",role:"Final Antagonist — Mythos Entity",deploy:"Act Three only (cannot fully manifest before midnight)",
+{id:"watcher",portrait:"../../scenarios/art/event-93/npc-watcher.png",name:"The Skinless Watcher",role:"Final Antagonist — Mythos Entity",deploy:"Act Three only (cannot fully manifest before midnight)",
 appearance:"Tall. Shifting. Exists slightly outside normal space. Several human faces layered like pages in a book, the outermost Reginald Ashworth's — smiling, as he was always smiling. Beneath the faces: nothing. No features. It measures your face from across the room. Checking the fit.",
 truth:"A servitor of Nyarlathotep. Not a Great Old One — a piece of one, sent ahead as a scout. It cannot exist in the physical world without a face to anchor it. It has no will toward cruelty. It is simply hungry in a way that transcends morality. This makes it worse.",
 stats:[{l:"STR",v:"90"},{l:"SIZ",v:"80"},{l:"DEX",v:"70"},{l:"INT",v:"60"},{l:"POW",v:"120"},{l:"HP",v:"18"}],
@@ -644,7 +644,7 @@ trigger:"Things that his academic frameworks cannot contain. Most vulnerable whe
 ];
 
 const HANDOUTS=[
-{num:"H1",name:"Newspaper Clipping",note:"Give when Delia offers it — after trust established (Act One)",
+{num:"H1",img:"../../scenarios/art/event-93/prop-newspaper.png",name:"Newspaper Clipping",note:"Give when Delia offers it — after trust established (Act One)",
 text:`NEW YORK EVENING POST
 
 SOCIETY MAN FOUND DEAD IN EAST SIDE HOME
@@ -686,7 +686,7 @@ I hope she does not come here.
 IT IS WEARING HENDERSON NOW.
 HENDERSON VISITED TUESDAY.
 I AM SO SORRY.`},
-{num:"H3",name:"The Faceless Codex — Partial Translation",note:"Whitmore's working translation — delivered verbally and/or as a prop for the Codex.",
+{num:"H3",img:"../../scenarios/art/event-93/prop-codex.png",name:"The Faceless Codex — Partial Translation",note:"Whitmore's working translation — delivered verbally and/or as a prop for the Codex.",
 text:`[From the working notes of Prof. E. Whitmore]
 
 The script does not correspond to any known language. Its structural
@@ -834,7 +834,8 @@ function renderScene(){
   const sc=SCENES[currentScene];
   const col=ACT_COLORS[sc.act]||'#c8860a';
   document.querySelectorAll('.scene-btn').forEach((b,i)=>b.classList.toggle('active',i===currentScene));
-  let h=`<div class="scene-act" style="color:${col}">${sc.actLabel}</div>
+  let h=sc.img?`<div style="width:100%;height:150px;overflow:hidden;border-radius:var(--r);margin-bottom:16px;border:1px solid var(--border)"><img src="${sc.img}" style="width:100%;height:100%;object-fit:cover;object-position:center 30%" onerror="this.parentElement.style.display='none'" alt=""></div>`:'';
+  h+=`<div class="scene-act" style="color:${col}">${sc.actLabel}</div>
 <div class="scene-title">${sc.title}</div>
 <div class="scene-meta">
   <span class="badge"><span style="color:${col}">●</span> ${sc.duration}</span>
@@ -874,7 +875,7 @@ function renderNPCs(){
   let h=`<div class="scene-title" style="margin-bottom:18px">NPC Roster</div>`;
   NPCS.forEach(n=>{
     h+=`<div class="npc-card" id="npc-${n.id}" onclick="toggleNPC('${n.id}')">
-<div class="npc-head"><div><div class="npc-name">${n.name}</div><div class="npc-role">${n.role}</div></div>
+<div class="npc-head">${n.portrait?`<img src="${n.portrait}" style="width:52px;height:52px;border-radius:3px;object-fit:cover;object-position:top;flex-shrink:0;border:1px solid var(--border-hi)" onerror="this.style.display='none'" alt="">`:''}<div style="flex:1"><div class="npc-name">${n.name}</div><div class="npc-role">${n.role}</div></div>
 <span class="npc-deploy-tag">${n.deploy}</span><span class="npc-chevron">▼</span></div>
 <div class="npc-body">
 <div class="two-col"><div><div class="mini-label">APPEARANCE</div><div class="mini-text">${esc(n.appearance)}</div></div>
@@ -953,7 +954,7 @@ function renderHandouts(){
 function showHandout(idx){
   currentHandout=idx;const h=HANDOUTS[idx];
   document.querySelectorAll('.hdoc-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
-  document.getElementById('handout-view').innerHTML=`<div class="hv-title">${h.num} — ${h.name}</div><div class="hv-note">${esc(h.note)}</div><div class="hv-paper"><div class="hv-text">${esc(h.text)}</div></div>`;
+  document.getElementById('handout-view').innerHTML=`<div class="hv-title">${h.num} — ${h.name}</div><div class="hv-note">${esc(h.note)}</div>${h.img?`<div style="width:100%;max-height:180px;overflow:hidden;border-radius:3px;margin-bottom:12px;border:1px solid var(--border)"><img src="${h.img}" style="width:100%;height:100%;object-fit:cover;object-position:top" onerror="this.parentElement.style.display='none'"></div>`:''}<div class="hv-paper"><div class="hv-text">${esc(h.text)}</div></div>`;
 }
 
 function renderClues(){

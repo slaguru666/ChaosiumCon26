@@ -25,6 +25,9 @@
 
 ---
 
+![Scenario art — investigators and the mirror](../scenarios/art/event-93/scene-mirror-hero.png)
+
+
 ## Keeper's Overview
 
 **"Not Another Telegram"** is a satirical-yet-genuinely-terrifying one-shot set in New York City, 1924. It wears the tropes of the genre like a well-tailored (if slightly blood-stained) overcoat — the investigators receive a mysterious telegram, visit a jazz club, find a corpse, consult a mad professor, discover an ancient tome, and stare into the abyss. The abyss, as usual, stares back.
@@ -235,7 +238,9 @@ Each investigator receives the same telegram forwarded by **Miss Hazel Pruitt** 
 
 ---
 
-### ACT ONE — Hot Jazz and Cold Leads (45 minutes)
+### ACT ONE
+![The Blue Orchid Jazz Club](../scenarios/art/event-93/scene-blue-orchid.png)
+ — Hot Jazz and Cold Leads (45 minutes)
 
 #### The Blue Orchid Jazz Club
 
@@ -279,7 +284,9 @@ If investigators give chase: The Herald moves with wrong-footed grace. If corner
 
 ---
 
-### ACT TWO — The Brownstone on East 64th (60 minutes)
+### ACT TWO
+![The Brownstone on East 64th Street](../scenarios/art/event-93/scene-brownstone.png)
+ — The Brownstone on East 64th (60 minutes)
 
 *A handsome four-storey townhouse. Dark windows. Brass knocker: an eye. The front door is unlocked.*
 
@@ -371,7 +378,9 @@ Face moves slightly too much — like a mask settling. Eyes are Ashworth's. Hand
 
 ### ACT THREE — The Watcher in the Glass (55 minutes)
 
-#### Scene 3-1: Completing the Circle (20 minutes)
+#### Scene 3-1:
+![The mirror and the circle](../scenarios/art/event-93/scene-mirror-hero.png)
+ Completing the Circle (20 minutes)
 
 Whitmore needs investigators' help to restore the chalk ritual circle.
 
@@ -385,7 +394,9 @@ Whitmore needs investigators' help to restore the chalk ritual circle.
 
 ---
 
-#### Scene 3-2: The Watcher Arrives (35 minutes)
+#### Scene 3-2:
+![The ritual basement](../scenarios/art/event-93/scene-basement.png)
+ The Watcher Arrives (35 minutes)
 
 **Read aloud:**
 
@@ -469,6 +480,8 @@ One week later, each investigator receives a telegram. Unknown sender. The teleg
 ## NPC Roster
 
 ### Delia "Diamond" Monroe
+![Delia Monroe](../scenarios/art/event-93/npc-delia.png)
+
 
 **Role:** Reluctant ally, information broker
 **Appearance:** 34, elegant, emerald earrings, voice like dark honey.
@@ -485,6 +498,8 @@ Attacks: None. She does not fight. She leaves.
 ---
 
 ### Professor Edna Whitmore
+![Professor Whitmore](../scenarios/art/event-93/npc-whitmore.png)
+
 
 **Role:** Mission-giver in absentia, expert, survivor
 **Appearance:** 58, silver-haired, smells of pipe tobacco and library dust, formidable bearing.
@@ -509,7 +524,9 @@ Attacks: None. She leads the incantation.
 
 ---
 
-### The Herald — Mr. Charles Henderson
+### The Herald
+![The Herald — Mr. Charles Henderson](../scenarios/art/event-93/npc-herald.png)
+ — Mr. Charles Henderson
 
 **Role:** Antagonist / tragic figure
 **Appearance:** Thin man, grey suit. Face moves slightly more than faces should. Eyes are Ashworth's. Hands are his own.
@@ -527,6 +544,8 @@ Special: Speaks with Ashworth's voice — SAN 0/1D4 for investigators who react
 ---
 
 ## Bestiary: The Skinless Watcher
+![The Skinless Watcher](../scenarios/art/event-93/npc-watcher.png)
+
 
 *A tall, shifting form that exists slightly outside normal space. Collects human faces to anchor itself to the physical world. Has no will toward cruelty — it is simply hungry in a way that transcends morality. This makes it worse.*
 
@@ -584,7 +603,9 @@ SAN Loss: 1D3/1D10 on sight
 
 ## Handouts
 
-### Handout #1 — Newspaper Clipping
+### Handout #1
+![Newspaper clipping](../scenarios/art/event-93/prop-newspaper.png)
+ — Newspaper Clipping
 > **SOCIETY MAN FOUND DEAD IN EAST SIDE HOME**
 > Reginald Ashworth, 41, socialite and amateur antiquarian, was found deceased at his residence on East 64th Street. Police report no signs of struggle. Coroner describes cause of death as 'undetermined cardiac event.' Mr. Ashworth is survived by no immediate family. His household staff resigned en masse the following morning and could not be reached for comment.
 > *— New York Evening Post*
@@ -597,7 +618,9 @@ SAN Loss: 1D3/1D10 on sight
 > Nov 29 — I think I invited it in. I cannot close the door. The threshold is midnight.
 > [Final entry, four days ago:] IT IS WEARING HENDERSON NOW. I AM SO SORRY.
 
-### Handout #3 — The Faceless Codex (Prop)
+### Handout #3
+![The Faceless Codex](../scenarios/art/event-93/prop-codex.png)
+ — The Faceless Codex (Prop)
 *(Physical prop: blank book wrapped in oilcloth. Hand the player the wrapped book. Do not open it before the scene.)*
 Whitmore's partial translation: *"The Face is a door. The door can be opened from either side. The ritual of reflection closes the door from this side. Three voices. Three readings. One who does not look away."*
 
