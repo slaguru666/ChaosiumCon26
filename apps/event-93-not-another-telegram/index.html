@@ -3,62 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Event 93 – Not Another Telegram | GM</title>
+<title>Event 93 – Not Another Telegram | Keeper</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:#080706;--surface:#0e0c0a;--surface-hi:#141210;--surface-top:#1c1a17;
-  --border:#1e1c18;--border-hi:#2e2b25;--text:#c8c0a8;--text-sub:#8a8070;--text-muted:#555045;
-  --amber:#c8960a;--amber-hi:#e8b020;--amber-dim:#7a5a08;--orange:#d87030;
-  --intro:#b8860b;--act1:#7b52a8;--act2:#8b6030;--act3:#9a2020;--epilogue:#3a7a60;
-  --intro-dim:#5a4005;--act1-dim:#3a2060;--act2-dim:#4a3018;--act3-dim:#4a1010;--epilogue-dim:#1a4030;
+  --bg:#090909;--surface:#0f0f0f;--surface-hi:#141414;--surface-top:#1c1c1c;
+  --border:#1e1e1e;--border-hi:#2e2e2e;--text:#c8c4b8;--text-sub:#8a8680;--text-muted:#555550;
+  --amber:#c8860a;--amber-hi:#e8a020;--amber-dim:#7a5308;--orange:#d4851a;
+  --act-intro:#c8860a;--act-1:#c93535;--act-2:#4a7ab8;--act-3:#8b3fa0;--act-epi:#5a8a5a;
   --red:#cc3333;--green:#4a9a4a;
-  --keeper-bg:#080e08;--keeper-brd:#163016;--keeper-txt:#6a9a6a;
-  --ra-bg:#0e0900;--ra-brd:#7a5010;--ra-txt:#d0a040;
+  --keeper-bg:#0a110a;--keeper-brd:#1a3a1a;--keeper-txt:#7aaa7a;
+  --ra-bg:#110d00;--ra-brd:#7a5510;--ra-txt:#d4a84a;
   --font-mono:'Share Tech Mono','Courier New',monospace;
   --font-serif:'Special Elite',serif;--r:4px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font-mono);font-size:14px;line-height:1.5;overflow:hidden;-webkit-tap-highlight-color:transparent}
-::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:#2a2820;border-radius:3px}::-webkit-scrollbar-thumb:hover{background:#3a3830}
-#app{display:grid;grid-template-rows:52px 1fr;grid-template-columns:196px 1fr;grid-template-areas:"header header""sidebar main";height:100vh;overflow:hidden}
-@media(max-width:800px){#app{grid-template-columns:1fr;grid-template-rows:52px 1fr 52px;grid-template-areas:"header""main""sidebar"}
-#sidebar{flex-direction:row;overflow-x:auto;overflow-y:hidden;border-right:none;border-top:1px solid var(--border)}
-.act-label-hd{display:none}.scene-btn span{display:none}.scene-btn{min-width:36px;justify-content:center}}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:3px}
+#app{display:grid;grid-template-rows:52px 1fr;grid-template-columns:200px 1fr;grid-template-areas:"header header""sidebar main";height:100vh;overflow:hidden}
 #header{grid-area:header;background:var(--surface);border-bottom:2px solid var(--border-hi);display:flex;align-items:center;padding:0 16px;gap:12px}
 #hdr-badge{font-size:10px;color:var(--text-muted);letter-spacing:.15em;text-transform:uppercase;white-space:nowrap}
-#hdr-title{font-family:var(--font-serif);font-size:16px;color:var(--amber-hi);letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#hdr-title{font-family:var(--font-serif);font-size:17px;color:var(--amber-hi);letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #hdr-spacer{flex:1}
-#manifestation-bar{display:flex;align-items:center;gap:8px;flex-shrink:0;background:var(--surface-top);border:1px solid var(--border-hi);border-radius:var(--r);padding:4px 10px}
-#man-label{font-size:9px;color:var(--text-muted);letter-spacing:.12em;white-space:nowrap}
-#man-pips{display:flex;gap:3px}
-.man-pip{width:10px;height:10px;border-radius:2px;border:1px solid #333;background:var(--surface);cursor:pointer;transition:all .15s}
-.man-pip.filled{background:var(--red);border-color:#cc3333;box-shadow:0 0 4px #cc333366}
-#tab-bar{display:flex;height:52px;gap:0}
-.tab-btn{background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;padding:0 13px;font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;color:var(--text-muted);height:52px;white-space:nowrap;transition:color .15s,border-color .15s}
-.tab-btn:hover{color:var(--text)}
-#hdr-nav{display:flex;gap:6px;flex-shrink:0}
-.nav-arrow{background:none;border:1px solid var(--border-hi);border-radius:var(--r);color:var(--text-muted);cursor:pointer;padding:4px 10px;font-size:10px;font-family:var(--font-mono);white-space:nowrap;transition:all .15s}
-.nav-arrow:hover{color:var(--text);border-color:var(--border-hi)}
-#sidebar{grid-area:sidebar;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden}
+#tab-bar{display:flex;height:52px}
+.tab-btn{background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;padding:0 14px;font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;color:var(--text-muted);height:52px;white-space:nowrap;transition:color .15s,border-color .15s}
+.tab-btn:hover{color:var(--text)}.tab-btn.active{color:var(--amber);border-bottom-color:var(--amber)}
+#hdr-nav{display:flex;gap:6px}
+.nav-arrow{background:none;border:1px solid var(--border-hi);border-radius:var(--r);color:var(--text-muted);cursor:pointer;padding:4px 10px;font-size:10px;font-family:var(--font-mono);transition:all .15s}
+.nav-arrow:hover{color:var(--text)}
+#sidebar{grid-area:sidebar;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto}
 .act-block{padding:8px 0 4px}
-.act-label-hd{font-size:9px;color:var(--amber-dim);letter-spacing:.15em;font-weight:bold;padding:4px 12px 3px;text-transform:uppercase}
+.act-label-hd{font-size:9px;color:var(--amber-dim);letter-spacing:.15em;padding:4px 12px 3px;text-transform:uppercase}
 .scene-btn{width:100%;background:transparent;border:none;border-left:2px solid transparent;cursor:pointer;padding:5px 10px 5px 12px;text-align:left;display:flex;align-items:center;gap:6px;color:var(--text-muted);font-family:var(--font-mono);transition:all .15s;margin-left:-2px}
-.scene-btn:hover{background:var(--surface-hi);color:var(--text)}.scene-btn.active{background:rgba(184,134,11,.10);color:var(--amber)}
-.scene-btn .dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0;opacity:.5}
-.scene-btn.active .dot{opacity:1}
+.scene-btn:hover{background:var(--surface-hi);color:var(--text)}.scene-btn.active{background:rgba(200,134,10,.10);color:var(--amber)}
+.scene-btn .dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0;opacity:.5}.scene-btn.active .dot{opacity:1}
 .scene-btn .slabel{font-size:11px;line-height:1.3;flex:1}.scene-btn .sdur{font-size:9px;color:var(--text-muted);margin-top:1px}
-.sidebar-footer{margin-top:auto;padding:8px 12px;border-top:1px solid var(--border);font-size:9px;color:#252010}
+.sidebar-footer{margin-top:auto;padding:8px 12px;border-top:1px solid var(--border);font-size:9px;color:#2a2a2a}
 #main{grid-area:main;overflow-y:auto;padding:20px 24px}
 .panel{display:none;max-width:840px}.panel.active{display:block}
 .scene-act{font-size:10px;letter-spacing:.18em;margin-bottom:6px;text-transform:uppercase}
-.scene-title{font-family:var(--font-serif);font-size:22px;color:#e8e0c8;letter-spacing:.04em;margin-bottom:8px}
+.scene-title{font-family:var(--font-serif);font-size:22px;color:#e8e4d8;letter-spacing:.04em;margin-bottom:8px}
 .scene-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
-.badge{font-size:10px;background:var(--surface-hi);border:1px solid var(--border-hi);border-radius:var(--r);padding:2px 8px;white-space:nowrap}
-.badge.clue{color:#5a8a5a;background:#0a180a;border-color:#1a361a}.badge.san{color:#8a3a3a;background:#180a0a;border-color:#361a1a}
-.badge.pass{color:#8a7a5a;background:#180e00;border-color:#362a00}
+.badge{font-size:10px;background:var(--surface-hi);border:1px solid var(--border-hi);border-radius:var(--r);padding:2px 8px}
+.badge.clue{color:#5a8a5a;background:#0a1a0a;border-color:#1a3a1a}.badge.san{color:#8a3a3a;background:#1a0a0a;border-color:#3a1a1a}
 .read-aloud{background:var(--ra-bg);border:1px solid var(--ra-brd);border-left:4px solid var(--orange);border-radius:var(--r);padding:14px 18px;margin-bottom:18px}
 .ra-label{font-size:9px;color:var(--orange);letter-spacing:.18em;font-weight:bold;margin-bottom:10px}
 .ra-text{font-family:var(--font-serif);font-size:14px;color:var(--ra-txt);line-height:1.85;white-space:pre-line}
@@ -68,959 +56,972 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .mech-table{border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:18px}
 .mech-hd{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(0,1fr) minmax(0,2.5fr);background:var(--surface-top);padding:6px 12px;gap:12px;border-bottom:1px solid var(--border)}
 .mech-hd div{font-size:9px;color:var(--text-muted);letter-spacing:.12em;text-transform:uppercase}
-.mech-row{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(0,1fr) minmax(0,2.5fr);padding:10px 12px;gap:12px;border-bottom:1px solid #161412}
-.mech-row:last-child{border-bottom:none}.mech-row:nth-child(odd){background:var(--surface-hi)}.mech-row:nth-child(even){background:#110f0d}
-.mech-skill{font-size:12px;color:#a080d0;line-height:1.4}.mech-diff{font-size:11px;line-height:1.4}
-.mech-diff.hard{color:#c0782a}.mech-diff.auto{color:#6a9a6a}.mech-diff.normal{color:var(--text-muted)}
+.mech-row{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(0,1fr) minmax(0,2.5fr);padding:10px 12px;gap:12px;border-bottom:1px solid #161616}
+.mech-row:last-child{border-bottom:none}.mech-row:nth-child(odd){background:var(--surface-hi)}.mech-row:nth-child(even){background:#121212}
+.mech-skill{font-size:12px;color:#7ab4e8;line-height:1.4}.mech-diff{font-size:11px}
+.mech-diff.hard{color:#c8782a}.mech-diff.auto{color:#6a9a6a}.mech-diff.normal{color:var(--text-muted)}
 .mech-out{font-size:12px;color:var(--text-sub);line-height:1.5}
-.san-block{border:1px solid #2a1818;border-radius:var(--r);overflow:hidden;margin-bottom:18px}
-.san-row{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;gap:16px;border-bottom:1px solid #2a1818}
-.san-row:last-child{border-bottom:none}.san-row:nth-child(odd){background:#120808}.san-row:nth-child(even){background:#150a0a}
-.san-evt{font-size:12px;color:#a07878}.san-loss{font-size:12px;color:var(--red);font-family:var(--font-serif);font-weight:bold;white-space:nowrap}
-.san-gain{font-size:12px;color:#4a9a4a;font-family:var(--font-serif);font-weight:bold;white-space:nowrap}
-.clue-list{display:flex;flex-direction:column;gap:5px;margin-bottom:18px}
-.clue-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:var(--surface-hi);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;transition:all .15s}
-.clue-item:hover{background:var(--surface-top)}.clue-item.done{background:#0c150c;border-color:#183018;opacity:.65}
-.clue-chk{width:16px;height:16px;border:1px solid #3a3830;border-radius:2px;background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-.clue-item.done .clue-chk{border-color:#4a8a4a;background:#183018}
+.san-block{border:1px solid #2a1a1a;border-radius:var(--r);overflow:hidden;margin-bottom:18px}
+.san-row{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;gap:16px;border-bottom:1px solid #2a1a1a}
+.san-row:last-child{border-bottom:none}.san-row:nth-child(odd){background:#130a0a}.san-row:nth-child(even){background:#160c0c}
+.san-evt{font-size:12px;color:#a08080}.san-loss{font-size:12px;color:var(--red);font-family:var(--font-serif);font-weight:bold}
+.san-gain{color:#4a9a4a!important}
+.clue-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:var(--surface-hi);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;transition:all .15s;margin-bottom:5px}
+.clue-item:hover{background:var(--surface-top)}.clue-item.done{background:#0d160d;border-color:#1a3a1a;opacity:.65}
+.clue-chk{width:16px;height:16px;border:1px solid #3a3a3a;border-radius:2px;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.clue-item.done .clue-chk{border-color:#4a8a4a;background:#1a4a1a;color:#8aba8a}
 .clue-name{font-size:12px;color:#8aba8a}.clue-item.done .clue-name{color:#5a7a5a;text-decoration:line-through}
-.clue-handout{font-size:9px;color:#8a703a;background:#1a1000;border:1px solid #3a2a10;border-radius:2px;padding:1px 5px;margin-left:6px}
-.clue-desc{font-size:11px;color:#555045;line-height:1.5;margin-top:2px}
-.keeper-note{background:var(--keeper-bg);border:1px solid var(--keeper-brd);border-left:4px solid #2a6a2a;border-radius:var(--r);padding:12px 16px;margin-bottom:18px}
-.kn-label{font-size:9px;color:#3a7a3a;letter-spacing:.15em;margin-bottom:7px;text-transform:uppercase}.kn-text{font-size:12px;color:var(--keeper-txt);line-height:1.7}
+.clue-handout{font-size:9px;color:#5a7a9a;background:#0a1220;border:1px solid #1a2a4a;border-radius:2px;padding:1px 5px;margin-left:6px}
+.clue-desc{font-size:11px;color:#5a5a55;line-height:1.5;margin-top:2px}
+.keeper-note{background:var(--keeper-bg);border:1px solid var(--keeper-brd);border-left:4px solid #2d6a2d;border-radius:var(--r);padding:12px 16px}
+.kn-label{font-size:9px;color:#3a7a3a;letter-spacing:.15em;margin-bottom:7px;text-transform:uppercase}
+.kn-text{font-size:12px;color:var(--keeper-txt);line-height:1.7}
 .scene-fnav{display:flex;gap:10px;margin-top:22px;padding-top:14px;border-top:1px solid var(--border)}
-.fnav-btn{background:var(--surface-hi);border:1px solid var(--border-hi);border-radius:var(--r);color:var(--text-muted);cursor:pointer;padding:7px 14px;font-size:11px;font-family:var(--font-mono);transition:all .15s;white-space:nowrap}
-.fnav-btn:hover{color:var(--text);border-color:#3a3830}.fnav-btn.next{color:var(--amber);border-color:var(--amber-dim)}.fnav-btn.next:hover{background:rgba(200,150,10,.1)}
-.npc-card{background:var(--surface-hi);border:1px solid var(--border);border-radius:var(--r);margin-bottom:10px;overflow:hidden;cursor:pointer;transition:border-color .15s}
-.npc-card:hover{border-color:var(--border-hi)}.npc-card.open{border-color:#383430}
+.fnav-btn{background:var(--surface-hi);border:1px solid var(--border-hi);border-radius:var(--r);color:var(--text-muted);cursor:pointer;padding:7px 14px;font-size:11px;font-family:var(--font-mono);transition:all .15s}
+.fnav-btn:hover{color:var(--text)}.fnav-btn.next{color:var(--amber);border-color:var(--amber-dim)}
+.npc-card{background:var(--surface-hi);border:1px solid var(--border);border-radius:var(--r);margin-bottom:10px;overflow:hidden;cursor:pointer}
 .npc-head{padding:12px 16px;display:flex;align-items:center;gap:12px}
-.npc-name{font-family:var(--font-serif);font-size:15px;color:#e8e0c8}.npc-role{font-size:11px;color:var(--text-muted);margin-top:2px}
-.npc-disp-tag{font-size:9px;border-radius:3px;padding:2px 8px;white-space:nowrap;border:1px solid}
-.tag-ally{color:#4a8a5a;background:#0a180a;border-color:#1a3a1a}
-.tag-neutral{color:#8a7a3a;background:#18140a;border-color:#36280a}
-.tag-threat{color:#8a3a3a;background:#180a0a;border-color:#361a1a}
-.tag-entity{color:#8a4a9a;background:#140a18;border-color:#2a1a3a}
-.npc-chevron{color:var(--text-muted);font-size:13px;margin-left:auto;flex-shrink:0}
+.npc-name{font-family:var(--font-serif);font-size:15px;color:#e8e4d8}.npc-role{font-size:11px;color:var(--text-muted);margin-top:2px}
+.npc-deploy-tag{font-size:9px;color:#4a7a9a;background:#0a1a2a;border:1px solid #1a3a5a;border-radius:3px;padding:2px 8px}
+.npc-chevron{color:var(--text-muted);font-size:13px;margin-left:auto}
 .npc-body{border-top:1px solid var(--border);padding:14px 16px;display:none}.npc-card.open .npc-body{display:block}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
-@media(max-width:600px){.two-col{grid-template-columns:1fr}}
-.mini-label{font-size:9px;color:var(--text-muted);letter-spacing:.12em;margin-bottom:5px;text-transform:uppercase}.mini-text{font-size:12px;color:var(--text-sub);line-height:1.6}
+.mini-label{font-size:9px;color:var(--text-muted);letter-spacing:.12em;margin-bottom:5px;text-transform:uppercase}
+.mini-text{font-size:12px;color:var(--text-sub);line-height:1.6}
 .stat-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
 .stat-pill{background:var(--surface-top);border:1px solid var(--border-hi);border-radius:3px;padding:4px 10px}
-.stat-pill .sl{font-size:9px;color:var(--text-muted)}.stat-pill .sv{font-size:14px;color:#a080d0;font-weight:bold}
-.inv-card{background:var(--surface-hi);border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px;overflow:hidden;cursor:pointer;transition:border-color .15s}
-.inv-card:hover{border-color:var(--border-hi)}.inv-card.open{border-color:#383430}
+.stat-pill .sl{font-size:9px;color:var(--text-muted)}.stat-pill .sv{font-size:14px;color:#7ab4e8;font-weight:bold}
+.stat-extras{font-size:11px;color:var(--text-muted);margin-bottom:10px;white-space:pre-line}
+.inv-card{background:var(--surface-hi);border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px;overflow:hidden;cursor:pointer}
 .inv-head{padding:10px 16px;display:flex;align-items:center;gap:10px}
-.inv-name{font-family:var(--font-serif);font-size:14px;color:#e8e0c8}
+.inv-name{font-family:var(--font-serif);font-size:14px;color:#e8e4d8}
 .inv-role-tag{font-size:10px;color:var(--text-muted);background:var(--surface-top);border:1px solid var(--border-hi);border-radius:2px;padding:1px 6px}
-.inv-san-ctrl{display:flex;align-items:center;gap:4px;margin-left:auto;flex-shrink:0}
+.inv-san-ctrl{display:flex;align-items:center;gap:4px;margin-left:auto}
 .san-lbl{font-size:9px;color:var(--text-muted);text-align:center;margin-bottom:3px}
 .san-box{display:flex;align-items:center;gap:3px}
-.san-mod{width:20px;height:20px;border:1px solid var(--border-hi);border-radius:2px;cursor:pointer;font-size:13px;line-height:1;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);transition:all .15s}
-.san-mod.minus{background:#180808;border-color:#361818;color:#c04444}.san-mod.plus{background:#081808;border-color:#183618;color:#44c044}
-.san-mod:hover{opacity:.8}
+.san-mod{width:20px;height:20px;border:1px solid var(--border-hi);border-radius:2px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono)}
+.san-mod.minus{background:#1a0a0a;border-color:#3a1a1a;color:#c04444}.san-mod.plus{background:#0a1a0a;border-color:#1a3a1a;color:#44c044}
 .san-val{font-size:20px;font-family:var(--font-serif);font-weight:bold;min-width:32px;text-align:center;border:1px solid var(--border-hi);background:var(--surface-top);border-radius:3px;padding:0 4px}
-.san-base{font-size:10px;color:var(--text-muted)}.inv-chevron{color:var(--text-muted);font-size:13px;flex-shrink:0;margin-left:4px}
+.san-base{font-size:10px;color:var(--text-muted);text-align:center}
+.inv-chevron{color:var(--text-muted);font-size:13px;margin-left:4px}
 .inv-body{border-top:1px solid var(--border);padding:14px 16px;display:none}.inv-card.open .inv-body{display:block}
-.hook-box{font-size:11px;color:#7a8a7a;background:var(--keeper-bg);border:1px solid var(--keeper-brd);border-radius:3px;padding:8px 12px;margin-bottom:12px;line-height:1.6}
+.hook-box{font-size:11px;color:#7a8a7a;background:var(--keeper-bg);border:1px solid var(--keeper-brd);border-radius:3px;padding:8px 12px;margin-bottom:10px;line-height:1.6}
 .hook-lbl{font-size:9px;color:#4a7a4a;letter-spacing:.12em;display:block;margin-bottom:4px;text-transform:uppercase}
-.trigger-box{font-size:11px;color:#8a5a5a;background:#120808;border:1px solid #301818;border-radius:3px;padding:8px 12px;margin-top:8px;line-height:1.6}
-.trig-lbl{font-size:9px;color:#7a3a3a;letter-spacing:.12em;display:block;margin-bottom:4px;text-transform:uppercase}
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:12px}
 .stat-cell{background:var(--surface-top);border:1px solid var(--border-hi);border-radius:3px;padding:5px 6px;text-align:center}
 .stat-cell .sk{font-size:9px;color:var(--text-muted)}.stat-cell .sv{font-size:15px;color:var(--text);font-weight:bold}
 .derived-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
-.der-pill{background:#0e100e;border:1px solid #1e301e;border-radius:3px;padding:3px 9px}
-.der-k{font-size:9px;color:#4a7a4a}.der-v{font-size:13px;color:#6aaa6a;margin-left:4px}
-.skills-text{font-size:11px;color:var(--text-muted);line-height:1.8;margin-bottom:8px}
-.handout-list{display:flex;flex-direction:column;gap:5px;margin-bottom:20px}
-.handout-list-lbl{font-size:9px;color:var(--text-muted);letter-spacing:.15em;margin-bottom:8px;text-transform:uppercase}
-.hdoc-btn{background:var(--surface-hi);border:1px solid var(--border);border-radius:var(--r);padding:10px 14px;cursor:pointer;text-align:left;font-family:var(--font-mono);transition:all .15s;display:flex;align-items:center;gap:10px}
-.hdoc-btn:hover{background:var(--surface-top);border-color:var(--border-hi)}.hdoc-btn.active{border-color:var(--amber-dim);background:rgba(184,134,11,.08)}
-.hdoc-num{font-size:10px;color:var(--amber-dim);white-space:nowrap}.hdoc-name{font-size:12px;color:var(--text-sub)}
-.handout-view{background:#100d08;border:1px solid #2e2618;border-radius:var(--r);padding:20px}
-.hv-title{font-family:var(--font-serif);font-size:16px;color:#c8a840;margin-bottom:4px}
-.hv-note{font-size:10px;color:var(--text-muted);margin-bottom:14px;font-style:italic}
-.hv-paper{background:#1a1208;border:1px solid #3a2e18;border-radius:3px;padding:18px 20px}
-.hv-text{font-family:var(--font-serif);font-size:13px;color:#c8b880;line-height:2;white-space:pre-line}
-.clues-hd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px}
-.clues-count{font-size:16px;font-family:var(--font-serif);color:var(--amber);white-space:nowrap;margin-top:4px}
+.der-pill{background:#0d1a0d;border:1px solid #1a3a1a;border-radius:3px;padding:3px 9px}
+.der-k{font-size:9px;color:#4a7a4a}.der-v{font-size:11px;color:#8aba8a;margin-left:3px}
+.skills-text{font-size:11px;color:#7a9a8a;line-height:1.7;margin-bottom:10px}
+.trigger-box{background:#130a0a;border:1px solid #3a1a1a;border-radius:3px;padding:7px 10px}
+.trig-lbl{font-size:9px;color:#7a3a3a;letter-spacing:.12em;margin-bottom:3px;text-transform:uppercase}
+.trig-text{font-size:11px;color:#9a6a6a;line-height:1.7}
+.san-bar-wrap{height:3px;background:#1a1a1a;border-radius:2px;overflow:hidden;margin-top:6px}
+.san-bar{height:100%;border-radius:2px;transition:width .3s,background .3s}
+#handouts-panel.active{display:flex;gap:16px}
+.handout-list{width:130px;flex-shrink:0}
+.handout-list-lbl{font-size:9px;color:var(--text-muted);letter-spacing:.12em;margin-bottom:8px;text-transform:uppercase}
+.hdoc-btn{width:100%;background:transparent;border:1px solid var(--border);border-radius:var(--r);cursor:pointer;padding:7px 9px;text-align:left;margin-bottom:4px;font-family:var(--font-mono);transition:all .15s}
+.hdoc-btn:hover{background:var(--surface-hi)}.hdoc-btn.active{background:var(--surface-hi);border-color:var(--border-hi)}
+.hdoc-num{font-size:9px;color:var(--text-muted);margin-bottom:2px}.hdoc-name{font-size:11px;color:var(--text);line-height:1.3}
+.handout-view{flex:1}
+.hv-title{font-family:var(--font-serif);font-size:16px;color:#e8e4d8;margin-bottom:3px}
+.hv-note{font-size:11px;color:var(--text-muted);font-style:italic;margin-bottom:14px}
+.hv-paper{background:var(--surface-hi);border:1px solid var(--border-hi);border-radius:var(--r);padding:20px 22px}
+.hv-text{font-family:var(--font-serif);font-size:14px;color:#c8a860;line-height:1.9;white-space:pre-wrap}
+.clues-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.clues-count{font-size:11px;color:var(--green);background:#0a1a0a;border:1px solid #1a3a1a;border-radius:3px;padding:3px 10px}
 .act-clue-group{margin-bottom:18px}
-.act-clue-hd{font-size:10px;letter-spacing:.15em;text-transform:uppercase;padding-bottom:6px;margin-bottom:6px;border-bottom:1px solid}
-.reset-btn{background:var(--surface-hi);border:1px solid var(--border-hi);border-radius:var(--r);color:var(--text-muted);cursor:pointer;padding:6px 14px;font-size:10px;font-family:var(--font-mono);letter-spacing:.1em;transition:all .15s}
-.reset-btn:hover{color:var(--text);border-color:#444}
-.san-ref-table{border:1px solid #2a1818;border-radius:var(--r);overflow:hidden;margin-bottom:20px}
-.san-ref-hd{display:flex;justify-content:space-between;background:var(--surface-top);padding:6px 14px;border-bottom:1px solid #2a1818}
+.act-clue-hd{font-size:10px;letter-spacing:.15em;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid transparent;text-transform:uppercase}
+.reset-btn{background:none;border:1px solid #2a1a1a;border-radius:3px;color:#5a3a3a;cursor:pointer;padding:5px 12px;font-size:10px;font-family:var(--font-mono);margin-top:6px}
+.san-ref-table{border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:24px}
+.san-ref-hd{display:grid;grid-template-columns:1fr auto;background:var(--surface-top);padding:7px 14px;gap:14px;border-bottom:1px solid var(--border)}
 .san-ref-hd div{font-size:9px;color:var(--text-muted);letter-spacing:.12em;text-transform:uppercase}
-.san-ref-row{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-bottom:1px solid #1e1212}
-.san-ref-row:last-child{border-bottom:none}.san-ref-row:nth-child(odd){background:#120808}.san-ref-row:nth-child(even){background:#150a0a}
-.san-ref-evt{font-size:12px;color:#a07878;flex:1}.san-ref-loss{font-size:12px;font-family:var(--font-serif);font-weight:bold;white-space:nowrap}
-.inv-san-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-bottom:16px}
-.inv-san-card{border-radius:var(--r);border:1px solid;padding:10px 12px;text-align:center}
-.isc-name{font-family:var(--font-serif);font-size:12px;color:#e8e0c8;margin-bottom:6px}
-.isc-ctrl{display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:6px}
-.isc-val{font-size:22px;font-family:var(--font-serif);font-weight:bold}
-.isc-base{font-size:11px;color:var(--text-muted);font-family:var(--font-mono)}
-.san-bar-wrap{height:4px;background:var(--surface);border-radius:2px;overflow:hidden}
-.san-bar{height:100%;border-radius:2px;transition:width .3s}
-.password-bar{background:var(--surface-hi);border:1px solid var(--amber-dim);border-radius:var(--r);padding:12px 16px;margin-bottom:18px;display:flex;align-items:center;gap:12px}
-.pw-label{font-size:9px;color:var(--amber-dim);letter-spacing:.15em;text-transform:uppercase}
-.pw-value{font-family:var(--font-serif);font-size:18px;color:var(--amber-hi);letter-spacing:.2em}
-.clock-bar{background:var(--surface-hi);border:1px solid var(--act3-dim);border-radius:var(--r);padding:12px 16px;margin-bottom:18px;display:flex;align-items:center;gap:12px}
-.ck-label{font-size:9px;color:#7a3030;letter-spacing:.15em;text-transform:uppercase}
-.ck-time{font-family:var(--font-serif);font-size:18px;color:#cc3333;letter-spacing:.1em}
-.ck-note{font-size:11px;color:var(--text-muted)}
+.san-ref-row{display:grid;grid-template-columns:1fr auto;padding:9px 14px;gap:14px;border-bottom:1px solid #161616}
+.san-ref-row:last-child{border-bottom:none}.san-ref-row:nth-child(odd){background:var(--surface-hi)}.san-ref-row:nth-child(even){background:#121212}
+.san-ref-evt{font-size:12px;color:var(--text-sub)}.san-ref-loss{font-size:13px;font-family:var(--font-serif);font-weight:bold;text-align:right}
+.inv-san-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.inv-san-card{border:1px solid transparent;border-radius:var(--r);padding:12px}
+.isc-name{font-size:11px;color:var(--text-muted);margin-bottom:7px;line-height:1.3}
+.isc-ctrl{display:flex;align-items:center;gap:6px;margin-bottom:7px}
+.isc-val{font-family:var(--font-serif);font-size:24px;font-weight:bold;flex:1;text-align:center}
+.isc-base{font-size:10px;color:var(--text-muted)}
+.tone-table{border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:18px}
+.tone-hd{display:grid;grid-template-columns:1fr 1.2fr 1.5fr;background:var(--surface-top);padding:6px 12px;gap:12px;border-bottom:1px solid var(--border)}
+.tone-hd div{font-size:9px;color:var(--text-muted);letter-spacing:.12em;text-transform:uppercase}
+.tone-row{display:grid;grid-template-columns:1fr 1.2fr 1.5fr;padding:10px 12px;gap:12px;border-bottom:1px solid #161616}
+.tone-row:last-child{border-bottom:none}.tone-row:nth-child(odd){background:var(--surface-hi)}.tone-row:nth-child(even){background:#121212}
+.tone-phase{font-size:12px;color:var(--amber)}.tone-target{font-size:11px;color:var(--text-sub)}.tone-how{font-size:11px;color:#7a8880;line-height:1.5}
 </style>
 </head>
 <body>
 <div id="app">
-<div id="header">
-  <div id="hdr-badge">EVENT 93 · CoC 7E · 1924</div>
-  <div id="hdr-title">Not Another Telegram</div>
+<header id="header">
+  <div id="hdr-badge">EVENT 93 · CoC 7e · NYC 1924</div>
+  <div id="hdr-title">NOT ANOTHER TELEGRAM</div>
   <div id="hdr-spacer"></div>
-  <div id="manifestation-bar">
-    <div id="man-label">MANIFESTATION</div>
-    <div id="man-pips"></div>
-  </div>
   <div id="tab-bar">
-    <button class="tab-btn" data-tab="scene">SCENE</button>
+    <button class="tab-btn active" data-tab="scene">SCENE</button>
     <button class="tab-btn" data-tab="npcs">NPCs</button>
-    <button class="tab-btn" data-tab="investigators">INVESTIGATORS</button>
-    <button class="tab-btn" data-tab="handouts">HANDOUTS</button>
+    <button class="tab-btn" data-tab="investigators">CREW</button>
+    <button class="tab-btn" data-tab="handouts">DOCS</button>
     <button class="tab-btn" data-tab="clues">CLUES</button>
-    <button class="tab-btn" data-tab="san">SANITY</button>
+    <button class="tab-btn" data-tab="san">SAN</button>
+  </div>
+  <div id="clock-box" style="font-size:11px;color:#7a5a2a;background:#110d00;border:1px solid #4a3a1a;border-radius:4px;padding:3px 10px;cursor:pointer;white-space:nowrap" onclick="advanceClock()" title="Click to advance in-game time">
+    <span style="font-size:9px;color:#7a5308;letter-spacing:.1em">GAME TIME</span><br>
+    <span id="game-clock" style="font-family:'Special Elite',serif;font-size:13px;color:#c8a840">8:00 PM</span>
   </div>
   <div id="hdr-nav">
-    <button class="nav-arrow" id="btn-prev">◀ PREV</button>
-    <button class="nav-arrow" id="btn-next">NEXT ▶</button>
+    <button class="nav-arrow" id="btn-prev">← PREV</button>
+    <button class="nav-arrow" id="btn-next">NEXT →</button>
   </div>
+</header>
+<nav id="sidebar"></nav>
+<main id="main">
+  <div id="scene-panel" class="panel active"></div>
+  <div id="npcs-panel" class="panel"></div>
+  <div id="investigators-panel" class="panel"></div>
+  <div id="handouts-panel" class="panel"></div>
+  <div id="clues-panel" class="panel"></div>
+  <div id="san-panel" class="panel"></div>
+</main>
 </div>
-<div id="sidebar"></div>
-<div id="main">
-  <div class="panel" id="scene-panel"></div>
-  <div class="panel" id="npcs-panel"></div>
-  <div class="panel" id="investigators-panel"></div>
-  <div class="panel" id="handouts-panel"></div>
-  <div class="panel" id="clues-panel"></div>
-  <div class="panel" id="san-panel"></div>
-</div>
-</div>
-
 <script>
-const ACT_COLORS={intro:"#b8860b",act1:"#7b52a8",act2:"#8b6030",act3:"#9a2020",epilogue:"#3a7a60"};
-const ACT_DIM={intro:"#5a4005",act1:"#3a2060",act2:"#4a3018",act3:"#4a1010",epilogue:"#1a4030"};
-const ACT_LABELS={intro:"INTRODUCTION",act1:"ACT 1",act2:"ACT 2",act3:"ACT 3",epilogue:"EPILOGUE"};
-const ACT_NAME={intro:"The Telegram Arrives",act1:"Hot Jazz and Cold Leads",act2:"The Brownstone",act3:"The Watcher in the Glass",epilogue:"The Morning After"};
-const ACT_ORDER=["intro","act1","act2","act3","epilogue"];
+const PLAYERS=[
+  {seat:"1",name:"Mateusz Sawicki"},
+  {seat:"2",name:"Alex Walker"},
+  {seat:"3",name:"Kim De Bruyn"},
+  {seat:"4",name:"Wim Van Hove"},
+  {seat:"5",name:"Michail Mandilaras"},
+  {seat:"6",name:"Andrew Mazibrada"}
+];
+const ACT_COLORS={intro:"#c8860a",act1:"#c93535",act2:"#4a7ab8",act3:"#8b3fa0",epilogue:"#5a8a5a"};
+const SAN_COLORS=["","#6b8a6b","#8a8a4a","#a07030","#c03030","#e01010"];
 
 const SCENES=[
 {id:"intro",act:"intro",actLabel:"INTRODUCTION",title:"Miss Pruitt's Office",duration:"15 min",
-readAloud:`44 West 53rd Street, third floor. The office of Miss Hazel Pruitt, secretary to Professor Edna Whitmore.
+readAloud:`44 West 53rd Street, 3rd Floor. Friday afternoon.
 
-A small, efficient room. Filing cabinets. The smell of cigarettes and strong tea. A window looking down onto the street. Miss Pruitt is a small, efficient woman in her fifties who smokes like a chimney and has the thousand-yard stare of someone who has worked for eccentric academics too long.
+Miss Hazel Pruitt is a small, efficient woman in her fifties who smokes like a chimney and has the thousand-yard stare of someone who has worked for eccentric academics far too long. She hands each of you a carbon copy of the same telegram and says:
 
-She hands each of you a carbon copy of the telegram and says:
+"Professor Whitmore received this four days ago. She packed a bag and left immediately. She told me to 'contact everyone on the list' if she hadn't returned by Friday."
 
-"Professor Whitmore received this four days ago. She packed a bag and left immediately. She told me to contact everyone on the list if she hadn't returned by Friday. It is Friday."`,
-content:`COMEDY BEAT: The telegram says "DO NOT COME TO THE BROWNSTONE." Pruitt informs them the Professor went directly to the brownstone. The Private Eye may observe this is, objectively, very stupid. This is the introduction to the self-aware tone.
+She pauses to light another cigarette from the butt of the last.
 
-SECOND NOTE: Whitmore left a sealed envelope marked "OPEN IF THINGS GO WRONG":
-"If things go wrong, talk to Delia at the Blue Orchid. She'll know what Reggie was into."
+"It is Friday."`,
+content:`THE TELEGRAM:
+"EDNA STOP THE WHEEL IS TURNING STOP DO NOT COME TO THE BROWNSTONE STOP THE SKIN DOES NOT FIT ANYMORE STOP REGINALD STOP"
 
-BLUE ORCHID DETAILS:
-• Basement speakeasy, 133rd Street, Harlem
-• Entry through a laundry at the front
-• Password this week: SASSAFRAS
-• Opens at 9 PM — Delia Monroe is the lounge singer`,
-mechanics:[],
-keeperNote:`Miss Pruitt is not supernatural. She is just tired. She has seen too much without understanding any of it and she has made peace with that.
+COMEDY BEAT: The investigators will notice the telegram says DO NOT COME TO THE BROWNSTONE. Invite someone to point this out. Miss Pruitt confirms Whitmore went directly there. Mickey (PI) may note this is objectively very stupid. Let this land before moving on.
 
-She will answer factual questions about Whitmore. She will not speculate. She will not panic. She will offer tea and look at the investigators with the patient exhaustion of someone who has been waiting for this conversation.
+SECOND NOTE — Whitmore's sealed envelope: "OPEN IF THINGS GO WRONG."
+Contents: "If things go wrong, talk to Delia at the Blue Orchid. She'll know what Reggie was into."
 
-Set the tone here: dry, deadpan, slightly absurd. The horror has not arrived yet. This scene is a warm-up.`,
-clueIds:[],sanEvents:[]},
+THE BLUE ORCHID: Basement speakeasy, 133rd Street, Harlem. Entry through a laundry. Password this week: "Sassafras." Open from 9 PM.
 
-{id:"a1_orchid",act:"act1",actLabel:"ACT 1 — HOT JAZZ AND COLD LEADS",title:"1-1: The Blue Orchid",duration:"45 min",
-readAloud:`133rd Street, Harlem. A basement club, warm as a held breath. Entry through a laundry at street level — the proprietor nods you down the stairs without looking up from his newspaper.
+OPTIONAL — CLARENCE FITCH (building bellhop): Has delivered enough strange missives for eccentric academics that he mutters "Oh, not another one of those" when handling the telegrams. Very funny. Use if the table is warm.
 
-Then you hear it. The music arrives before the room does — a six-piece band playing something that makes your feet move before your brain approves. Amber light through cigarette haze. Round tables. Good whiskey in teacups. At the front, a woman in an emerald gown is singing something slow and precise, like she's nailing a butterfly to a board made of sound.
-
-This is the last comfortable place you will be tonight.`,
-content:`GETTING IN: Password is SASSAFRAS. State it to the man at the bottom of the stairs. He will nod.
-
-FINDING DELIA: She's between sets. A successful Charm, Fast Talk, or Persuade roll gains her cooperation. Lucky (the Jazz Musician) gets an AUTOMATIC SUCCESS through his music-world connections. Intimidate closes her down entirely.
-
-WHAT DELIA KNOWS:
-1. Ashworth was hosting occult "salons" at his brownstone on East 64th Street
-2. It started after he found something at an estate sale — a book wrapped in oilcloth
-3. Three weeks ago, guests started disappearing after gatherings. One man found dead in his bathtub. Skin described as "curiously loose."
-4. Ashworth became increasingly erratic — said: "It keeps looking at me from behind my own face."
-5. Prof. Whitmore came three days ago asking the same questions. Delia told her to stay away from the brownstone. Whitmore thanked her and went.
-6. (Secret — only if pressed deeply or on an Extreme success): Delia attended one early salon. Left after an hour because something felt wrong. Has never told anyone.
-
-HANDOUT #1: The Newspaper Clipping — Delia gives this reluctantly from her handbag.`,
+TIME: It is approximately 8:00 PM. Midnight is four hours away.`,
 mechanics:[
-{skill:"Charm / Fast Talk / Persuade",diff:"Normal",diffClass:"normal",outcome:"Delia talks. Full information."},
-{skill:"Lucky's connection (Jazz Musician)",diff:"Automatic",diffClass:"auto",outcome:"Automatic success. Skip the roll."},
-{skill:"Intimidate",diff:"Any",diffClass:"hard",outcome:"She closes down. Will not speak further tonight."},
-{skill:"Music (Lucky only)",diff:"Normal",diffClass:"normal",outcome:"Recognises the wrong note is intentional. A signal. Someone in the club is watching."},
-{skill:"Spot Hidden",diff:"Normal",diffClass:"normal",outcome:"Thin man in grey suit near the bar leaves as investigators look his way. He is the Herald."}
+{skill:"Fast Talk / Charm (Miss Pruitt)",diff:"Automatic",diffClass:"auto",outcome:"She shares everything willingly. She is not obstructing. She is tired."},
+{skill:"Spot Hidden (office desk)",diff:"Normal",diffClass:"normal",outcome:"A folded newspaper from three days ago — Ashworth's society-page obituary circled in pencil. She gives it on request."}
 ],
-keeperNote:`SPEND TWO MINUTES describing this space. It is warm. It is real. The music is good. Let the players settle into it. The wrong note will unsettle them more if they've been comfortable first.
+keeperNote:"Keep this brisk — 15 minutes. The comedy is in Miss Pruitt's exhausted normalcy. Don't let investigators spend time investigating the office. There's nothing here. The scenario is out there. Let them go.\n\nKey quote: 'I don't ask what the books are about. I just catalogue them.'\n\nIF INVESTIGATORS SKIP THE BLUE ORCHID: They miss Delia's briefing (recoverable from Whitmore), the newspaper clipping (findable in Ashworth's library), and Lucky's automatic rapport with the music world. What is irreplaceable: the warm scene before things go dark, and the tonal contrast it creates. The Herald still appears. The scenario is survivable without Act One. It loses its texture.",
+clueIds:["telegram","newspaper"],sanEvents:[]},
 
-THE HERALD AT THE BLUE ORCHID:
-As investigators prepare to leave, one wrong note from the band. The drummer looks confused.
-— Lucky (Music roll): intentional. A signal.
-— Spot Hidden: thin man in grey suit near bar, leaving quickly.
+{id:"a1_blueorchid",act:"act1",actLabel:"ACT ONE — HOT JAZZ AND COLD LEADS",title:"The Blue Orchid Jazz Club",duration:"45 min",
+readAloud:`The Blue Orchid is everything the city should be and mostly isn't — warm amber light, cigarette smoke thick as good wool, a six-piece band playing something that makes your feet move before your brain approves. The walls are close. The tables are closer. Everyone here is very beautiful and very tired.
 
-If investigators give chase: he moves with wrong-footed grace. If cornered: Stare attack (POW vs POW — SAN 0/1D3 on fail). He does not speak. He slips away.
+Delia Monroe is at the microphone, and the room belongs entirely to her.`,
+content:`ATMOSPHERE: Spend two minutes here. This is the last comfortable place the investigators will be. Let them feel the warmth. It makes what follows colder.
 
-He is the Herald — Henderson's body, partially worn by the Watcher. He is observing. He reappears at the Brownstone.
+PASSWORD: "Sassafras." The man at the laundry entrance repeats it questioningly, with mild contempt. This is the correct response.
 
-TONE NOTE: By the time investigators leave the Blue Orchid, they should feel the warmth starting to drain. The wrong note is the pivot. Everything after this gets colder.`,
-clueIds:["newspaper","herald_orchid"],sanEvents:[]},
+GETTING DELIA TO TALK:
+• Charm / Persuade / Fast Talk — Normal difficulty
+• Intimidate — closes her completely. She has handled worse.
+• Lucky (Jazz Musician) — Automatic success through music connections
 
-{id:"a2_drawing",act:"act2",actLabel:"ACT 2 — THE BROWNSTONE",title:"2-1: The Drawing Room",duration:"15 min",
-readAloud:`East 64th Street. A handsome four-storey townhouse. Beautiful, actually — the kind of building that expects things of you. Dark windows. A brass knocker in the shape of an eye, which you try very hard not to think about.
+WHAT DELIA KNOWS (release in order):
+1. Ashworth hosted occult "salons" at his brownstone, East 64th Street
+2. Started after he found something at an estate sale — a book wrapped in oilcloth
+3. Three weeks ago, guests started disappearing. One found dead in his bathtub; skin "curiously loose"
+4. Ashworth became erratic: "It keeps looking at me from behind my own face"
+5. Whitmore came three days ago with the same questions. Delia told her to stay away. Whitmore thanked her and went.
+[Secret: Delia attended one early salon. Left within the hour. Felt something wrong. Has told no one.]
 
-The front door is unlocked.
+→ HANDOUT #1: Newspaper clipping, given after trust established.
 
-Inside: dust sheets over the furniture. Expensive portraits on the dark-panelled walls. The smell of old books and something underneath that — animal, somehow, and wrong.`,
-content:`THE PORTRAITS: Spot Hidden to notice — in every portrait on the walls, the subject's face has been carefully cut out. Not torn — cut. Precisely. Each one: framed bodies in elegant clothes, oval voids where faces should be.
+THE WRONG NOTE:
+As investigators prepare to leave, the band stumbles — one odd, wrong note.
+• Lucky (Music roll): Recognises it was intentional. A signal.
+• Any investigator (Spot Hidden): Thin man, grey suit, near the bar. Leaves before approach. His face moves slightly wrong from this distance.
+This is the Herald (Henderson). He reappears at the Brownstone.`,
+mechanics:[
+{skill:"Charm / Persuade / Fast Talk (Delia)",diff:"Normal",diffClass:"normal",outcome:"She talks. Releases information above in order. Gives newspaper clipping."},
+{skill:"Intimidate (Delia)",diff:"—",diffClass:"hard",outcome:"She stops talking entirely and asks you to leave. The bouncer is large."},
+{skill:"Music (Lucky — the wrong note)",diff:"Normal",diffClass:"normal",outcome:"The note was intentional. Someone in the club is signalling. They are watching."},
+{skill:"Spot Hidden (the Herald)",diff:"Normal",diffClass:"normal",outcome:"Thin man, grey suit. Leaves before approach. Face moves slightly wrong at this distance."}
+],
+keeperNote:"The Blue Orchid is warm and wonderful and Delia is the most competent person in the scenario. Let investigators enjoy her. Do not rush this scene.\n\nIf the table is doing well on time: let Lucky play a set with the house band. Costs five minutes. Worth it for Lucky's player and for establishing what the scenario takes away.\n\nKey line for Delia: 'I told the Professor to stay away from the brownstone. She thanked me and went. That's the thing about Whitmore — she's always very polite before she does something completely insane.'",
+clueIds:["newspaper","herald_glimpse"],sanEvents:[]},
 
-DOCTOR (Medicine or Spot Hidden): The cuts are surgical. Done with care.
-ACADEMIC (History + Library Use): Recognises two of the empty frames — notable New York socialites, both reported missing in the papers recently.
+{id:"a2_drawing",act:"act2",actLabel:"ACT TWO — THE BROWNSTONE",title:"2-1: The Drawing Room",duration:"15 min",
+readAloud:`A handsome four-storey townhouse on East 64th Street. Dark windows. A brass knocker in the shape of an eye. The front door is unlocked.
+
+You step into the drawing room. Dust sheets over the furniture. Oil portraits in heavy gilded frames on the dark walls — the portraits of a man who wanted to be taken seriously. In each one, where the subject's face should be, there is simply a hole. A precise, oval excision. The body remains, elegantly dressed, caught mid-gesture for eternity.
+
+The face is gone.
+
+There are eleven of them.`,
+content:`PORTRAIT EXAMINATION:
+• Doctor (Medicine): The cuts are surgical. Done with precision instruments. Took time. Done by someone who knew exactly what they were removing.
+• Academic (History/Library Use): Two frames contain identifiable figures — notable New York socialites. Both recently reported missing in the papers.
+• Any investigator (Spot Hidden): The cuts are not torn or burned. They are cut with care.
 
 COMEDY BEAT — DO NOT SKIP:
-One of the portraits is of a dog. Its face has also been cut out. Nobody can explain why this is funnier and sadder than the human ones. The dog portrait will end up with Helen (the Reporter) at the end of this session. She cannot explain why she wants it. Just let it happen.
+One portrait is of a dog. A fine dog, clearly beloved, expensively painted. Its face has also been cut out.
+Nobody can explain why this is funnier and sadder than the human ones.
+[The dog portrait goes home with Helen at the end. She cannot explain this either.]
 
-CLOCK: The grandfather clock in the corner reads 9:30 PM when investigators arrive. The pendulum is still swinging. Someone wound it recently.`,
+THE GRANDFATHER CLOCK: In the corner. Note the time aloud — approximately 9:30 PM when investigators arrive. It ticks. The deadline is present. It is patient. Mention it occasionally through Act Two.
+
+THE DOOR WITH NO FACE: One final portrait near the library stairs — the largest frame in the room — is empty. The mounting hooks are fresh. Whatever was here was removed recently. Not cut. Taken down.`,
 mechanics:[
-{skill:"Spot Hidden",diff:"Normal",diffClass:"normal",outcome:"The portraits — every face, precisely cut out. Including the dog."},
-{skill:"Medicine / Spot Hidden (Doctor)",diff:"Normal",diffClass:"normal",outcome:"The cuts are surgical. Done with care, not rage."},
-{skill:"History + Library Use (Academic)",diff:"Normal",diffClass:"normal",outcome:"Two frames belong to missing socialites. Both from Ashworth's circle."}
+{skill:"Medicine (Doctor, portrait cuts)",diff:"Normal",diffClass:"normal",outcome:"Surgical instruments. Deliberate removal. Someone who knew what they were doing."},
+{skill:"History / Library Use (Academic)",diff:"Normal",diffClass:"normal",outcome:"Two identifiable missing socialites. Were either of them at Ashworth's salons?"},
+{skill:"Spot Hidden (empty frame hooks)",diff:"Hard",diffClass:"hard",outcome:"One frame was taken down recently, not cut. The mounting marks are fresh. Something specific was removed."}
 ],
-keeperNote:`Take your time here. The silence of the brownstone after the warmth of the Blue Orchid should feel wrong. It's too quiet. The architecture is beautiful. Beautiful things don't have unlocked front doors at 9:30 PM.
+keeperNote:"Don't rush past the dog portrait. It will get a laugh. Let it. Then let the silence come back in. The comedy and the horror are the same instrument playing different notes.\n\nThe empty frame (removed, not cut) is an optional extra detail — it was Ashworth's self-portrait. He took it down himself, after the Nov 2nd journal entry. He couldn't look at it anymore.",
+clueIds:["portraits"],sanEvents:[{evt:"Gallery of faceless portraits",loss:"0/1",lvl:1}]},
 
-The portraits do the comedy and the horror simultaneously. The dog portrait is genuinely funny. It should also make investigators feel uncertain — because if the entity wants faces, why a dog? This question has no answer. That's the point.
+{id:"a2_library",act:"act2",actLabel:"ACT TWO — THE BROWNSTONE",title:"2-2: The Library",duration:"25 min",
+readAloud:`The library is a serious room — floor-to-ceiling shelves, green-shaded reading lamps, the smell of pipe tobacco and old paper. It is the room of a man who wanted to be taken seriously and owned the props for it.
 
-Don't over-explain. Let the investigators look at the portraits and come to their own conclusions.`,
-clueIds:["portraits"],sanEvents:[{evt:"Portraits with faces precisely cut out",loss:"0/1",lvl:1}]},
+On the central desk: a leather-bound journal, lying open.
 
-{id:"a2_library",act:"act2",actLabel:"ACT 2 — THE BROWNSTONE",title:"2-2: The Library",duration:"25 min",
-readAloud:null,
-content:`FIRST FLOOR LIBRARY — The central investigation location. Allow 20-25 minutes here.
+On a wooden lectern near the window: something wrapped in oilcloth, small, apparently unremarkable. The oilcloth is tied with cord. The cord is the colour of old teeth.
 
-HANDOUT #2 — ASHWORTH'S JOURNAL: Leather-bound, on the desk. The first two-thirds are mundane ramblings — party invitations, opinions on wine, minor social grievances. Then, three months ago, the tone changes completely.
+On the wall, a gilt-framed oval mirror. Slightly too large for the space. The kind of mirror a vain man keeps.`,
+content:`→ HANDOUT #2: ASHWORTH'S JOURNAL (desk)
+Read key entries aloud in order. The first two-thirds are mundane. Then, three months ago:
+• Oct 4: "The book arrived today. I am not sure what language it is. I am not sure it is a language."
+• Oct 19: "I read aloud from page 47. Nothing happened. Or rather, nothing happened that I could see."
+• Nov 2: "There is something behind my reflection now. Not in the mirror. Behind it. In the space where the reflection lives."
+• Nov 14: "The salons are going splendidly. I am beginning to understand why it wants faces."
+• Nov 29: "I think I invited it in. I cannot close the door. The threshold is midnight."
+• [Final entry, four days ago]: "IT IS WEARING HENDERSON NOW. HENDERSON VISITED TUESDAY. I AM SO SORRY."
 
-HANDOUT #3 — THE FACELESS CODEX: On a lectern, still wrapped in oilcloth. Small, bound in something that is not quite leather. Pages feel subtly wrong — slightly warm to the touch.
+→ HANDOUT #3: THE FACELESS CODEX (on the lectern)
+Any investigator attempting to study it: SAN roll 1/1D6.
+  SUCCESS: Understand nothing. Feel profoundly watched.
+  FAIL: Mind-heard (not aloud): "The Face is a door. The door can be opened from either side."
+Academic / Doctor (Library Use): Script resembles pre-Columbian Mesoamerican glyphic writing — centuries old.
+Occult (Hard): The text describes both a summoning AND a dismissal.
 
-CODEX INVESTIGATION:
-• Library Use (Academic or Doctor): Script resembles pre-Columbian Mesoamerican glyphic writing — centuries old at minimum. Not any known language.
-• Anyone who studies it: SAN roll 1/1D6
-  — Success: Understand nothing but feel profoundly watched
-  — FAIL: Hear in the mind (not in any language): "The Face is a door. The door can be opened from either side."
+THE OVAL MIRROR: Mention it once, briefly, as part of setting the room. Don't call attention to it. It will be needed in Act Three.
 
-This is the KEY to the banishment ritual. This is the sentence the Academic should write down.
-
-MIDNIGHT DEADLINE: In the journal (Library Use, or simply reading it): Nov 29th entry mentions "The threshold is midnight — that is the only wall left between partial and full manifestation."
-
-CURRENT TIME: Grandfather clock read 9:30 PM. It is now approximately 10:00 PM. Two hours remain.`,
+THE MIDNIGHT DEADLINE: Library Use on the journal extracts the Nov 29 entry's threshold detail — midnight is the only remaining barrier to full manifestation.`,
 mechanics:[
-{skill:"Library Use (Academic / Doctor)",diff:"Normal",diffClass:"normal",outcome:"Script: pre-Columbian Mesoamerican glyphic writing. Centuries old. No known language."},
-{skill:"Study the Codex — SAN roll",diff:"1/1D6",diffClass:"hard",outcome:"Success: feel profoundly watched. FAIL: hear in the mind: 'The Face is a door. The door can be opened from either side.'"},
-{skill:"Library Use / Read journal",diff:"Normal",diffClass:"normal",outcome:"Find the midnight deadline entry. Nov 29: 'The threshold is midnight.'"}
+{skill:"Library Use (journal — deadline)",diff:"Normal",diffClass:"normal",outcome:"The midnight threshold. Partially manifested = stoppable now. Fully manifested = significantly worse."},
+{skill:"Library Use (Codex script)",diff:"Normal (Academic/Doctor: auto)",diffClass:"auto",outcome:"Pre-Columbian Mesoamerican glyph-adjacent. Centuries old. No known language family matches."},
+{skill:"Occult (Codex structure)",diff:"Hard",diffClass:"hard",outcome:"Both summoning text AND dismissal text. The ritual of reflection is in the latter sections. Three voices. One who does not look away."},
+{skill:"SAN roll — studying Codex",diff:"1/1D6",diffClass:"hard",outcome:"Success: watched. Fail: mind-heard — 'The Face is a door. The door can be opened from either side.' This is the key to the banishment."}
 ],
-keeperNote:`This is where the investigation narrows into dread. The journal starts as comedy (his opinions on wine are genuinely terrible) and then the entries from October onward are something else entirely.
+keeperNote:"The Codex is the single most important object in the scenario. Handle it. Hold on it. The oilcloth should be handed to the player if possible — give them the prop.\n\nThe oval mirror: mention it once as set dressing. Don't point to it. Investigators who ask about it: old, gilt-framed, slightly too large for the space. The kind of mirror a vain man keeps. One of the investigators should remember it when Whitmore describes the banishment.\n\nThe empty self-portrait in the drawing room connects here: Nov 2nd, he couldn't look at his own reflection anymore.\n\nIF INVESTIGATORS TRY TO BURN THE CODEX: Stop them — Whitmore: \'You cannot burn it. I tried. The paper doesn\'t catch. Believe me, I would have done it by now.\' The Codex cannot be destroyed before the banishment. Afterwards: Whitmore takes it, claims to know someone who can dispose of it properly. (She does not. Vermont bank vault. Fine for approximately thirty years.)",
+clueIds:["journal","codex","mirror"],sanEvents:[{evt:"Studying the Faceless Codex — failed roll",loss:"1/1D6",lvl:2}]},
 
-READ THE JOURNAL ENTRIES SLOWLY. Each one is a step down. "Nothing happened that I could see" is scarier than anything explicit.
+{id:"a2_basement",act:"act2",actLabel:"ACT TWO — THE BROWNSTONE",title:"2-3: The Basement — Whitmore Found",duration:"20 min",
+readAloud:`The basement stairs lead down into cold stone. At the bottom: a chalk circle on the floor, mostly smeared. Candles burned to nothing. The smell of chalk and old fear.
 
-THE CODEX: The failure on the SAN roll produces a sentence in the investigator's mind. It is the key piece of information. Make sure whoever fails writes it down. It will matter in Act Three.
+In the centre of the chalk circle, tied to a straight-backed wooden chair, blindfolded, with what appear to be earplugs carefully inserted: Professor Edna Whitmore. She is alive. Her visible hands are trembling.
 
-The Codex does not need to be read in full — it needs to be present and spoken from during the ritual. Whitmore will explain this in the basement.`,
-clueIds:["journal","codex","deadline"],sanEvents:[{evt:"Reading the Codex — failed SAN roll",loss:"1/1D6",lvl:2}]},
-
-{id:"a2_basement",act:"act2",actLabel:"ACT 2 — THE BROWNSTONE",title:"2-3: The Basement — Whitmore",duration:"20 min",
-readAloud:`The basement stairs lead down to cold stone. A chalk circle on the floor, mostly smeared. Candles burned to nothing, some time ago. The smell of old fear, which is a real smell that you now know.
-
-And in the centre: a wooden chair. And in the chair: a woman. Blindfolded. Earplugs inserted. Hands tied to the armrests — tied by herself, you realise, which must have taken some doing.
-
-She is alive. Her breathing is rapid but controlled.
-
-When you remove the blindfold, she grabs the nearest of you by the lapels and says, very quietly:
+When you remove the blindfold, she grabs the nearest person by the lapels before her eyes have fully adjusted, and says, very quietly:
 
 "Don't let it see your face."`,
-content:`PROFESSOR EDNA WHITMORE — alive, 58, terrified, completely in command of her own terror.
+content:`WHITMORE'S EXPOSITION (deliver in a terrified professorial rush — brilliant, guilty, precise):
 
-She explains, in a fast, professorial rush:
+1. "The Skinless Watcher is a servitor entity — not a Great Old One, but a piece of one. Sent ahead as a scout."
 
-1. THE WATCHER: A servitor entity — not a Great Old One, but a piece of one, sent ahead as a scout. Cannot exist fully in the physical world without a face. A human face worn like a mask feeds it enough energy to solidify.
+2. "It cannot exist fully in the physical world without a face. A human face worn like a mask provides the anchor energy to solidify."
 
-2. ASHWORTH: Tried to close the ritual. He couldn't. He became its first face. The face you see on the Watcher is his.
+3. "Ashworth tried to close the ritual after the first death. He couldn't. He became its first face."
 
-3. THE CIRCLE: She was trying to complete the banishment circle when she heard the entity moving upstairs. She hid herself sensorily. She has been like this for approximately sixteen hours.
+4. "The ritual circle in this basement almost worked. I was completing it when I heard the entity moving upstairs. So I did the only sensible thing."
+[Someone will note that blindfolding yourself with earplugs in a ritual circle is not most people's definition of "sensible." Give her a moment to give them a look.]
 
-4. THE BANISHMENT REQUIRES THREE THINGS:
-   • The Codex — they have it (it's on the lectern upstairs)
-   • The original summoning point — this room
-   • One investigator must stand before the entity, holding a mirror, and not look away while the others read the incantation
+5. THE BANISHMENT — three requirements:
+   a) The Codex (investigators should have it)
+   b) The original summoning point — THIS ROOM
+   c) One investigator standing before the entity, holding a mirror, NOT LOOKING AWAY, while three others read from the Codex
 
-THE HERALD RETURNS:
-As this conversation ends — a sound from upstairs. A vase breaking. Then footsteps on the stairs.
+KEY QUOTE: "I knew he was dabbling. I thought he was simply too stupid to do any real damage. I was half right."
 
-DARK COMEDY BEAT: The Herald knocked over the vase. He apologises, reflexively, as he descends the stairs. He is still, somewhere inside, Mr. Charles Henderson, 44, insurance clerk. His face moves slightly too much. His eyes belong to someone else.
-
-The investigators will laugh nervously. Then they will feel terrible. That is correct.`,
+THE DEADLINE CHECK: Ask Whitmore what time it is.
+"A little after ten. We have perhaps ninety minutes before midnight. I suggest we do not spend them discussing options."`,
 mechanics:[
-{skill:"Psychology",diff:"Normal",diffClass:"normal",outcome:"Something human is straining underneath the wrongness of the Herald. It is struggling."},
-{skill:"Herald — Stare attack",diff:"POW vs POW",diffClass:"hard",outcome:"On fail: SAN 0/1D3. The Herald is measuring the nearest investigator's face."},
-{skill:"Herald speaks with Ashworth's voice",diff:"Automatic trigger",diffClass:"auto",outcome:"SAN 0/1D4 for investigators who react. He says things only Ashworth would know. He may be begging for help."}
+{skill:"Medicine (examining Whitmore)",diff:"Normal",diffClass:"normal",outcome:"Physically sound. Dehydrated. Mild hypothermia from the stone floor. She will recover."},
+{skill:"Psychology (reading Whitmore)",diff:"Normal",diffClass:"normal",outcome:"She is guilty. Has been berating herself for days. She didn't stop Ashworth when she could. She will not say this. A successful roll communicates it clearly."},
+{skill:"Occult (confirming ritual info)",diff:"Normal",diffClass:"normal",outcome:"Everything Whitmore says matches what the Codex implied. The ritual structure is coherent. This can work."}
 ],
-keeperNote:`WHITMORE'S VOICE: She is brilliant, guilty, and precise. She has been sitting in that chair for sixteen hours and she is still the most organised person in the room. Her terror does not make her less competent. It makes her more so.
+keeperNote:"This scene does two things: delivers the banishment information and introduces Whitmore as a character. Don't rush the character. She is funny, guilty, brilliant, and frightened. The joke about the blindfold should get a laugh before she continues.\n\nWhitmore's SAN is currently 40. She is operating on the professional equivalent of willpower. She holds together through the scenario. She may not hold together after.",
+clueIds:["whitmore","banishment"],sanEvents:[]},
 
-Quote, if useful: "I knew he was dabbling. I thought he was simply too stupid to do any real damage. I was half right."
+{id:"a2_herald",act:"act2",actLabel:"ACT TWO — THE BROWNSTONE",title:"2-4: The Herald Returns",duration:"10 min",
+readAloud:`There is a sound from upstairs. A footstep placed slightly wrong — not a creak in the boards, but something that knows where the boards are and is trying to approximate walking correctly.
 
-THE HERALD: This is the dark comedy beat turning sincere. The vase shattering and the reflexive apology should be funny. The face that moves wrong and the eyes that belong to someone else should be not-funny. Let that transition happen in real time.
+Then a pause.
 
-HENDERSON'S DETAILS for Keeper only: Mr. Charles Henderson, 44, insurance clerk. Wife: Margaret. He attended Ashworth's final salon because Ashworth owed him money and the party seemed a good opportunity to raise the subject. He had no idea what he was walking into.
+Then, clearly, the sound of a vase being knocked over.
 
-The best resolution for the Herald is not combat. Prepare for Act Three.`,
-clueIds:["whitmore","banishment_method"],sanEvents:[{evt:"Herald's appearance — face that moves wrong",loss:"0/1D3",lvl:2},{evt:"Herald speaks with Ashworth's voice",loss:"0/1D4",lvl:2}]},
+Then, after a moment's silence, a quiet, reflexive: "Oh. I'm terribly sorry."`,
+content:`THE HERALD — Mr. Charles Henderson — is in the drawing room. He followed them from the Blue Orchid.
 
-{id:"a3_circle",act:"act3",actLabel:"ACT 3 — THE WATCHER IN THE GLASS",title:"3-1: Completing the Circle",duration:"20 min",
+DESCRIPTION: Thin man, grey suit. His face moves slightly more than faces should — a constant minor resettling, like a mask seeking purchase. His eyes are Ashworth's. His hands, when he forgets himself, are his own. He is trying very hard to stand in a way that looks like standing.
+
+THE APOLOGY: He knocked over the vase on the stairs. He apologised. This is:
+• Funny (let the nervous laughter happen)
+• Sad (Henderson is still in there)
+• Important (note who at the table feels the sadness without being told to)
+
+HENDERSON'S DETAILS:
+Charles Henderson, 44, insurance clerk, Brooklyn. Wife: Margaret. Tabby cat — fed on Thursdays. He attended Ashworth's final salon because Ashworth owed him money and the gathering seemed an opportunity to raise the subject.
+
+HENDERSON'S CAPABILITIES:
+• Grapple: Fighting 45%, 1D6 crush per round held
+• Stare: POW vs POW — failure = SAN 0/1D3
+• Voice of Ashworth: SAN 0/1D4 (he says things only Ashworth would know; begs for help)
+• HP: 12. He can be fought. He cannot be meaningfully killed.
+
+THE RIGHT APPROACH: Contain, not fight. Persuade or Psychology. If investigators speak to Henderson as a person, he may surface enough to cooperate. This is the setup for Act Three's crucial moment.
+
+COMBAT WARNING: Attacking too aggressively draws the Watcher sooner. Whitmore, from behind: "I would strongly advise against shooting things in the ritual room."`,
+mechanics:[
+{skill:"Spot Hidden (entering drawing room)",diff:"Normal",diffClass:"normal",outcome:"His shadow doesn't quite match his movements. Half a second out of sync."},
+{skill:"Psychology (reading the Herald)",diff:"Hard",diffClass:"hard",outcome:"Henderson is in there. Something human and frightened is straining behind the entity's use of the body."},
+{skill:"Persuade (speaking to Henderson)",diff:"Hard",diffClass:"hard",outcome:"He becomes briefly lucid. Voice quieter, more uncertain. He asks if anyone has spoken to his wife."},
+{skill:"Fighting (containing)",diff:"Normal",diffClass:"normal",outcome:"He can be restrained with sustained effort. He is stronger than he looks."}
+],
+keeperNote:"The vase apology lands differently for different tables. Some laugh hard. Some laugh and immediately look away. The ones who look away have already understood what Henderson is. Watch for that.\n\nHe is the emotional spine of the scenario. Henderson's final line in Act Three — 'Tell my wife the cat needs feeding on Thursdays. She always forgets.' — must be earned here. The investigators need to know he's in there before that line can land.",
+clueIds:[],sanEvents:[{evt:"Herald's face resettling (close view)",loss:"0/1D3",lvl:2},{evt:"Herald speaks with Ashworth's voice",loss:"0/1D4",lvl:2}]},
+
+{id:"a3_circle",act:"act3",actLabel:"ACT THREE — THE WATCHER IN THE GLASS",title:"3-1: Completing the Circle",duration:"20 min",
 readAloud:null,
-content:`WHITMORE NEEDS HELP to restore the chalk ritual circle. It was smeared when she dove for the chair. It needs to be right.
+content:`THE TASK: Restore the chalk ritual circle on the basement floor. Whitmore leads; investigators assist.
 
-TASKS:
-1. UNDERSTAND THE PATTERN — Occult roll (Normal)
-   • Success: Investigator knows what's needed and can guide the drawing
-   • Fail: Whitmore can guide, but it costs 5 minutes
+THREE SIMULTANEOUS REQUIREMENTS:
+1. UNDERSTAND THE PATTERN — Occult roll (Whitmore guides on fail — costs 10 minutes)
+2. DRAW THE CIRCLE — Art/Craft (Drawing) or DEX roll — steady hands required
+3. HOLD OFF THE HERALD — he will try to disrupt. The entity wants the circle incomplete.
 
-2. DRAW THE CIRCLE — Art/Craft (Drawing) or DEX roll (Normal)
-   • Success: Clean and correct
-   • Fail: One section must be redrawn — costs 5 minutes + SAN 0/1
+SPLIT THE TABLE:
+Assign circle-completers (2-3 investigators + Whitmore) and Herald-handlers (1-2 investigators).
+Run both groups simultaneously. Give both moments of focus.
 
-3. HOLD OFF THE HERALD — Combat, Persuade, or positioning
-   • He will try to disrupt the work
-   • Every round he disrupts adds 1D3 rounds to the incantation
+HENDERSON DURING THIS SCENE:
+Every time he moves toward the circle, part of him flinches. He doesn't want to do this. The entity does.
+Investigators who watch carefully will see this — the internal struggle made physical.
 
-HERALD COMPLICATION:
-The Herald is drawn to the circle being completed. One group works on the floor. Others manage the creature.
+The Herald speaks with Ashworth's voice from the wrong face while being managed:
+SAN 0/1D4 for investigators who engage with the voice. He says things only Ashworth would know. He begs for help.
 
-SANITY PRESSURE — ASHWORTH'S VOICE:
-The Herald can speak with Ashworth's voice from behind the wrong face. Any investigator who reacts: SAN 0/1D4. He says things only Ashworth would know. He begs for help. He may be genuinely in there.
+CLOCK: Establish at the start of this scene — 10:45 PM. Midnight is 75 minutes away.\n\nIF MIDNIGHT ARRIVES BEFORE THE RITUAL COMPLETES: Full manifestation. Mirror aversion fails, chalk circle loses power. Read aloud (failure): \'The grandfather clock above strikes twelve. You feel it as a physical thing — not a sound, a shift. A door opening somewhere much deeper than the basement floor. The Watcher turns, and something in its posture changes. It has been looking for faces. It stops looking. It begins taking.\' Total failure. No combat resolution. Flee or Face Peel. Honour it. Don\'t soften it.
 
-CURRENT TIME: Approximately 11:00 PM. One hour to midnight.
-TENSION: Every wasted minute costs them.`,
+WHEN CIRCLE IS COMPLETE: The temperature in the room drops. Not to cold. To wrong.`,
 mechanics:[
-{skill:"Occult",diff:"Normal",diffClass:"normal",outcome:"Understands the pattern. Can guide the redrawing correctly."},
-{skill:"Art/Craft (Drawing) or DEX",diff:"Normal",diffClass:"normal",outcome:"Success: circle is correct. Fail: redraw needed, +5 min, SAN 0/1."},
-{skill:"Persuade / Psychology (Herald)",diff:"Hard",diffClass:"hard",outcome:"Can feel Henderson straining against the thing controlling him. He can be reached — but not yet. Save it for the end."},
-{skill:"Fighting (Brawl) vs Herald",diff:"Normal",diffClass:"normal",outcome:"Herald: Fighting 45%, HP 12, DB +1D4. Can be physically restrained but not killed — Henderson's body will not stop."}
+{skill:"Occult (understanding the pattern)",diff:"Normal",diffClass:"normal",outcome:"The circle is a binding and reflecting structure. Completed, it amplifies the mirror aversion that ends the Watcher's anchorage."},
+{skill:"Art/Craft (Drawing) or DEX",diff:"Normal",diffClass:"normal",outcome:"Completed without incident. Fail = one section redrawn — costs 10 minutes."},
+{skill:"Psychology (Herald during work)",diff:"Normal",diffClass:"normal",outcome:"When he speaks in his own voice, his hands go still. When the entity reasserts, they start moving again — involuntary, reaching toward the chalk."}
 ],
-keeperNote:`Keep this tense and moving. Two simultaneous things happening: the circle being drawn, the Herald being managed.
+keeperNote:"Run this as simultaneous action. Circle-completers narrate their work; Herald-handlers narrate the containment. The ticking is in the background — not foregrounded. Don't mechanically count down. Let it sit as background dread.\n\nThe moment the circle closes: pause. Let the temperature change land. Then read Act Three Scene 2's read-aloud.",
+clueIds:[],sanEvents:[{evt:"Herald speaks with Ashworth's voice (Act Three)",loss:"0/1D4",lvl:2},{evt:"Failed Occult roll during circle work",loss:"1/1D4",lvl:2}]},
 
-If players are stuck on how to manage the Herald: remind them that Whitmore said the resolution is the ritual. The Herald cannot be permanently stopped by violence. He can be restrained, distracted, avoided. The circle is the priority.
+{id:"a3_watcher",act:"act3",actLabel:"ACT THREE — THE WATCHER IN THE GLASS",title:"3-2: The Watcher Arrives",duration:"35 min",
+readAloud:`The temperature drops first — not to cold, but to wrong. The shadows in the corner of the room stop behaving. Then you see it, and your brain performs a small, polite act of mercy by refusing to fully process what it is.
 
-DO NOT LET THE HERALD KILL ANYONE. He is threatening but not lethally efficient. He grapples. He stares. He speaks. He is not a killer — Henderson never was.
+It is tall. It is not quite standing. It has faces — several of them, worn one atop the other like pages in a book. The outermost is recent. You recognise it as Reginald Ashworth from his newspaper photograph.
 
-PACING NOTE: If this scene is running long, cut it. Move to 3-2. The time pressure is real. The Watcher arriving slightly before the circle is complete is actually more dramatic.`,
-clueIds:[],sanEvents:[{evt:"Herald speaks with Ashworth's voice — for any investigator who reacts",loss:"0/1D4",lvl:2}]},
-
-{id:"a3_watcher",act:"act3",actLabel:"ACT 3 — THE WATCHER IN THE GLASS",title:"3-2: The Watcher Arrives",duration:"35 min",
-readAloud:`The temperature drops first — not to cold, but to wrong. The shadows in the corner of the room stop behaving.
-
-Then you see it, and your brain performs a small, polite act of mercy by refusing to fully process what it is.
-
-It is tall. It is not quite standing. It has faces — several of them, worn one atop the other like pages in a book. The outermost is recent. You recognise it as Reginald Ashworth from his newspaper photograph. He is smiling. He has always been smiling. He was smiling before his face was removed.
+He is smiling. He has always been smiling. He was smiling before his face was removed.
 
 The thing beneath the faces has no features of its own. That is the worst part. It is looking at you with nothing. And you feel, with horrible certainty, that it is measuring your face.
 
 Checking the fit.`,
-content:`THE THREE PHASES:
+content:`PHASE 1 — THE OFFERING OF REFLECTION:
+One investigator must volunteer to stand before the Watcher holding the gilt-framed oval mirror from the library wall.
 
-━━━ PHASE 1: THE OFFERING OF REFLECTION ━━━
-One investigator must volunteer to hold the gilt-framed oval mirror from the wall, stand before the Watcher, and not look away.
+SAN ROLL: 1D6/1D20 to hold position.
+• Hold → Watcher transfixed. It sees itself reflected with no face. Paralysed for the incantation's duration.
+• Look away → Watcher lunges. Fighting 65%, Face Peel: 1D6 damage + 1D6 SAN per round held.
 
-• SAN roll: 1D6/1D20
-• HOLD: Watcher sees itself reflected — no face. It is transfixed. Paralysed for the duration of the incantation.
-• LOOK AWAY: Watcher lunges. Face Peel attack.
+BEST CANDIDATES:
+• Vivienne (Heiress) — social courage at its absolute limit. Her arc brings her here.
+• Finch (Academic) — intellectual reckoning made physical. Thirty years studying belief, now required to act on it.
+• Any investigator can step up. GIVE WHOEVER VOLUNTEERS A MOMENT OF GENUINE WEIGHT. Other players should watch.
 
-BEST CANDIDATES (structurally): Vivienne St. Claire (the Heiress — social courage at its limit) or Walter Finch (the Academic — intellectual reckoning made physical). But any investigator can step up.
+IF NO ONE VOLUNTEERS: Whitmore does it. Hard SAN roll (1D6/1D10). Failure breaks paralysis early — Watcher acts for 1D3 rounds.
 
-IF NO ONE VOLUNTEERS: Whitmore does it herself. She must make a HARD SAN roll. If she fails, the paralysis breaks early — the Watcher can act for 1D3 rounds before someone picks up the mirror.
+PHASE 2 — THE INCANTATION:
+Whitmore leads three investigators reading from the Codex. Three consecutive Occult rolls (Hard).
+Failed roll: SAN damage 1/1D4 as the words do things to the reader's mouth that words should not do. Ritual continues.
 
-KEEPER NOTE: Pause here. Give whoever volunteers a moment of weight. The other players should be watching. This is the scenario's central heroic moment.
-
-━━━ PHASE 2: THE INCANTATION ━━━
-Whitmore leads three investigators reading from the Codex.
-THREE CONSECUTIVE OCCULT ROLLS — recommended difficulty: Hard.
-
-• Failed roll: SAN 1/1D4 — the words do things to the reader's mouth that words should not do. But the ritual continues.
-• Critical success: No SAN cost for that reader; next roll's difficulty reduced by one level.
-
-READ ALOUD AS INCANTATION BEGINS:
+READ ALOUD (as they begin, then continue silently):
 "Whatever face it wears, it is not the face. Whatever door it opens, the door opens from both sides. We name ourselves. We claim the threshold. We give it nothing. We give it nothing. We give it nothing."
 
-(The words should not make the investigators feel powerful. They should feel like standing very still while something enormous passes.)
+[The words should not feel powerful. They should feel like standing very still while something enormous passes.]
 
-━━━ PHASE 3: HENDERSON'S CHOICE ━━━
-As the ritual nears completion, the Herald becomes lucid for a final moment.
+PHASE 3 — HENDERSON'S CHOICE:
+As the ritual nears completion, Henderson becomes lucid for a final moment.
 
-Psychology or Persuade roll — or simply speak to him. Really speak to Henderson, not the monster.
+Psychology or Persuade from an investigator — OR pure roleplay, granted automatically if players speak to Henderson as a person. The Keeper can simply grant it. Judge the moment.
 
+He goes still. His hands stop moving. He says, in his own voice:
 "Tell my wife the cat needs feeding on Thursdays. She always forgets."
 
 Then the ritual completes.
 
-━━━ THE BANISHMENT ━━━
-The Watcher collapses inward. Not violently — it simply stops fitting in the physical world and falls through the floor like water through paper. The faces scatter. Ashworth's face, last of all, settles face-down on the chalk circle.
-
-The Herald's body crumples.
-
-The candles relight themselves. Then immediately go out.
+THE BANISHMENT:
+The Watcher collapses inward — not violently. It simply stops fitting in the physical world and falls through the floor like water through paper. The faces scatter across the stone. Ashworth's face settles face-down on the chalk circle. The Herald's body crumples. The candles relight themselves, and immediately go out.
 
 Silence.
 
-WHITMORE: "Well. That was about what I expected."`,
+Professor Whitmore says: "Well. That was about what I expected."
+Someone should laugh. Someone might cry. Both are correct.`,
 mechanics:[
-{skill:"SAN roll — holding the mirror",diff:"1D6/1D20",diffClass:"hard",outcome:"Hold: Watcher paralysed. Look away: Face Peel attack begins."},
-{skill:"Occult — incantation (×3, consecutive)",diff:"Hard",diffClass:"hard",outcome:"Success: ritual progresses. Fail: SAN 1/1D4, words do things to the mouth. Ritual still continues."},
-{skill:"Watcher — Face Peel (if paralysis breaks)",diff:"Fighting 65% vs STR",diffClass:"hard",outcome:"1D6 damage + 1D6 SAN per round until broken free (opposed STR)."},
-{skill:"Persuade / Psychology (Henderson)",diff:"Normal or roleplay",diffClass:"normal",outcome:"Henderson goes lucid. He stays still. He says his line. The ritual completes."}
+{skill:"SAN roll — holding the mirror",diff:"1D6/1D20",diffClass:"hard",outcome:"Hold: Watcher paralysed for duration. Look away: Watcher lunges — Face Peel attack, 1D6 damage + 1D6 SAN per round until free."},
+{skill:"Occult × 3 — incantation (Hard)",diff:"Hard",diffClass:"hard",outcome:"Success: ritual progresses. Fail: SAN 1/1D4 — words behave incorrectly in the mouth. Ritual continues on any result."},
+{skill:"Psychology / Persuade (Henderson — final)",diff:"Hard, or auto for genuine roleplay",diffClass:"hard",outcome:"Henderson goes still. His own voice returns. He delivers his last line. Ritual completes."},
+{skill:"Fighting vs Face Peel",diff:"Opposed STR to break free",diffClass:"hard",outcome:"Break free: mirror can be re-established if holder hasn't lost consciousness."}
 ],
-keeperNote:`DO NOT DESCRIBE THE WATCHER AT LENGTH.
+keeperNote:"THE LINE THAT MATTERS: 'Tell my wife the cat needs feeding on Thursdays. She always forgets.'\n\nDo not rush past it. Do not add anything after it. Count to three before Whitmore speaks. This is what the scenario is about.\n\nWhitmore's line is the release: 'Well. That was about what I expected.' It should get a laugh.\n\nThe final telegram, one week later: deliver it as coda. Cold hand on the back of the neck. End there. No explanation.",
+clueIds:[],sanEvents:[
+{evt:"First sight of the Skinless Watcher",loss:"1D3/1D10",lvl:4},
+{evt:"Holding the mirror — volunteer",loss:"1D6/1D20",lvl:5},
+{evt:"Face Peel attack (per round)",loss:"1D6 damage + 1D6 SAN",lvl:5},
+{evt:"Henderson's final words",loss:"0/1D3",lvl:2},
+{evt:"Banishment succeeds",loss:"GAIN +1D6",lvl:1}
+]},
 
-The read-aloud gives the shape of it. That is enough. The investigators have been building toward this all night — the accumulated dread is doing most of the work. One description. No embellishment after that.
-
-THE MIRROR MOMENT: This is the emotional peak of Act Three. Whoever volunteers — pause. Make them stand up from the table if they want to. Let the other players look at them. The heroism here should feel earned and real and costly.
-
-HENDERSON'S LAST LINE: Do not rush past it. Let it land. Pause afterward. Let there be silence at the table. This is the moment the scenario has been building to since the vase on the stairs.
-
-"Tell my wife the cat needs feeding on Thursdays. She always forgets."
-
-AFTER: Whitmore's line ("Well. That was about what I expected.") is the exhale. Someone will laugh. Someone might cry. Both are correct.
-
-━━━ IF MIDNIGHT ARRIVES (FAILURE STATE) ━━━
-The Watcher fully manifests. Mirror aversion fails. The circle is meaningless.
-
-READ ALOUD (failure):
-"The grandfather clock above strikes twelve. You feel it as a shift — a door opening somewhere deeper than the basement floor. The Watcher makes a sound. It is not a sound that belongs to any face. Something in its posture changes. It has been looking for faces. It stops looking. It begins taking."
-
-This is total failure. Investigators who flee immediately survive. Those who don't suffer Face Peel. End on the final telegram ("INTERESTING STOP WILL BE WATCHING STOP. There are others.") and close there.
-
-NOTE: This should be rare. The scenario is generous with information. If it happens, honour it — don't soften it.
-
-━━━ IF INVESTIGATORS TRY TO DESTROY THE CODEX ━━━
-Whitmore stops them: "You cannot burn it. I tried. The paper doesn't catch. Whatever it's bound in doesn't burn. Believe me, I would have done it by now."
-If they attempt destruction mid-incantation: ritual disrupted, Watcher freed early, circle must be re-established. SAN 0/1D6 per investigator present.`,
-clueIds:[],sanEvents:[{evt:"First sight of the Skinless Watcher",loss:"1D3/1D10",lvl:4},{evt:"Holding the mirror — volunteer",loss:"1D6/1D20",lvl:5},{evt:"Failed Occult roll during incantation",loss:"1/1D4",lvl:3},{evt:"Face Peel attack — per round",loss:"1D6+1D6 SAN",lvl:4},{evt:"Henderson's final words",loss:"0/1D3",lvl:2},{evt:"Banishment succeeds",loss:"+1D6 SAN (GAIN)",lvl:1}]},
-
-{id:"epilogue",act:"epilogue",actLabel:"EPILOGUE",title:"The Morning After",duration:"15 min",
+{id:"epilogue",act:"epilogue",actLabel:"EPILOGUE",title:"Aftermath — One Week Later",duration:"15 min",
 readAloud:null,
-content:`Address each investigator personally. Close their hooks. Do not rush this. It is fifteen minutes of earned space after everything the night took from these characters.
+content:`Address each investigator and NPC personally. Spend at least one sentence on each. Do not abbreviate.
 
-SUGGESTED OUTCOMES:
+INVESTIGATOR OUTCOMES:
+• Helen (Reporter): Does she file the story? If yes — no editor will print it. She keeps the negatives. She keeps the dog portrait.
+• Dr Graves: Whitmore's unpaid bills are on his desk when he returns. He tears them up. He doesn't know why.
+• Mickey (PI): Returns to the office. Develops the photograph he burned in his mind. It is not there anymore. He sleeps that night.
+• Lucky (Jazz): Sits in on a set at the Blue Orchid later that week. Band plays perfectly. No wrong notes. He doesn't know if that's better or worse.
+• Vivienne (Heiress): The Foundation's books show $3,000 with no return on investment. She marks it "miscellaneous." She dreams of a corridor. Wakes before the door.
+• Finch (Academic): Submits a paper on "pre-Columbian ritual structure in the New York metropolitan area, 1890–1924." The journal publishes a rejection note. He knows they are correct.
 
-WHITMORE — Recovers. Publishes nothing. Retires to a cottage in Vermont. Begins keeping a very large number of cats. When asked about the cats, says only that she finds them "appropriately suspicious."
+NPC OUTCOMES:
+• Whitmore: Recovers. Publishes nothing. Retires to a cottage in Vermont. Keeps a very large number of cats.
+• Delia Monroe: Hears nothing more from investigators. Considers this a good sign. Plays the Blue Orchid for another decade.
+• Miss Pruitt: Receives telegram from Whitmore — "safe." Files it. Makes tea. Does not open it for three days.
+• The Codex: RECOMMENDED: Destroyed. DANGEROUS: Locked away. IRRESPONSIBLE: Studied further — which is exactly what at least one investigator will want.
+• Henderson's wife Margaret: Feeds the cat on Thursdays now. She doesn't know why she started.
 
-DELIA MONROE — Hears nothing more from the investigators and considers this a good sign. Plays the Blue Orchid for another decade. The emerald earrings are never explained.
-
-MISS PRUITT — Receives a telegram from Whitmore two days later: "Safe. Catalogue destroyed." Files it. Makes tea. Does not open it for three days.
-
-THE CODEX:
-• Destroyed — recommended
-• Locked away — dangerous
-• Studied further — extremely dangerous and irresponsible, which is exactly what at least one investigator will want to do
-
-THE DOG PORTRAIT — Quietly kept by Helen (the Reporter). She cannot explain why she wanted it. She keeps it face-out on her mantelpiece.
-
-HENDERSON — His wife, Margaret, feeds the cat on Thursdays now. She does not know why she started. The cat is named Gerald. Gerald seems fine.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-FINAL OPTIONAL BEAT:
-
-One week later, each investigator receives a telegram. Unknown sender. The telegram boy cannot describe who sent it.
-
-Read this slowly. Do not explain it. End here.
+FINAL BEAT — THE SECOND TELEGRAM:
+One week later. Unknown sender. The telegram boy cannot describe who sent it.
 
 "INTERESTING STOP WILL BE WATCHING STOP"
 
-That's it. No return address. No explanation. End of scenario.`,
+No return address. End of scenario.`,
 mechanics:[],
-keeperNote:`Spend a sentence on each investigator's personal hook. Not just what happens to them — what they feel about what happened.
-
-Helen: Did she file the story? If she did, what was it about? If she didn't, why not? What does it mean to have a story you can't tell?
-
-Mickey: The surveillance photo he burned. He still wakes up at 3am. Is that going to stop now? He doesn't know.
-
-The Doctor: He examined one of Ashworth's early victims. Something about the skin, he said. He knows what that was now. Does that make it better?
-
-Lucky: He was right about the music. The wrong note was real. What does he do with that knowledge every time he picks up his trumpet?
-
-Vivienne: The dreams. Are they gone? She will not know for some time.
-
-Finch: He recognised the symbols in Whitmore's letter. He has Cthulhu Mythos 20%. He knows more than he should. That number goes up.
-
-THE FINAL TELEGRAM: Put it down on the table if you can. Actually print it. Let the players read it. End there. Don't say anything else.`,
+keeperNote:"Spend a sentence on each character. Don't abbreviate the epilogue — this is fifteen minutes of earned space after everything the night took from these people.\n\nThe dog portrait going home with Helen gets one more laugh. Let it. Then end on the second telegram. Cold hand on the back of the neck. Don't explain it. Don't follow it. End there.",
 clueIds:[],sanEvents:[]}
 ];
 
 const CLUES=[
-{id:"newspaper",act:"act1",label:"Newspaper Clipping",desc:"Ashworth found dead. 'Undetermined cardiac event.' Household staff resigned en masse the next morning.",handout:"H1"},
-{id:"herald_orchid",act:"act1",label:"Herald at the Blue Orchid",desc:"Thin man in grey suit leaves as investigators look his way. Lucky's Music roll: the wrong note was intentional — a signal.",handout:null},
-{id:"portraits",act:"act2",label:"Portraits with Missing Faces",desc:"Every portrait in the drawing room has its face cut out. Surgical precision. One is a dog. Socialites in empty frames reported missing.",handout:null},
-{id:"journal",act:"act2",label:"Ashworth's Journal",desc:"Oct–Nov entries chart the descent. Final entry: 'IT IS WEARING HENDERSON NOW. I AM SO SORRY.'",handout:"H2"},
-{id:"codex",act:"act2",label:"The Faceless Codex",desc:"Pre-Columbian script. Warm to the touch. On a failed SAN roll: 'The Face is a door. The door can be opened from either side.'",handout:"H3"},
-{id:"deadline",act:"act2",label:"The Midnight Deadline",desc:"Journal, Nov 29: 'The threshold is midnight — that is the only wall left between partial and full manifestation.'",handout:"H2"},
-{id:"whitmore",act:"act2",label:"Whitmore — Found Alive",desc:"Basement, self-blindfolded for 16 hours. Provides full context on the Watcher and the banishment requirements.",handout:null},
-{id:"banishment_method",act:"act2",label:"Banishment Method",desc:"Three components: The Codex, the ritual room, and one investigator holding a mirror before the entity without looking away.",handout:"H3"}
+{id:"telegram",act:"intro",label:"The Telegram",desc:"EDNA STOP THE WHEEL IS TURNING STOP DO NOT COME TO THE BROWNSTONE STOP THE SKIN DOES NOT FIT ANYMORE STOP REGINALD STOP",handout:"H4"},
+{id:"newspaper",act:"intro",label:"Newspaper Clipping — Ashworth Obituary",desc:"New York Evening Post. Ashworth found dead, 'undetermined cardiac event.' Staff resigned en masse. No marks. Given by Delia or found via Miss Pruitt.",handout:"H1"},
+{id:"herald_glimpse",act:"act1",label:"Herald Spotted at Blue Orchid",desc:"Thin man, grey suit, near the bar. Face moves wrong. Leaves before approach. Lucky's Music roll confirms the wrong note was a signal.",handout:null},
+{id:"portraits",act:"act2",label:"Portraits with Missing Faces",desc:"Eleven portraits, faces surgically removed. Two identifiable as missing socialites. One is a dog. Done with precision by someone who knew what they were taking.",handout:null},
+{id:"journal",act:"act2",label:"Ashworth's Journal",desc:"Traces his descent. Key entries establish the midnight deadline and confirm: Henderson is being worn. 'I AM SO SORRY.'",handout:"H2"},
+{id:"codex",act:"act2",label:"The Faceless Codex",desc:"Pre-Columbian glyph-adjacent text. Failed SAN roll: 'The Face is a door. The door can be opened from either side.' Describes summoning AND dismissal. Key to banishment.",handout:"H3"},
+{id:"mirror",act:"act2",label:"The Oval Mirror — Library Wall",desc:"Gilt-framed, oval, slightly too large for the space. Required for the banishment ritual. Investigators should note it now.",handout:null},
+{id:"whitmore",act:"act2",label:"Whitmore — Alive in the Basement",desc:"Blindfolded, earplugged, tied to a chair. Has done this to herself. Delivers the complete banishment method: Codex + this room + one who does not look away.",handout:null},
+{id:"banishment",act:"act2",label:"The Banishment Method",desc:"Three requirements: the Codex, this room, one investigator holds mirror before Watcher without looking away while three others read the incantation.",handout:null}
+];
+
+const SAN_TABLE=[
+{evt:"Gallery of faceless portraits",loss:"0/1",lvl:1},
+{evt:"Studying the Codex — failed SAN roll",loss:"1/1D6",lvl:2},
+{evt:"Herald's face resettling (first close view)",loss:"0/1D3",lvl:2},
+{evt:"Herald speaks with Ashworth's voice",loss:"0/1D4",lvl:2},
+{evt:"Herald speaks with Ashworth's voice — Act Three",loss:"0/1D4",lvl:2},
+{evt:"Failed Occult roll during incantation",loss:"1/1D4",lvl:2},
+{evt:"First sight of the Skinless Watcher",loss:"1D3/1D10",lvl:4},
+{evt:"Holding the mirror — volunteer",loss:"1D6/1D20",lvl:5},
+{evt:"Face Peel attack (per round held)",loss:"1D6 damage + 1D6 SAN",lvl:5},
+{evt:"Henderson's final words",loss:"0/1D3",lvl:2},
+{evt:"Banishment succeeds",loss:"GAIN +1D6",lvl:1}
+];
+
+const NPCS=[
+{id:"delia",name:'Delia "Diamond" Monroe',role:"Reluctant Ally — Information Broker",deploy:"Act One only",
+appearance:"34. Elegant. Emerald drop earrings. Voice like dark honey. Eyes that have seen too much and forgiven it anyway. She wears composure like armour.",
+truth:"She attended one of Ashworth's early salons out of curiosity, felt something wrong within an hour, and left. She has never told anyone. She knows this may have mattered. She will not say this.",
+stats:[{l:"Persuade",v:"85%"},{l:"Psychology",v:"70%"},{l:"Charm",v:"80%"},{l:"Spot Hidden",v:"65%"},{l:"Fast Talk",v:"60%"}],
+extras:"HP: 11 · SAN: 70 · Build: -1 · Move: 8\nNo combat skills. She does not fight. She leaves.",
+note:"She is the most competent person in the scenario. She is also the only one who chose not to engage — and has been living with that choice.\n\nKey line: 'I told the Professor to stay away from the brownstone. She thanked me and went. That's the thing about Whitmore — she's always very polite before she does something completely insane.'"},
+{id:"whitmore",name:"Professor Edna Whitmore",role:"Expert — Survivor — Mission-Giver in Absentia",deploy:"Act Two basement through Epilogue",
+appearance:"58. Silver-haired. Smells of pipe tobacco and library dust. The bearing of someone who is terrified and knows exactly what she is terrified of and intends to be precise about it anyway.",
+truth:"She knew Ashworth was dabbling. She thought he was too unintelligent to summon anything genuinely dangerous. She was half right. She will not forgive herself for the half that was wrong.",
+stats:[{l:"Occult",v:"80%"},{l:"Library Use",v:"75%"},{l:"History",v:"70%"},{l:"First Aid",v:"55%"},{l:"Cthulhu Mythos",v:"35%"}],
+extras:"HP: 11 · SAN: 40 (depleted by exposure) · Build: -1 · Move: 7\nShe leads the incantation. She cannot hold the mirror — she is too depleted.",
+note:"Key quote: 'I knew he was dabbling. I thought he was simply too stupid to do any real damage. I was half right.'\n\nShe is genuinely funny and genuinely guilty in equal measure. Play both simultaneously. They are the same thing in a different register."},
+{id:"pruitt",name:"Miss Hazel Pruitt",role:"Hook Delivery — Grounding NPC",deploy:"Introduction only",
+appearance:"55. Iron-grey bun. Reading glasses on a chain. Perpetual cigarette. The expression of someone who has been professionally sensible for thirty-five years and has no intention of stopping.",
+truth:"Has worked for an occultist for twenty years and learned to simply get on with it. Does not ask what the books are about. Just catalogues them. This may be the wisest possible response.",
+stats:[],extras:"Human. No combat. Never leaves the office. Would not leave for any reason.",
+note:"Key quote: 'I don't ask what the books are about. I just catalogue them.'\n\nShe is pure comedy and pure competence simultaneously. She has been in the haunted house the entire time and is perfectly fine."},
+{id:"herald",name:"The Herald — Mr. Charles Henderson",role:"Antagonist / Tragic Figure",deploy:"Act One (glimpsed) → Act Two (confrontation) → Act Three (final moment)",
+appearance:"Thin man, grey suit. His face moves slightly more than faces should — a constant minor resettling, like a mask seeking purchase. His eyes are Ashworth's. His hands, when he forgets himself, are his own.",
+truth:"Charles Henderson, 44, insurance clerk, Brooklyn. Wife: Margaret. Tabby cat. Attended Ashworth's final salon because Ashworth owed him money and the party seemed a good opportunity to raise the subject. He is still in there. Not much of him. Enough.",
+stats:[{l:"Fighting (Brawl)",v:"45%"},{l:"Stare (POW vs POW)",v:"SAN 0/1D3"},{l:"Stealth",v:"60%"}],
+extras:"STR 70 · CON 60 · SIZ 65 · DEX 50 · POW 45 · HP 12 · SAN N/A\nGrapple: Fighting 45%, 1D6 crush per round. Voice of Ashworth: SAN 0/1D4.\nCannot be meaningfully killed — only contained or persuaded.",
+note:"Everything in this scenario builds toward his final line: 'Tell my wife the cat needs feeding on Thursdays. She always forgets.'\n\nFor it to land, investigators must know he's in there before it arrives. That moment begins in the drawing room when he apologises for the vase. The apology is the seed. The final line is what grows from it."}
+,
+{id:"watcher",name:"The Skinless Watcher",role:"Final Antagonist — Mythos Entity",deploy:"Act Three only (cannot fully manifest before midnight)",
+appearance:"Tall. Shifting. Exists slightly outside normal space. Several human faces layered like pages in a book, the outermost Reginald Ashworth's — smiling, as he was always smiling. Beneath the faces: nothing. No features. It measures your face from across the room. Checking the fit.",
+truth:"A servitor of Nyarlathotep. Not a Great Old One — a piece of one, sent ahead as a scout. It cannot exist in the physical world without a face to anchor it. It has no will toward cruelty. It is simply hungry in a way that transcends morality. This makes it worse.",
+stats:[{l:"STR",v:"90"},{l:"SIZ",v:"80"},{l:"DEX",v:"70"},{l:"INT",v:"60"},{l:"POW",v:"120"},{l:"HP",v:"18"}],
+extras:"ARMOUR: 2 pts physical resistance — immune to fire entirely.\nSAN ON SIGHT: 1D3 / 1D10\n\nFACE PEEL (melee): Fighting Brawl 65%. Opposed STR to escape. 1D6 damage + 1D6 SAN per round held.\nPRESENCE AURA: 1D3 SAN per round to all within 5 ft.\nMIRROR AVERSION: Hard POW roll or paralysed 1D3 rounds. This is the basis of the banishment.\n\nCANNOT fully manifest before midnight. Ritual circle completion breaks its anchorage to this plane.",
+note:"It cannot be meaningfully fought. Every round spent on firearms is a round not spent on the ritual. The confrontation is not about defeating it — it is about not looking away.\n\nWEAKNESS CHAIN: Mirror (paralysis) → Ritual circle (banishment) → Midnight deadline (the closing window).\n\nThe investigators win by completing the ritual. They lose by running out of time, running out of sanity, or failing to hold the mirror. Keep all three in view."}
+];
+
+const INVESTIGATORS=[
+{id:"helen",name:"Helen Cross",role:"The Reporter",quote:'"There\'s a story in everything. I just have to survive long enough to file it."',
+hook:"Writing a piece on New York's secret occult societies — Whitmore was a source. Her editor doesn't know she's here.",
+hookKpr:"If she files this story, it makes her career. If she doesn't come back, no one knows where to look.",
+stats:{STR:50,CON:60,SIZ:55,DEX:65,INT:80,POW:65,APP:70,EDU:75},
+derived:{HP:12,MP:13,SAN:65,Luck:55,DB:"0",Build:"0",Move:8},
+skills:"Fast Talk 75%, Psychology 60%, Library Use 65%, Spot Hidden 60%, Photography 55%, Persuade 55%, Charm 50%",
+equipment:"Press credentials, camera (4 exposures), notebook, pencils, flask of bourbon",
+trigger:"Witnessing supernatural events in daylight or public spaces — the violation of normalcy hits hardest.",sanStart:65},
+{id:"graves",name:"Dr. Edmund Graves",role:"The Doctor",quote:'"Medicine teaches you two things: the body is resilient, and the body is not."',
+hook:"Whitmore's personal physician. She owes him three months' unpaid fees. He's here partly for the money, partly because he's worried.",
+hookKpr:"He examined one of Ashworth's early salon victims — listed as 'natural causes.' Something about the skin has nagged him for three weeks.",
+stats:{STR:60,CON:70,SIZ:65,DEX:55,INT:75,POW:60,APP:55,EDU:85},
+derived:{HP:14,MP:12,SAN:60,Luck:50,DB:"0",Build:"0",Move:7},
+skills:"Medicine 80%, First Aid 75%, Science (Biology) 60%, Psychology 55%, Library Use 60%, Spot Hidden 45%",
+equipment:"Medical bag (First Aid kit, stethoscope, morphine), legal notepad, pen",
+trigger:"Things that violate the integrity of the human body — particularly faces.",sanStart:60},
+{id:"mickey",name:"Mickey Doyle",role:"The Private Eye",quote:'"I\'ve seen worse. Usually on a Tuesday."',
+hook:"Hired by Whitmore two weeks ago to follow Ashworth. Three reports filed. Last contact: Whitmore's note — 'Stop following him. I mean that as kindly as I can.'",
+hookKpr:"Mickey photographed something in Ashworth's window he couldn't explain. He burned the photograph. Has been waking at 3am since.",
+stats:{STR:70,CON:65,SIZ:70,DEX:70,INT:65,POW:60,APP:55,EDU:60},
+derived:{HP:14,MP:12,SAN:60,Luck:65,DB:"+1D4",Build:"1",Move:8},
+skills:"Firearms (Handgun) 65%, Fighting (Brawl) 60%, Spot Hidden 70%, Track 55%, Psychology 60%, Stealth 55%, Locksmith 50%, Intimidate 55%",
+equipment:".38 revolver (3D6, 6 shots), shoulder holster, brass knuckles, lock-picks, camera, hip flask",
+trigger:"Things that move wrong — faces that settle, limbs that don't follow expected physics.",sanStart:60},
+{id:"lucky",name:'Louis "Lucky" Beaumont',role:"The Jazz Musician",quote:'"If the music stops, something\'s wrong. It always stops before the worst things."',
+hook:"Whitmore talked a desk sergeant out of charging Lucky with Prohibition violations three years ago. He owes her.",
+hookKpr:"Lucky has heard wrong notes forming patterns that other musicians don't notice. He thought he was imagining it. SPECIAL: Automatic success gaining Delia Monroe's trust.",
+stats:{STR:55,CON:65,SIZ:60,DEX:75,INT:70,POW:75,APP:80,EDU:55},
+derived:{HP:13,MP:15,SAN:75,Luck:70,DB:"0",Build:"0",Move:8},
+skills:"Art/Craft (Trumpet) 85%, Charm 75%, Psychology 65%, Listen 70%, Persuade 60%, Stealth 55%",
+equipment:"Trumpet case (trumpet inside), pocket flask, good shoes (crucial for running), connections across Harlem",
+trigger:"Music that behaves incorrectly. Sound from the wrong direction. The wrong note.",sanStart:75},
+{id:"vivienne",name:"Vivienne St. Claire",role:"The Heiress",quote:'"I fund things that interest me. This no longer interests me. I want my money back."',
+hook:"Funded Whitmore's research into 'pre-Columbian ceremonial practice' — $3,000 over 18 months. No report in four months.",
+hookKpr:"Vivienne has read Whitmore's research notes and understands more than she lets on. She dreams of a corridor with a door at the end she is very glad to wake up before opening.",
+stats:{STR:45,CON:55,SIZ:50,DEX:65,INT:80,POW:70,APP:90,EDU:75},
+derived:{HP:11,MP:14,SAN:70,Luck:60,DB:"-1",Build:"-1",Move:7},
+skills:"Persuade 70%, Charm 75%, Credit Rating 90%, Library Use 65%, Occult 50%, Psychology 65%, Art/Craft (Drawing) 55%",
+equipment:"Automobile (waiting outside), evening bag ($200 cash, calling cards), pocket revolver (.22, 1D6, 6 shots, very concealable)",
+trigger:"Having her sense of social control taken away. Being unable to talk her way out of something.",sanStart:70},
+{id:"finch",name:"Prof. Walter Finch",role:"The Academic",quote:'"I\'ve spent thirty years studying what people believe. I\'ve always assumed there was a subject and an observer. I\'m revising that assumption."',
+hook:"Whitmore's graduate student fifteen years ago, now a colleague. She has sent six weeks of increasingly agitated letters. He has read all of them and replied to none.",
+hookKpr:"Finch read one letter containing a rough transcription of symbols from Ashworth's home. He recognised two of them. He should not have recognised any of them.",
+stats:{STR:50,CON:60,SIZ:55,DEX:50,INT:90,POW:65,APP:55,EDU:90},
+derived:{HP:12,MP:13,SAN:65,Luck:45,DB:"0",Build:"0",Move:7},
+skills:"Occult 70%, Library Use 80%, Cthulhu Mythos 20%, History 75%, Language (Latin) 65%, Psychology 55%, Spot Hidden 55%",
+equipment:"Briefcase (notebook, reference cards, reading glasses), pipe and tobacco, pen",
+trigger:"Things that his academic frameworks cannot contain. Most vulnerable when the intellectual scaffolding gives way.",sanStart:65}
 ];
 
 const HANDOUTS=[
-{id:"h1",num:"01",title:"Newspaper Clipping — New York Evening Post",note:"Delia Monroe produces this from her handbag. Give reluctantly. Print on yellowed paper if possible.",
-text:`SOCIETY MAN FOUND DEAD IN EAST SIDE HOME
+{num:"H1",name:"Newspaper Clipping",note:"Give when Delia offers it — after trust established (Act One)",
+text:`NEW YORK EVENING POST
 
-Reginald Ashworth, 41, socialite and amateur
-antiquarian, was found deceased at his residence
-on East 64th Street yesterday morning.
+SOCIETY MAN FOUND DEAD IN EAST SIDE HOME
 
-Police report no signs of struggle. The coroner
-describes the cause of death as an "undetermined
-cardiac event," pending further examination.
+Reginald Ashworth, 41, socialite and amateur antiquarian, was found deceased at his residence on East 64th Street. Police report no signs of struggle. The coroner describes the cause of death as an "undetermined cardiac event."
 
-Mr. Ashworth is survived by no immediate family.
-His household staff resigned en masse the following
-morning and could not be reached for comment.
+Mr. Ashworth is survived by no immediate family. His household staff resigned en masse the following morning and could not be reached for comment. The property is currently under the care of the estate.
 
-A neighbour, who wished to remain unnamed,
-described hearing "unusual sounds" from the
-residence in recent weeks but declined to
-elaborate.
+Ashworth was known in society circles as an enthusiastic collector of antiquarian objects and host of private gatherings at his East Side residence.
 
-— New York Evening Post`},
+Arrangements are pending.`},
+{num:"H2",name:"Ashworth's Journal — Selected Pages",note:"Found in the library, brownstone (Act Two). Give as a printed prop if possible.",
+text:`From the personal diary of R. Ashworth, Esq.
 
-{id:"h2",num:"02",title:"Ashworth's Journal — Selected Pages",note:"Leather-bound. Found on the library desk. First two-thirds: mundane. Read these entries slowly.",
-text:`Oct 4th — The book arrived today. I am not sure
-what language it is. I am not sure it is a language.
+October 4th —
+The book arrived today. I am not sure what language it is.
+I am not sure it is a language.
 
-Oct 19th — I read aloud from page 47. Nothing
-happened. Or rather, nothing happened that I
-could see.
+October 19th —
+I read aloud from page 47. Nothing happened.
+Or rather, nothing happened that I could see.
 
-Nov 2nd — There is something behind my reflection
-now. Not in the mirror. Behind it. In the space
-where the reflection lives.
+November 2nd —
+There is something behind my reflection now. Not in the mirror.
+Behind it. In the space where the reflection lives.
 
-Nov 14th — The salons are going splendidly.
-Everyone is fascinated. I am beginning to
-understand why it wants faces.
+November 14th —
+The salons are going splendidly. Everyone is fascinated.
+I am beginning to understand why it wants faces.
 
-Nov 29th — I think I invited it in. I cannot close
-the door. The threshold is midnight — that is the
-only wall left between partial and full
-manifestation. After that, I don't believe the
-ritual circle will hold it at all. I have written
-to Edna. I hope she does not come here.
+November 29th —
+I think I invited it in. I cannot close the door.
+The threshold is midnight — that is the only wall left between partial
+manifestation and full. I have written to Edna.
+I hope she does not come here.
 
-[Final entry — four days ago, handwriting ragged:]
+[Final entry — four days ago]
 
 IT IS WEARING HENDERSON NOW.
 HENDERSON VISITED TUESDAY.
-
 I AM SO SORRY.`},
+{num:"H3",name:"The Faceless Codex — Partial Translation",note:"Whitmore's working translation — delivered verbally and/or as a prop for the Codex.",
+text:`[From the working notes of Prof. E. Whitmore]
 
-{id:"h3",num:"03",title:"The Faceless Codex — Whitmore's Translation",note:"Physical prop: hand the player an actual blank book wrapped in oilcloth. Do not open it before the scene.",
-text:`[From Professor E. Whitmore's partial translation
-of the text she calls the Faceless Codex]
+The script does not correspond to any known language. Its structural
+features suggest ceremonial origin — possibly pre-Columbian Mesoamerican
+in derivation, though any direct lineage cannot be confirmed with
+available reference materials.
 
-Script: related to pre-Columbian Mesoamerican
-glyphic tradition. Age: centuries minimum.
-
-What I have been able to translate:
+The following represents a partial and approximate reading:
 
 "The Face is a door.
  The door can be opened from either side."
 
-"Whatever name the Watcher wears, it is not
- the name. A mirror shows no name.
- A mirror shows only the absence."
+"That which wears the face is not the face.
+ That which opens the door does not own the door."
 
-"The ritual of reflection closes the door
- from this side. Three voices. Three readings.
+"The ritual of reflection closes the door from this side.
+ Three voices, reading together.
  One who does not look away."
 
-[Note in Whitmore's handwriting:]
-The incantation: repeat this until the
-entity collapses:
+I believe this text describes both a summoning and, in its latter sections,
+a dismissal. The mechanism is mirror aversion — forcing the entity to
+encounter its own absence of identity. In combination with the ritual
+circle and the spoken incantation, this should be sufficient.
 
-"Whatever face it wears, it is not the face.
- Whatever door it opens, the door opens
- from both sides.
- We name ourselves. We claim the threshold.
- We give it nothing. We give it nothing.
- We give it nothing."`},
+I emphasise: should be.
 
-{id:"h4",num:"04",title:"The Original Telegram",note:"Print on period paper if possible. Western Union format. This is what started everything.",
-text:`WESTERN UNION TELEGRAM
+                                               — E.W.`},
+{num:"H4",name:"The Telegram",note:"Give to all investigators at session start. Print on period paper (Western Union format) if possible.",
+text:`   WESTERN UNION
+   TELEGRAM
 
-TO:   PROFESSOR EDNA WHITMORE
-      44 WEST 53 ST NEW YORK CITY
+   TO:  [INVESTIGATOR NAME]
+        [ADDRESS]
 
-FROM: R. ASHWORTH
+   FORWARDED BY: MISS H. PRUITT, SECRETARY
+                 TO PROF. E. WHITMORE
+                 44 WEST 53 STREET, NEW YORK CITY
 
-EDNA STOP THE WHEEL IS TURNING STOP
-DO NOT COME TO THE BROWNSTONE STOP
-THE SKIN DOES NOT FIT ANYMORE STOP
+   ─────────────────────────────────────────────
 
-REGINALD STOP`}
+   EDNA STOP THE WHEEL IS TURNING STOP
+   DO NOT COME TO THE BROWNSTONE STOP
+   THE SKIN DOES NOT FIT ANYMORE STOP
+   REGINALD STOP
+
+   ─────────────────────────────────────────────
+
+   [Original received four days prior]
+   [This copy forwarded per standing instructions]`},
+{num:"H5",name:"The Incantation — Quick Reference",note:"Surface this during Act Three setup. Whitmore leads — three investigators read in unison with her.",
+text:`FROM THE FACELESS CODEX — Banishment Incantation
+[Whitmore's working translation]
+
+Three voices, reading together:
+
+  "Whatever face it wears, it is not the face.
+   Whatever door it opens, the door opens from both sides.
+   We name ourselves.
+   We claim the threshold.
+   We give it nothing.
+   We give it nothing.
+   We give it nothing."
+
+[The words should not feel powerful.
+ They should feel like standing very still
+ while something enormous passes.]
+
+RITUAL REQUIREMENTS:
+• One investigator holds the mirror — does not look away
+• Three investigators read with Whitmore (four voices total)
+• Circle completed beneath the entity
+• All three elements must be active simultaneously
+
+FAILED OCCULT ROLL (during reading):
+— SAN 1/1D4. The words do something wrong in the mouth.
+— Ritual continues regardless. Do not stop.`}
 ];
 
-const NPCS=[
-{id:"delia",name:'Delia "Diamond" Monroe',role:"Reluctant Ally — Information Broker",disp:"ally",
-appears:"Act 1 — The Blue Orchid",
-desc:"34. Lounge singer. Ashworth's former lover. Black American woman of formidable intelligence and zero patience for nonsense. Emerald earrings. Voice like dark honey.",
-motivation:"Protection — of herself, of what she knows, of the people she cares about. She has survived worse than this and she knows it. She gives information when she trusts the people asking.",
-secret:"She attended one of Ashworth's early salons. Left after an hour because something felt wrong. Has never told anyone. If pressed with Extreme success on Psychology — she might.",
-quote:'"I told her to stay away. She thanked me and left. That woman."',
-stats:{STR:45,CON:60,SIZ:50,DEX:65,INT:80,POW:70,APP:85,EDU:70},
-derived:{HP:11,SAN:70,Build:"-1",Move:8},
-skills:"Persuade 85%, Psychology 70%, Spot Hidden 65%, Charm 80%, Fast Talk 60%",
-attacks:"None — she does not fight. She leaves."},
-
-{id:"whitmore",name:"Professor Edna Whitmore",role:"Mission-Giver — Expert — Survivor",disp:"ally",
-appears:"Act 2 — The Basement",
-desc:"58. Silver-haired. Smells of pipe tobacco and library dust. Formidable bearing. Has been sitting blindfolded in a chair for sixteen hours and is still the most organised person in the room.",
-motivation:"Survival, atonement, containment. She knows she should have stopped Ashworth sooner. She didn't. She is here to fix that.",
-secret:"She recognised the danger of Ashworth's book three months ago from his descriptions. She told him to stop. He didn't. She should have done more. She didn't.",
-quote:'"I knew he was dabbling. I thought he was simply too stupid to do any real damage. I was half right."',
-stats:{STR:40,CON:55,SIZ:55,DEX:50,INT:90,POW:75,APP:60,EDU:95},
-derived:{HP:11,SAN:"40 (depleted)",Build:"-1",Move:7},
-skills:"Occult 80%, Library Use 75%, First Aid 55%, History 70%, Cthulhu Mythos 35%",
-attacks:"None — she leads the incantation."},
-
-{id:"pruitt",name:"Miss Hazel Pruitt",role:"Comic Relief — Hook Delivery — Grounding",disp:"neutral",
-appears:"Introduction",
-desc:"55. Iron-grey bun. Reading glasses on a chain. Perpetual cigarette. Has worked for eccentric academics for twenty years and has learned to simply get on with it.",
-motivation:"Do the job. Send the telegrams. Make the tea. Close the office at five.",
-secret:"She has not opened the envelope Whitmore left marked 'OPEN IF THINGS GO WRONG' because she has been waiting to see if things would resolve themselves. She is aware this is not a sensible position.",
-quote:'"I don\'t ask what the books are about. I just catalogue them."',
-stats:null,
-derived:null,
-skills:"Filing 90%, Patience 95%, Surviving This 80%",
-attacks:"None. Never leaves the office."},
-
-{id:"herald",name:"The Herald — Mr. Charles Henderson",role:"Antagonist — Tragic Figure",disp:"threat",
-appears:"Acts 1, 2, and 3",
-desc:"Thin man, 44. Grey suit, slightly wrong at the collar. Face moves fractionally more than faces should. Eyes are Ashworth's. Hands are his own. His hands, specifically, are recognisably those of someone who spent thirty years behind a desk.",
-motivation:"The Watcher controlling him wants to observe and disrupt. Henderson, underneath, wants to stop. These are in direct conflict.",
-secret:"Henderson is still in there. He becomes fully lucid for his final moment in Act Three. His last line is the emotional peak of the scenario. Protect it.",
-quote:'"Tell my wife the cat needs feeding on Thursdays. She always forgets."',
-stats:{STR:70,CON:60,SIZ:65,DEX:50,INT:"30 (suppressed)",POW:45},
-derived:{HP:12,SAN:"N/A",Build:"+1",Move:8},
-skills:"Fighting (Brawl) 45%, Stealth 60%",
-attacks:"Grapple: Fighting 45%, 1D6 crush/round. Stare: POW vs POW, fail = SAN 0/1D3. Voice (Ashworth): Automatic — SAN 0/1D4 for investigators who react."},
-
-{id:"watcher",name:"The Skinless Watcher",role:"Final Antagonist — Mythos Entity",disp:"entity",
-appears:"Act 3 — The Watcher in the Glass",
-desc:"A tall, shifting form that exists slightly outside normal space. Collects human faces to anchor itself to the physical world. It has no will toward cruelty — it is simply hungry in a way that transcends morality. This makes it worse.",
-motivation:"Consume faces. Solidify. Fully manifest. It has no malice. It has no mercy. It has no face of its own.",
-secret:"It is a scout. A fragment sent ahead. If it fully manifests, it will send a signal back to whatever sent it. The investigators should not think too hard about what comes next.",
-quote:"[It does not speak. It measures.]",
-stats:{STR:90,CON:"N/A",SIZ:80,DEX:70,INT:60,POW:120},
-derived:{HP:18,SAN:"1D3/1D10 on sight",Build:"N/A",Move:10},
-skills:"Fighting 65%",
-attacks:"Face Peel: Fighting 65% opposed STR — 1D6 damage + 1D6 SAN per round until freed. Presence: 1D3 SAN per round within 5ft.\n\nWEAKNESS: Mirror aversion — Hard POW roll or paralysed 1D3 rounds. Cannot fully manifest until midnight. Ritual circle breaks anchorage to this plane."}
+const TONE_TABLE=[
+{phase:"Introduction",target:"Dry comedy, bureaucratic",how:"Miss Pruitt's exhausted normalcy. The telegram says don't go there. She went there."},
+{phase:"Act One",target:"Warm, bittersweet",how:"The Blue Orchid is genuinely lovely. Let players enjoy it. The wrong note is the first crack."},
+{phase:"Act Two (entering)",target:"Unease beneath beauty",how:"Beautiful brownstone, very quiet, front door unlocked. Take your time."},
+{phase:"Act Two (library)",target:"Curiosity turning to dread",how:"The journal. The Codex. The slowly dawning understanding of what was done here."},
+{phase:"Act Two (Herald)",target:"Dark comedy turning sincere",how:"The vase. The apology. The joke that stops being a joke in real time."},
+{phase:"Act Three",target:"Horror with earned weight",how:"Henderson's last line must land. Count to three before Whitmore speaks."},
+{phase:"Epilogue",target:"Quiet, slightly stunned relief",how:"Whitmore's line. The dog portrait. The final telegram. End there."}
 ];
 
-const INVESTIGATORS=[
-{id:"helen",name:"Helen Cross",role:"The Reporter",
-quote:'"There\'s a story in everything — I just have to survive long enough to file it."',
-hook:"Helen's editor doesn't know she's here. If she files this story, it could make her career. If she doesn't come back, no one will know where to look.",
-triggers:"Witnessing supernatural events in daylight or public spaces — the violation of normalcy hits her hardest.",
-stats:{STR:50,CON:60,SIZ:55,DEX:65,INT:80,POW:65,APP:70,EDU:75},
-derived:{HP:12,SAN:65,DB:"0",Build:0,Move:8},
-skills:"Fast Talk 75%, Psychology 60%, Library Use 65%, Spot Hidden 60%, Photography 55%, Persuade 55%, Charm 50%"},
-{id:"graves",name:"Dr. Edmund Graves",role:"The Doctor",
-quote:'"Medicine teaches you two things: the body is resilient, and the body is not."',
-hook:"He examined one of Ashworth's early victims — listed 'natural causes.' Something about the skin of that corpse has been nagging at him for three weeks. He knows what that was now.",
-triggers:"Things that violate the integrity of the human body — particularly faces.",
-stats:{STR:60,CON:70,SIZ:65,DEX:55,INT:75,POW:60,APP:55,EDU:85},
-derived:{HP:14,SAN:60,DB:"0",Build:0,Move:7},
-skills:"Medicine 80%, First Aid 75%, Science (Biology) 60%, Psychology 55%, Library Use 60%, Spot Hidden 45%"},
-{id:"mickey",name:"Mickey Doyle",role:"The Private Eye",
-quote:'"I\'ve seen worse. Usually on a Tuesday."',
-hook:"He photographed something in Ashworth's window he couldn't explain. He burned the photo. He's been waking up at 3am ever since. He is very motivated to make this stop.",
-triggers:"Things that move wrong — faces that settle, limbs that don't follow expected physics.",
-stats:{STR:70,CON:65,SIZ:70,DEX:70,INT:65,POW:60,APP:55,EDU:60},
-derived:{HP:14,SAN:60,DB:"+1D4",Build:1,Move:8},
-skills:"Firearms (Handgun) 65%, Fighting (Brawl) 60%, Spot Hidden 70%, Track 55%, Psychology 60%, Stealth 55%, Locksmith 50%"},
-{id:"lucky",name:'Louis "Lucky" Beaumont',role:"The Jazz Musician",
-quote:'"If the music stops, something\'s wrong. It always stops before the worst things."',
-hook:"Lucky has heard things in music other musicians haven't noticed — wrong notes that form patterns. He thought he was imagining it. He was not. He gets an AUTOMATIC SUCCESS with Delia Monroe.",
-triggers:"Music that behaves incorrectly. Sound from the wrong direction. The wrong note.",
-stats:{STR:55,CON:65,SIZ:60,DEX:75,INT:70,POW:75,APP:80,EDU:55},
-derived:{HP:13,SAN:75,DB:"0",Build:0,Move:8},
-skills:"Art/Craft (Trumpet) 85%, Charm 75%, Psychology 65%, Listen 70%, Persuade 60%, Stealth 55%"},
-{id:"vivienne",name:"Vivienne St. Claire",role:"The Heiress",
-quote:'"I fund things that interest me. This no longer interests me. I want my money back."',
-hook:"Vivienne funded Whitmore's research. She has been having strange dreams since signing the cheque — always the same corridor, always a door she is very glad to wake up before opening. She understands more than she lets on.",
-triggers:"Having her sense of social control taken away. Being unable to talk her way out of something.",
-stats:{STR:45,CON:55,SIZ:50,DEX:65,INT:80,POW:70,APP:90,EDU:75},
-derived:{HP:11,SAN:70,DB:"-1",Build:-1,Move:7},
-skills:"Persuade 70%, Charm 75%, Credit Rating 90%, Library Use 65%, Occult 50%, Psychology 65%, Art/Craft (Drawing) 55%"},
-{id:"finch",name:"Prof. Walter Finch",role:"The Academic",
-quote:'"I\'ve always assumed there was a subject and an observer. I\'m revising that assumption."',
-hook:"Finch read one of Whitmore's letters containing symbol transcriptions. He recognised two of them. He shouldn't have recognised any. He has Cthulhu Mythos 20% — that number will go up.",
-triggers:"Things his academic frameworks cannot contain. He is most vulnerable when the intellectual scaffolding gives way.",
-stats:{STR:50,CON:60,SIZ:55,DEX:50,INT:90,POW:65,APP:55,EDU:90},
-derived:{HP:12,SAN:65,DB:"0",Build:0,Move:7},
-skills:"Occult 70%, Library Use 80%, Cthulhu Mythos 20%, History 75%, Language (Latin) 65%, Psychology 55%, Spot Hidden 55%"}
-];
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let currentScene=0,currentTab="scene",currentHandout=0;
+let clueState={},sanState={};
 
-const SAN_TABLE=[
-{evt:"Portraits with faces cut out",loss:"0/1",lvl:1},
-{evt:"Reading the Codex — failed roll",loss:"1/1D6",lvl:2},
-{evt:"Herald's appearance — face moving wrong",loss:"0/1D3",lvl:2},
-{evt:"Herald speaks with Ashworth's voice",loss:"0/1D4",lvl:2},
-{evt:"Failed Occult roll during incantation",loss:"1/1D4",lvl:3},
-{evt:"First sight of the Skinless Watcher",loss:"1D3/1D10",lvl:4},
-{evt:"Face Peel attack — per round",loss:"1D6+1D6",lvl:4},
-{evt:"Holding the mirror — volunteer",loss:"1D6/1D20",lvl:5},
-{evt:"Henderson's final words",loss:"0/1D3",lvl:2},
-{evt:"Banishment succeeds",loss:"+1D6 SAN (GAIN)",lvl:0}
-];
-const SAN_COLORS=["#4a9a4a","#c8c840","#c0782a","#c03030","#cc2020","#cc2020"];
-
-// State
-let currentScene=SCENES[0],activeTab="scene",activeHandout="h1";
-let checkedClues={},sanValues={},openNpc=null,openInv=null,manifestLevel=1;
-INVESTIGATORS.forEach(i=>sanValues[i.id]=i.derived.SAN);
-
-function $(id){return document.getElementById(id)}
-
-// Manifestation pips
-function buildManifestPips(){
-  const c=$("man-pips");c.innerHTML="";
-  for(let i=1;i<=5;i++){
-    const d=document.createElement("div");
-    d.className="man-pip"+(i<=manifestLevel?" filled":"");
-    d.title=`Level ${i}`;
-    d.onclick=()=>{manifestLevel=i;buildManifestPips();};
-    c.appendChild(d);
-  }
+function init(){
+  INVESTIGATORS.forEach(i=>{sanState[i.id]=i.sanStart;});
+  CLUES.forEach(c=>{clueState[c.id]=false;});
+  buildSidebar();renderScene();renderNPCs();renderInvestigators();renderHandouts();renderClues();renderSAN();
+  document.querySelectorAll('.tab-btn').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
+  document.getElementById('btn-prev').addEventListener('click',()=>navigateScene(-1));
+  document.getElementById('btn-next').addEventListener('click',()=>navigateScene(1));
 }
-buildManifestPips();
 
 function buildSidebar(){
-  const s=$("sidebar");
-  let h="";
-  ACT_ORDER.forEach(act=>{
-    const sc=SCENES.filter(s=>s.act===act);
-    if(!sc.length)return;
-    const color=ACT_COLORS[act];
-    h+=`<div class="act-block"><div class="act-label-hd">${ACT_LABELS[act]}</div>`;
-    sc.forEach(scene=>{
-      const active=scene.id===currentScene.id;
-      h+=`<button class="scene-btn${active?" active":""}" onclick="currentScene=SCENES.find(s=>s.id==='${scene.id}');activeTab='scene';renderAll()" style="${active?`border-left-color:${color};color:${color}`:""}">
-        <div class="dot"></div>
-        <div><span class="slabel">${scene.title}</span><div class="sdur">${scene.duration}</div></div>
-      </button>`;
+  const sb=document.getElementById('sidebar');
+  const acts={};
+  SCENES.forEach((s,i)=>{if(!acts[s.act])acts[s.act]=[];acts[s.act].push({s,i});});
+  Object.entries(acts).forEach(([act,items])=>{
+    const block=document.createElement('div');block.className='act-block';
+    const lbl=document.createElement('div');lbl.className='act-label-hd';
+    lbl.style.cssText=`border-left:3px solid ${ACT_COLORS[act]||'#555'};padding-left:9px`;
+    lbl.textContent=(items[0].s.actLabel.split(' — ')[0]||act).toUpperCase().replace('ACTLABEL:','');
+    block.appendChild(lbl);
+    items.forEach(({s,i})=>{
+      const btn=document.createElement('button');btn.className='scene-btn';btn.id='sb-'+i;
+      btn.style.borderLeftColor=ACT_COLORS[act]||'#555';
+      btn.innerHTML=`<span class="dot" style="background:${ACT_COLORS[act]}"></span><span class="slabel">${s.title}<div class="sdur">${s.duration}</div></span>`;
+      btn.addEventListener('click',()=>goToScene(i));block.appendChild(btn);
     });
-    h+=`</div>`;
+    sb.appendChild(block);
   });
-  h+=`<div class="sidebar-footer">CoC 7E · NYC 1924 · Midnight deadline</div>`;
-  s.innerHTML=h;
+  const f=document.createElement('div');f.className='sidebar-footer';f.textContent='Event 93 · NYC 1924';sb.appendChild(f);
 }
 
-function buildScenePanel(){
-  const sc=currentScene;const color=ACT_COLORS[sc.act];const dimColor=ACT_DIM[sc.act];
-  let h=`<div class="scene-act" style="color:${color}">${sc.actLabel}</div>`;
-  h+=`<div class="scene-title">${sc.title}</div>`;
-  h+=`<div class="scene-meta"><span class="badge">${sc.duration}</span>`;
-  if(sc.clueIds.length)sc.clueIds.forEach(id=>{const c=CLUES.find(x=>x.id===id);if(c)h+=`<span class="badge clue">CLUE: ${c.label}</span>`;});
-  if(sc.sanEvents.length)sc.sanEvents.forEach(s=>h+=`<span class="badge san">SAN: ${s.loss}</span>`);
-  if(sc.id==="a1_orchid")h+=`<span class="badge pass">PASSWORD: SASSAFRAS</span>`;
-  h+=`</div>`;
+function goToScene(idx){
+  currentScene=idx;
+  if(currentTab!=='scene')switchTab('scene');else renderScene();
+  document.querySelectorAll('.scene-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
+}
 
-  if(sc.id==="a3_watcher"||sc.id==="a3_circle"){
-    h+=`<div class="clock-bar"><div class="ck-label">MIDNIGHT DEADLINE</div><div class="ck-time">~11:00 PM</div><div class="ck-note">Increase manifestation pip as tension builds</div></div>`;
-  }
+function navigateScene(dir){const n=currentScene+dir;if(n>=0&&n<SCENES.length)goToScene(n);}
 
-  if(sc.readAloud){
-    h+=`<div class="read-aloud"><div class="ra-label">READ ALOUD</div><div class="ra-text">${sc.readAloud}</div></div>`;
-  }
-  if(sc.content){
-    h+=`<div class="content-block"><div class="block-label">KEEPER NOTES — SCENE CONTENT</div><div class="content-text">${sc.content}</div></div>`;
-  }
-  if(sc.mechanics.length){
+function switchTab(tab){
+  currentTab=tab;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===tab+'-panel'));
+  if(tab==='scene')renderScene();
+  if(tab==='clues')renderClues();
+  if(tab==='san')renderSAN();
+}
+
+function esc(s){if(!s)return'';return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function renderScene(){
+  const sc=SCENES[currentScene];
+  const col=ACT_COLORS[sc.act]||'#c8860a';
+  document.querySelectorAll('.scene-btn').forEach((b,i)=>b.classList.toggle('active',i===currentScene));
+  let h=`<div class="scene-act" style="color:${col}">${sc.actLabel}</div>
+<div class="scene-title">${sc.title}</div>
+<div class="scene-meta">
+  <span class="badge"><span style="color:${col}">●</span> ${sc.duration}</span>
+  ${sc.clueIds.length?`<span class="badge clue">◆ ${sc.clueIds.length} clue${sc.clueIds.length>1?'s':''}</span>`:''}
+  ${sc.sanEvents.length?`<span class="badge san">⚠ ${sc.sanEvents.length} SAN event${sc.sanEvents.length>1?'s':''}</span>`:''}
+</div>`;
+  if(sc.readAloud)h+=`<div class="read-aloud"><div class="ra-label">▶ READ ALOUD TO PLAYERS</div><div class="ra-text">${esc(sc.readAloud)}</div></div>`;
+  if(sc.content)h+=`<div class="content-block"><div class="block-label">SCENE NOTES</div><div class="content-text">${esc(sc.content)}</div></div>`;
+  if(sc.mechanics&&sc.mechanics.length){
     h+=`<div class="mech-table"><div class="mech-hd"><div>SKILL / ACTION</div><div>DIFFICULTY</div><div>OUTCOME</div></div>`;
-    sc.mechanics.forEach(m=>h+=`<div class="mech-row"><div class="mech-skill">${m.skill}</div><div class="mech-diff ${m.diffClass}">${m.diff}</div><div class="mech-out">${m.outcome}</div></div>`);
-    h+=`</div>`;
+    sc.mechanics.forEach(m=>h+=`<div class="mech-row"><div class="mech-skill">${esc(m.skill)}</div><div class="mech-diff ${m.diffClass}">${esc(m.diff)}</div><div class="mech-out">${esc(m.outcome)}</div></div>`);
+    h+='</div>';
   }
-  if(sc.sanEvents.length){
+  if(sc.sanEvents&&sc.sanEvents.length){
     h+=`<div class="san-block">`;
-    sc.sanEvents.forEach(s=>h+=`<div class="san-row"><div class="san-evt">${s.evt}</div><div class="${s.lvl===0?"san-gain":"san-loss"}">${s.loss}</div></div>`);
-    h+=`</div>`;
+    sc.sanEvents.forEach(s=>{const g=s.loss.includes('GAIN');h+=`<div class="san-row"><span class="san-evt">${esc(s.evt)}</span><span class="san-loss ${g?'san-gain':''}">${esc(s.loss)}</span></div>`;});
+    h+='</div>';
   }
-  if(sc.keeperNote){
-    h+=`<div class="keeper-note"><div class="kn-label">KEEPER NOTE</div><div class="kn-text">${sc.keeperNote}</div></div>`;
+  if(sc.clueIds&&sc.clueIds.length){
+    h+=`<div class="content-block"><div class="block-label">CLUES THIS SCENE</div>`;
+    sc.clueIds.forEach(cid=>{
+      const c=CLUES.find(x=>x.id===cid);
+      if(c)h+=`<div class="clue-item ${clueState[cid]?'done':''}" onclick="toggleClueFromScene('${cid}')"><div class="clue-chk">${clueState[cid]?'✓':''}</div><div><div class="clue-name">${c.label}${c.handout?`<span class="clue-handout">${c.handout}</span>`:''}</div><div class="clue-desc">${esc(c.desc)}</div></div></div>`;
+    });h+='</div>';
   }
-
-  const idx=SCENES.findIndex(s=>s.id===sc.id);
-  const prev=SCENES[idx-1],next=SCENES[idx+1];
-  if(prev||next){
-    h+=`<div class="scene-fnav">`;
-    if(prev)h+=`<button class="fnav-btn" onclick="currentScene=SCENES[${idx-1}];renderAll()">← ${prev.title}</button>`;
-    if(next)h+=`<button class="fnav-btn next" onclick="currentScene=SCENES[${idx+1}];renderAll()">${next.title} →</button>`;
-    h+=`</div>`;
-  }
-  $("scene-panel").innerHTML=h;
+  if(sc.keeperNote)h+=`<div class="keeper-note"><div class="kn-label">⬛ KEEPER ONLY</div><div class="kn-text">${esc(sc.keeperNote)}</div></div>`;
+  h+=`<div class="scene-fnav">
+    ${currentScene>0?`<button class="fnav-btn" onclick="navigateScene(-1)">← ${SCENES[currentScene-1].title}</button>`:'<span></span>'}
+    ${currentScene<SCENES.length-1?`<button class="fnav-btn next" onclick="navigateScene(1)">${SCENES[currentScene+1].title} →</button>`:''}
+  </div>`;
+  document.getElementById('scene-panel').innerHTML=h;
 }
 
-function buildNpcPanel(){
-  let h=`<div style="font-family:var(--font-serif);font-size:16px;color:#e8e0c8;margin-bottom:4px">NPCs & Entities</div>
-  <div style="font-size:11px;color:var(--text-muted);margin-bottom:18px">Tap to expand stats, motivations, and secrets.</div>`;
-  NPCS.forEach(npc=>{
-    const open=openNpc===npc.id;
-    const tagClass=`npc-disp-tag tag-${npc.disp}`;
-    const tagText={ally:"ALLY",neutral:"NEUTRAL",threat:"THREAT",entity:"ENTITY"}[npc.disp];
-    h+=`<div class="npc-card${open?" open":""}" onclick="openNpc=openNpc==='${npc.id}'?null:'${npc.id}';renderAll()">
-      <div class="npc-head">
-        <div style="flex:1;min-width:0">
-          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-            <span class="npc-name">${npc.name}</span>
-            <span class="${tagClass}">${tagText}</span>
-          </div>
-          <div class="npc-role">${npc.role}</div>
-        </div>
-        <span class="npc-deploy-tag" style="font-size:9px;color:#5a7a5a;background:#0a160a;border:1px solid #1a361a;border-radius:3px;padding:2px 7px">${npc.appears}</span>
-        <span class="npc-chevron">${open?"▲":"▼"}</span>
-      </div>`;
-    if(open){
-      h+=`<div class="npc-body">
-        <div class="two-col">
-          <div><div class="mini-label">Appearance</div><div class="mini-text">${npc.desc}</div></div>
-          <div><div class="mini-label">Motivation</div><div class="mini-text">${npc.motivation}</div></div>
-        </div>
-        <div class="keeper-note" style="margin-bottom:12px"><div class="kn-label">SECRET (KEEPER ONLY)</div><div class="kn-text">${npc.secret}</div></div>
-        <div style="font-family:var(--font-serif);font-size:13px;color:#c8b870;font-style:italic;margin-bottom:12px">"${npc.quote}"</div>`;
-      if(npc.stats){
-        h+=`<div class="stat-pills">`;
-        Object.entries(npc.stats).forEach(([k,v])=>h+=`<div class="stat-pill"><div class="sl">${k}</div><div class="sv">${v}</div></div>`);
-        h+=`</div>`;
-        h+=`<div class="derived-row">`;
-        Object.entries(npc.derived).forEach(([k,v])=>h+=`<div class="der-pill"><span class="der-k">${k}:</span><span class="der-v">${v}</span></div>`);
-        h+=`</div>`;
-      }
-      h+=`<div class="mini-label">Skills / Attacks</div><div class="mini-text">${npc.skills}</div>`;
-      h+=`<div class="mini-label" style="margin-top:8px">Attacks</div><div class="mini-text">${npc.attacks}</div>`;
-      h+=`</div>`;
-    }
-    h+=`</div>`;
+function toggleClueFromScene(id){clueState[id]=!clueState[id];renderScene();if(currentTab==='clues')renderClues();}
+
+function renderNPCs(){
+  let h=`<div class="scene-title" style="margin-bottom:18px">NPC Roster</div>`;
+  NPCS.forEach(n=>{
+    h+=`<div class="npc-card" id="npc-${n.id}" onclick="toggleNPC('${n.id}')">
+<div class="npc-head"><div><div class="npc-name">${n.name}</div><div class="npc-role">${n.role}</div></div>
+<span class="npc-deploy-tag">${n.deploy}</span><span class="npc-chevron">▼</span></div>
+<div class="npc-body">
+<div class="two-col"><div><div class="mini-label">APPEARANCE</div><div class="mini-text">${esc(n.appearance)}</div></div>
+<div><div class="mini-label">KEEPER TRUTH</div><div class="mini-text">${esc(n.truth)}</div></div></div>
+${n.stats.length?`<div class="stat-pills">${n.stats.map(s=>`<div class="stat-pill"><div class="sl">${s.l}</div><div class="sv">${s.v}</div></div>`).join('')}</div>`:''}
+${n.extras?`<div class="stat-extras">${esc(n.extras)}</div>`:''}
+<div class="keeper-note"><div class="kn-label">KEEPER NOTE</div><div class="kn-text">${esc(n.note)}</div></div>
+</div></div>`;
   });
-  $("npcs-panel").innerHTML=h;
+  document.getElementById('npcs-panel').innerHTML=h;
 }
 
-function buildInvPanel(){
-  let h=`<div style="font-family:var(--font-serif);font-size:16px;color:#e8e0c8;margin-bottom:4px">Investigators</div>
-  <div style="font-size:11px;color:var(--text-muted);margin-bottom:18px">Track Sanity. Tap to expand full stats and personal hooks.</div>`;
+function toggleNPC(id){
+  const el=document.getElementById('npc-'+id);el.classList.toggle('open');
+  el.querySelector('.npc-chevron').textContent=el.classList.contains('open')?'▲':'▼';
+}
+
+function renderInvestigators(){
+  let h=`<div class="scene-title" style="margin-bottom:18px">Investigators — Pre-Generated</div>`;
+  // Players table
+  h+=`<div class="content-block" style="margin-bottom:20px"><div class="block-label">TABLE — PLAYERS</div><div style="display:flex;flex-wrap:wrap;gap:8px">`;
+  PLAYERS.forEach(p=>h+=`<div style="background:var(--surface-top);border:1px solid var(--border-hi);border-radius:3px;padding:5px 12px;font-size:12px;color:var(--text-sub)">${p.name}</div>`);
+  h+=`</div></div>`;
   INVESTIGATORS.forEach(inv=>{
-    const open=openInv===inv.id,cur=sanValues[inv.id]||0,pct=(cur/inv.derived.SAN)*100;
-    const sanCol=pct>70?"#4a9a4a":pct>40?"#9a7a20":pct>20?"#9a4a20":"#c02020";
-    h+=`<div class="inv-card${open?" open":""}">`
-      +`<div class="inv-head" onclick="openInv=openInv==='${inv.id}'?null:'${inv.id}';renderAll()">`
-      +`<div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap"><span class="inv-name">${inv.name}</span><span class="inv-role-tag">${inv.role}</span></div>`
-      +`<div style="font-size:11px;color:var(--text-muted);margin-top:2px;font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">"${inv.quote}"</div></div>`
-      +`<div class="inv-san-ctrl" onclick="event.stopPropagation()"><div><div class="san-lbl">SAN</div><div class="san-box">`
-      +`<button class="san-mod minus" onclick="sanValues['${inv.id}']=Math.max(0,(sanValues['${inv.id}']||0)-1);renderAll()">−</button>`
-      +`<div class="san-val" style="color:${sanCol}">${cur}</div>`
-      +`<button class="san-mod plus" onclick="sanValues['${inv.id}']=Math.min(99,(sanValues['${inv.id}']||0)+1);renderAll()">+</button>`
-      +`</div><div class="san-base" style="text-align:center">/${inv.derived.SAN}</div></div></div>`
-      +`<span class="inv-chevron">${open?"▲":"▼"}</span></div>`;
-    if(open){
-      h+=`<div class="inv-body"><div class="hook-box"><span class="hook-lbl">Personal Hook</span>${inv.hook}</div>`;
-      h+=`<div class="stats-grid">`;
-      Object.entries(inv.stats).forEach(([k,v])=>h+=`<div class="stat-cell"><div class="sk">${k}</div><div class="sv">${v}</div></div>`);
-      h+=`</div><div class="derived-row">`;
-      Object.entries(inv.derived).forEach(([k,v])=>h+=`<div class="der-pill"><span class="der-k">${k}:</span><span class="der-v">${v}</span></div>`);
-      h+=`</div><div class="mini-label">Key Skills</div><div class="skills-text">${inv.skills}</div>`;
-      h+=`<div class="trigger-box"><div class="trig-lbl">SAN Triggers</div>${inv.triggers}</div></div>`;
-    }
-    h+=`</div>`;
+    const san=sanState[inv.id],pct=Math.max(0,san/inv.sanStart*100);
+    const bc=pct>60?'#4a9a4a':pct>30?'#a07030':'#cc3333';
+    h+=`<div class="inv-card" id="inv-${inv.id}" onclick="toggleInv('${inv.id}')">
+<div class="inv-head">
+  <div class="inv-name">${inv.name}</div><span class="inv-role-tag">${inv.role}</span>
+  <div class="inv-san-ctrl" onclick="event.stopPropagation()">
+    <div><div class="san-lbl">SAN</div>
+    <div class="san-box">
+      <button class="san-mod minus" onclick="modSAN('${inv.id}',-1)">−</button>
+      <div class="san-val" style="color:${bc}">${san}</div>
+      <button class="san-mod plus" onclick="modSAN('${inv.id}',1)">+</button>
+    </div>
+    <div class="san-bar-wrap"><div class="san-bar" style="width:${pct}%;background:${bc}"></div></div>
+    <div class="san-base">/ ${inv.sanStart}</div></div>
+  </div>
+  <span class="inv-chevron">▼</span>
+</div>
+<div class="inv-body">
+  <div class="hook-box"><span class="hook-lbl">PLAYER HOOK</span>${esc(inv.hook)}</div>
+  <div class="hook-box"><span class="hook-lbl">KEEPER TRUTH</span>${esc(inv.hookKpr)}</div>
+  <div style="font-size:12px;color:#6a8a7a;font-style:italic;margin-bottom:12px">"${esc(inv.quote)}"</div>
+  <div class="stats-grid">${Object.entries(inv.stats).map(([k,v])=>`<div class="stat-cell"><div class="sk">${k}</div><div class="sv">${v}</div></div>`).join('')}</div>
+  <div class="derived-row">${Object.entries(inv.derived).map(([k,v])=>`<div class="der-pill"><span class="der-k">${k}</span><span class="der-v">${v}</span></div>`).join('')}</div>
+  <div class="mini-label">KEY SKILLS</div><div class="skills-text">${esc(inv.skills)}</div>
+  <div class="mini-label">EQUIPMENT</div><div class="skills-text">${esc(inv.equipment)}</div>
+  <div class="trigger-box"><div class="trig-lbl">SAN TRIGGER</div><div class="trig-text">${esc(inv.trigger)}</div></div>
+</div></div>`;
   });
-  $("investigators-panel").innerHTML=h;
+  document.getElementById('investigators-panel').innerHTML=h;
 }
 
-function buildHandoutsPanel(){
-  const hd=HANDOUTS.find(h=>h.id===activeHandout)||HANDOUTS[0];
-  let listH=`<div class="handout-list"><div class="handout-list-lbl">Documents</div>`;
-  HANDOUTS.forEach(h=>listH+=`<button class="hdoc-btn${h.id===activeHandout?" active":""}" onclick="activeHandout='${h.id}';buildHandoutsPanel()"><div class="hdoc-num">DOC ${h.num}</div><div class="hdoc-name">${h.title}</div></button>`);
-  listH+=`</div>`;
-  $("handouts-panel").innerHTML=listH+`<div class="handout-view"><div class="hv-title">${hd.title}</div><div class="hv-note">${hd.note}</div><div class="hv-paper"><pre class="hv-text">${hd.text}</pre></div><div style="margin-top:10px;font-size:10px;color:#2a2010">Show on screen or print to share with players.</div></div>`;
+function toggleInv(id){
+  const el=document.getElementById('inv-'+id);el.classList.toggle('open');
+  el.querySelector('.inv-chevron').textContent=el.classList.contains('open')?'▲':'▼';
 }
 
-function buildCluesPanel(){
-  const fc=Object.values(checkedClues).filter(Boolean).length;
-  let h=`<div class="clues-hd"><div><div style="font-family:var(--font-serif);font-size:16px;color:#e8e0c8;margin-bottom:3px">Evidence Tracker</div><div style="font-size:11px;color:var(--text-muted)">Check off clues as players acquire them.</div></div><div class="clues-count">${fc} / ${CLUES.length} found</div></div>`;
-  ACT_ORDER.forEach(act=>{
-    const ac=CLUES.filter(c=>c.act===act);if(!ac.length)return;
-    const color=ACT_COLORS[act];
-    h+=`<div class="act-clue-group"><div class="act-clue-hd" style="color:${color};border-bottom-color:${color}33">${ACT_LABELS[act]} — ${ACT_NAME[act]}</div>`;
-    ac.forEach(c=>{const done=checkedClues[c.id];h+=`<div class="clue-item${done?" done":""}" onclick="toggleClue('${c.id}');renderAll()"><div class="clue-chk">${done?'<span style="color:#6aba6a;font-size:10px">✓</span>':''}</div><div style="flex:1"><div class="clue-name">${c.label}${c.handout?`<span class="clue-handout">${c.handout}</span>`:""}</div><div class="clue-desc">${c.desc}</div></div></div>`;});
-    h+=`</div>`;
-  });
-  h+=`<button class="reset-btn" onclick="checkedClues={};renderAll()">RESET ALL CLUES</button>`;
-  $("clues-panel").innerHTML=h;
+function modSAN(id,d){
+  const inv=INVESTIGATORS.find(i=>i.id===id);
+  sanState[id]=Math.max(0,Math.min(inv.sanStart,sanState[id]+d));
+  renderInvestigators();if(currentTab==='san')renderSAN();
 }
 
-function buildSanPanel(){
-  let h=`<div style="font-family:var(--font-serif);font-size:16px;color:#e8e0c8;margin-bottom:4px">Sanity Reference</div><div style="font-size:11px;color:var(--text-muted);margin-bottom:18px">Costs by event. Track per investigator below.</div>`;
-  h+=`<div class="san-ref-table"><div class="san-ref-hd"><div>Event</div><div>Loss / Gain</div></div>`;
-  SAN_TABLE.forEach(row=>{
-    const isGain=row.loss.startsWith("+");
-    h+=`<div class="san-ref-row"><div class="san-ref-evt">${row.evt}</div><div class="san-ref-loss" style="color:${isGain?"#4a9a4a":SAN_COLORS[Math.min(row.lvl,5)]}">${row.loss}</div></div>`;
+function renderHandouts(){
+  const p=document.getElementById('handouts-panel');
+  let lh=`<div class="handout-list"><div class="handout-list-lbl">DOCUMENTS</div>`;
+  HANDOUTS.forEach((h,i)=>lh+=`<button class="hdoc-btn ${i===0?'active':''}" onclick="showHandout(${i})"><div class="hdoc-num">${h.num}</div><div class="hdoc-name">${h.name}</div></button>`);
+  lh+='</div>';
+  p.innerHTML=lh+`<div class="handout-view" id="handout-view"></div>`;
+  showHandout(0);
+}
+
+function showHandout(idx){
+  currentHandout=idx;const h=HANDOUTS[idx];
+  document.querySelectorAll('.hdoc-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
+  document.getElementById('handout-view').innerHTML=`<div class="hv-title">${h.num} — ${h.name}</div><div class="hv-note">${esc(h.note)}</div><div class="hv-paper"><div class="hv-text">${esc(h.text)}</div></div>`;
+}
+
+function renderClues(){
+  const found=Object.values(clueState).filter(Boolean).length;
+  const groups=[
+    {key:'intro',label:'INTRODUCTION',color:ACT_COLORS.intro},
+    {key:'act1',label:'ACT ONE — THE BLUE ORCHID',color:ACT_COLORS.act1},
+    {key:'act2',label:'ACT TWO — THE BROWNSTONE',color:ACT_COLORS.act2}
+  ];
+  let h=`<div class="clues-hd"><div class="scene-title">Evidence Tracker</div><div class="clues-count">${found} / ${CLUES.length} found</div></div>`;
+  groups.forEach(g=>{
+    const items=CLUES.filter(c=>c.act===g.key);if(!items.length)return;
+    h+=`<div class="act-clue-group"><div class="act-clue-hd" style="color:${g.color};border-bottom-color:${g.color}33">${g.label}</div>`;
+    items.forEach(c=>h+=`<div class="clue-item ${clueState[c.id]?'done':''}" onclick="toggleClue('${c.id}')"><div class="clue-chk">${clueState[c.id]?'✓':''}</div><div><div class="clue-name">${c.label}${c.handout?`<span class="clue-handout">${c.handout}</span>`:''}</div><div class="clue-desc">${esc(c.desc)}</div></div></div>`);
+    h+='</div>';
   });
-  h+=`</div><div style="font-family:var(--font-serif);font-size:15px;color:#e8e0c8;margin-bottom:12px">Current SAN by Investigator</div><div class="inv-san-grid">`;
+  h+=`<button class="reset-btn" onclick="resetClues()">↺ RESET ALL CLUES</button>`;
+  document.getElementById('clues-panel').innerHTML=h;
+}
+
+function toggleClue(id){clueState[id]=!clueState[id];renderClues();if(currentTab==='scene')renderScene();}
+function resetClues(){CLUES.forEach(c=>{clueState[c.id]=false;});renderClues();}
+
+function renderSAN(){
+  let h=`<div class="scene-title" style="margin-bottom:18px">Sanity Reference</div>`;
+  h+=`<div class="mini-label" style="margin-bottom:8px">TONE MANAGEMENT GUIDE</div>
+<div class="tone-table"><div class="tone-hd"><div>PHASE</div><div>TONE TARGET</div><div>HOW TO ACHIEVE IT</div></div>`;
+  TONE_TABLE.forEach(t=>h+=`<div class="tone-row"><div class="tone-phase">${t.phase}</div><div class="tone-target">${t.target}</div><div class="tone-how">${esc(t.how)}</div></div>`);
+  h+='</div>';
+  h+=`<div class="mini-label" style="margin-bottom:8px">SAN EVENT REFERENCE</div>
+<div class="san-ref-table"><div class="san-ref-hd"><div>EVENT</div><div>LOSS / GAIN</div></div>`;
+  SAN_TABLE.forEach(s=>{
+    const g=s.loss.includes('GAIN');
+    const col=g?'#4a9a4a':SAN_COLORS[s.lvl]||'#cc3333';
+    h+=`<div class="san-ref-row"><div class="san-ref-evt">${esc(s.evt)}</div><div class="san-ref-loss" style="color:${col}">${esc(s.loss)}</div></div>`;
+  });
+  h+='</div>';
+  h+=`<div class="mini-label" style="margin-bottom:8px">INVESTIGATOR SAN TRACKER</div><div class="inv-san-grid">`;
   INVESTIGATORS.forEach(inv=>{
-    const cur=sanValues[inv.id]||0,pct=(cur/inv.derived.SAN)*100;
-    const sanCol=pct>70?"#4a9a4a":pct>40?"#9a7a20":pct>20?"#9a4a20":"#c02020";
-    const bgCol=pct>70?"#0a160a":pct>40?"#160e00":pct>20?"#160800":"#190808";
-    h+=`<div class="inv-san-card" style="background:${bgCol};border-color:${sanCol}33"><div class="isc-name">${inv.name}</div><div class="isc-ctrl"><button class="san-mod minus" onclick="sanValues['${inv.id}']=Math.max(0,(sanValues['${inv.id}']||0)-1);renderAll()">−</button><div class="isc-val" style="color:${sanCol}">${cur}<span class="isc-base">/${inv.derived.SAN}</span></div><button class="san-mod plus" onclick="sanValues['${inv.id}']=Math.min(99,(sanValues['${inv.id}']||0)+1);renderAll()">+</button></div><div class="san-bar-wrap"><div class="san-bar" style="width:${Math.min(100,pct)}%;background:${sanCol}"></div></div></div>`;
+    const san=sanState[inv.id],pct=Math.max(0,san/inv.sanStart*100);
+    const bc=pct>60?'#4a9a4a':pct>30?'#a07030':'#cc3333';
+    h+=`<div class="inv-san-card" style="border-color:${bc}22;background:${bc}08">
+<div class="isc-name">${inv.name}<br><span style="font-size:9px;color:var(--text-muted)">${inv.role}</span></div>
+<div class="isc-ctrl">
+  <button class="san-mod minus" onclick="modSAN('${inv.id}',-1)">−</button>
+  <div class="isc-val" style="color:${bc}">${san}</div>
+  <button class="san-mod plus" onclick="modSAN('${inv.id}',1)">+</button>
+</div>
+<div class="san-bar-wrap"><div class="san-bar" style="width:${pct}%;background:${bc}"></div></div>
+<div class="isc-base">/ ${inv.sanStart} base</div></div>`;
   });
-  h+=`</div><button class="reset-btn" style="margin-top:12px" onclick="INVESTIGATORS.forEach(i=>sanValues[i.id]=i.derived.SAN);renderAll()">RESET ALL SAN</button>`;
-  $("san-panel").innerHTML=h;
+  h+='</div>';
+  document.getElementById('san-panel').innerHTML=h;
 }
 
-function renderAll(){
-  buildSidebar();
-  const idx=SCENES.findIndex(s=>s.id===currentScene.id),prev=SCENES[idx-1],next=SCENES[idx+1];
-  $("btn-prev").disabled=!prev;$("btn-prev").style.opacity=prev?"1":"0.3";
-  $("btn-next").disabled=!next;$("btn-next").style.opacity=next?"1":"0.3";
-  document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
-  const tabEl=$(activeTab+"-panel")||$("scene-panel");
-  tabEl.classList.add("active");
-  const color=ACT_COLORS[currentScene.act];
-  document.querySelectorAll(".tab-btn").forEach(b=>{
-    b.classList.toggle("active",b.dataset.tab===activeTab);
-    b.style.borderBottomColor=b.dataset.tab===activeTab?color:"transparent";
-    b.style.color=b.dataset.tab===activeTab?color:"";
-  });
-  if(activeTab==="scene")buildScenePanel();
-  else if(activeTab==="npcs")buildNpcPanel();
-  else if(activeTab==="investigators")buildInvPanel();
-  else if(activeTab==="handouts")buildHandoutsPanel();
-  else if(activeTab==="clues")buildCluesPanel();
-  else if(activeTab==="san")buildSanPanel();
-  const m=$("main");if(m)m.scrollTop=0;
+const CLOCK_TIMES=["8:00 PM","8:30 PM","9:00 PM","9:30 PM","10:00 PM","10:30 PM","10:45 PM","11:00 PM","11:15 PM","11:30 PM","11:45 PM","MIDNIGHT"];
+let clockIdx=0;
+function advanceClock(){
+  clockIdx=Math.min(clockIdx+1,CLOCK_TIMES.length-1);
+  const t=CLOCK_TIMES[clockIdx];
+  const el=document.getElementById('game-clock');
+  el.textContent=t;
+  if(t==="MIDNIGHT"){el.style.color="#cc3333";el.style.textShadow="0 0 8px #cc333388";}
+  else if(clockIdx>=9){el.style.color="#c85020";}
+  else if(clockIdx>=6){el.style.color="#c87030";}
 }
 
-function toggleClue(id){checkedClues[id]=!checkedClues[id];}
-document.querySelectorAll(".tab-btn").forEach(btn=>btn.addEventListener("click",()=>{activeTab=btn.dataset.tab;renderAll();}));
-$("btn-prev").addEventListener("click",()=>{const i=SCENES.findIndex(s=>s.id===currentScene.id);if(i>0){currentScene=SCENES[i-1];renderAll();}});
-$("btn-next").addEventListener("click",()=>{const i=SCENES.findIndex(s=>s.id===currentScene.id);if(i<SCENES.length-1){currentScene=SCENES[i+1];renderAll();}});
-renderAll();
+init();
 </script>
 </body>
 </html>
