@@ -653,6 +653,29 @@ Whitmore's partial translation: *"The Face is a door. The door can be opened fro
 - The brownstone has a grandfather clock in the drawing room — set it to **9:30 PM** when investigators arrive
 - If Act Three runs long: *"We have perhaps forty minutes before midnight. I suggest we do not spend it discussing options."*
 
+### What Happens at Midnight? (The Failure State)
+
+This section exists because a GM running cold deserves to know.
+
+**If midnight arrives before the ritual completes**, the Watcher fully manifests. The physical constraints no longer apply — mirror aversion fails, the chalk circle loses its power, the entity is no longer anchored to the basement. It is simply *here*, in full, and it is hungry.
+
+Read aloud (failure):
+> *"The grandfather clock in the drawing room above strikes twelve. You feel it as a physical thing — not a sound, a shift. A door opening, somewhere much deeper than the basement floor. The Watcher makes a sound. It is not a sound that belongs to any face. It turns, and something in its posture changes. It has been looking for faces. It stops looking. It begins taking."*
+
+This is a total failure. There is no combat resolution. Investigators who do not flee immediately suffer the Face Peel attack. Those who flee have one last image: the basement window, viewed from the street, the light inside turning wrong colours, and then going out.
+
+**In practice:** The scenario is structured so this should not happen. Whitmore is there and functional. The Codex is visible. The clues feed naturally to the ritual. If midnight arrives despite all of this, it means the players have genuinely lost — honour it. Don't soften it. End on: *"Somewhere in this city, a week later, a telegram is sent from no address. It reads: INTERESTING STOP WILL BE WATCHING STOP. There are others."*
+
+### What If Investigators Destroy the Codex?
+
+If investigators attempt to destroy the Codex before the banishment — which at least one investigator will attempt, probably the Academic who has read too much Lovecraft — Whitmore stops them.
+
+*"You cannot burn it. I tried. The paper doesn't catch. Whatever it's bound in doesn't burn. Believe me, I would have done it by now."*
+
+The Codex cannot be destroyed by fire or by conventional means. It can only be neutralised after the banishment, at which point Whitmore will take it and say she knows someone who can dispose of it properly. (She does not know anyone who can dispose of it properly. She will lock it in a bank vault in Vermont. This is fine for approximately thirty years.)
+
+If investigators insist on destroying it *during* the ritual (mid-incantation) — they disrupt the banishment. The Watcher is freed from the mirror paralysis early. The circle must be re-established. This costs time and SAN (0/1D6 per investigator present as the Watcher turns its attention).
+
 ---
 
 ## Midjourney Prompts
