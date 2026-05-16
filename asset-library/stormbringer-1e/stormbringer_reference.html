@@ -297,6 +297,76 @@ td:first-child { color: var(--cream); }
   section { padding: 18px 18px 8px; }
   .page-title { padding: 20px 18px 14px; }
 }
+
+/* ── ART GALLERY ── */
+.gallery-category { margin-bottom: 2.5rem; }
+.gallery-category h3 { color: var(--gold); margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+.gallery-item {
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.gallery-item:hover { border-color: var(--gold-dim); transform: translateY(-2px); }
+.gallery-item img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+.gallery-item.portrait img { height: 240px; }
+.gallery-caption {
+  padding: 8px 10px;
+  font-size: 0.8rem;
+  color: var(--cream-dim);
+  font-style: italic;
+}
+/* Lightbox */
+#lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+}
+#lightbox.open { display: flex; }
+#lightbox img {
+  max-width: 90vw;
+  max-height: 80vh;
+  object-fit: contain;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+#lightbox-caption {
+  color: var(--cream);
+  font-size: 0.9rem;
+  font-style: italic;
+  text-align: center;
+}
+#lightbox-close {
+  position: absolute;
+  top: 16px;
+  right: 24px;
+  color: var(--cream-dim);
+  font-size: 2rem;
+  cursor: pointer;
+  line-height: 1;
+  background: none;
+  border: none;
+}
+#lightbox-close:hover { color: var(--gold); }
+
 </style>
 </head>
 <body>
@@ -1266,6 +1336,217 @@ Effective maximum: 99</div>
 </ul>
 </section>
 
+<section id="art-gallery">
+<h2>Art Gallery</h2>
+<p style="margin-bottom:1.5rem;color:var(--cream-dim);font-style:italic;">Generated with gpt-image-2 in the style of 1970s Michael Whelan sword and sorcery illustration. Click any image to view full size.</p>
+
+<div class="gallery-category">
+<h3>Locations</h3>
+<div class="gallery-grid">
+  <div class="gallery-item" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-l01-imrryr.png" data-caption="Imrryr — The Dreaming City of Melniboné">
+    <div class="gallery-caption">Imrryr — The Dreaming City</div>
+  </div>
+  <div class="gallery-item" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-l02-karlaak.png" data-caption="Karlaak — City on the Edge of the Weeping Waste">
+    <div class="gallery-caption">Karlaak — City by the Weeping Waste</div>
+  </div>
+  <div class="gallery-item" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-l03-pan-tang.png" data-caption="Pan Tang — Theocracy of Chaos">
+    <div class="gallery-caption">Pan Tang — Theocracy of Chaos</div>
+  </div>
+  <div class="gallery-item" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-l04-nadsokor.png" data-caption="Nadsokor — City of Beggars">
+    <div class="gallery-caption">Nadsokor — City of Beggars</div>
+  </div>
+  <div class="gallery-item" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-l05-map.png" data-caption="The Young Kingdoms — World Map">
+    <div class="gallery-caption">The Young Kingdoms — World Map</div>
+  </div>
+  <div class="gallery-item" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-l06-boiling-sea.png" data-caption="The Boiling Sea — Southern Boundary">
+    <div class="gallery-caption">The Boiling Sea</div>
+  </div>
+  <div class="gallery-item" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-l07-tavern.png" data-caption="A Young Kingdoms Tavern — Common Meeting Ground">
+    <div class="gallery-caption">A Young Kingdoms Tavern</div>
+  </div>
+  <div class="gallery-item" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-l08-demon-realm.png" data-caption="The Demon Realm — Beyond the Mortal Plane">
+    <div class="gallery-caption">The Demon Realm</div>
+  </div>
+</div>
+</div>
+
+<div class="gallery-category">
+<h3>Characters</h3>
+<div class="gallery-grid">
+  <div class="gallery-item portrait" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-c01-elric-portrait.png" data-caption="Elric of Melniboné — The Pale Prince">
+    <div class="gallery-caption">Elric of Melniboné — Portrait</div>
+  </div>
+  <div class="gallery-item portrait" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-c02-elric-action.png" data-caption="Elric — Stormbringer Raised in Battle">
+    <div class="gallery-caption">Elric — In Battle</div>
+  </div>
+  <div class="gallery-item portrait" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-c03-moonglum.png" data-caption="Moonglum of Elwher — Elric's Companion">
+    <div class="gallery-caption">Moonglum of Elwher</div>
+  </div>
+  <div class="gallery-item portrait" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-c04-melnibonean-noble.png" data-caption="A Melnibonean Noble — Decadent Aristocrat">
+    <div class="gallery-caption">Melnibonean Noble</div>
+  </div>
+  <div class="gallery-item portrait" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-c05-pan-tang-chaos-knight.png" data-caption="Pan Tang Chaos Knight — Servant of the Lords of Chaos">
+    <div class="gallery-caption">Pan Tang Chaos Knight</div>
+  </div>
+  <div class="gallery-item portrait" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-c06-sorcerer.png" data-caption="A Young Kingdoms Sorcerer — Master of Summoning">
+    <div class="gallery-caption">A Young Kingdoms Sorcerer</div>
+  </div>
+  <div class="gallery-item portrait" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-c07-tarkeshite-captain.png" data-caption="Tarkeshite Sea Captain — Warrior of the Purple Towns">
+    <div class="gallery-caption">Tarkeshite Sea Captain</div>
+  </div>
+  <div class="gallery-item portrait" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-c08-beggar-of-nadsokor.png" data-caption="A Beggar of Nadsokor — The City of Beggars">
+    <div class="gallery-caption">Beggar of Nadsokor</div>
+  </div>
+</div>
+</div>
+
+<div class="gallery-category">
+<h3>Demons</h3>
+<div class="gallery-grid">
+  <div class="gallery-item portrait" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-d01-demon-weapon.png" data-caption="Demon Weapon — A Bound Enchanted Sword">
+    <div class="gallery-caption">Demon Weapon</div>
+  </div>
+  <div class="gallery-item portrait" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-d02-combat-demon.png" data-caption="Combat Demon — Bound to Fight">
+    <div class="gallery-caption">Combat Demon</div>
+  </div>
+  <div class="gallery-item portrait" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-d03-intellect-demon.png" data-caption="Intellect Demon — Bound to Know">
+    <div class="gallery-caption">Intellect Demon</div>
+  </div>
+  <div class="gallery-item portrait" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-d04-beast-demon.png" data-caption="Beast Demon — A Bound Animal Demon">
+    <div class="gallery-caption">Beast Demon</div>
+  </div>
+  <div class="gallery-item portrait" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-d05-guardian-demon.png" data-caption="Guardian Demon — Set to Ward a Threshold">
+    <div class="gallery-caption">Guardian Demon</div>
+  </div>
+</div>
+</div>
+
+<div class="gallery-category">
+<h3>Elementals</h3>
+<div class="gallery-grid">
+  <div class="gallery-item" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-e01-straasha.png" data-caption="Straasha — Lord of the Water Elementals">
+    <div class="gallery-caption">Straasha — Lord of Water</div>
+  </div>
+  <div class="gallery-item" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-e02-grome.png" data-caption="Grome — Lord of the Earth Elementals">
+    <div class="gallery-caption">Grome — Lord of Earth</div>
+  </div>
+  <div class="gallery-item" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-e03-lassa.png" data-caption="Lassa — Lord of the Air Elementals">
+    <div class="gallery-caption">Lassa — Lord of Air</div>
+  </div>
+  <div class="gallery-item" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-e04-fire-elemental.png" data-caption="A Fire Elemental — Summoned and Bound">
+    <div class="gallery-caption">Fire Elemental</div>
+  </div>
+</div>
+</div>
+
+<div class="gallery-category">
+<h3>Creatures</h3>
+<div class="gallery-grid">
+  <div class="gallery-item" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-cr01-cave-bear.png" data-caption="Cave Bear — Four Times the Size of a Man">
+    <div class="gallery-caption">Cave Bear</div>
+  </div>
+  <div class="gallery-item" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-cr02-tiger-pan-tang.png" data-caption="Tiger of Pan Tang — Ridden Into Battle">
+    <div class="gallery-caption">Tiger of Pan Tang</div>
+  </div>
+  <div class="gallery-item" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-cr03-gorilla.png" data-caption="Gorilla — From the Jungles Beyond the Boiling Sea">
+    <div class="gallery-caption">Gorilla</div>
+  </div>
+  <div class="gallery-item" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-cr04-baboon-troop.png" data-caption="Baboon Troop — Pack Predators of the Steppe">
+    <div class="gallery-caption">Baboon Troop</div>
+  </div>
+  <div class="gallery-item" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-cr05-falcon.png" data-caption="Falcon — The Aerial Hunter">
+    <div class="gallery-caption">Falcon</div>
+  </div>
+  <div class="gallery-item" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-cr06-chaos-creature.png" data-caption="Chaos Creature — Touched Beyond Classification">
+    <div class="gallery-caption">Chaos Creature</div>
+  </div>
+</div>
+</div>
+
+<div class="gallery-category">
+<h3>Weapons &amp; Equipment</h3>
+<div class="gallery-grid">
+  <div class="gallery-item portrait" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-i01-stormbringer-sword.png" data-caption="Stormbringer — The Black Runesword">
+    <div class="gallery-caption">Stormbringer — The Black Runesword</div>
+  </div>
+  <div class="gallery-item" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-i02-broadsword.png" data-caption="Broadsword — The Weapon of a Working Fighter">
+    <div class="gallery-caption">Broadsword</div>
+  </div>
+  <div class="gallery-item portrait" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-i03-lormyrian-axe.png" data-caption="Lormyrian Great Axe — 165cm of Northern Steel">
+    <div class="gallery-caption">Lormyrian Great Axe</div>
+  </div>
+  <div class="gallery-item portrait" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-i04-grimoire.png" data-caption="A Grimoire — Ten Thousand Gold per Spell">
+    <div class="gallery-caption">Grimoire</div>
+  </div>
+  <div class="gallery-item portrait" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-i05-armour.png" data-caption="Full Plate Armour — Equipment of a Wealthy Fighter">
+    <div class="gallery-caption">Full Plate Armour</div>
+  </div>
+</div>
+</div>
+
+<div class="gallery-category">
+<h3>Religion &amp; The Cosmic Balance</h3>
+<div class="gallery-grid">
+  <div class="gallery-item" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-r01-church-of-law.png" data-caption="The Church of Law — Order Made Architectural">
+    <div class="gallery-caption">Church of Law</div>
+  </div>
+  <div class="gallery-item" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-r02-chaos-cult.png" data-caption="A Chaos Cult — Worshippers of the Lords of Chaos">
+    <div class="gallery-caption">Chaos Cult</div>
+  </div>
+  <div class="gallery-item" onclick="openLightbox(this)">
+    <img src="../../scenarios/art/stormbringer/sb-r03-the-balance.png" data-caption="The Cosmic Balance — Law and Chaos in Equilibrium">
+    <div class="gallery-caption">The Cosmic Balance</div>
+  </div>
+</div>
+</div>
+
+</section>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="closeLightbox(event)">
+  <button id="lightbox-close" onclick="document.getElementById('lightbox').classList.remove('open')">✕</button>
+  <img id="lightbox-img" src="" alt="">
+  <div id="lightbox-caption"></div>
+</div>
+
 </div><!-- end #main -->
 
 <script>
@@ -1362,6 +1643,14 @@ const navData = [
     { text: "Character Creation Checklist", id: "quickstart" },
     { text: "GM Guidance", id: "gm-guidance" },
     { text: "What Magic Solves", id: "gm-guidance" },
+  ]},
+  { title: "Art Gallery", links: [
+    { text: "Locations", id: "art-gallery" },
+    { text: "Characters", id: "art-gallery" },
+    { text: "Demons & Elementals", id: "art-gallery" },
+    { text: "Creatures", id: "art-gallery" },
+    { text: "Weapons & Equipment", id: "art-gallery" },
+    { text: "Religion & The Balance", id: "art-gallery" },
   ]},
 ];
 
@@ -1484,6 +1773,23 @@ sections.forEach(s => observer.observe(s));
 // Auto-open first nav section
 document.querySelector('.nav-section-title').classList.add('open');
 document.querySelector('.nav-links').classList.add('open');
+
+// ── LIGHTBOX ──
+function openLightbox(item) {
+  const img = item.querySelector('img');
+  document.getElementById('lightbox-img').src = img.src;
+  document.getElementById('lightbox-caption').textContent = img.dataset.caption || '';
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox(e) {
+  if (e.target === document.getElementById('lightbox') || e.target.id === 'lightbox-close') {
+    document.getElementById('lightbox').classList.remove('open');
+  }
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.getElementById('lightbox').classList.remove('open');
+});
+
 </script>
 </body>
 </html>
