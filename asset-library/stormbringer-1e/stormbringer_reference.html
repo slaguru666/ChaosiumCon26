@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stormbringer — Rules Reference</title>
+<style>
+:root {
+  --bg: #120808;
+  --sidebar-bg: #1c0e0e;
+  --panel-bg: #221212;
+  --border: #4a2020;
+  --gold: #c8a050;
+  --gold-dim: #8a6830;
+  --cream: #e0cfa0;
+  --cream-dim: #a89870;
+  --red: #8b2020;
+  --red-bright: #c03030;
+  --highlight: #3a1a00;
+  --table-head: #2a1010;
+  --table-alt: #1a0c0c;
+  --search-hl: #6b4000;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Georgia', serif;
+  background: var(--bg);
+  color: var(--cream);
+  display: flex;
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ── SIDEBAR ── */
+#sidebar {
+  width: 260px;
+  min-width: 260px;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border);
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+#sidebar-header {
+  padding: 18px 16px 12px;
+  border-bottom: 1px solid var(--border);
+}
+#sidebar-header h1 {
+  font-size: 1.1rem;
+  color: var(--gold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+#sidebar-header p {
+  font-size: 0.72rem;
+  color: var(--cream-dim);
+  font-style: italic;
+}
+#search-box {
+  margin: 10px 12px;
+  position: relative;
+}
+#search-input {
+  width: 100%;
+  background: #0e0606;
+  border: 1px solid var(--border);
+  color: var(--cream);
+  padding: 7px 10px 7px 30px;
+  border-radius: 3px;
+  font-size: 0.82rem;
+  outline: none;
+}
+#search-input:focus { border-color: var(--gold-dim); }
+#search-icon {
+  position: absolute;
+  left: 9px;
+  top: 8px;
+  color: var(--cream-dim);
+  font-size: 0.85rem;
+}
+#search-count {
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--gold-dim);
+  padding: 2px 0 4px;
+  min-height: 18px;
+}
+#search-nav {
+  display: none;
+  justify-content: center;
+  gap: 6px;
+  padding-bottom: 6px;
+}
+#search-nav.visible { display: flex; }
+#search-nav button {
+  background: var(--red);
+  color: var(--cream);
+  border: none;
+  padding: 3px 10px;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 0.78rem;
+}
+#search-nav button:hover { background: var(--red-bright); }
+nav { flex: 1; padding: 6px 0 16px; }
+.nav-section { margin-bottom: 2px; }
+.nav-section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 14px;
+  color: var(--gold);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  cursor: pointer;
+  user-select: none;
+  border-left: 2px solid transparent;
+  transition: border-color 0.15s;
+}
+.nav-section-title:hover { border-left-color: var(--gold-dim); color: var(--gold); background: rgba(200,160,80,0.06); }
+.nav-section-title .arrow { font-size: 0.6rem; transition: transform 0.2s; }
+.nav-section-title.open .arrow { transform: rotate(90deg); }
+.nav-links { display: none; }
+.nav-links.open { display: block; }
+.nav-links a {
+  display: block;
+  padding: 5px 14px 5px 22px;
+  color: var(--cream-dim);
+  text-decoration: none;
+  font-size: 0.8rem;
+  border-left: 2px solid transparent;
+  transition: all 0.12s;
+}
+.nav-links a:hover, .nav-links a.active {
+  color: var(--cream);
+  border-left-color: var(--red-bright);
+  background: rgba(139,32,32,0.12);
+}
+#print-btn {
+  margin: 8px 12px 16px;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--cream-dim);
+  padding: 6px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.78rem;
+  width: calc(100% - 24px);
+  transition: all 0.15s;
+}
+#print-btn:hover { border-color: var(--gold-dim); color: var(--gold); }
+
+/* ── MAIN CONTENT ── */
+#main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 0 60px;
+}
+.page-title {
+  padding: 30px 40px 20px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, #1a0a0a 0%, var(--bg) 100%);
+}
+.page-title h1 {
+  font-size: 2rem;
+  color: var(--gold);
+  letter-spacing: 0.06em;
+  text-shadow: 0 0 30px rgba(200,160,80,0.3);
+}
+.page-title p { color: var(--cream-dim); font-style: italic; margin-top: 4px; font-size: 0.9rem; }
+section {
+  padding: 28px 40px 10px;
+  border-bottom: 1px solid #2a1212;
+}
+section:last-child { border-bottom: none; }
+h2 {
+  color: var(--gold);
+  font-size: 1.35rem;
+  margin-bottom: 14px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+  letter-spacing: 0.04em;
+}
+h3 {
+  color: var(--gold);
+  font-size: 1.05rem;
+  margin: 18px 0 8px;
+  opacity: 0.9;
+}
+h4 {
+  color: var(--cream);
+  font-size: 0.95rem;
+  margin: 14px 0 6px;
+  border-left: 3px solid var(--red);
+  padding-left: 8px;
+}
+p { margin-bottom: 10px; color: var(--cream); }
+ul, ol { margin: 8px 0 12px 22px; }
+li { margin-bottom: 4px; color: var(--cream); }
+strong { color: var(--gold); }
+em { color: var(--cream-dim); font-style: italic; }
+.rule-box {
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--red);
+  padding: 12px 16px;
+  margin: 12px 0;
+  font-family: 'Courier New', monospace;
+  font-size: 0.88rem;
+  color: var(--cream);
+}
+.note {
+  background: rgba(200,160,80,0.07);
+  border: 1px solid var(--gold-dim);
+  border-radius: 3px;
+  padding: 10px 14px;
+  margin: 12px 0;
+  font-size: 0.88rem;
+  color: var(--cream-dim);
+  font-style: italic;
+}
+
+/* ── TABLES ── */
+.table-wrap { overflow-x: auto; margin: 10px 0 16px; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+}
+th {
+  background: var(--table-head);
+  color: var(--gold);
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 2px solid var(--border);
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+td {
+  padding: 7px 12px;
+  border-bottom: 1px solid #2a1212;
+  color: var(--cream);
+  vertical-align: top;
+}
+tr:nth-child(even) td { background: var(--table-alt); }
+tr:hover td { background: rgba(200,160,80,0.05); }
+td:first-child { color: var(--cream); }
+.num { text-align: right; font-family: 'Courier New', monospace; }
+.tag {
+  display: inline-block;
+  background: var(--red);
+  color: #f0d0a0;
+  font-size: 0.7rem;
+  padding: 1px 6px;
+  border-radius: 2px;
+  font-family: sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+.tag.law { background: #204060; }
+.tag.chaos { background: #602040; }
+.tag.elem { background: #205040; }
+
+/* ── SEARCH HIGHLIGHT ── */
+.hl { background: var(--search-hl); color: #ffd080; border-radius: 2px; }
+.hl.current { background: #8b5000; color: #ffe0a0; outline: 1px solid #c07000; }
+
+/* ── PRINT ── */
+@media print {
+  body { background: white; color: black; display: block; }
+  #sidebar { display: none; }
+  #main { padding: 0; }
+  section { padding: 16px 20px 8px; page-break-inside: avoid; }
+  h2 { color: #4a1010; border-color: #aaa; }
+  h3, h4 { color: #4a1010; }
+  th { background: #e0e0e0; color: #222; }
+  td { color: #222; }
+  .rule-box { background: #f5f5f5; border-color: #aaa; color: #222; }
+  .note { background: #f5f5f5; border-color: #aaa; color: #444; }
+  table { font-size: 0.8rem; }
+  .page-title { background: white; }
+  .page-title h1, .page-title p { color: #4a1010; text-shadow: none; }
+}
+@media (max-width: 768px) {
+  #sidebar { display: none; }
+  section { padding: 18px 18px 8px; }
+  .page-title { padding: 20px 18px 14px; }
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <div id="sidebar-header">
+    <h1>⚔ Stormbringer</h1>
+    <p>Young Kingdoms Rules Reference</p>
+  </div>
+  <div id="search-box">
+    <span id="search-icon">🔍</span>
+    <input type="text" id="search-input" placeholder="Search rules…" autocomplete="off">
+  </div>
+  <div id="search-count"></div>
+  <div id="search-nav">
+    <button onclick="prevMatch()">▲ Prev</button>
+    <button onclick="nextMatch()">▼ Next</button>
+  </div>
+  <nav id="nav">
+    <!-- nav built by JS -->
+  </nav>
+  <button id="print-btn" onclick="window.print()">🖨 Print / Save PDF</button>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+<div class="page-title">
+  <h1>Stormbringer</h1>
+  <p>Rules Reference — Young Kingdoms First Edition &nbsp;·&nbsp; English Working Draft</p>
+</div>
+
+<!-- ═══════════════ CORE MECHANICS ═══════════════ -->
+<section id="core">
+<h2>Core Mechanics</h2>
+
+<h3>Percentile Resolution</h3>
+<p>Roll <strong>1D100</strong>. If the result is equal to or below the relevant skill, characteristic multiple, or resistance chance, the action succeeds. Higher is generally worse.</p>
+
+<h3>Critical Successes</h3>
+<p>A critical success occurs when the roll is equal to or below <strong>one tenth</strong> of the needed chance, rounded down.</p>
+<div class="table-wrap"><table>
+<tr><th>Chance Needed</th><th>Critical On</th></tr>
+<tr><td>35%</td><td class="num">01–03</td></tr>
+<tr><td>46%</td><td class="num">01–04</td></tr>
+<tr><td>90%</td><td class="num">01–09</td></tr>
+</table></div>
+
+<h3>Fumbles</h3>
+<p>A roll of <strong>00</strong> is always a fumble. If the acting skill is below 50%, a roll of <strong>99</strong> is also a fumble.</p>
+
+<h3>Characteristic Rolls</h3>
+<p>When a raw characteristic directly matters, the GM calls for a roll against a multiple of it.</p>
+<div class="table-wrap"><table>
+<tr><th>Difficulty</th><th>Roll Against</th></tr>
+<tr><td>Easy</td><td class="num">5 × characteristic</td></tr>
+<tr><td>Normal</td><td class="num">3 × characteristic</td></tr>
+<tr><td>Hard</td><td class="num">1 × characteristic</td></tr>
+</table></div>
+
+<h3>Resistance Formula</h3>
+<p>When two forces directly oppose each other (POW vs POW, STR vs SIZ, etc.):</p>
+<div class="rule-box">Chance = 50 + (active value − resisting value) × 5</div>
+<p>The active character succeeds if they roll equal to or below the chance. Minimum 5%, maximum 95%.</p>
+
+<h3>Improving Skills</h3>
+<p>After a meaningful success in play, at end of adventure roll <strong>1D100</strong>, adding <em>INT − 12</em> if INT is above 12. If the result exceeds the current skill, the skill rises by <strong>1D10</strong>.</p>
+<p>Training with a master improves a skill by <strong>1D6 − 2</strong> after one week of dedicated practice (minimum 0).</p>
+</section>
+
+<!-- ═══════════════ CHARACTERISTICS ═══════════════ -->
+<section id="characteristics">
+<h2>Characteristics</h2>
+<p>Roll <strong>3D6</strong> for each characteristic. If the total of all seven is below <strong>64</strong>, you may reroll the entire set.</p>
+<div class="table-wrap"><table>
+<tr><th>Abbrev.</th><th>Characteristic</th><th>Main Use</th></tr>
+<tr><td><strong>STR</strong></td><td>Strength</td><td>Force, lifting, weapons, melee damage.</td></tr>
+<tr><td><strong>CON</strong></td><td>Constitution</td><td>Health, endurance, poison, wounds.</td></tr>
+<tr><td><strong>SIZ</strong></td><td>Size</td><td>Body mass, reach, hit points, stealth/parry modifiers.</td></tr>
+<tr><td><strong>INT</strong></td><td>Intelligence</td><td>Learning, knowledge, planning, sorcery.</td></tr>
+<tr><td><strong>POW</strong></td><td>Power</td><td>Will, luck, magic, resistance, Sanity.</td></tr>
+<tr><td><strong>DEX</strong></td><td>Dexterity</td><td>Speed, agility, coordination, weapon requirements.</td></tr>
+<tr><td><strong>CHA</strong></td><td>Charisma</td><td>Leadership, charm, persuasion, divine favour.</td></tr>
+</table></div>
+
+<h3>Hit Points</h3>
+<div class="rule-box">HP = CON + 1 per SIZ point above 12 − 1 per SIZ point below 9<br>
+(SIZ penalty cannot reduce HP below ½ CON)</div>
+<p>At <strong>0 HP or below</strong>, the character is dead. No resurrection in the Young Kingdoms.</p>
+
+<h3>Sanity</h3>
+<div class="rule-box">Starting SAN = POW × 5 (modified by nationality)<br>
+Temporary Madness Threshold (SFT) = ½ starting SAN (never changes)</div>
+<p>SAN ranges 1–99. At <strong>0 SAN</strong> the character is completely insane and passes to GM control.</p>
+
+<h3>Increasing Characteristics</h3>
+<p>Characteristics rarely increase. If the GM calls a characteristic roll and the character succeeds, they may attempt to increase it after the adventure: roll <strong>2D6</strong>. On <strong>7</strong>, the characteristic rises by 1. On <strong>2</strong>, it falls by 1. All other results: no change.</p>
+</section>
+
+<!-- ═══════════════ NATIONALITY ═══════════════ -->
+<section id="nationality">
+<h2>Nationality</h2>
+<p>Roll <strong>1D100</strong> on the table below, or choose with GM permission. Apply modifiers after rolling characteristics.</p>
+<div class="table-wrap"><table>
+<tr><th>D100</th><th>Nation</th><th>Build</th><th>Modifiers</th><th>Social Origin</th></tr>
+<tr><td class="num">01–02</td><td><strong>Melniboné</strong></td><td>Slight</td><td>+1D10 INT, +2D6 POW, +3 SIZ, +20 SAN</td><td>Always Warrior + Noble</td></tr>
+<tr><td class="num">03–05</td><td><strong>Pan Tang</strong></td><td>Heavy</td><td>+1D8 INT, +1D8 POW, +1 SIZ, +10 SAN</td><td>Warrior or Priest-Sorcerer; roll Noble on 01–20</td></tr>
+<tr><td class="num">06–08</td><td><strong>Myrrhyn</strong></td><td>Slight</td><td>+1D6 INT, +1D6 POW, +1D6 CHA (females), +5 SAN, −2 SIZ (if ≥9)</td><td>Normal (Sailor/Thief/Beggar → Warrior)</td></tr>
+<tr><td class="num">09–12</td><td><strong>Dharijor</strong></td><td>Average</td><td>+1D4 CON</td><td>Normal</td></tr>
+<tr><td class="num">13–16</td><td><strong>Jharkor</strong></td><td>Roll 1-2 slight, 3-4 avg, 5-6 heavy</td><td>−1D4 CHA, +1D4 DEX</td><td>Normal</td></tr>
+<tr><td class="num">17–24</td><td><strong>Shazaar</strong></td><td>Roll 1-2 slight, 3-4 avg, 5-6 heavy</td><td>+1D6 CON</td><td>Normal</td></tr>
+<tr><td class="num">25–29</td><td><strong>Tarkesh</strong></td><td>Average or heavy</td><td>+1D4 CON, −1 SIZ (if ≥10)</td><td>Farmer/Hunter → Sailor</td></tr>
+<tr><td class="num">30–37</td><td><strong>Vilmir</strong></td><td>Roll 1 slight, 2-5 avg, 6 heavy</td><td>None</td><td>Normal</td></tr>
+<tr><td class="num">38–44</td><td><strong>Ilmiora</strong></td><td>Roll 1 slight, 2-5 avg, 6 heavy</td><td>+1D6 CHA</td><td>Normal</td></tr>
+<tr><td class="num">45–49</td><td><strong>Nadsokor</strong></td><td>Any</td><td>−1D6 CON, −1D6 CHA</td><td>Automatically Beggar; roll Afflictions</td></tr>
+<tr><td class="num">50–56</td><td><strong>Desert of Tears</strong></td><td>Average</td><td>+1D6 STR, +1D4 DEX, +1D6 CON, −1D4 CHA, −1 SIZ (if ≥10), Ride 80%+1D6</td><td>Hunter or Warrior only</td></tr>
+<tr><td class="num">57–60</td><td><strong>Eshmir</strong></td><td>Average</td><td>+1D4 INT, +1D6 POW, −2 SIZ (if ≥10), +5 SAN</td><td>Auto Priest+Sorcerer if INT+POW ≥32</td></tr>
+<tr><td class="num">61–67</td><td><strong>Purple Towns</strong></td><td>Average or heavy</td><td>+1D4 STR, +1D6 CON</td><td>Hunter → Sailor</td></tr>
+<tr><td class="num">68–75</td><td><strong>Argimiliar</strong></td><td>Average</td><td>None confirmed (OCR damaged)</td><td>Normal</td></tr>
+<tr><td class="num">76–81</td><td><strong>Pikarayd</strong></td><td>Average or heavy</td><td>+2D4 STR, +1 SIZ</td><td>Normal</td></tr>
+<tr><td class="num">82–88</td><td><strong>Lormyr</strong></td><td>Average or heavy</td><td>−1D6 INT, +2 SIZ</td><td>Normal</td></tr>
+<tr><td class="num">89–95</td><td><strong>Filkhar</strong></td><td>Normal</td><td>+1D6 DEX</td><td>Normal</td></tr>
+<tr><td class="num">96–97</td><td><strong>Oin</strong></td><td>Normal</td><td>−1D6 INT (if ≥10), −1D6 DEX (if ≥10), +1D6 STR, +1D6 CON, −10 SAN</td><td>Priest/Sailor → Hunter</td></tr>
+<tr><td class="num">98–99</td><td><strong>Yu</strong></td><td>Heavy</td><td>−1D6 INT (if ≥10), −1D6 POW (if ≥10), −1D6 CHA (if ≥10), +1D6 STR, +1D6 CON, −10 SAN</td><td>Priest/Merchant/Sailor → Hunter</td></tr>
+<tr><td class="num">00</td><td><strong>Org</strong></td><td>Heavy</td><td>−2D4 POW (if ≥10), −2D4 CHA (if ≥10), −1D6 INT (if ≥10), −1D6 DEX (if ≥10), +1D8 CON, +1D4 STR, −2 SIZ (if ≥10), −10 SAN</td><td>01 on D100 = Noble; else Hunter</td></tr>
+</table></div>
+
+<h3>Nationality & Religion</h3>
+<div class="table-wrap"><table>
+<tr><th>Nation</th><th>Typical Deities</th></tr>
+<tr><td>Melniboné</td><td>Arioch, Pyaray, Xiombarg, Mabelrode <span class="tag chaos">Chaos</span></td></tr>
+<tr><td>Pan Tang</td><td>Chardhros, Pyaray, Arioch, Slortar <span class="tag chaos">Chaos</span></td></tr>
+<tr><td>Myrrhyn</td><td>Grome, Lassa, Kakatal <span class="tag elem">Elements</span></td></tr>
+<tr><td>Vilmir / Ilmiora / Lormyr / Filkhar</td><td>Elementals, Arkyn, Donblas <span class="tag law">Law</span></td></tr>
+<tr><td>Nadsokor</td><td>Elementals, Narjhan, Balo</td></tr>
+<tr><td>Purple Towns</td><td>Goldar <span class="tag law">Law</span></td></tr>
+<tr><td>Pikarayd</td><td>Kakatal, Grome, Arioch, Chardhros, Hionhurn</td></tr>
+<tr><td>Dharijor</td><td>Kakatal, Straasha, Checkalakh</td></tr>
+</table></div>
+</section>
+
+<!-- ═══════════════ SOCIAL ORIGIN ═══════════════ -->
+<section id="social-origin">
+<h2>Social Origin</h2>
+<p>Roll <strong>1D100</strong> unless fixed by nationality. Each origin grants starting skills, equipment, and starting money. All characters also know <strong>1D6 + 2</strong> additional skills chosen freely.</p>
+<div class="table-wrap"><table>
+<tr><th>D100</th><th>Origin</th><th>Starting Weapons</th><th>Starting Money</th><th>Key Skills</th></tr>
+<tr><td class="num">01–20</td><td><strong>Warrior</strong> (01-18) / <strong>Assassin</strong> (19-20)</td><td>3 weapons of choice</td><td>INT × 1D100 GB</td><td>Weapon 1: 50%+bonus; Weapon 2: 40%+bonus; Weapon 3: 30%+bonus; Ride 65% or 25%</td></tr>
+<tr><td class="num">21–30</td><td><strong>Merchant</strong> (Negotiator 28-30)</td><td>1 weapon</td><td>INT × 5D100 GB</td><td>Weapon 40%+bonus; Read/Write 70%; Persuade 50%; Credit 40%; Evaluate Treasure 80%</td></tr>
+<tr><td class="num">31–45</td><td><strong>Sailor</strong> (Mate +5%, Captain +10%)</td><td>1 weapon</td><td>INT × 1D20 / 5D20 / 10D20 GB</td><td>Swim 50%; Knots 70%; Climb 40% or Rigging 75%; Balance 50%</td></tr>
+<tr><td class="num">46–60</td><td><strong>Hunter</strong></td><td>1 melee + bow + 12 arrows</td><td>1D100 GB</td><td>Melee 30%+bonus; Bow 25%+bonus; Traps 50%; Ambush 50%; Track 50%</td></tr>
+<tr><td class="num">61–65</td><td><strong>Farmer</strong></td><td>Staff + hatchet</td><td>INT × 1D20 GB</td><td>Staff 30%; Hatchet 15%; Plant Lore 20%; Track 20%; Craft: Blacksmith 20%</td></tr>
+<tr><td class="num">66–70</td><td><strong>Priest</strong></td><td>Dagger</td><td>5D100 GB/month from temple</td><td>Read/Write Common 80%; Read/Write Low Melnibonean 60%; High Melnibonean 40%; Plant Lore 40%; First Aid 40%; 2D6 starting Elan</td></tr>
+<tr><td class="num">71–75</td><td><strong>Noble</strong></td><td>Weapons + armor of choice</td><td>Property 10,000×1D100 GB + 100×1D100 GB cash</td><td>Weapon 1: 40%; Weapon 2: 20%; Credit 40%; group leader by default</td></tr>
+<tr><td class="num">76–85</td><td><strong>Thief</strong></td><td>Dagger + 1 weapon; lockpicks</td><td>5D20 GB</td><td>Dagger 45%; Climb 1D100%; Hide/Conceal 1D100%; Pick Lock 1D100%; Listen 70%; Move Silently 50%; Cut Purse 1D100%; Evaluate Treasure 50%</td></tr>
+<tr><td class="num">86–90</td><td><strong>Beggar</strong></td><td>None (10% combat skills)</td><td>1D6 GB</td><td>Persuade 60%; Pick Lock 50%; group bonus +1% Attack per beggar ally; roll Afflictions table</td></tr>
+<tr><td class="num">91–00</td><td><strong>Artisan</strong></td><td>1 weapon (any usable)</td><td>DEX × 1D100 GB</td><td>+3 DEX; Craft 70%+bonus; weapon 1D100%+bonus; second weapon 15%+bonus</td></tr>
+</table></div>
+
+<h3>Assassin (Warrior variant)</h3>
+<p>Rolled on 9–10 of a 1D10 sub-roll when Warrior result is obtained. Gets all Warrior skills plus:</p>
+<div class="table-wrap"><table>
+<tr><th>Skill</th><th>Starting Value</th></tr>
+<tr><td>Poison Lore</td><td class="num">30% + Knowledge bonus</td></tr>
+<tr><td>Search</td><td class="num">25% + Perception bonus</td></tr>
+<tr><td>Move Silently</td><td class="num">50% + Stealth bonus</td></tr>
+<tr><td>Hide</td><td class="num">40% + Stealth bonus</td></tr>
+<tr><td>Ambush</td><td class="num">50% + Stealth bonus</td></tr>
+<tr><td>Listen</td><td class="num">50% + Perception bonus</td></tr>
+</table></div>
+
+<h3>Beggar Afflictions (Roll 1D20)</h3>
+<div class="table-wrap"><table>
+<tr><th>D20</th><th>Affliction</th></tr>
+<tr><td class="num">01</td><td>Cataracts; half blind</td></tr>
+<tr><td class="num">02</td><td>Missing one ear; Listen halved</td></tr>
+<tr><td class="num">03</td><td>Mute or tongue cut out</td></tr>
+<tr><td class="num">04</td><td>Missing one eye</td></tr>
+<tr><td class="num">05</td><td>No nose</td></tr>
+<tr><td class="num">06</td><td>Teeth completely missing</td></tr>
+<tr><td class="num">07–08</td><td>Leper</td></tr>
+<tr><td class="num">09</td><td>Hemophiliac</td></tr>
+<tr><td class="num">10</td><td>Scurvy-ridden</td></tr>
+<tr><td class="num">11</td><td>Missing 2D4 fingers</td></tr>
+<tr><td class="num">12</td><td>One hand amputated</td></tr>
+<tr><td class="num">13</td><td>One foot amputated</td></tr>
+<tr><td class="num">14</td><td>One arm amputated</td></tr>
+<tr><td class="num">15</td><td>One leg amputated</td></tr>
+<tr><td class="num">16</td><td>One arm + one leg amputated</td></tr>
+<tr><td class="num">17</td><td>Major deformity (verify from source)</td></tr>
+<tr><td class="num">18</td><td>Obese</td></tr>
+<tr><td class="num">19</td><td>Living skeleton; extremely emaciated</td></tr>
+<tr><td class="num">20</td><td>Mentally deficient; −1D6 INT</td></tr>
+</table></div>
+<div class="note">If the same affliction is rolled twice, it worsens: subtract 1 from all characteristics except SIZ.</div>
+
+<h3>Personal History (Optional — Roll 1D100)</h3>
+<div class="table-wrap"><table>
+<tr><th>D100</th><th>History</th></tr>
+<tr><td class="num">01</td><td>Sixth sense; never surprised in combat. Roll 3×POW to detect ambushes.</td></tr>
+<tr><td class="num">02</td><td>Owns 3 type-6 healing vials.</td></tr>
+<tr><td class="num">03</td><td>Especially well-forged weapon (+2 damage).</td></tr>
+<tr><td class="num">04</td><td>Naturally immune to 3 chosen snake venoms.</td></tr>
+<tr><td class="num">05</td><td>Gifted mimic; blends into many social settings.</td></tr>
+<tr><td class="num">06</td><td>Wide field of vision; +10% See and Track.</td></tr>
+<tr><td class="num">07</td><td>Developed hearing; +10% Listen.</td></tr>
+<tr><td class="num">08</td><td>Ambidextrous; one-handed weapons equally usable in either hand.</td></tr>
+<tr><td class="num">09</td><td>Natural friendship with wild animals; they won't attack unless forced.</td></tr>
+<tr><td class="num">10</td><td>Owns a riding horse; +25% Ride.</td></tr>
+<tr><td class="num">11</td><td>Influential friend (determine with GM).</td></tr>
+<tr><td class="num">12–13</td><td>Old treasure map (GM determines authenticity).</td></tr>
+<tr><td class="num">14–15</td><td>Special experience; one skill +1D10.</td></tr>
+<tr><td class="num">23</td><td>Owns an incomprehensible grimoire.</td></tr>
+<tr><td class="num">44</td><td>Searching for a missing twin.</td></tr>
+<tr><td class="num">53</td><td>Believes they are the abandoned child of a king.</td></tr>
+<tr><td class="num">61–63</td><td>Searching for family taken into slavery.</td></tr>
+<tr><td class="num">72–75</td><td>Inveterate gambler; strange wagers hold no fear.</td></tr>
+<tr><td class="num">77–80</td><td>Seeks murderer of a best friend across the Young Kingdoms.</td></tr>
+<tr><td class="num">90</td><td>Falsely accused of murder; seeks proof of innocence.</td></tr>
+<tr><td class="num">95</td><td>Amnesiac; does not know true identity but retains all skills.</td></tr>
+<tr><td class="num">98</td><td>Gravely insulted a Pan Tang noble who swore revenge.</td></tr>
+<tr><td class="num">100</td><td>Arbitrated a Law/Chaos dispute; both cults now pursue the character.</td></tr>
+</table></div>
+</section>
+
+<!-- ═══════════════ SKILLS ═══════════════ -->
+<section id="skills">
+<h2>Skills &amp; Bonuses</h2>
+<p>Skills are percentages. Roll 1D100; equal to or below = success. Characters not knowing a skill attempt it at the relevant bonus; on success they acquire it at that value.</p>
+<p>All characters begin with the following at <strong>10%</strong> (+ bonus): Jump, Climb, Dodge, Balance, Persuade, Listen, Hide.</p>
+
+<h3>Skill Bonus Calculation</h3>
+<p>Average characteristics are 9–12. Each point <strong>above 12</strong> usually adds +1%; each point <strong>below 9</strong> subtracts −1%. SIZ is reversed for Parry, Agility, and Stealth bonuses.</p>
+<div class="table-wrap"><table>
+<tr><th>Bonus Type</th><th>Based On</th><th>Notes</th></tr>
+<tr><td><strong>Attack</strong></td><td>STR, INT, POW, DEX</td><td>All weapon attack skills.</td></tr>
+<tr><td><strong>Parry</strong></td><td>STR, POW, DEX, SIZ (reversed)</td><td>High SIZ penalises parry.</td></tr>
+<tr><td><strong>Damage Bonus</strong></td><td>STR + SIZ total</td><td>See Damage Bonus table.</td></tr>
+<tr><td><strong>Agility</strong></td><td>STR, POW, DEX, SIZ (reversed)</td><td>Ride, Swim, Climb, Jump, Tumble, Dodge.</td></tr>
+<tr><td><strong>Manipulation</strong></td><td>STR, INT, POW, DEX</td><td>Knots, Traps, Sleight of Hand, Pick Lock.</td></tr>
+<tr><td><strong>Perception</strong></td><td>INT, POW</td><td>See, Listen, Smell, Taste, Balance, Search, Track.</td></tr>
+<tr><td><strong>Stealth</strong></td><td>INT, DEX, SIZ (reversed)</td><td>Move Silently, Hide, Ambush, Conceal, Cut Purse.</td></tr>
+<tr><td><strong>Knowledge</strong></td><td>INT + age bonus</td><td>+2% per INT above 12; +1%/yr above 25 (Non-nobles); +2% (Nobles); +3% (Priests).</td></tr>
+<tr><td><strong>Communication</strong></td><td>CHA, INT, POW</td><td>Persuade, Credit, Oratory, Sing.</td></tr>
+</table></div>
+
+<h3>Damage Bonus Table (STR + SIZ)</h3>
+<div class="table-wrap"><table>
+<tr><th>STR + SIZ</th><th>Melee / Natural</th><th>Missile / Thrown</th></tr>
+<tr><td class="num">02–16</td><td class="num">−1D6</td><td class="num">−1D4</td></tr>
+<tr><td class="num">17–24</td><td>None</td><td>None</td></tr>
+<tr><td class="num">25–40</td><td class="num">+1D6</td><td class="num">+1D4</td></tr>
+<tr><td class="num">41–50</td><td class="num">+2D6</td><td class="num">+2D4</td></tr>
+<tr><td class="num">51+</td><td class="num">+3D6</td><td class="num">+3D4</td></tr>
+</table></div>
+
+<h3>Skill Categories</h3>
+<h4>Weapon Skills</h4>
+<p>Attack and Parry are separate skills. Learning both costs two skill choices. Missile and thrown weapons normally require Attack only. Shields have Attack and Parry.</p>
+<h4>Knowledge Skills (require training)</h4>
+<p>Poison Lore, Plant Lore, and Music Lore cannot be improved through ordinary experience — they require a teacher or special study.</p>
+<h4>Educated Classes</h4>
+<p>Nobles, Merchants, and Priests may learn Speak and Read/Write for another language as a single skill choice. Other classes must learn them separately.</p>
+</section>
+
+<!-- ═══════════════ COMBAT ═══════════════ -->
+<section id="combat">
+<h2>Combat</h2>
+
+<h3>Combat Round (≈12 seconds)</h3>
+<ol>
+<li>Declare intentions (lowest DEX may declare first so fastest can react).</li>
+<li>Resolve combat and missile fire in <strong>DEX order</strong> (highest first).</li>
+<li>Move unengaged characters; manifest summoned elementals/demons.</li>
+</ol>
+<p>One attack per round normally. No human can be attacked by more than <strong>five opponents</strong> simultaneously.</p>
+
+<h3>Attacking</h3>
+<p>Roll against the weapon's Attack skill. On a hit, the defender chooses:</p>
+<ol>
+<li><strong>Take the blow</strong> and rely on armor.</li>
+<li><strong>Parry</strong> with weapon or shield.</li>
+<li><strong>Dodge</strong> — only if they have not yet attacked this round.</li>
+</ol>
+
+<h3>Parrying</h3>
+<p>Roll against Parry skill. Success = no damage. Additional parries in the same round are at cumulative <strong>−20%</strong> each (−20%, −40%, −60%…). Only one defence per attack — cannot try shield and then weapon if the first fails.</p>
+<p>Arrows and sling stones can only be parried by shields. Thrown weapons can be dodged or parried.</p>
+
+<h3>Dodge</h3>
+<ul>
+<li>Cannot Dodge if you have already attacked this round.</li>
+<li>Cannot Dodge as a second attempt after a failed Parry.</li>
+<li>A critical hit can only be Dodged by a <em>critical Dodge</em>.</li>
+</ul>
+
+<h3>Critical Hits</h3>
+<p>Roll equal to or below <strong>1/10 of Attack skill</strong>.</p>
+<ul>
+<li>Double normal damage.</li>
+<li>Ignores all armor (including demon armor).</li>
+<li>Forces Major Wound roll even if damage would be minor.</li>
+<li>Target stunned for at least 5 minutes.</li>
+<li>Parrying a critical hit <strong>breaks the parrying weapon/shield</strong> (Demon Weapons save on 1×CON or break).</li>
+<li>Attacker may choose to <strong>disarm</strong> instead; a Parry prevents the disarm.</li>
+</ul>
+
+<h3>Critical Parries</h3>
+<p>Same condition (1/10 of Parry skill). A critical parry breaks any normal weapon that scored an ordinary hit. Against a critical hit, both weapons break.</p>
+
+<h3>Fumbles</h3>
+<div class="table-wrap"><table>
+<tr><th>Weapon Type</th><th>D100</th><th>Effect</th></tr>
+<tr><td rowspan="3">Melee</td><td class="num">01–50</td><td>Drop weapon at feet.</td></tr>
+<tr><td class="num">51–85</td><td>Weapon flies 1D6 m away.</td></tr>
+<tr><td class="num">86–00</td><td>Weapon strikes hard surface and breaks (Demon Weapon saves on 5×CON). If no hard object: injure self for half weapon damage.</td></tr>
+<tr><td rowspan="3">Missile</td><td class="num">01–50</td><td>Drop weapon.</td></tr>
+<tr><td class="num">51–85</td><td>Weapon breaks.</td></tr>
+<tr><td class="num">86–00</td><td>Hit a friend or yourself in the foot; half damage.</td></tr>
+<tr><td rowspan="3">Natural</td><td class="num">01–50</td><td>Fall; attacks from ground at half chance, Parry unchanged.</td></tr>
+<tr><td class="num">51–85</td><td>Sprain; next 1D6 attacks at half chance.</td></tr>
+<tr><td class="num">86–00</td><td>Injure self; apply normal damage.</td></tr>
+</table></div>
+
+<h3>Weapon Mastery (90%+ in both Attack and Parry)</h3>
+<ul>
+<li>May train others (1D6−2 skill per week; roll Attack and Parry separately).</li>
+<li>After a successful Parry, may immediately make an extra <strong>riposte</strong> attack (at −20% if other attacks were made).</li>
+</ul>
+
+<h3>Surprise &amp; Ambush</h3>
+<p>Roll Ambush skill. Success = 1D4−1 rounds of surprise. During surprise, victims cannot Attack, Parry, Dodge, or riposte. Armor still protects.</p>
+<p>If Ambush fails, victims may roll <strong>See</strong>:</p>
+<ul>
+<li><em>Success:</em> may draw weapon/shield and parry this round; weapon masters may attack.</li>
+<li><em>Failure:</em> surprised 1 round (cannot parry or fight).</li>
+<li><em>Round 2 after failure:</em> may parry but not attack.</li>
+<li><em>Round 3:</em> normal combat.</li>
+</ul>
+
+<h3>Initiative (Sudden Attack)</h3>
+<p>Both sides roll <strong>1D10 + DEX</strong>. If attacker wins, they may attack and defender can only Dodge. Normal DEX order resumes next round.</p>
+
+<h3>Tactical Modifiers</h3>
+<div class="table-wrap"><table>
+<tr><th>Situation</th><th>Effect</th></tr>
+<tr><td>Height advantage (mounted vs foot, uphill)</td><td>Lower combatant −25% Attack and −25% Parry</td></tr>
+<tr><td>Fortified position</td><td>Attacker up to −50% to hit; defender no reduction</td></tr>
+<tr><td>Helpless enemy (throat cut, backstab)</td><td>Death unless victim rolls 1×POW; on success, normal damage and victim alerts</td></tr>
+<tr><td>Unseen attacker during melee (fail POW)</td><td>Attacker's chance doubled; critical chance increases proportionally</td></tr>
+<tr><td>Changing weapons</td><td>Only at round start; −5 DEX that round</td></tr>
+<tr><td>Ignoring weapon skill entirely</td><td>−5 DEX for attack order purposes</td></tr>
+</table></div>
+
+<h3>Mass Combat (every 30 minutes)</h3>
+<p>Roll 1D100 against <strong>5×POW</strong>. Success: no wound. Failure: 2D10 damage (armor protects).</p>
+
+<h3>Naval Combat</h3>
+<p>Battle total = Navigation skill + POW. Resolve as POW vs POW on Resistance Table. Victor may gain 1D4−1 POW; may attempt to improve Navigation.</p>
+</section>
+
+<!-- ═══════════════ MOVEMENT ═══════════════ -->
+<section id="movement">
+<h2>Movement</h2>
+<h3>Daily Travel</h3>
+<div class="table-wrap"><table>
+<tr><th>Mode</th><th>Distance</th></tr>
+<tr><td>Walking (10 hrs/day)</td><td class="num">30 km</td></tr>
+<tr><td>Forced march (10 hrs/day)</td><td class="num">65 km</td></tr>
+<tr><td>Horse (walk-trot-walk, 10–12 hrs)</td><td class="num">95 km</td></tr>
+<tr><td>Ship (favorable wind)</td><td class="num">155–320 km/day</td></tr>
+</table></div>
+<h3>Terrain Effects on Daily Travel</h3>
+<div class="table-wrap"><table>
+<tr><th>Terrain</th><th>Movement Effect</th></tr>
+<tr><td>Forest or Hills</td><td>Reduce by ⅓</td></tr>
+<tr><td>Mountains</td><td>Reduce by ⅔</td></tr>
+<tr><td>Swamps / Marshes</td><td>Reduce by ¾ (unless boat/canal)</td></tr>
+<tr><td>Rocky or Sandy Desert</td><td>Reduce by ½</td></tr>
+<tr><td>Ice or Snow</td><td>Reduce by ¾</td></tr>
+</table></div>
+<h3>Scenario Movement (5-minute turns)</h3>
+<div class="table-wrap"><table>
+<tr><th>Pace</th><th>Distance</th></tr>
+<tr><td>Careful</td><td class="num">120 m</td></tr>
+<tr><td>Normal</td><td class="num">300 m</td></tr>
+<tr><td>Running</td><td class="num">1,600 m</td></tr>
+</table></div>
+<h3>Combat Movement (12-second round)</h3>
+<p>Up to <strong>60 m</strong> running; <strong>30 m</strong> if hindered. Plate armor reduces movement by ⅔ for characters with STR below 11.</p>
+</section>
+
+<!-- ═══════════════ WEAPONS ═══════════════ -->
+<section id="weapons">
+<h2>Weapons</h2>
+<p>All weapons and shields have <strong>20 HP</strong> against acid, fire, and similar damage. Weapons usable both in melee and as thrown require a separate thrown skill; without it, 10% to hit.</p>
+<p>If STR is insufficient: character strikes last. If DEX is insufficient: hits deal half damage. Skill drops to 5% or Attack/Parry bonus (whichever is higher).</p>
+
+<h3>Melee Weapons</h3>
+<div class="table-wrap"><table>
+<tr><th>Weapon</th><th>STR</th><th>DEX</th><th>Damage</th><th>Length</th><th>Price (GB)</th></tr>
+<tr><td>Battle axe</td><td class="num">9</td><td class="num">9</td><td class="num">1D8+2</td><td>75 cm</td><td class="num">200</td></tr>
+<tr><td>Broadsword</td><td class="num">9</td><td class="num">7</td><td class="num">1D8+1</td><td>100 cm</td><td class="num">250</td></tr>
+<tr><td>Club</td><td class="num">—</td><td class="num">7</td><td class="num">1D6</td><td>60–120 cm</td><td class="num">0–5</td></tr>
+<tr><td>Dagger</td><td class="num">—</td><td class="num">3</td><td class="num">1D4+2</td><td>15–45 cm</td><td class="num">100</td></tr>
+<tr><td>Reaper (Faucheur)</td><td class="num">8</td><td class="num">8</td><td class="num">1D6+2</td><td>90 cm</td><td class="num">225</td></tr>
+<tr><td>Filkharian pike (2H)</td><td class="num">11</td><td class="num">7</td><td class="num">2D6+1</td><td>270–300 cm</td><td class="num">150</td></tr>
+<tr><td>Longsword (2H)</td><td class="num">11</td><td class="num">13</td><td class="num">2D8</td><td>150–180 cm</td><td class="num">750</td></tr>
+<tr><td>Hatchet</td><td class="num">7</td><td class="num">9</td><td class="num">1D6+1</td><td>45 cm</td><td class="num">125</td></tr>
+<tr><td>Heavy mace (2H)</td><td class="num">13</td><td class="num">7</td><td class="num">1D8+2</td><td>75–90 cm</td><td class="num">200</td></tr>
+<tr><td>Javelin (melee)</td><td class="num">—</td><td class="num">10</td><td class="num">1D6</td><td>60–90 cm</td><td class="num">175</td></tr>
+<tr><td>Light mace</td><td class="num">7</td><td class="num">7</td><td class="num">1D6+2</td><td>60 cm</td><td class="num">75</td></tr>
+<tr><td>Great spear / Great lance (2H)</td><td class="num">11</td><td class="num">9</td><td class="num">1D10+1</td><td>210–240 cm</td><td class="num">100</td></tr>
+<tr><td>Lormyrian axe (2H)</td><td class="num">13</td><td class="num">11</td><td class="num">3D6</td><td>165 cm</td><td class="num">400</td></tr>
+<tr><td>Quarterstaff (2H)</td><td class="num">9</td><td class="num">9</td><td class="num">1D8</td><td>180–210 cm</td><td class="num">50</td></tr>
+<tr><td>Scimitar</td><td class="num">9</td><td class="num">9</td><td class="num">1D8+1</td><td>75–105 cm</td><td class="num">210</td></tr>
+<tr><td>Sea axe (2H)</td><td class="num">11</td><td class="num">9</td><td class="num">2D6+2</td><td>200 cm</td><td class="num">250</td></tr>
+<tr><td>Shortsword</td><td class="num">7</td><td class="num">7</td><td class="num">1D6+1</td><td>75 cm</td><td class="num">125</td></tr>
+<tr><td>Spear, one-handed</td><td class="num">9</td><td class="num">7</td><td class="num">1D6+1</td><td>120–150 cm</td><td class="num">50</td></tr>
+<tr><td>Punch</td><td class="num">—</td><td class="num">—</td><td class="num">1D3</td><td>hand</td><td class="num">—</td></tr>
+<tr><td>Kick</td><td class="num">—</td><td class="num">—</td><td class="num">1D6</td><td>foot</td><td class="num">—</td></tr>
+<tr><td>Head butt</td><td class="num">—</td><td class="num">—</td><td class="num">1D4</td><td>head</td><td class="num">—</td></tr>
+</table></div>
+
+<h3>Shields</h3>
+<div class="table-wrap"><table>
+<tr><th>Shield</th><th>STR</th><th>DEX</th><th>Damage</th><th>Size</th><th>Price (GB)</th></tr>
+<tr><td>Buckler (small)</td><td class="num">—</td><td class="num">12</td><td class="num">1D4</td><td>30 cm diam.</td><td class="num">50</td></tr>
+<tr><td>Target shield</td><td class="num">8</td><td class="num">7</td><td class="num">1D6</td><td>90 cm diam.</td><td class="num">75</td></tr>
+<tr><td>Large shield</td><td class="num">8</td><td class="num">9</td><td class="num">1D6</td><td>90 cm</td><td class="num">100</td></tr>
+<tr><td>Tower shield</td><td class="num">12</td><td class="num">6</td><td class="num">1D6+2</td><td>150 cm</td><td class="num">125</td></tr>
+</table></div>
+
+<h3>Missile &amp; Thrown Weapons</h3>
+<div class="table-wrap"><table>
+<tr><th>Weapon</th><th>STR</th><th>DEX</th><th>Damage</th><th>Range</th><th>Price (GB)</th></tr>
+<tr><td>Dagger</td><td class="num">—</td><td class="num">6</td><td class="num">1D4+2</td><td>15 m</td><td class="num">100</td></tr>
+<tr><td>Desert bow</td><td class="num">13</td><td class="num">11</td><td class="num">1D10+2</td><td>135 m</td><td class="num">600</td></tr>
+<tr><td>Javelin</td><td class="num">7</td><td class="num">10</td><td class="num">1D8+2</td><td>30 m</td><td class="num">75</td></tr>
+<tr><td>Melnibonean bone bow</td><td class="num">11</td><td class="num">13</td><td class="num">2D6+1</td><td>135 m</td><td class="num">750</td></tr>
+<tr><td>Stone</td><td class="num">—</td><td class="num">5</td><td class="num">2D4</td><td>30 m</td><td class="num">—</td></tr>
+<tr><td>Bow</td><td class="num">9</td><td class="num">9</td><td class="num">1D8+1</td><td>90 m</td><td class="num">250</td></tr>
+<tr><td>Sling</td><td class="num">—</td><td class="num">11</td><td class="num">1D6+1</td><td>90 m</td><td class="num">25</td></tr>
+<tr><td>Spear</td><td class="num">9</td><td class="num">10</td><td class="num">2D6</td><td>15 m</td><td class="num">50</td></tr>
+<tr><td>Target shield (thrown)</td><td class="num">16</td><td class="num">7</td><td class="num">2D4</td><td>6 m</td><td class="num">75</td></tr>
+<tr><td>Throwing axe</td><td class="num">9</td><td class="num">12</td><td class="num">1D8+2</td><td>15 m</td><td class="num">150</td></tr>
+</table></div>
+<div class="note">Dagger, bow, and throwing axe may make two attacks per round if DEX permits and character is not in melee: first at character's DEX, second at end of round.</div>
+</section>
+
+<!-- ═══════════════ ARMOR & DAMAGE ═══════════════ -->
+<section id="armor">
+<h2>Armor &amp; Damage</h2>
+
+<h3>Armor Types</h3>
+<div class="table-wrap"><table>
+<tr><th>Armor</th><th>Protection</th><th>Notes</th></tr>
+<tr><td>Leather</td><td class="num">1D6−1</td><td>Can swim in it (pass Swim roll). A result of 0 means the blow struck an unprotected area.</td></tr>
+<tr><td>Barbarian (carved wood)</td><td class="num">1D8−1</td><td>Fits only original owner or same SIZ/build. ~400 GB. Warps after 1 hr in water.</td></tr>
+<tr><td>Half-plate</td><td class="num">1D8−1</td><td>Covers vital body only. Common in southern/western lands.</td></tr>
+<tr><td>Plate (no helm)</td><td class="num">1D10−1</td><td>Needs STR 11 to move normally; −1 DEX per STR below 11.</td></tr>
+<tr><td>Plate (with helm)</td><td class="num">1D10+2</td><td>Helm caps Perception skills at 25%; usually surprised by side/rear. ~1,000+ GB.</td></tr>
+</table></div>
+<div class="note">Plate armor adds +1D6 falling damage. Half-plate can be removed in water with 3 successful Swim rolls. Plate sinks the wearer.</div>
+
+<h3>Wound Categories</h3>
+<div class="table-wrap"><table>
+<tr><th>Type</th><th>Damage Threshold</th><th>Effect</th></tr>
+<tr><td><strong>Minor Wound</strong></td><td>Less than ½ total HP</td><td>Every 4 HP lost → −1 DEX until healed. May fight until death.</td></tr>
+<tr><td><strong>Major Wound</strong></td><td>≥ ½ total HP in one blow</td><td>Immediately halve DEX. May fight for rounds = remaining HP, then collapse. Must receive aid within 1 hr or risk death (roll 1D20 vs CON; failure = death; success = −1D6 CON permanently + roll Major Wounds table).</td></tr>
+<tr><td><strong>Mortal / Fatal Wound</strong></td><td>≥ total HP in one blow</td><td>Immediate death (no exceptions in standard rules).</td></tr>
+</table></div>
+
+<h3>Major Wounds Table (1D100)</h3>
+<div class="table-wrap"><table>
+<tr><th>D100</th><th>Consequence</th></tr>
+<tr><td class="num">01–50</td><td>Impressive scar; no lasting effect.</td></tr>
+<tr><td class="num">51</td><td>Lose left eye; −2 CHA, −2 DEX.</td></tr>
+<tr><td class="num">52</td><td>Lose right eye; −2 CHA, −2 DEX.</td></tr>
+<tr><td class="num">53</td><td>Lose nose; −4 CHA, −3% Perception bonus.</td></tr>
+<tr><td class="num">54</td><td>Lose left ear; −1 CHA, −5% Perception bonus.</td></tr>
+<tr><td class="num">55</td><td>Lose right ear; −1 CHA, −5% Perception bonus.</td></tr>
+<tr><td class="num">56–57</td><td>Broken jaw, teeth lost; −2 CHA, −1 CON.</td></tr>
+<tr><td class="num">58</td><td>Severe spinal injury; halve STR and DEX.</td></tr>
+<tr><td class="num">59</td><td>Major head injury; −3 INT, −3 CHA.</td></tr>
+<tr><td class="num">60–62</td><td>Minor head injury; −1 INT, −1 CHA.</td></tr>
+<tr><td class="num">63–64</td><td>Internal organ damage; lose 1D6+2 CON and equal HP.</td></tr>
+<tr><td class="num">65–68</td><td>Broken ribs; lose 1D4 CON and equal HP.</td></tr>
+<tr><td class="num">69–72</td><td>Left arm broken and badly set; −2 DEX.</td></tr>
+<tr><td class="num">73–76</td><td>Right arm broken and badly set; −2 DEX.</td></tr>
+<tr><td class="num">77–79</td><td>Left hand amputated; −4 DEX.</td></tr>
+<tr><td class="num">80–82</td><td>Right hand amputated; −4 DEX.</td></tr>
+<tr><td class="num">83–86</td><td>Left leg broken and badly set; −2 DEX.</td></tr>
+<tr><td class="num">87–90</td><td>Right leg broken and badly set; −2 DEX.</td></tr>
+<tr><td class="num">91–92</td><td>Left leg tendon severed; −4 DEX.</td></tr>
+<tr><td class="num">93–94</td><td>Right leg tendon severed; −4 DEX.</td></tr>
+<tr><td class="num">95–97</td><td>Left leg partially amputated; −3 DEX.</td></tr>
+<tr><td class="num">98–00</td><td>Right leg partially amputated; −3 DEX.</td></tr>
+</table></div>
+
+<h3>Other Damage</h3>
+<h4>Falling</h4>
+<div class="table-wrap"><table>
+<tr><th>Fall Distance</th><th>Damage</th></tr>
+<tr><td>0–3 m</td><td class="num">1D6</td></tr>
+<tr><td>3.1–6 m</td><td class="num">2D6</td></tr>
+<tr><td>6.1–9 m</td><td class="num">3D6</td></tr>
+<tr><td>9.1–12 m</td><td class="num">4D6</td></tr>
+<tr><td>+3 m increments</td><td class="num">+1D6 each</td></tr>
+</table></div>
+<p>Falling into water or a soft surface: subtract 2D6 from damage. Armor does not protect against falls. Plate adds +1D6 extra damage.</p>
+
+<h4>Fire</h4>
+<p>Torch used as weapon: 1D6 damage. When touched by flame, roll 3×POW (5×POW in plate) or catch fire: 1D10 fire damage before extinguished. A major fire wound costs 1D10 CON (and equal HP) permanently; if CON reaches 0, death by secondary infection.</p>
+
+<h4>Disease</h4>
+<p>Exposure: roll 1D100 against 2×CON. Failure = diseased. Then roll 2×POW to recover. Mild failure: −1D4 CON temporarily. Severe failure: death. Recovering from severe disease costs 1D4 CON permanently but grants +1 POW.</p>
+
+<h3>Healing</h3>
+<h4>First Aid</h4>
+<p>One attempt per wound situation. Success: stops bleeding, restores 1D3 HP. Critical success: restores 1D3+3 HP or prevents long-term major wound effect. Fumble: healer causes extra damage equal to half the patient's lost HP.</p>
+<h4>Natural Healing</h4>
+<p>Minor wounds: 1 HP/day of rest. Major wounds: require First Aid first, then 1 HP/week.</p>
+<h4>Plant Lore Healing</h4>
+<div class="table-wrap"><table>
+<tr><th>Plant Lore Skill</th><th>Effect</th></tr>
+<tr><td class="num">41–50%</td><td>Poultice heals 1D6 HP after 1D6 hours.</td></tr>
+<tr><td class="num">51–60%</td><td>Potion heals 2D6 HP after 2D6 hours; works on wounds, poison, disease.</td></tr>
+<tr><td class="num">61–70%</td><td>Plants cure infections or disease after 1D6 days.</td></tr>
+<tr><td class="num">91–00%</td><td>Rare herbs may produce the Elixir of Invulnerability.</td></tr>
+</table></div>
+</section>
+
+<!-- ═══════════════ MAGIC ═══════════════ -->
+<section id="magic">
+<h2>Magic &amp; Sorcery</h2>
+<p>Mortals cannot directly create magic. All magic requires summoning, binding, bargaining with, or serving supernatural beings from other planes.</p>
+<p>The sign of Chaos is the <strong>eight-pointed star</strong> (octagon). The sign of Law is the <strong>triangle</strong>. Chaotic demons are contained in octagons; Law rituals use triangles.</p>
+
+<h3>Sorcery Requirements</h3>
+<div class="table-wrap"><table>
+<tr><th>Rank</th><th>INT + POW</th><th>Also Requires</th><th>What It Enables</th></tr>
+<tr><td><strong>First</strong></td><td class="num">32+ (INT 16+)</td><td>Training or grimoire</td><td>Summon and bind lesser elementals.</td></tr>
+<tr><td><strong>Second</strong></td><td class="num">36+</td><td>Formulae, sacrifices, herbs</td><td>Summon and bind lesser demons.</td></tr>
+<tr><td><strong>Third</strong></td><td class="num">40+</td><td>First rank foundations</td><td>Summon an Elemental Lord and bargain.</td></tr>
+<tr><td><strong>Fourth</strong></td><td class="num">44+</td><td>Ancient pact (Melniboneans only for Beast Lords)</td><td>Summon Beast Lords.</td></tr>
+<tr><td><strong>Fifth</strong></td><td class="num">48+</td><td>Full ceremony and sacrifice</td><td>Summon Lords of Law or Chaos (cannot control them).</td></tr>
+</table></div>
+
+<h3>Starting Sorcery Skills (Born Sorcerers)</h3>
+<div class="table-wrap"><table>
+<tr><th>Rank</th><th>Starting Abilities</th></tr>
+<tr><td>First</td><td>One elemental type at 50%.</td></tr>
+<tr><td>Second</td><td>First elemental at skill level; second elemental at 50%. One demon at 4×INT%; second demon at 3×INT%.</td></tr>
+<tr><td>Third</td><td>First two elementals at skill; third at 50%. First two demons at skill; one additional demon at 3×INT%. Trained to summon one Elemental Lord.</td></tr>
+<tr><td>Fourth</td><td>First three elementals at skill; fourth at 50%. All known demon types at skill; last three at 3×INT%. Two Elemental Lords. If Melnibonean: one Beast Lord rune.</td></tr>
+<tr><td>Fifth</td><td>All elementals and demons at skill. All Elemental Lords. If Melnibonean: three Beast Lords. One Lord of Law or Chaos.</td></tr>
+</table></div>
+<div class="note">Characters who become sorcerers during play (not at creation) start all sorcery talents at INT% regardless of rank achieved.</div>
+
+<h3>Advancing Sorcery Rank</h3>
+<p>Qualifying INT+POW is not enough — training is required:</p>
+<ol>
+<li><strong>Grimoire study:</strong> 40 − INT months; must succeed at roll under 3×POW (failure = death).</li>
+<li><strong>NPC teacher:</strong> 30 − INT months; GM sets payment and rank.</li>
+<li><strong>PC teacher:</strong> 30 − INT months; neither character can do anything else during training.</li>
+</ol>
+</section>
+
+<!-- ═══════════════ ELEMENTALS ═══════════════ -->
+<section id="elementals">
+<h2>Elementals</h2>
+<div class="table-wrap"><table>
+<tr><th>Element</th><th>Spirit</th><th>Lord</th><th>Typical Powers</th></tr>
+<tr><td>Air</td><td>Sylphs</td><td><strong>Lassa</strong></td><td>Wind, flight, messages, arrow deflection.</td></tr>
+<tr><td>Water</td><td>Undines</td><td><strong>Straasha</strong></td><td>Water movement, drowning aid, swimming, currents.</td></tr>
+<tr><td>Earth</td><td>Gnomes</td><td><strong>Grome</strong></td><td>Digging, stone movement, entrapment, treasure sense.</td></tr>
+<tr><td>Fire</td><td>Salamanders</td><td><strong>Kakatal</strong></td><td>Flame, burning, heat, fire protection.</td></tr>
+</table></div>
+
+<h3>Summoning a Lesser Elemental</h3>
+<ol>
+<li>The appropriate element must be physically present.</li>
+<li>Concentrate and chant for <strong>2D10 minutes</strong> uninterrupted.</li>
+<li>Roll the summoning skill.</li>
+<li>On success: elemental obeys one order, then is free unless bound.</li>
+</ol>
+
+<h3>Binding a Lesser Elemental</h3>
+<ol>
+<li>Choose a receptacle object (ring, sword, stone, etc.).</li>
+<li>Roll under <strong>3×POW</strong>.</li>
+<li>Success: elemental is bound; can be called up to <strong>4 times per hour</strong> (4th call frees it).</li>
+<li>Failure: elemental freed; sorcerer's POW falls to 1, recovers at 1/hour.</li>
+</ol>
+<p><strong>Critical binding success:</strong> roll 1D4−2 POW gain/loss (positive = sorcerer takes from elemental; negative = elemental drains sorcerer).</p>
+<p><strong>Multiple bindings of same element:</strong> roll 2D6 and try to exceed the number of bound elementals of that type. Failure attracts the Elemental Lord's attention.</p>
+
+<h3>Elemental Lords</h3>
+<p>Cannot be controlled, only <strong>bargained with</strong>. Requires third-rank sorcery and the appropriate element to be present. The Lord sets its own price or service requirement.</p>
+</section>
+
+<!-- ═══════════════ DEMONS ═══════════════ -->
+<section id="demons">
+<h2>Demons</h2>
+<p>Lesser demons are beings of Chaos from other planes, bound to the Lords of Chaos. They are more dangerous and flexible than elementals.</p>
+
+<h3>Summoning a Demon</h3>
+<p><strong>Normal summoning:</strong> roll the summoning skill; takes hours. On success, bargain for one service or one day of aid.</p>
+<p><strong>Quick summoning:</strong> takes 2D10 minutes; use either 2×POW or half the summoning skill.</p>
+
+<h3>Binding a Demon</h3>
+<p>Resolve <strong>POW vs POW</strong> on the Resistance formula.</p>
+<ul>
+<li><strong>Success:</strong> demon becomes permanent servant; may be bound into an object.</li>
+<li><strong>Failure:</strong> sorcerer's POW falls to 1; permanently loses 1 POW; Combat and Possession Demons attack the summoner; all already-bound demons may rebel.</li>
+<li><strong>Critical success (demon POW ≥ summoner's):</strong> sorcerer gains 1D4−1 POW.</li>
+</ul>
+
+<h3>Demon Types</h3>
+<div class="table-wrap"><table>
+<tr><th>Type</th><th>Forms / Uses</th><th>SAN on Success</th><th>SAN on Failure</th></tr>
+<tr><td><strong>Combat</strong></td><td>Demon weapon, demon warrior; kills, drains POW, shatters weapons.</td><td class="num">1</td><td class="num">1D8</td></tr>
+<tr><td><strong>Protection</strong></td><td>Demon armor, door, guardian, spirit guard.</td><td class="num">0</td><td class="num">1D6</td></tr>
+<tr><td><strong>Knowledge</strong></td><td>Answers questions, teaches skills, reveals secrets.</td><td class="num">0</td><td class="num">1D6</td></tr>
+<tr><td><strong>Travel</strong></td><td>Transport, teleportation, gates between planes.</td><td class="num">0</td><td class="num">1D6</td></tr>
+<tr><td><strong>Desire</strong></td><td>Healing, emotion, beauty, seduction, compulsion, alter appearance.</td><td class="num">0</td><td class="num">1D6</td></tr>
+<tr><td><strong>Possession</strong></td><td>Possesses bodies, controls victims; POW struggle to resist.</td><td class="num">1</td><td class="num">1D8</td></tr>
+</table></div>
+<div class="note">Seeing the same demon again (after first SAN roll) does not cause further SAN loss. If bound into an object, no SAN roll required at all.</div>
+
+<h3>Summoning Beast Lords</h3>
+<p>Requires fourth-rank sorcery. Normally only <strong>Melniboneans</strong> may summon Beast Lords due to ancient pacts. Requires knowledge of a poetic rune specific to the beast kind. A non-Melnibonean may be taught one such rune by a Melnibonean sorcerer under extraordinary circumstances.</p>
+
+<h3>Summoning Lords of Law</h3>
+<ul>
+<li>INT + POW 48+</li>
+<li>Stand in an equilateral triangle</li>
+<li>Use ritual objects grouped in threes</li>
+<li>Roll equal to or below INT + POW</li>
+</ul>
+
+<h3>Summoning Lords of Chaos</h3>
+<ul>
+<li>INT + POW 48+</li>
+<li>Stand on the eight-arrow sign of Chaos</li>
+<li>Offer human sacrifice</li>
+<li>Roll equal to or below POW + number of sacrifices</li>
+</ul>
+<div class="note">Gods cannot be controlled. The GM plays them. They may demand CON, POW, CHA, worship, service, human sacrifice, or impossible deeds.</div>
+</section>
+
+<!-- ═══════════════ CULTS ═══════════════ -->
+<section id="cults">
+<h2>Cults, Elan &amp; Divine Intervention</h2>
+
+<h3>The Three Churches</h3>
+<div class="table-wrap"><table>
+<tr><th>Church</th><th>Named Powers</th></tr>
+<tr><td><strong>Church of Law</strong> <span class="tag law">Law</span></td><td>Donblas, Arkyn, Goldar (Lord of Profit)</td></tr>
+<tr><td><strong>Church of Chaos</strong> <span class="tag chaos">Chaos</span></td><td>Arioch, Pyaray, Chardhros, Balo, Narjhan, Xiombarg, Mabelrode, Slortar, Orunlu, Hionhurn…</td></tr>
+<tr><td><strong>Church of the Elements</strong> <span class="tag elem">Elements</span></td><td>Lassa (Air), Straasha (Water), Grome (Earth), Kakatal (Fire)</td></tr>
+</table></div>
+
+<h3>Cult Membership Levels</h3>
+<ul>
+<li><strong>Worshipper:</strong> ordinary believer, performs rites. May belong to multiple non-opposing cults.</li>
+<li><strong>Priest:</strong> cult functionary; leads services; has direct relationship with the god; may hold temple rank.</li>
+<li><strong>Agent:</strong> soul dedicated to one deity; can call divine intervention.</li>
+</ul>
+
+<h3>Elan</h3>
+<p>Elan measures divine favour (0–99). Gained by performing actions appropriate to the deity.</p>
+<div class="rule-box">50 Elan → +1 POW (convert at any time)<br>
+If Elan reaches 100: must convert at least 50 immediately<br>
+Effective maximum: 99</div>
+
+<h3>Calling for Divine Intervention</h3>
+<ol>
+<li>Roll 1D100.</li>
+<li>If result &gt; Elan: call fails, Elan is halved.</li>
+<li>If result ≤ Elan: call succeeds, subtract the roll from Elan.</li>
+<li>GM grants minimum effective version of the request.</li>
+</ol>
+<div class="note">Use divine intervention only in desperate moments, not for convenience.</div>
+
+<h3>Becoming an Agent</h3>
+<ol>
+<li>Visit a temple of the chosen deity.</li>
+<li>Permanently sacrifice any number of POW points (cannot reduce POW below 3).</li>
+<li>Add sacrificed POW to CHA.</li>
+<li>Roll 1D100 equal to or below CHA + sacrificed POW.</li>
+</ol>
+<p>Success = Agent status + personalized amulet. Failure = POW still lost, cannot try that deity again. One attempt per session; one deity only.</p>
+
+<h3>Agent Types &amp; Benefits</h3>
+<div class="table-wrap"><table>
+<tr><th>Agent Type</th><th>Benefits</th><th>Taboos / Risks</th></tr>
+<tr><td><strong>Elemental Agent</strong> <span class="tag elem">Elem</span></td><td>Always has one lesser elemental servant; immune to own elementals.</td><td>Must obey elemental taboo; keep amulet at all times.</td></tr>
+<tr><td><strong>Agent of Law</strong> <span class="tag law">Law</span></td><td>Champion of Law; doubled endurance via yearly potion (Elixir of Endurance); Lawful Virtues.</td><td>Sterile; strict anti-Chaos vows; deadly if amulet lost.</td></tr>
+<tr><td><strong>Agent of Chaos</strong> <span class="tag chaos">Chaos</span></td><td>Gains one bound demon; minimum 50% chance in any demon POW struggle.</td><td>Must serve deity; obey Chaos hierarchy; risks demonic punishment.</td></tr>
+</table></div>
+
+<h3>Lawful Virtues</h3>
+<p>Agents of Law use Virtues instead of demons:</p>
+<div class="table-wrap"><table>
+<tr><th>Virtue</th><th>Use</th></tr>
+<tr><td>Attack</td><td>Improves or empowers weapons.</td></tr>
+<tr><td>Defense</td><td>Empowers armor, wards, doors.</td></tr>
+<tr><td>Knowledge</td><td>Answers questions or stores knowledge.</td></tr>
+<tr><td>Travel</td><td>Creates portals or animates transport statues.</td></tr>
+</table></div>
+</section>
+
+<!-- ═══════════════ SANITY ═══════════════ -->
+<section id="sanity">
+<h2>Sanity</h2>
+<p>Make SAN rolls for supernatural shock — <em>not</em> for ordinary danger or everyday violence. Stormbringer characters are hardened warriors; SAN is reserved for Chaos, demons, and gods.</p>
+<p>Roll 1D100 against current SAN. Success = smaller or no loss. Failure = listed loss (usually permanent).</p>
+<p>If SAN loss within <strong>10 minutes (50 rounds)</strong> equals or exceeds the SFT (½ starting SAN), the character suffers Temporary Madness.</p>
+
+<h3>SAN Loss by Situation</h3>
+<div class="table-wrap"><table>
+<tr><th>Situation</th><th>SAN Roll Success</th><th>SAN Roll Failure</th><th>Notes</th></tr>
+<tr><td>Horrible natural death (scene)</td><td class="num">0</td><td class="num">1D6</td><td>Melniboneans often exempt.</td></tr>
+<tr><td>Horrible supernatural death</td><td class="num">1</td><td class="num">1D6</td><td>Melniboneans often exempt.</td></tr>
+<tr><td>Substance of Chaos (visible)</td><td class="num">0</td><td class="num">1D8</td><td>—</td></tr>
+<tr><td>Minor Chaotic transformation</td><td class="num">0</td><td class="num">1D6</td><td>—</td></tr>
+<tr><td>Major Chaotic transformation</td><td class="num">2</td><td class="num">1D8+2</td><td>—</td></tr>
+<tr><td>Extreme transformation</td><td colspan="2">Roll under 1/10 current SAN; failure = −50 SAN</td><td>GM caution advised.</td></tr>
+<tr><td>Combat / Possession Demon (first sight)</td><td class="num">1</td><td class="num">1D8</td><td>No roll for same demon again.</td></tr>
+<tr><td>Other demon type (first sight)</td><td class="num">0</td><td class="num">1D6</td><td>No roll for same demon again.</td></tr>
+<tr><td>Elemental Lord (first sight)</td><td class="num">1</td><td class="num">1D6+1</td><td>Melniboneans exempt.</td></tr>
+<tr><td>Beast Lord (first sight)</td><td class="num">1D4−1</td><td class="num">1D8+1</td><td>Melniboneans exempt.</td></tr>
+<tr><td>Lord of Law (first encounter)</td><td class="num">1D10</td><td class="num">2D10</td><td>+10 to roll. Always roll, no immunity.</td></tr>
+<tr><td>Lord of Law (later encounter)</td><td class="num">1</td><td class="num">1D6</td><td>+10 to roll.</td></tr>
+<tr><td>Lord of Chaos, beautiful (first)</td><td class="num">2D10</td><td class="num">3D10</td><td>+10 to roll. Always roll.</td></tr>
+<tr><td>Lord of Chaos, ugly (first)</td><td class="num">3D10</td><td class="num">3D10</td><td>+10 to roll. Always roll.</td></tr>
+<tr><td>Lord of Chaos (later)</td><td class="num">1D10</td><td class="num">1D6</td><td>+10 to roll.</td></tr>
+</table></div>
+
+<h3>Temporary Madness Form (1D6)</h3>
+<div class="table-wrap"><table>
+<tr><th>D6</th><th>Form</th></tr>
+<tr><td class="num">1</td><td>Hysteria (laughing, weeping, or both)</td></tr>
+<tr><td class="num">2</td><td>Stupor — ceaseless babbling</td></tr>
+<tr><td class="num">3</td><td>Paranoia — irrational suspicion</td></tr>
+<tr><td class="num">4</td><td>Phobia — intense fear of the triggering thing</td></tr>
+<tr><td class="num">5</td><td>Amnesia</td></tr>
+<tr><td class="num">6</td><td>Suicide attempt (easy to prevent with companions)</td></tr>
+</table></div>
+
+<h3>Temporary Madness Duration (1D8)</h3>
+<div class="table-wrap"><table>
+<tr><th>D8</th><th>Duration</th></tr>
+<tr><td class="num">1</td><td>10 minutes</td></tr>
+<tr><td class="num">2</td><td>1 hour</td></tr>
+<tr><td class="num">3</td><td>2 hours</td></tr>
+<tr><td class="num">4</td><td>10 hours</td></tr>
+<tr><td class="num">5</td><td>1 day</td></tr>
+<tr><td class="num">6</td><td>2 days</td></tr>
+<tr><td class="num">7</td><td>1 week</td></tr>
+<tr><td class="num">8</td><td>1 month</td></tr>
+</table></div>
+
+<h3>Recovering SAN</h3>
+<p>Characters regain SAN by defeating or frustrating a god's plans: banishing a god ≈ +30 SAN; thwarting divine plans ≈ +20 SAN. SAN can never exceed its original starting value. All recovery is at GM discretion.</p>
+<p>Curing complete insanity (SAN 0) requires divine intervention — and gods may prefer the character stay mad.</p>
+</section>
+
+<!-- ═══════════════ CREATURES ═══════════════ -->
+<section id="creatures">
+<h2>Creatures</h2>
+
+<h3>Combat with Creatures</h3>
+<p>All creatures use DEX for attack order. Creatures with multiple attacks (two claws + bite) make all attacks simultaneously. Creatures below 3D6 INT have fixed, non-improving skills. Animals above 3D6 INT may improve skills like player characters.</p>
+
+<h3>Key Terrestrial Animals</h3>
+<div class="table-wrap"><table>
+<tr><th>Animal</th><th>Notable Stats</th><th>Special Attacks</th><th>Armor</th></tr>
+<tr><td><strong>Gorilla</strong></td><td>CON 3D6+6, SIZ 2D6+12, DEX 3D6+6</td><td>Bite 45% / 1D6. If both hands hit: grabbing — double damage/round until STR vs STR escape. 30% chance to flee from loud noise.</td><td>2 pts hide</td></tr>
+<tr><td><strong>Baboon</strong></td><td>STR 3D6+6, CON 3D6, SIZ 3D6, DEX 2D6</td><td>Bite 40% / 1D8; Claw 40% / 1D6+2 (Parry 30%). Pack fighters.</td><td>—</td></tr>
+<tr><td><strong>Forest Bear</strong></td><td>Large, tough</td><td>Two claws + bite simultaneously; hug on double claw hit (double damage/round).</td><td>2 pts hide</td></tr>
+<tr><td><strong>Cave Bear</strong></td><td>Larger than forest bear</td><td>Same as forest bear; more powerful.</td><td>3 pts hide</td></tr>
+<tr><td><strong>Tiger / Panther</strong></td><td>High DEX</td><td>Rear claw rip on successful grab; pounce attack.</td><td>1 pt hide</td></tr>
+<tr><td><strong>Dragon</strong></td><td>Massive STR/SIZ/CON; high POW</td><td>Claws, bite, fire breath; may speak; magical protections. Melnibonean dragons are trained war-mounts.</td><td>Heavy natural</td></tr>
+<tr><td><strong>Clakar</strong></td><td>Winged ape; roughly orangutan-sized</td><td>Claws + bite; flight.</td><td>—</td></tr>
+<tr><td><strong>Dharzi Hunting Hound</strong></td><td>Hound/eagle hybrid</td><td>Can pursue in air and on ground.</td><td>—</td></tr>
+</table></div>
+
+<h3>Chaos Creature Special Faculties (1D10 roll for randomly created creatures)</h3>
+<div class="table-wrap"><table>
+<tr><th>Faculty</th><th>Effect</th></tr>
+<tr><td>Regeneration</td><td>Regains HP each round.</td></tr>
+<tr><td>Invisibility</td><td>Cannot be seen; attackers at half chance.</td></tr>
+<tr><td>Teleportation</td><td>Instant relocation.</td></tr>
+<tr><td>Polymorphy</td><td>Can change form.</td></tr>
+<tr><td>Magical Protection</td><td>Immune to nonmagical weapons.</td></tr>
+<tr><td>Repulsive Nature</td><td>Causes revulsion; SAN-like effect.</td></tr>
+<tr><td>Combat Luck</td><td>Halves weapon hit chances against it.</td></tr>
+<tr><td>Immateriality</td><td>Phantom-like; only affected through POW struggle.</td></tr>
+</table></div>
+</section>
+
+<!-- ═══════════════ EQUIPMENT & PRICES ═══════════════ -->
+<section id="equipment">
+<h2>Equipment &amp; Prices</h2>
+<p>The most common coin is the <strong>large bronze (GB)</strong>. Silver and gold are rare. Prices below are in GB unless noted.</p>
+
+<h3>Currency</h3>
+<div class="table-wrap"><table>
+<tr><th>Abbrev.</th><th>Coin</th></tr>
+<tr><td>PB</td><td>Small bronze (petite bronze)</td></tr>
+<tr><td>GB</td><td>Large bronze (grande bronze) — standard coin</td></tr>
+<tr><td>PA</td><td>Small silver</td></tr>
+<tr><td>GA</td><td>Large silver</td></tr>
+<tr><td>PO</td><td>Small gold</td></tr>
+<tr><td>GO</td><td>Large gold</td></tr>
+<tr><td>MA</td><td>Melnibonean silver dragon</td></tr>
+<tr><td>MO</td><td>Melnibonean gold wheel</td></tr>
+</table></div>
+
+<h3>Food &amp; Drink</h3>
+<div class="table-wrap"><table>
+<tr><th>Item</th><th>Price</th></tr>
+<tr><td>½ litre of wine</td><td>1 PB</td></tr>
+<tr><td>Cheap meal</td><td>2 GB</td></tr>
+<tr><td>Raw meat, 1 kg</td><td>2 GB</td></tr>
+<tr><td>Vegetables, 1 kg</td><td>2 PB</td></tr>
+<tr><td>Good meal</td><td>5 GB</td></tr>
+<tr><td>Banquet for two</td><td>20 GB</td></tr>
+<tr><td>Food provisions, 20 meals + drink</td><td>50 GB</td></tr>
+<tr><td>Large loaf of bread</td><td>1 GB</td></tr>
+<tr><td>5 litres of wine (by quality)</td><td>2–8 GB</td></tr>
+</table></div>
+
+<h3>Lodging (per day)</h3>
+<div class="table-wrap"><table>
+<tr><th>Type</th><th>Price</th></tr>
+<tr><td>Common-room floor</td><td>2 GB</td></tr>
+<tr><td>Dormitory</td><td>10 GB</td></tr>
+<tr><td>Double room</td><td>20 GB</td></tr>
+<tr><td>Private room</td><td>30 GB</td></tr>
+</table></div>
+
+<h3>Clothing</h3>
+<div class="table-wrap"><table>
+<tr><th>Item</th><th>Price</th></tr>
+<tr><td>Loincloth</td><td>1 GB</td></tr>
+<tr><td>Trousers</td><td>20 GB</td></tr>
+<tr><td>Shirt</td><td>10 GB</td></tr>
+<tr><td>Linen cloak</td><td>25 GB</td></tr>
+<tr><td>Riding boots</td><td>100 GB</td></tr>
+<tr><td>Sandals</td><td>10 GB</td></tr>
+<tr><td>Leather belt</td><td>10 GB</td></tr>
+<tr><td>Felt hat</td><td>5 GB</td></tr>
+</table></div>
+
+<h3>Transport &amp; Mounts</h3>
+<div class="table-wrap"><table>
+<tr><th>Item</th><th>Price</th></tr>
+<tr><td>Riding horse</td><td>100 GB</td></tr>
+<tr><td>Trained warhorse</td><td>5,000 GB</td></tr>
+<tr><td>Purebred horse</td><td>10,000 GB</td></tr>
+<tr><td>Draft ox</td><td>80 GB</td></tr>
+<tr><td>Horse cart</td><td>50 GB</td></tr>
+<tr><td>Two-wheeled cart</td><td>100 GB</td></tr>
+<tr><td>Four-wheeled cart</td><td>400 GB</td></tr>
+<tr><td>Covered wagon</td><td>10,000 GB</td></tr>
+</table></div>
+
+<h3>Tools &amp; Camping</h3>
+<div class="table-wrap"><table>
+<tr><th>Item</th><th>Price</th></tr>
+<tr><td>Rope, 6 m</td><td>1 PB</td></tr>
+<tr><td>Small tent (1 person)</td><td>200 GB</td></tr>
+<tr><td>Medium tent (3 people)</td><td>500 GB</td></tr>
+<tr><td>Large tent (5 people)</td><td>800 GB</td></tr>
+<tr><td>Backpack</td><td>10 GB</td></tr>
+<tr><td>Flint</td><td>10 GB</td></tr>
+<tr><td>5 torches</td><td>2 GB</td></tr>
+<tr><td>Oil lamp</td><td>20 GB</td></tr>
+<tr><td>Hammer</td><td>2 GB</td></tr>
+<tr><td>Anvil</td><td>500 GB</td></tr>
+</table></div>
+
+<h3>Property &amp; Vessels</h3>
+<div class="table-wrap"><table>
+<tr><th>Item</th><th>Price</th></tr>
+<tr><td>Hovel</td><td>1,000 GB</td></tr>
+<tr><td>Three-room house</td><td>20,000 GB</td></tr>
+<tr><td>Five-room house</td><td>30,000 GB</td></tr>
+<tr><td>Villa (10–12 rooms)</td><td>50,000 GB</td></tr>
+<tr><td>Palace</td><td>100,000 GB</td></tr>
+<tr><td>Castle</td><td>500,000 GB</td></tr>
+<tr><td>1 acre of arable land</td><td>20,000 GB</td></tr>
+<tr><td>Rowboat</td><td>500 GB</td></tr>
+<tr><td>Two-person canoe</td><td>2,000 GB</td></tr>
+<tr><td>Tarkeshite merchant ship (per ton)</td><td>10,000 GB</td></tr>
+<tr><td>War galley (per crewman, min. 20)</td><td>10,000 GB</td></tr>
+</table></div>
+
+<h3>Books &amp; Knowledge</h3>
+<div class="table-wrap"><table>
+<tr><th>Item</th><th>Price</th></tr>
+<tr><td>Writing paper, 20 sheets</td><td>1 GB</td></tr>
+<tr><td>Knowledge book</td><td>100–1,000 GB</td></tr>
+<tr><td>Fiction / poetry</td><td>8–20 GB</td></tr>
+<tr><td>Grimoire (per spell contained)</td><td>10,000 GB</td></tr>
+</table></div>
+</section>
+
+<!-- ═══════════════ QUICK-START ═══════════════ -->
+<section id="quickstart">
+<h2>Character Creation Checklist</h2>
+<ol>
+<li>Roll STR, CON, SIZ, INT, POW, DEX, CHA on <strong>3D6</strong> each.</li>
+<li>If total is below <strong>64</strong>, reroll the whole set.</li>
+<li>Roll or choose nationality; apply modifiers.</li>
+<li>Calculate <strong>Hit Points</strong> (CON ± SIZ modifier).</li>
+<li>Calculate starting <strong>SAN</strong> (POW × 5, modified by nationality) and <strong>SFT</strong> (½ SAN).</li>
+<li>Roll or choose <strong>Social Origin</strong>; record class skills, money, and equipment.</li>
+<li>Choose <strong>1D6 + 2</strong> additional skills (weapon Attack + Parry = 2 choices each).</li>
+<li>Calculate all <strong>Skill Bonuses</strong> from characteristics.</li>
+<li>Choose weapons within STR/DEX requirements.</li>
+<li>If INT 16+ and INT + POW 32+, decide on sorcery access and roll/choose elemental type.</li>
+<li>If Priest or Agent, record cult, starting Elan (Priests get 2D6), taboos, and amulet.</li>
+<li>Optionally roll on <strong>Personal History</strong> table (1D100).</li>
+<li>Give the character a reason to travel with the group.</li>
+</ol>
+<div class="note">Characters begin at age 25 by default. Each year below 25: −5% per class skill. Each year above 25: +1% (ordinary), +2% (Noble), or +3% (Priest) to Knowledge skills.</div>
+</section>
+
+<!-- ═══════════════ GM GUIDANCE ═══════════════ -->
+<section id="gm-guidance">
+<h2>GM Guidance</h2>
+<h3>Principles</h3>
+<ol>
+<li><strong>Combat is decisive.</strong> A single critical hit can change or end a life.</li>
+<li><strong>Magic is never casual.</strong> Every summoning creates obligation, risk, or debt.</li>
+<li><strong>Law and Chaos are not Good and Evil.</strong> Both become monstrous when absolute.</li>
+<li><strong>Characters need motives.</strong> Loyalty, revenge, faith, ambition, curiosity, love, debt, exile, doom.</li>
+<li><strong>Keep Elric in the background.</strong> Player characters should be the centre of their own tragedy.</li>
+</ol>
+
+<h3>What Magic Solves</h3>
+<div class="table-wrap"><table>
+<tr><th>Need</th><th>Likely Magic</th></tr>
+<tr><td>Dig, move earth, find treasure</td><td>Earth elemental (Gnome) or Grome</td></tr>
+<tr><td>Cross water, breathe underwater, drown enemies</td><td>Water elemental (Undine) or Straasha</td></tr>
+<tr><td>Fly, send messages, stir winds</td><td>Air elemental (Sylph) or Lassa</td></tr>
+<tr><td>Burn, melt, purify, resist flame</td><td>Fire elemental (Salamander) or Kakatal</td></tr>
+<tr><td>Kill, empower weapon, guardian warrior</td><td>Combat Demon</td></tr>
+<tr><td>Armor, ward, spirit guard</td><td>Protection Demon or Virtue of Defense</td></tr>
+<tr><td>Learn secret, gain skill</td><td>Knowledge Demon or Virtue of Knowledge</td></tr>
+<tr><td>Travel quickly, gate between planes</td><td>Travel Demon or Virtue of Travel</td></tr>
+<tr><td>Heal, change appearance, manipulate desire</td><td>Desire Demon</td></tr>
+<tr><td>Control a body, infiltrate</td><td>Possession Demon</td></tr>
+<tr><td>Command animals</td><td>Beast Lord</td></tr>
+<tr><td>Cosmic intervention</td><td>Lord of Law, Lord of Chaos, or Divine Intervention</td></tr>
+</table></div>
+
+<h3>Campaign Eras</h3>
+<ul>
+<li><strong>Before Elric:</strong> Melniboné still rules; no Lords of Chaos on the mortal plane; Law at its peak influence.</li>
+<li><strong>Elric's Time:</strong> The Balance tilts toward Chaos; Elric walks; the Eternal Champion's saga unfolds; a good era for ambitious, doomed heroes.</li>
+</ul>
+</section>
+
+</div><!-- end #main -->
+
+<script>
+// ── NAV DATA ──
+const navData = [
+  { title: "Core Mechanics", links: [
+    { text: "Resolution & Criticals", id: "core" },
+    { text: "Resistance Formula", id: "core" },
+    { text: "Improving Skills", id: "core" },
+  ]},
+  { title: "Characters", links: [
+    { text: "Characteristics", id: "characteristics" },
+    { text: "Hit Points & Sanity", id: "characteristics" },
+  ]},
+  { title: "Nationality", links: [
+    { text: "Nationality Table", id: "nationality" },
+    { text: "Nationality & Religion", id: "nationality" },
+  ]},
+  { title: "Social Origin", links: [
+    { text: "Origin Table", id: "social-origin" },
+    { text: "Assassin Skills", id: "social-origin" },
+    { text: "Afflictions Table", id: "social-origin" },
+    { text: "Personal History", id: "social-origin" },
+  ]},
+  { title: "Skills", links: [
+    { text: "Skill Bonuses", id: "skills" },
+    { text: "Damage Bonus Table", id: "skills" },
+    { text: "Skill Categories", id: "skills" },
+  ]},
+  { title: "Combat", links: [
+    { text: "Combat Round", id: "combat" },
+    { text: "Attacking & Parrying", id: "combat" },
+    { text: "Critical Hits & Parries", id: "combat" },
+    { text: "Fumble Tables", id: "combat" },
+    { text: "Weapon Mastery", id: "combat" },
+    { text: "Surprise & Ambush", id: "combat" },
+    { text: "Tactical Modifiers", id: "combat" },
+    { text: "Mass & Naval Combat", id: "combat" },
+  ]},
+  { title: "Movement", links: [
+    { text: "Daily Travel", id: "movement" },
+    { text: "Terrain Effects", id: "movement" },
+    { text: "Combat Movement", id: "movement" },
+  ]},
+  { title: "Weapons", links: [
+    { text: "Melee Weapons", id: "weapons" },
+    { text: "Shields", id: "weapons" },
+    { text: "Missile & Thrown", id: "weapons" },
+  ]},
+  { title: "Armor & Damage", links: [
+    { text: "Armor Types", id: "armor" },
+    { text: "Wound Categories", id: "armor" },
+    { text: "Major Wounds Table", id: "armor" },
+    { text: "Fire, Falling, Disease", id: "armor" },
+    { text: "Healing", id: "armor" },
+  ]},
+  { title: "Magic", links: [
+    { text: "Sorcery Ranks", id: "magic" },
+    { text: "Starting Sorcery Skills", id: "magic" },
+    { text: "Advancing Rank", id: "magic" },
+  ]},
+  { title: "Elementals", links: [
+    { text: "Elements & Lords", id: "elementals" },
+    { text: "Summoning & Binding", id: "elementals" },
+  ]},
+  { title: "Demons", links: [
+    { text: "Summoning & Binding", id: "demons" },
+    { text: "Demon Types", id: "demons" },
+    { text: "Summoning Gods", id: "demons" },
+  ]},
+  { title: "Cults & Elan", links: [
+    { text: "Three Churches", id: "cults" },
+    { text: "Elan & Divine Intervention", id: "cults" },
+    { text: "Becoming an Agent", id: "cults" },
+    { text: "Lawful Virtues", id: "cults" },
+  ]},
+  { title: "Sanity", links: [
+    { text: "SAN Loss Table", id: "sanity" },
+    { text: "Temporary Madness", id: "sanity" },
+    { text: "Recovering SAN", id: "sanity" },
+  ]},
+  { title: "Creatures", links: [
+    { text: "Combat with Creatures", id: "creatures" },
+    { text: "Animal Stats", id: "creatures" },
+    { text: "Chaos Faculties", id: "creatures" },
+  ]},
+  { title: "Equipment & Prices", links: [
+    { text: "Currency", id: "equipment" },
+    { text: "Food & Lodging", id: "equipment" },
+    { text: "Transport & Property", id: "equipment" },
+    { text: "Books & Grimoires", id: "equipment" },
+  ]},
+  { title: "Quick Reference", links: [
+    { text: "Character Creation Checklist", id: "quickstart" },
+    { text: "GM Guidance", id: "gm-guidance" },
+    { text: "What Magic Solves", id: "gm-guidance" },
+  ]},
+];
+
+// ── BUILD NAV ──
+const nav = document.getElementById('nav');
+navData.forEach((section, i) => {
+  const div = document.createElement('div');
+  div.className = 'nav-section';
+  const title = document.createElement('div');
+  title.className = 'nav-section-title';
+  title.innerHTML = section.title + ' <span class="arrow">▶</span>';
+  const links = document.createElement('div');
+  links.className = 'nav-links';
+  section.links.forEach(link => {
+    const a = document.createElement('a');
+    a.href = '#' + link.id;
+    a.textContent = link.text;
+    links.appendChild(a);
+  });
+  title.addEventListener('click', () => {
+    const isOpen = title.classList.contains('open');
+    title.classList.toggle('open', !isOpen);
+    links.classList.toggle('open', !isOpen);
+  });
+  div.appendChild(title);
+  div.appendChild(links);
+  nav.appendChild(div);
+});
+
+// ── SEARCH ──
+let matches = [];
+let currentMatch = -1;
+const searchInput = document.getElementById('search-input');
+const searchCount = document.getElementById('search-count');
+const searchNav = document.getElementById('search-nav');
+const mainEl = document.getElementById('main');
+
+function clearHighlights() {
+  document.querySelectorAll('.hl').forEach(el => {
+    const parent = el.parentNode;
+    parent.replaceChild(document.createTextNode(el.textContent), el);
+    parent.normalize();
+  });
+  matches = [];
+  currentMatch = -1;
+}
+
+function highlight(node, term) {
+  if (node.nodeType === 3) {
+    const idx = node.textContent.toLowerCase().indexOf(term);
+    if (idx === -1) return;
+    const span = document.createElement('span');
+    span.className = 'hl';
+    span.textContent = node.textContent.substr(idx, term.length);
+    const after = node.splitText(idx);
+    after.textContent = after.textContent.substr(term.length);
+    node.parentNode.insertBefore(span, after);
+    matches.push(span);
+  } else if (node.nodeType === 1 && !['SCRIPT','STYLE'].includes(node.tagName)) {
+    Array.from(node.childNodes).forEach(child => highlight(child, term));
+  }
+}
+
+function updateSearch() {
+  clearHighlights();
+  const term = searchInput.value.trim().toLowerCase();
+  if (term.length < 2) {
+    searchCount.textContent = '';
+    searchNav.classList.remove('visible');
+    return;
+  }
+  highlight(mainEl, term);
+  if (matches.length === 0) {
+    searchCount.textContent = 'No results';
+    searchNav.classList.remove('visible');
+    return;
+  }
+  searchCount.textContent = matches.length + ' result' + (matches.length > 1 ? 's' : '');
+  searchNav.classList.add('visible');
+  currentMatch = 0;
+  goToMatch(0);
+}
+
+function goToMatch(i) {
+  matches.forEach(m => m.classList.remove('current'));
+  if (matches.length === 0) return;
+  currentMatch = ((i % matches.length) + matches.length) % matches.length;
+  const m = matches[currentMatch];
+  m.classList.add('current');
+  m.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  searchCount.textContent = (currentMatch + 1) + ' / ' + matches.length;
+}
+
+function nextMatch() { goToMatch(currentMatch + 1); }
+function prevMatch() { goToMatch(currentMatch - 1); }
+
+let searchTimer;
+searchInput.addEventListener('input', () => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(updateSearch, 250);
+});
+searchInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') nextMatch();
+});
+
+// ── ACTIVE NAV TRACKING ──
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + entry.target.id);
+      });
+    }
+  });
+}, { threshold: 0.15 });
+sections.forEach(s => observer.observe(s));
+
+// Auto-open first nav section
+document.querySelector('.nav-section-title').classList.add('open');
+document.querySelector('.nav-links').classList.add('open');
+</script>
+</body>
+</html>
