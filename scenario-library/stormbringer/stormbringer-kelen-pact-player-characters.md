@@ -45,7 +45,7 @@
 |-----|-----|-----|-----|-----|-----|-----|
 | 15  | 14  | 14  | 11  | 12  | 14  | 11  |
 
-**HP:** 28 (CON 14 + SIZ 14)
+**HP:** 16 (CON 14, SIZ 14 → +2 above 12)
 **Magic Points:** 12
 **Damage Bonus:** +1D4 (STR 15 + SIZ 14 = 29)
 **Strike Rank:** 28 (DEX 14 + SIZ 14)
@@ -131,7 +131,7 @@ Six months ago, the sorcerer Kelen hired him to escort supplies to the moor tree
 |-----|-----|-----|-----|-----|-----|-----|
 | 9   | 11  | 10  | 16  | 16  | 12  | 13  |
 
-**HP:** 21 (CON 11 + SIZ 10)
+**HP:** 11 (CON 11, SIZ 10 → no modifier)
 **Magic Points:** 16
 **Damage Bonus:** None (STR 9 + SIZ 10 = 19)
 **Strike Rank:** 22 (DEX 12 + SIZ 10)
@@ -221,7 +221,7 @@ She is not unaware of the danger. She is choosing to treat documentation as a co
 |-----|-----|-----|-----|-----|-----|-----|
 | 10  | 12  | 9   | 14  | 12  | 17  | 11  |
 
-**HP:** 21 (CON 12 + SIZ 9)
+**HP:** 12 (CON 12, SIZ 9 → no modifier)
 **Magic Points:** 12
 **Damage Bonus:** None (STR 10 + SIZ 9 = 19)
 **Strike Rank:** 26 (DEX 17 + SIZ 9)
@@ -309,7 +309,7 @@ Three months ago, Sevel — Tally's older brother, and someone Cray knew from a 
 |-----|-----|-----|-----|-----|-----|-----|
 | 11  | 13  | 11  | 15  | 15  | 12  | 10  |
 
-**HP:** 24 (CON 13 + SIZ 11)
+**HP:** 13 (CON 13, SIZ 11 → no modifier)
 **Magic Points:** 15
 **Damage Bonus:** None (STR 11 + SIZ 11 = 22)
 **Strike Rank:** 23 (DEX 12 + SIZ 11)
@@ -398,7 +398,7 @@ He has spent fifteen years trying to be on the right side of things. He is not c
 |-----|-----|-----|-----|-----|-----|-----|
 | 13  | 15  | 13  | 12  | 11  | 13  | 12  |
 
-**HP:** 28 (CON 15 + SIZ 13)
+**HP:** 16 (CON 15, SIZ 13 → +1 above 12)
 **Magic Points:** 11
 **Damage Bonus:** +1D4 (STR 13 + SIZ 13 = 26)
 **Strike Rank:** 26 (DEX 13 + SIZ 13)
@@ -484,7 +484,7 @@ He has already decided this situation is worse than advertised. He is going to s
 |-----|-----|-----|-----|-----|-----|-----|
 | 10  | 12  | 10  | 14  | 14  | 13  | 14  |
 
-**HP:** 22 (CON 12 + SIZ 10)
+**HP:** 12 (CON 12, SIZ 10 → no modifier)
 **Magic Points:** 14
 **Damage Bonus:** None (STR 10 + SIZ 10 = 20)
 **Strike Rank:** 23 (DEX 13 + SIZ 10)
