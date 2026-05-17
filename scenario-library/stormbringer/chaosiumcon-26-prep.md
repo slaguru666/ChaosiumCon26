@@ -18,12 +18,12 @@ Open it in any browser for searchable access to all rules — combat, weapons, s
 | Field | Detail |
 |-------|--------|
 | Event # | TBC |
-| Title | TBC |
+| Title | Storm of Kelen's Pact |
 | System | Stormbringer (French Oriflam 1984 / BRP) |
-| Day | TBC |
-| Time | TBC |
-| Player count | TBC |
-| Duration | TBC |
+| Day | Thursday |
+| Time | 2:00 PM |
+| Player count | 4–6 |
+| Duration | 3.5 hours |
 
 ---
 

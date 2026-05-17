@@ -16,4 +16,4 @@ Editions in use: Stormbringer 1st–5th, Elric! (1993), Magic World.
 
 | Title | Setting / Region | Duration | Status | First Run |
 |-------|-----------------|----------|--------|-----------|
-| *(add scenarios as filed)* | | | | |
+| Storm of Kelen's Pact | Eastern Marches (Mael's Ford) | 3.5 hours | Draft | ChaosiumCon UK 2026 — Thursday 2pm |
