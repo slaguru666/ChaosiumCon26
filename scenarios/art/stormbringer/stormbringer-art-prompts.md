@@ -485,3 +485,119 @@ sword and sorcery, psychological horror through expression
 --ar 2:3 --v 6.1 --style raw
 ```
 
+
+---
+
+## PLAYER CHARACTERS — The Storm of Kelen's Pact
+
+*Six pre-generated characters for the convention scenario. Each portrait is 2:3 (A5 portrait orientation), designed to sit in the PDF character sheet header or as a handout. Style matches the established Young Kingdoms palette: jewel tones, deep shadow, 1970s painterly. Each prompt includes a reference to the character's demon-bound item where it can be shown without over-explaining.*
+
+---
+
+**SB-PC01 — Davin Kell, The Mercenary**
+```
+Portrait of a mercenary warrior, Ilmioran, mid-thirties, broad-shouldered and
+heavy-set, close-cropped dark hair going grey at the temples, a healed scar
+across the jaw from an old blade, wearing chainmail hauberk with a battered
+medium shield slung across his back, a broadsword at his hip whose iron crossguard
+is dusted with a faint unnatural frost despite the warmth of the scene, the
+expression of a man who has seen enough to stop being surprised and not quite
+enough to stop being tired, Young Kingdoms mercenary veteran, not heroic not
+villainous simply present, dark fantasy portrait, 1970s sword and sorcery
+illustration, Michael Whelan painterly style, jewel tones and deep shadow,
+muted earth tones for the armour against a storm-lit background
+--ar 2:3 --v 6.1 --style raw
+```
+
+---
+
+**SB-PC02 — Ysolde of Vilmir, The Scholar-Sorcerer**
+```
+Portrait of a young Vilmirian woman scholar-sorcerer, late twenties, angular
+precise features, dark hair pinned back with functional iron clips, ink-stained
+fingers, holding a small copper hand mirror at arm's length with the focused
+expression of someone who is not looking at herself but at something the mirror
+is showing her, the reflection in the mirror shows a different room than the one
+she is standing in, a scroll-case and research satchel at her side, robes of a
+scholar not a warrior, the eyes of someone who has decided that documentation
+is how she will manage her fear, Vilmirian scholar-sorcerer Young Kingdoms,
+dark fantasy portrait, 1970s sword and sorcery illustration, Michael Whelan
+painterly, rich jewel tones, warm candlelight against deep shadow
+--ar 2:3 --v 6.1 --style raw
+```
+
+---
+
+**SB-PC03 — Cray, The Cutpurse**
+```
+Portrait of a young woman thief from Nadsokor the Beggar Kingdom, apparently
+mid-twenties but likely older, compact and quick-looking, dark eyes that are
+watching two things simultaneously, dark wool clothing, a dark cloak that seems
+to absorb light slightly more than it should, two daggers worn practically not
+dramatically, iron hairpins visible in her dark hair that catch the light with
+a faint unnatural sheen, her stillness is not peace but readiness, the particular
+alertness of someone who always knows where the exits are, Nadsokor cutpurse
+Young Kingdoms dark fantasy portrait, 1970s sword and sorcery illustration,
+muted palette of shadow and dark cloth, a single warm light source from an
+unseen source, the eyes doing all the work
+--ar 2:3 --v 6.1 --style raw
+```
+
+---
+
+**SB-PC04 — Sarath the Twice-Turned, The Former Cultist**
+```
+Portrait of a heavyset man in his forties, Pan Tang-born self-exile, greying
+beard, the weathered face of someone who has made choices he cannot unmake,
+wearing leather armour, a Melnibonean scimitar at his hip maintained with
+obsessive care, his left forearm turned slightly to show a faded brand-mark
+in a pattern suggesting the Chaos symbol, an iron bracelet worn low on the
+same wrist, a rolled binding scroll tucked into his belt, his expression is
+of someone who knows exactly what is happening here and wishes he did not,
+the highest chaos allegiance at the table written into his bearing not as
+villainy but as experience, Pan Tang exile Young Kingdoms dark fantasy
+portrait, 1970s sword and sorcery, Michael Whelan painterly, deep jewel tones,
+the palette leaning cooler than the other characters, shadow heavy
+--ar 2:3 --v 6.1 --style raw
+```
+
+---
+
+**SB-PC05 — Captain Brenn, The Sailor**
+```
+Portrait of a Tarkeshite sea captain, late thirties, weathered brown skin,
+rope-burned calloused hands, the practical bearing of someone built for work
+rather than spectacle, a heavy leather coat worn against the weather, a sailor's
+cutlass worn habitually, a gold merchant's ring on his right hand that is slightly
+too fine for everything else about him, holding a brass nautical compass open in
+one hand whose needle is pointing in a direction that is not quite north, his
+expression is the look of a man who has already decided he is staying to the end
+regardless of what that costs, Tarkeshite ship's captain Young Kingdoms dark
+fantasy portrait, 1970s sword and sorcery illustration, warm sea-light palette,
+the worn quality of someone who has been at sea for twenty years
+--ar 2:3 --v 6.1 --style raw
+```
+
+---
+
+**SB-PC06 — Lian, The Devotee of Law**
+```
+Portrait of a young Ilmioran devotee of Law, mid-twenties, earnest open face,
+short-cropped hair, wearing a white travel cloak with the silver-embroidered
+symbol of Law at the hem, carrying a silver-and-brass lantern whose flame burns
+with an absolute steadiness despite the wind visible in their cloak, the lantern's
+light falling on them slightly differently than natural light would suggesting the
+demon of order within it, a white-and-silver Law medallion at their chest, a
+spear in the other hand, the expression of someone who prepared thoroughly for
+this and has discovered that preparation does not cover everything, young for
+this work and aware of it, Law devotee Young Kingdoms dark fantasy portrait,
+1970s sword and sorcery illustration, Michael Whelan painterly, cool silver and
+white palette against deep shadow, the lantern as the primary light source
+--ar 2:3 --v 6.1 --style raw
+```
+
+---
+
+*Suggested workflow: Generate each portrait at 2:3. Upscale the best result. Crop to head-and-shoulders for the PDF character header banner (approximately 174mm x 35mm at 300dpi). The full portrait can be used as a separate player handout.*
+
+*Style note: If Midjourney drifts toward high fantasy generic, add: `NOT generic fantasy, NOT D&D art, NOT Forgotten Realms, 1970s British fantasy paperback illustration, Michael Moorcock Elric of Melnibone era`*
