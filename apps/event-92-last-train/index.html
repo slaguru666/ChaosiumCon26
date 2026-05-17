@@ -33,7 +33,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 
 /* ── HEADER ── */
 #header{grid-area:header;background:var(--surface);border-bottom:2px solid var(--border-hi);display:flex;align-items:center;padding:0 16px;gap:12px;position:relative;overflow:hidden}
-#hdr-bg{position:absolute;inset:0;background-image:url('images/bronx-park-gang-rally-speaker.png');background-size:cover;background-position:center 30%;opacity:.08;pointer-events:none}
+#hdr-bg{position:absolute;inset:0;background-image:url('assets/92-ART-01-cover.png');background-size:cover;background-position:center 30%;opacity:.08;pointer-events:none}
 #hdr-badge{font-size:10px;color:var(--text-muted);letter-spacing:.15em;text-transform:uppercase;white-space:nowrap;position:relative}
 #hdr-title{font-family:var(--font-serif);font-size:17px;color:var(--amber-hi);letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;position:relative}
 #hdr-spacer{flex:1}
@@ -233,14 +233,14 @@ const SAN_COLORS=["","#6b8a6b","#8a8a4a","#a07030","#c03030","#e01010"];
 
 const SCENES=[
 {id:"intro",act:"intro",actLabel:"INTRODUCTION",title:"Van Cortlandt Park",duration:"20 min",
-img:"images/bronx-park-gang-rally-speaker.png",
+img:"assets/92-ART-02-van-cortlandt-murder.png",
 readAloud:`Van Cortlandt Park, midnight. The floodlights carve a brutal circle out of the Bronx dark. Inside that circle, it's a sea of colours — nine delegates from every gang in the city, standing shoulder to shoulder, unarmed. Cyrus is up on the bandstand, his voice carrying over the crowd without a mic.\n\n"Can you count, suckers?" he yells.\n\nThe crowd roars. But down in the press of bodies, something feels wrong. The air is too hot, too still — like the dead quiet before a train hits the platform. Then a sharp crack echoes across the park. Cyrus falls. A voice near you screams: "The Coney Island Warriors! They shot him!" And then the police sirens start.`,
 content:`SPOT HIDDEN: During Cyrus's speech, inner-ring Riffs make the same gesture — three fingers curled, medallion touched to forehead. Note who notices.\n\nTHE SHOT: Sudden. No build. In the half-second before the crowd processes it, a Riff screams: "Warriors — they shot Cyrus!"\n\nTHE TOKEN: Cyrus does not die instantly. One investigator close enough can reach him. He says once, clearly: "Don't let it reach the end of the line." He presses the brass token into their palm.\n\nCREED IN THE CROWD: One investigator glimpses a face moving calmly against the fleeing bodies — unhurried, watching with mild professional interest. Gone before it can be studied.\n\nThe floodlights die the instant the first siren sounds. Drive investigators out of the park immediately.`,
 mechanics:[],keeperNote:"Keep this scene fast and disorienting. Twenty minutes maximum. Do not let players deliberate. The city closes the moment Cyrus falls.",
 clueIds:["token"],sanEvents:[]},
 
 {id:"a1_cemetery",act:"act1",actLabel:"ACT 1 — THE BRONX RUN",title:"1-1: Cemetery Rail Cut",duration:"~10 min",
-img:"images/cemetery-wall-figure-night-03-bw.png",
+img:"assets/92-ART-06-black-conductor.png",
 readAloud:null,
 content:`Fastest route south cuts through a cemetery access road beside the rail embankment. Wheels knows it. Others need Navigate.\n\nA Riffs lookout is dead — seated against a retaining wall as though he sat down and stopped. No wound. No bruising. Eyes open. Irises burned flat silver — not reflective, just silver, like old cutlery. Cannot have been dead more than two hours.`,
 mechanics:[{skill:"Medicine / First Aid",diff:"Normal (Doc auto)",diffClass:"auto",outcome:"No wound, no trauma, no cause. Core temp unexpectedly cold. The biological system simply ceased."},{skill:"Occult",diff:"Hard",diffClass:"hard",outcome:"Seated position — hands open, face west — matches voluntary consciousness-transfer postures in obscure texts."},{skill:"Spot Hidden",diff:"Normal",diffClass:"normal",outcome:"Matchbook half-wedged under a rail tie. Spiral over three parallel lines — the Choir sigil. Spray recognises it immediately."}],
@@ -248,7 +248,7 @@ keeperNote:"Do not explain the silver eyes. Let them sit. Log who examined the b
 clueIds:["matchbook","lookout_notebook"],sanEvents:[{evt:"Examining the silver eyes",loss:"0/1",lvl:1}]},
 
 {id:"a1_witness",act:"act1",actLabel:"ACT 1 — THE BRONX RUN",title:"1-2: The Witness",duration:"~8 min",
-img:"images/cemetery-wall-figure-night-02.png",
+img:"assets/92-ART-05-creed-portrait.png",
 readAloud:null,
 content:`Cornered in a stairwell: young man, no prominent colours, separated from his crew. He saw the shooter. Small, pale, not Warriors' colours. Already moving toward the exit BEFORE Cyrus fell. Lips moving — not shouting — quiet, like counting. He looked like someone arriving on schedule.\n\nHe will not testify anywhere. But he confirms the Warriors did not fire that shot.`,
 mechanics:[{skill:"Fast Talk",diff:"Normal",diffClass:"normal",outcome:"Confirms. Gives the full description above."},{skill:"Intimidate",diff:"Normal",diffClass:"normal",outcome:"Adds: the shooter's eyes didn't look right in the dark — light wasn't catching them properly."}],
@@ -256,7 +256,7 @@ keeperNote:"This NPC exists to confirm the investigators aren't imagining things
 clueIds:["witness_note"],sanEvents:[]},
 
 {id:"a1_butchers",act:"act1",actLabel:"ACT 1 — THE BRONX RUN",title:"1-3: Gun Hill Butchers",duration:"~10 min",
-img:"images/bronx-park-gang-gathering.png",
+img:"assets/92-ART-03-platform-sprint.png",
 readAloud:null,
 content:`Twelve Butchers — bats, pipes, at least one firearm. Running the citywide bounty on the Warriors.`,
 mechanics:[{skill:"Run — CON vs 55 / Navigate",diff:"Normal",diffClass:"normal",outcome:"Lose them through the rail yard. Costs time."},{skill:"Fast Talk",diff:"Hard if recognised",diffClass:"hard",outcome:"Possible with conviction and enough confusion."},{skill:"Fight",diff:"—",diffClass:"normal",outcome:"Loud, costly. Police arrive 1D6 minutes."},{skill:"Split — Stealth vs Spot Hidden",diff:"Opposed",diffClass:"normal",outcome:"1D3 investigators clear cleanly."}],
@@ -264,7 +264,7 @@ keeperNote:"Injuries expected. Deaths are not — Act 1. If combat goes badly, g
 clueIds:[],sanEvents:[]},
 
 {id:"a1_sweep",act:"act1",actLabel:"ACT 1 — THE BRONX RUN",title:"1-4: Transit Sweep",duration:"~10 min",
-img:"images/subway-platform-crowd-boarding.png",
+img:"assets/92-ART-04-reflection-vision.png",
 readAloud:null,
 content:`Transit Police unit — three officers, Doyle's voice on radio — sweeping the turnstile area. Wheels can route through service access.\n\nFIRST MYTHOS INTRUSION: Whoever carries the token notices the train windows reflected in dark tunnel glass show passengers — full cars, nobody moving. Train arrives. Doors open. Empty cars.\n\nToken-holder gets a fragment — less than a second — a tall figure in conductor's uniform, face a featureless pale oval, punching tickets on material that is not paper.`,
 mechanics:[{skill:"Locksmith or Navigate (Wheels)",diff:"Normal",diffClass:"normal",outcome:"Service access. Avoids the sweep entirely."},{skill:"Stealth (without Wheels)",diff:"Hard",diffClass:"hard",outcome:"Platform via fare gates without being IDed."}],
@@ -272,14 +272,14 @@ keeperNote:"Keep the reflection vision brief. One sentence. Something wrong at t
 clueIds:[],sanEvents:[{evt:"Platform reflection passengers",loss:"0/1",lvl:1},{evt:"Token vision — faceless conductor",loss:"1/1D4",lvl:2}]},
 
 {id:"a1_train",act:"act1",actLabel:"ACT 1 — THE BRONX RUN",title:"1-5: First Train South",duration:"~12 min",
-img:"images/subway-platform-crowd-boarding.png",
+img:"assets/92-ART-11-subway-car-interior.png",
 readAloud:null,
 content:`The train is moving. First moment since the park to breathe.\n\nPA briefly carries something like a broadcast, then cuts to a rhythmic counting in a low register that stops when anyone focuses on it.\n\nThe car immediately ahead remains dark and fully empty for the entire Bronx run. At the first Manhattan station it is lit normally and occupied. No explanation.\n\nLet investigators compare notes. Doc's note should surface here.`,
 mechanics:[],keeperNote:"Doc's note should come out here if it hasn't already. Let the player choose the moment.",
 clueIds:["shell_casing"],sanEvents:[]},
 
 {id:"a2_96th",act:"act2",actLabel:"ACT 2 — THE MANHATTAN TRAP",title:"2-1: 96th Street Station",duration:"~20 min",
-img:"images/subway-platform-crowd-boarding.png",
+img:"assets/92-ART-03-platform-sprint.png",
 readAloud:`The platform at 96th Street is dead quiet, echoing with the drip of dirty water and the distant hum of the third rail. You've made it into Manhattan, but the city feels like a trap waiting to spring. From a grate above you, the muffled sound of a portable radio bleeds through: a velvet-smooth female voice drifting down.\n\n"To all our friends out in the night… the Coney Island Warriors are making a run for it. They think they can ride the rails home. But the train is hungry tonight, babies. And we're collecting fares."\n\nThen the police whistles blow from the north entrance, and the heavy thud of combat boots echoes down the stairs. The turnstiles ahead are locked. You've got five seconds.`,
 content:`Police cordon — Doyle's unit — closed the main exit. SPLIT THE TABLE into two groups for 10–15 minutes.\n\n— GROUP A (Wheels leads): Service tunnel south. Walls freshly chalked with geometric patterns. Binding wards.\n\n— GROUP B (Swan or Doc leads): Velvet Lizzies. Dolores leads — operating from fear. She can be reached.\n\nDOLORES (if persuaded): "Cyrus was building an army against what the Choir was summoning. Someone found out and moved first."`,
 mechanics:[{skill:"Occult (Spray auto)",diff:"Normal",diffClass:"normal",outcome:"Binding wards. Several broken — Cyrus's death shattered the primary. The secondary line is crumbling."},{skill:"Cthulhu Mythos",diff:"Hard",diffClass:"hard",outcome:"Notation found in no published texts. Sealed before the first tunnel was dug."},{skill:"Psychology (Dolores)",diff:"Hard",diffClass:"hard",outcome:"She's operating from fear. She can be reached."},{skill:"Persuade / Fast Talk (Dolores)",diff:"Normal if Psych passed",diffClass:"normal",outcome:"Gives the revelation about Cyrus. Also: Cyrus had been meeting a voice on pirate radio for months."}],
@@ -287,7 +287,7 @@ keeperNote:"The split is critical — it creates the feeling of the city closing
 clueIds:["wards_discovery","dolores_info"],sanEvents:[]},
 
 {id:"a2_wards",act:"act2",actLabel:"ACT 2 — THE MANHATTAN TRAP",title:"2-2: The Binding Wards",duration:"Layered",
-img:"images/subway-tunnel-sigils-corridor.png",
+img:"assets/92-ART-07-third-rail-sigil.png",
 readAloud:null,
 content:`This beat layers across multiple Act 2 scenes as investigators pass through tunnels. The chalk markings recur throughout the Manhattan system at irregular intervals.\n\nCumulative: the marks form a city-wide containment structure. The entire subway grid converted over decades. Failing from north to south since midnight.`,
 mechanics:[{skill:"Occult or Cthulhu Mythos (cumulative)",diff:"Normal after multiple sightings",diffClass:"normal",outcome:"City-wide sigil network. Subway system = containment structure. Failing from north to south since midnight."}],
@@ -295,7 +295,7 @@ keeperNote:"Wheels: examining the ward placements requires deep MTA access. He k
 clueIds:[],sanEvents:[]},
 
 {id:"a2_broadcast",act:"act2",actLabel:"ACT 2 — THE MANHATTAN TRAP",title:"2-3: The Broadcast",duration:"~8 min",
-img:"images/subway-tunnel-sigils-wall.png",
+img:"assets/92-ART-07-third-rail-sigil.png",
 readAloud:null,
 content:`Velvet Static's broadcast finds them — via radio, PA, or bodega speaker. Accurate to their current location in real-time.\n\nFIRST: Sounds like a pirate station tracking them.\n\nSECOND: Hard Listen — a second voice beneath Sandy's: low, uninflected, counting. Stations. Distances. Then the investigators' real names — not street names. Birth certificate names. Names some haven't used in years.`,
 mechanics:[{skill:"Listen",diff:"Hard",diffClass:"hard",outcome:"Second voice beneath the broadcast: counting. Stations, distances, then the investigators' real names. Given names."}],
@@ -303,14 +303,14 @@ keeperNote:"Use the real names from the character sheets when you read the secon
 clueIds:[],sanEvents:[{evt:"Broadcast uses investigators' real names",loss:"1/1D4",lvl:2}]},
 
 {id:"a2_darkride",act:"act2",actLabel:"ACT 2 — THE MANHATTAN TRAP",title:"2-4: The Dark Ride",duration:"~10 min",
-img:"images/subway-platform-night-arriving-train.png",
+img:"assets/92-ART-04-reflection-vision.png",
 readAloud:null,
 content:`The train stops between stations. Lights fail. Emergency lighting after ten seconds — red-orange and dim.\n\nSomething knocks on the outside of the car. Twice. Then from the next car forward. Then from beneath the floor.\n\nWheels checks the floor hatch: chalk wards on the tunnel wall — intact, in both directions, as far as the flashlight carries. This stretch decommissioned three months ago. No crew assigned.\n\nThe train resumes after 90 seconds without explanation.`,
 mechanics:[],keeperNote:"Pace the knocking — pause after each one. Let the silence do the work. 90 seconds of in-game silence is much shorter at the table than it sounds.",
 clueIds:[],sanEvents:[{evt:"Knocking on exterior of tunnel car",loss:"0/1",lvl:1},{evt:"Intact wards extending into darkness",loss:"1/1D4",lvl:2}]},
 
 {id:"a2_unionsquare",act:"act2",actLabel:"ACT 2 — THE MANHATTAN TRAP",title:"2-5: Union Square Cache",duration:"~15 min",
-img:"images/subway-tunnel-sigils-tracks.png",
+img:"assets/92-ART-07-third-rail-sigil.png",
 readAloud:null,
 content:`Maintenance room off the Union Square transfer complex. Wheels locates it. Locked. Single work bulb.\n\n1. ROUTE MAPS — subway lines annotated. Circled stations align exactly with Spray's sketchbook wards.\n2. RITUAL TIMETABLE — "Summit / death of the anchor / gate opens at end of line / six hours." ANCHOR underlined three times. Cyrus was the anchor.\n3. CASSETTE TAPE — Sony tape, "C — last argument." Working Walkman on the shelf.\n\nTHE CASSETTE:\n[Cyrus]: "I'm not surrendering authority. I'm proposing a working arrangement."\n[Creed/Conductor — distorted]: "You don't understand the thing below the rails, Cyrus. You don't lead it. You schedule it."\n[Cyrus]: "Then I'll schedule it."\n[Creed/Conductor]: "No. You'll be the lock. And we will find a key."\n[Metal scraping. Long silence. Recording ends.]`,
 mechanics:[{skill:"Locksmith (Wheels)",diff:"Hard",diffClass:"hard",outcome:"Door opens cleanly."},{skill:"Spot Hidden",diff:"Normal",diffClass:"normal",outcome:"Bolt-cutter in nearby tool cage — can open without Locksmith."}],
@@ -318,14 +318,14 @@ keeperNote:"DO NOT CUT THIS SCENE. After this: (1) Cyrus's death was ritual mech
 clueIds:["route_maps","ritual_timetable","cassette"],sanEvents:[{evt:"Reading the ritual timetable fully",loss:"1/1D6",lvl:3}]},
 
 {id:"a2_freeze",act:"act2",actLabel:"ACT 2 — THE MANHATTAN TRAP",title:"2-6: The Platform Freeze",duration:"~5 min",
-img:"images/subway-platform-night-arriving-train.png",
+img:"assets/92-ART-04-reflection-vision.png",
 readAloud:null,
 content:`Normal late crowd. Then every person stops simultaneously. Not slowly — INSTANTLY. Mid-step. Mid-sentence.\n\nSix seconds exactly.\n\nA train arrives not on any schedule. Passes through without stopping. Every car lit, every car occupied, every passenger facing forward at exactly the same angle.\n\nThe stopped people resume. The investigators were the only ones who saw it.`,
 mechanics:[],keeperNote:"Count the six seconds out loud at the table if you can. The physical discomfort of that silence is the scene.",
 clueIds:[],sanEvents:[{evt:"Platform freeze / ghost train",loss:"1/1D6",lvl:3}]},
 
 {id:"a3_brooklyn",act:"act3",actLabel:"ACT 3 — THE LAST TRAIN",title:"3-1: Brooklyn Approach",duration:"~12 min",
-img:"images/cemetery-wall-figure-night-01.png",
+img:"assets/92-ART-11-subway-car-interior.png",
 readAloud:null,
 content:`Last workable southbound train. Three teenagers in prom formal wear in the adjacent car — untouched by the night. Rook looks at them and thinks about Marco. Name this moment.\n\n— CREED'S PARLEY —\nAt an unlit stop, Creed boards. Sits across the aisle. Sets his revolver on his knee, pointed away. Speaks quietly.\n\nHis offer: the token, in exchange for the Warriors' names cleared. Entirely credible. Lying about every element.\n\nIf refused: he nods, stands, moves to the next car. Does not look back.`,
 mechanics:[{skill:"Psychology",diff:"Hard",diffClass:"hard",outcome:"He is measuring — not negotiating. Which investigators might be turned, which need removing."},{skill:"Spot Hidden",diff:"Normal",diffClass:"normal",outcome:"The revolver barrel is blackened. The round in the chamber carries the same tar residue as the summit shell casing."}],
@@ -333,7 +333,7 @@ keeperNote:"Play Creed calm, not menacing. Let the Spot Hidden do the menacing. 
 clueIds:[],sanEvents:[]},
 
 {id:"a3_strike",act:"act3",actLabel:"ACT 3 — THE LAST TRAIN",title:"3-2: The Cult Strike",duration:"~15 min",
-img:"images/subway-tunnel-sigils-tracks.png",
+img:"assets/92-ART-07-third-rail-sigil.png",
 readAloud:null,
 content:`Creed's team boards at the final stop — four Third Rail Choir enforcers plus Sister Vale. Goal: retrieve token, eliminate witnesses.\n\nMoving fight through connecting cars, ending as the train enters Stillwell Avenue.\n\n— SISTER VALE —\nDoes not fight unless an enforcer dies in front of her. If isolated from Creed or exposed to the cassette tape — Persuade Hard (Normal if cassette played). The tape is the crack that Cyrus hoped someone would find.`,
 mechanics:[{skill:"Persuade (Vale)",diff:"Hard",diffClass:"hard",outcome:"Vale turns. Will help seal the shrine — she knows it better than anyone."},{skill:"Play cassette to Vale",diff:"Automatic trigger",diffClass:"auto",outcome:"Reduces Persuade to Normal. She knew Cyrus. The tape shakes her."}],
@@ -341,7 +341,7 @@ keeperNote:"Keep this fight moving. Enforcers are competent, not supernatural. T
 clueIds:[],sanEvents:[]},
 
 {id:"a3_terminal",act:"act3",actLabel:"ACT 3 — THE LAST TRAIN",title:"3-3: Stillwell Terminal",duration:"~18 min",
-img:"images/stillwell-avenue-yard-night.png",
+img:"assets/92-ART-09-stillwell-terminal.png",
 readAloud:`You've made it. The last train screeches to a halt, and the doors hiss open near the Stillwell Avenue terminal. You can smell the salt of Coney Island — but between you and the beach is the old maintenance yard.\n\nThe air down here tastes like copper and ozone. Heavy power cables snake across the flooded tracks like black veins, pulsing faintly. Standing in the centre of a rusted iron sigil — the same spiral from the token, the matchbook, the tunnel walls, rendered here in actual iron rails warped over decades — is Lester Creed, his gun drawn. But he's not looking at you.\n\nHe's looking at the towering silhouette coalescing out of cinders, sparks, and shadow: a thing in a conductor's uniform, reaching toward him with a hand assembled from crackling voltage.`,
 content:`The maintenance rails have warped, over decades, into the Third Rail Choir sigil at the scale of a room. Spray is the first to see it.\n\nPower surges without warning. The black water on the tunnel floor conducts freely.\n\n— THE BREAKER BOX —\nMounted on the far wall. Shrine's anchor. Ritual objects going back thirty years. The relay at its centre is missing. One empty slot — machined to an unusual specification. The brass token fits it exactly. It was always meant to.\n\n— THE BLACK CONDUCTOR —\nDoes not arrive with drama. It is simply THERE. Tall figure assembled from cinders, ticket stubs, fraying wire, decades of soot. Where a face should be, light bends away.\n\nVoice from PA speakers, tunnel acoustics, and the investigators' own chests simultaneously:\n\n"This is the last stop. All passengers must exit here."`,
 mechanics:[{skill:"POW roll (token placement)",diff:"Normal",diffClass:"normal",outcome:"SUCCESS: Gate sealed. Electrical discharge incapacitates enforcers. Creed does not survive the arc. SAN cost: 1D8 permanent."},{skill:"POW roll (FAIL)",diff:"Normal",diffClass:"normal",outcome:"Second investigator must assist (combined POW), or manifestation timeline advances 30 minutes."}],
