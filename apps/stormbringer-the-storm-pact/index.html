@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Storm of Kelen's Pact — GM App</title>
+<style>
+:root {
+  --bg: #0d0d16; --surface: #171724; --surface-hi: #1e1e2e; --surface-top: #25253a;
+  --border: #2e2e45; --text: #c8c8e0; --text-dim: #7878a0;
+  --cyan: #00d8ff; --amber: #ffc040; --red: #ff5555; --green: #44ee88; --purple: #cc88ff; --r: 8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: "Courier New", Courier, monospace; font-size: 13px; }
+#app { display: grid; grid-template-rows: auto auto 1fr; height: 100vh; }
+#header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 8px 16px; display: flex; align-items: center; gap: 16px; }
+#header .title { flex: 1; }
+#header .title h1 { font-size: 11px; color: var(--text-dim); letter-spacing: .08em; text-transform: uppercase; }
+#header .title h2 { font-size: 16px; color: var(--cyan); }
+#timer-wrap { text-align: right; }
+#timer-main { font-size: 28px; font-weight: bold; color: var(--green); transition: color .3s; }
+#timer-main.warn { color: var(--amber); }
+#timer-main.danger { color: var(--red); }
+#timer-act { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: .06em; }
+.timer-btns { display: flex; gap: 6px; margin-top: 4px; justify-content: flex-end; }
+.timer-btns button { font-family: inherit; font-size: 11px; padding: 4px 10px; background: var(--surface-top); border: 1px solid var(--border); color: var(--text); cursor: pointer; border-radius: var(--r); }
+.timer-btns button:hover { border-color: var(--cyan); color: var(--cyan); }
+#progress { background: var(--surface); border-bottom: 1px solid var(--border); padding: 6px 16px; }
+#progress-track { background: var(--border); border-radius: 4px; height: 6px; }
+#progress-fill { background: var(--cyan); height: 100%; border-radius: 4px; width: 0%; transition: width .5s; }
+#progress-labels { display: flex; justify-content: space-between; margin-top: 4px; }
+#progress-labels span { font-size: 10px; color: var(--text-dim); }
+#progress-labels span.active { color: var(--cyan); }
+#alert-bar { display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 200; padding: 10px 16px; font-size: 13px; font-weight: bold; text-align: center; }
+#alert-bar.show { display: block; }
+#alert-bar.amber { background: #7a5000; color: var(--amber); border-bottom: 2px solid var(--amber); }
+#alert-bar.red { background: #5a0000; color: var(--red); border-bottom: 2px solid var(--red); }
+#body { display: grid; grid-template-columns: 200px 1fr; overflow: hidden; }
+#sidebar { background: var(--surface); border-right: 1px solid var(--border); padding: 12px 8px; display: flex; flex-direction: column; gap: 4px; overflow-y: auto; }
+.nav-btn { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: var(--r); cursor: pointer; color: var(--text-dim); border: none; background: none; font-family: inherit; font-size: 12px; width: 100%; text-align: left; min-height: 48px; transition: background .15s, color .15s; }
+.nav-btn:hover { background: var(--surface-hi); color: var(--text); }
+.nav-btn.active { background: var(--surface-top); color: var(--cyan); }
+.nav-btn .icon { font-size: 16px; width: 20px; text-align: center; }
+.nav-btn .badge { margin-left: auto; background: var(--red); color: #fff; font-size: 10px; padding: 1px 5px; border-radius: 10px; }
+.nav-sep { border-top: 1px solid var(--border); margin: 4px 0; }
+#screens { overflow-y: auto; }
+.screen { display: none; padding: 20px; }
+.screen.active { display: block; }
+.screen-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+.screen-header h2 { font-size: 16px; color: var(--cyan); }
+.screen-header .screen-meta { font-size: 12px; color: var(--text-dim); margin-left: auto; }
+/* Act tabs */
+.act-tabs { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+.act-tab { font-family: inherit; font-size: 11px; padding: 6px 12px; border: 1px solid var(--border); background: var(--surface); color: var(--text-dim); cursor: pointer; border-radius: var(--r); }
+.act-tab:hover { border-color: var(--cyan); color: var(--text); }
+.act-tab.active { background: var(--surface-top); border-color: var(--cyan); color: var(--cyan); }
+.act-header { margin-bottom: 12px; }
+.act-header h2 { font-size: 15px; color: var(--cyan); }
+.act-header .goal { color: var(--text-dim); margin-top: 4px; font-size: 12px; }
+.act-header .pacing { margin-top: 8px; font-size: 11px; color: var(--amber); background: var(--surface-hi); padding: 6px 10px; border-left: 3px solid var(--amber); border-radius: 0 var(--r) var(--r) 0; }
+/* Location cards */
+.loc-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 8px; overflow: hidden; }
+.loc-head { display: flex; align-items: center; gap: 8px; padding: 10px 14px; cursor: pointer; user-select: none; }
+.loc-head:hover { background: var(--surface-hi); }
+.loc-name { flex: 1; font-size: 13px; }
+.loc-tag { font-size: 10px; color: var(--text-dim); background: var(--surface-top); padding: 2px 6px; border-radius: 4px; }
+.chevron { color: var(--text-dim); transition: transform .2s; }
+.loc-head.open .chevron { transform: rotate(90deg); }
+.loc-body { display: none; padding: 12px 14px; border-top: 1px solid var(--border); background: var(--surface-hi); }
+.loc-body.open { display: block; }
+.loc-body p { color: var(--text); line-height: 1.6; margin-bottom: 8px; }
+.loc-body p:last-child { margin-bottom: 0; }
+.loc-section { margin-bottom: 10px; }
+.loc-section h4 { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); margin-bottom: 4px; }
+/* Moral choice */
+.moral-block { background: var(--surface); border: 2px solid var(--purple); border-radius: var(--r); padding: 14px; margin-top: 12px; }
+.moral-block h3 { color: var(--purple); margin-bottom: 8px; }
+.moral-option { margin-bottom: 10px; padding: 10px; background: var(--surface-hi); border-radius: var(--r); border-left: 3px solid var(--purple); }
+.moral-option h4 { color: var(--purple); font-size: 12px; margin-bottom: 4px; }
+.moral-option p { font-size: 12px; color: var(--text); line-height: 1.5; }
+.moral-note { margin-top: 10px; font-size: 11px; color: var(--amber); font-style: italic; }
+/* NPC */
+.npc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.npc-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
+.npc-head { display: flex; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; }
+.npc-head:hover { background: var(--surface-hi); }
+.npc-portrait { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; background: var(--surface-top); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 18px; }
+.npc-portrait img { width: 100%; height: 100%; object-fit: cover; cursor: zoom-in; }
+.npc-meta { flex: 1; min-width: 0; }
+.npc-name { font-size: 13px; }
+.npc-role { font-size: 11px; color: var(--text-dim); }
+.npc-disp { font-size: 10px; padding: 2px 6px; border-radius: 4px; flex-shrink: 0; }
+.npc-disp.helpful { background: #004420; color: var(--green); }
+.npc-disp.cautious { background: #3a3000; color: var(--amber); }
+.npc-disp.hidden { background: #1e0030; color: var(--purple); }
+.npc-disp.hostile { background: #3a0000; color: var(--red); }
+.npc-body { display: none; padding: 12px 14px; border-top: 1px solid var(--border); background: var(--surface-hi); }
+.npc-body.open { display: block; }
+.npc-section { margin-bottom: 10px; }
+.npc-section h4 { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); margin-bottom: 4px; }
+.npc-section p { font-size: 12px; color: var(--text); line-height: 1.5; }
+.npc-section pre { font-family: inherit; font-size: 11px; background: var(--surface-top); padding: 8px; border-radius: var(--r); white-space: pre-wrap; color: var(--text); }
+.npc-hp-row { margin-top: 6px; }
+.npc-hp-row label { font-size: 11px; color: var(--text-dim); }
+.npc-hp-row input[type=range] { width: 100%; margin-top: 4px; color-scheme: dark; }
+.npc-actions { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+.npc-actions button { font-family: inherit; font-size: 11px; padding: 5px 10px; border: 1px solid var(--border); background: var(--surface-top); color: var(--text); cursor: pointer; border-radius: var(--r); }
+.npc-actions button:hover { border-color: var(--green); color: var(--green); }
+.npc-actions button.introduced { background: #004420; border-color: var(--green); color: var(--green); }
+/* Clues */
+.clue-section-head { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); margin: 16px 0 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+.clue-grid { display: grid; gap: 8px; }
+.clue-item { display: flex; align-items: flex-start; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 10px 14px; cursor: pointer; }
+.clue-item:hover { background: var(--surface-hi); }
+.clue-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; margin-top: 2px; transition: background .3s; }
+.clue-dot.unseen { background: var(--surface-top); border: 1px solid var(--border); }
+.clue-dot.found { background: var(--green); }
+.clue-dot.missed { background: var(--red); }
+.clue-info { flex: 1; }
+.clue-name { font-size: 13px; }
+.clue-loc { font-size: 11px; color: var(--text-dim); }
+.clue-how { font-size: 10px; color: var(--purple); margin-top: 2px; }
+.clue-reveals { font-size: 11px; color: var(--cyan); margin-top: 6px; display: none; line-height: 1.5; }
+.clue-item.expanded .clue-reveals { display: block; }
+.clue-state { font-size: 10px; padding: 2px 6px; border-radius: 4px; flex-shrink: 0; }
+.clue-state.unseen { background: var(--surface-top); color: var(--text-dim); }
+.clue-state.found { background: #004420; color: var(--green); }
+.clue-state.missed { background: #3a0000; color: var(--red); }
+/* Handouts */
+.handout-grid { display: grid; gap: 10px; }
+.handout-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
+.handout-head { display: flex; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; }
+.handout-head:hover { background: var(--surface-hi); }
+.handout-id { font-size: 11px; color: var(--text-dim); background: var(--surface-top); padding: 2px 7px; border-radius: 4px; flex-shrink: 0; }
+.handout-title { flex: 1; font-size: 13px; }
+.handout-when { font-size: 11px; color: var(--amber); flex-shrink: 0; }
+.handout-body { display: none; padding: 16px; border-top: 1px solid var(--border); background: var(--surface-hi); }
+.handout-body.open { display: block; }
+.handout-text { white-space: pre-wrap; line-height: 1.7; font-size: 13px; color: var(--text); }
+.handout-text.handwritten { font-style: italic; color: #d0c8e8; }
+.handout-actions { display: flex; gap: 8px; margin-top: 12px; }
+.handout-actions button { font-family: inherit; font-size: 11px; padding: 6px 12px; border: 1px solid var(--border); background: var(--surface-top); color: var(--text); cursor: pointer; border-radius: var(--r); }
+.handout-actions button:hover { border-color: var(--amber); color: var(--amber); }
+.handout-actions button.shown { background: #3a2500; border-color: var(--amber); color: var(--amber); }
+/* Players */
+.player-grid { display: grid; gap: 10px; }
+.player-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 14px; }
+.player-header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px; }
+.player-name { font-size: 14px; }
+.player-role { font-size: 11px; color: var(--text-dim); }
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+.stat-box { background: var(--surface-hi); border-radius: var(--r); padding: 8px; }
+.stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); margin-bottom: 4px; }
+.stat-display { font-size: 18px; font-weight: bold; }
+.stat-controls { display: flex; gap: 4px; margin-top: 4px; }
+.stat-controls button { font-family: inherit; font-size: 14px; width: 26px; height: 26px; border: 1px solid var(--border); background: var(--surface-top); color: var(--text); cursor: pointer; border-radius: 4px; }
+.stat-controls button:hover { border-color: var(--cyan); color: var(--cyan); }
+.status-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.status-btn { font-family: inherit; font-size: 11px; padding: 5px 10px; border: 1px solid var(--border); background: var(--surface-top); color: var(--text-dim); cursor: pointer; border-radius: var(--r); }
+.status-btn:hover { border-color: var(--amber); }
+.status-btn.active.injured { background: #3a2000; border-color: var(--amber); color: var(--amber); }
+.status-btn.active.chaos { background: #1e0030; border-color: var(--purple); color: var(--purple); }
+.status-btn.active.dead { background: #3a0000; border-color: var(--red); color: var(--red); }
+/* Reference */
+.ref-tabs { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+.ref-tab { font-family: inherit; font-size: 11px; padding: 6px 12px; border: 1px solid var(--border); background: var(--surface); color: var(--text-dim); cursor: pointer; border-radius: var(--r); }
+.ref-tab:hover { border-color: var(--cyan); color: var(--text); }
+.ref-tab.active { background: var(--surface-top); border-color: var(--cyan); color: var(--cyan); }
+.ref-content { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; }
+.ref-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.ref-table th { text-align: left; color: var(--text-dim); font-size: 10px; text-transform: uppercase; letter-spacing: .06em; padding: 4px 8px; border-bottom: 1px solid var(--border); }
+.ref-table td { padding: 6px 8px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; }
+.ref-table tr:last-child td { border-bottom: none; }
+.ref-table tr:nth-child(even) td { background: var(--surface-hi); }
+.ref-section { margin-bottom: 16px; }
+.ref-section h3 { font-size: 13px; color: var(--cyan); margin-bottom: 8px; }
+.ref-section p, .ref-section li { font-size: 12px; color: var(--text); line-height: 1.7; }
+.ref-section ol, .ref-section ul { padding-left: 18px; }
+/* Pinboard */
+.pin-add { display: flex; gap: 8px; margin-bottom: 12px; }
+.pin-add input { flex: 1; font-family: inherit; font-size: 12px; padding: 8px 12px; background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: var(--r); }
+.pin-add input:focus { outline: none; border-color: var(--cyan); }
+.pin-add button { font-family: inherit; font-size: 12px; padding: 8px 14px; background: var(--surface-top); border: 1px solid var(--border); color: var(--text); cursor: pointer; border-radius: var(--r); }
+.pin-add button:hover { border-color: var(--cyan); color: var(--cyan); }
+.pin-area { display: grid; gap: 8px; }
+.pin-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 10px 14px; display: flex; gap: 10px; }
+.pin-content { flex: 1; font-size: 12px; line-height: 1.5; }
+.pin-remove { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 16px; padding: 0 2px; }
+.pin-remove:hover { color: var(--red); }
+.notes-area { margin-top: 20px; }
+.notes-area h3 { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); margin-bottom: 8px; }
+.notes-area textarea { width: 100%; font-family: inherit; font-size: 12px; padding: 10px; background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: var(--r); resize: vertical; min-height: 120px; }
+.notes-area textarea:focus { outline: none; border-color: var(--cyan); }
+/* Portrait overlay */
+#portrait-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.85); z-index: 100; align-items: center; justify-content: center; flex-direction: column; gap: 12px; }
+#portrait-overlay.open { display: flex; }
+#portrait-overlay img { max-width: 80vw; max-height: 75vh; border-radius: var(--r); border: 2px solid var(--border); }
+#portrait-caption { color: var(--text); font-size: 14px; }
+/* POW modal */
+#pow-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.8); z-index: 150; align-items: center; justify-content: center; }
+#pow-modal.open { display: flex; }
+.modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; max-width: 640px; width: 90%; max-height: 80vh; overflow-y: auto; }
+.modal-box h2 { color: var(--purple); margin-bottom: 4px; }
+.modal-box .modal-sub { font-size: 12px; color: var(--text-dim); margin-bottom: 12px; }
+.close-btn { float: right; background: none; border: none; color: var(--text-dim); font-size: 20px; cursor: pointer; line-height: 1; }
+.close-btn:hover { color: var(--red); }
+.pow-btn { font-family: inherit; font-size: 11px; padding: 5px 10px; border: 1px solid var(--purple); background: var(--surface-top); color: var(--purple); cursor: pointer; border-radius: var(--r); }
+.pow-btn:hover { background: #1e0030; }
+</style>
+</head>
+<body>
+<div id="app">
+
+<div id="header">
+  <div class="title">
+    <h1>Stormbringer &middot; BRP &middot; ChaosiumCon UK 2026</h1>
+    <h2>Storm of Kelen's Pact</h2>
+  </div>
+  <button class="pow-btn" onclick="showPowModal()">&#9889; POW Checks</button>
+  <div id="timer-wrap">
+    <div id="timer-main">3:30:00</div>
+    <div id="timer-act">Intro</div>
+    <div class="timer-btns">
+      <button id="btn-start" onclick="toggleTimer()">&#9654; Start</button>
+      <button onclick="resetTimer()">&#8635; Reset</button>
+    </div>
+  </div>
+</div>
+
+<div id="progress">
+  <div id="progress-track"><div id="progress-fill"></div></div>
+  <div id="progress-labels">
+    <span id="pl-intro" class="active">Intro</span>
+    <span id="pl-a1">Act I</span>
+    <span id="pl-a2">Act II</span>
+    <span id="pl-a3">Act III</span>
+    <span id="pl-ep">Epilogue</span>
+  </div>
+</div>
+
+<div id="alert-bar"></div>
+
+<div id="body">
+  <nav id="sidebar">
+    <button class="nav-btn active" onclick="navTo('overview',this)"><span class="icon">&#128203;</span> Overview</button>
+    <button class="nav-btn" onclick="navTo('npcs',this)"><span class="icon">&#128100;</span> NPCs</button>
+    <button class="nav-btn" onclick="navTo('clues',this)"><span class="icon">&#128269;</span> Clues <span id="clue-badge" class="badge" style="display:none">0</span></button>
+    <button class="nav-btn" onclick="navTo('handouts',this)"><span class="icon">&#128196;</span> Handouts</button>
+    <div class="nav-sep"></div>
+    <button class="nav-btn" onclick="navTo('players',this)"><span class="icon">&#127922;</span> Players</button>
+    <button class="nav-btn" onclick="navTo('reference',this)"><span class="icon">&#128214;</span> Reference</button>
+    <div class="nav-sep"></div>
+    <button class="nav-btn" onclick="navTo('pinboard',this)"><span class="icon">&#128204;</span> Pinboard</button>
+  </nav>
+
+  <div id="screens">
+
+    <div id="screen-overview" class="screen active">
+      <div class="act-tabs">
+        <button class="act-tab active" onclick="switchAct('intro',this)">Intro</button>
+        <button class="act-tab" onclick="switchAct('act1',this)">Act I</button>
+        <button class="act-tab" onclick="switchAct('act2',this)">Act II</button>
+        <button class="act-tab" onclick="switchAct('act3',this)">Act III</button>
+        <button class="act-tab" onclick="switchAct('epilogue',this)">Epilogue</button>
+      </div>
+      <div id="act-content"></div>
+    </div>
+
+    <div id="screen-npcs" class="screen">
+      <div class="screen-header">
+        <h2>NPCs</h2>
+        <span class="screen-meta">Click card to expand &nbsp;|&nbsp; Portrait to enlarge</span>
+      </div>
+      <div class="npc-grid" id="npc-grid"></div>
+    </div>
+
+    <div id="screen-clues" class="screen">
+      <div class="screen-header">
+        <h2>Clues</h2>
+        <span class="screen-meta">Click to cycle: unseen &#8594; found &#8594; missed</span>
+      </div>
+      <div class="clue-section-head">Essential</div>
+      <div class="clue-grid" id="clues-essential"></div>
+      <div class="clue-section-head">Optional</div>
+      <div class="clue-grid" id="clues-optional"></div>
+    </div>
+
+    <div id="screen-handouts" class="screen">
+      <div class="screen-header"><h2>Handouts</h2></div>
+      <div class="handout-grid" id="handout-grid"></div>
+    </div>
+
+    <div id="screen-players" class="screen">
+      <div class="screen-header">
+        <h2>Players</h2>
+        <span class="screen-meta">HP / POW / PP</span>
+      </div>
+      <div class="player-grid" id="player-grid"></div>
+    </div>
+
+    <div id="screen-reference" class="screen">
+      <div class="screen-header"><h2>Reference</h2></div>
+      <div class="ref-tabs">
+        <button class="ref-tab active" onclick="renderRefContent('pow',this)">POW Checks</button>
+        <button class="ref-tab" onclick="renderRefContent('skills',this)">Skills</button>
+        <button class="ref-tab" onclick="renderRefContent('combat',this)">Combat</button>
+        <button class="ref-tab" onclick="renderRefContent('damage',this)">Damage Bonus</button>
+        <button class="ref-tab" onclick="renderRefContent('vorak',this)">Vorak</button>
+      </div>
+      <div class="ref-content" id="ref-content"></div>
+    </div>
+
+    <div id="screen-pinboard" class="screen">
+      <div class="screen-header"><h2>Pinboard</h2></div>
+      <div class="pin-add">
+        <input id="pin-input" type="text" placeholder="Pin a note..." onkeydown="if(event.key==='Enter')addPin()">
+        <button onclick="addPin()">+ Pin</button>
+      </div>
+      <div class="pin-area" id="pin-area"></div>
+      <div class="notes-area">
+        <h3>Session Notes</h3>
+        <textarea id="session-notes" placeholder="GM notes for this session..." oninput="saveState()"></textarea>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- Portrait overlay -->
+<div id="portrait-overlay" onclick="closePortrait()">
+  <img id="portrait-img" src="" alt="">
+  <div id="portrait-caption"></div>
+</div>
+
+<!-- POW modal -->
+<div id="pow-modal" onclick="if(event.target===this)closePowModal()">
+  <div class="modal-box">
+    <button class="close-btn" onclick="closePowModal()">&#10005;</button>
+    <h2>&#9889; POW Resistance Checks</h2>
+    <p class="modal-sub">Formula: roll D100 under (Active &times; 5) &minus; (Passive &times; 5) + 50</p>
+    <table class="ref-table">
+      <thead><tr><th>Moment</th><th>Active vs Passive</th><th>Fail</th><th>Pass</th></tr></thead>
+      <tbody>
+        <tr><td>Vorak proximity (Spire)</td><td>PC POW vs 18</td><td>&minus;2 permanent POW</td><td>No effect</td></tr>
+        <tr><td>Fragment ritual (Act II)</td><td>PC POW vs 14</td><td>Shaken &mdash; &minus;20% next roll</td><td>Insight into Vorak's nature</td></tr>
+        <tr><td>Binding attempt</td><td>PC POW vs 18</td><td>&minus;1D4 POW (temporary)</td><td>Binding holds one round</td></tr>
+        <tr><td>Long exposure (30+ min)</td><td>CON vs 12</td><td>Nausea &mdash; &minus;20% all skills</td><td>Adapts, no further rolls</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:12px;font-size:11px;color:var(--amber);">PC POW 0 = catatonia. Kelen's POW 0 = Vorak fully manifests unbound.</p>
+  </div>
+</div>
+
+<!-- Act data -->
+<script type="application/json" id="act-data-json">
+{
+  "intro": {
+    "title": "Introduction",
+    "goal": "Establish the situation. Players accept the job. Begin moving toward the moors.",
+    "sections": [
+      { "name": "Opening Read-Aloud", "content": "Mael's Ford sits at the edge of the Eastern Marches, three weeks from anywhere that matters. The storms have been running six weeks — not the violent kind, the grinding kind. Cold. Persistent. The kind that kill livestock by degree and ruin stored grain without drama. The village has money for a reward and not much else. Elder Thara is waiting in the village hall." },
+      { "name": "What Thara Tells Them", "content": "Kelen was a sorcerer who lived in the east quarter. He left six weeks ago — the same week the storms started. She hired them to find him and resolve the situation. Ten gold pieces per person. She does not know what 'resolve' means yet and is honest about this. She mentions Farren (her nephew) only if pressed — he went to check on Kelen twenty days ago, came back confused, left again toward the moors. She has not told anyone." },
+      { "name": "Character Introductions", "content": "Each pre-gen has a reason to be in the Eastern Marches. Go around the table: who are you, why are you here, do you know anyone else at the table? Keep it under two minutes per player. The job is the hook — move on when intros are done." }
+    ],
+    "pacing": "At 0:15 the team should be moving into the village. If they're still in the hall, Thara ends the meeting: 'I've told you everything I know. The moors are northeast.'"
+  },
+  "act1": {
+    "title": "Act I — Mael's Ford",
+    "goal": "Gather enough to locate the Spire and understand what they're walking into. They need Kelen's direction and at least one corroborating detail.",
+    "locations": [
+      { "id": "square", "name": "Village Square", "tag": "Arrival", "content": "The square is quiet. A cattle pen in the northeast corner shows damage from inside — something broke through outward. Tally is here, sitting on a fence post, waiting for someone to notice her. She approaches if the players examine the pen.", "gm": "Spot 30%: cattle pen damage (optional clue o1). Tally approaches if players seem purposeful." },
+      { "id": "forge", "name": "The Forge — Joran", "tag": "Key NPC", "content": "Joran is working. He saw Kelen leave: northeast, cart loaded with rope, reagents, a caged goat. Joran gives direction and cart contents willingly. He will mention Kelen looked frightened only if asked and Insight 40% passes.", "gm": "Clue c1. Frightened detail: Insight 40% (optional clue o5)." },
+      { "id": "herb-garden", "name": "Herb Garden — Mira", "tag": "Key NPC", "content": "Mira is sorting dried herbs. Blue-white lights on the moors three nights before the storms — from the ground, not the sky. Coming from the direction of the old tower northeast of the village. No birds in the eastern moor section for weeks. She is precise and expects to be believed.", "gm": "Clue c2. Mira gives her information cleanly and does not speculate." },
+      { "id": "harrek", "name": "The Inn — Old Harrek", "tag": "Optional", "content": "Harrek is at his usual table. Chaos cult trail-marks on trees twice in the past month. A young cult member asked questions about Kelen's ruin. Dael — former Law novice, now cult leader — 'found something on the moors that changed her mind.' Trail-marks without prompting; Dael's name requires Persuade 40% and a drink.", "gm": "Optional clues o2, o6. Don't push if players are moving. Dael mirror lands harder if Lian is in the party." },
+      { "id": "tally", "name": "Tally — Village Square", "tag": "Complication", "content": "Tally knows the shortcut path to the Spire — she's been there twice following her brother Sevel. Sevel came back 'like himself but from far away,' then left again voluntarily. She will not mention Sevel until she trusts the players. She attempts to follow regardless.", "gm": "Clue c3 (Sevel). Tally following is a feature. She provides the shortcut (saves ~30 min) and the Sevel detail." },
+      { "id": "wolves", "name": "Moor Wolves (Optional)", "tag": "Optional", "content": "Two wolves displaced by Vorak's influence — confused, not hungry. STR 13, CON 12, SIZ 11, HP 12, DB none, Bite 55% / 1D6+1. Retreat after taking 4+ HP each. Purpose: establish the moors are wrong, not just inconvenient.", "gm": "Run only if the players need a combat beat or pacing allows. Skip entirely if behind time." }
+    ],
+    "pacing": "At 0:45 players should be leaving the village. If investigation is stalling, Tally offers the shortcut unprompted: 'I know where Kelen went.'"
+  },
+  "act2": {
+    "title": "Act II — The Moors and the Spire",
+    "goal": "Reach the Spire. Understand what Vorak is and what went wrong. Find Kelen's notes and letter. Be ready for Act III.",
+    "locations": [
+      { "id": "moor", "name": "Moor Crossing", "tag": "Travel", "content": "The moors are wrong in a quiet way. No birds. Grass grows in radial patterns centred northeast. Navigate or Spot 35%: the radius is approximately one mile. The Spire becomes visible at two miles — squat, stone, older than the surrounding landscape.", "gm": "Optional clue o3. Keep travel atmospheric but moving. No encounters unless wolves were skipped." },
+      { "id": "arch", "name": "Gate Arch", "tag": "Entry", "content": "Melnibonéan containment wards carved into the stone of the arch. Lore (Melnibonéan) 40%: the wards are being eroded from inside. Without them, Vorak would already be in the world.", "gm": "Clue c4. If nobody has Melnibonéan Lore, they can still see the stone is freshly disturbed in a deliberate pattern." },
+      { "id": "bindinghall", "name": "The Binding Hall", "tag": "Discovery", "content": "A circular chamber. The binding circle covers the floor — four metres across, Melnibonéan geometric construction. At the eastern arc: a deep gouge in the stone, the line broken, a dark stain. Spot 40%: fabric near the break (Sevel's cloak if Tally is present). Working notes (SP-H01) on a lectern. Floor diagram (SP-H02) available.", "gm": "Clues c4, c5, optional o4. Hand SP-H01 and SP-H02. Give Tally's reaction to Sevel's cloak fragment space." },
+      { "id": "warden", "name": "Warden's Chamber", "tag": "Discovery", "content": "A side room off the main hall. Cot, small stove, Kelen's travelling pack. On the table: SP-H03 — the confession letter. Kelen is not here; he is in the Summoning Spire above. Stairs to the upper level are visible from this room.", "gm": "Hand SP-H03 here, separately from the notes. Give players a moment to read it before Act III." },
+      { "id": "cult", "name": "Chaos Cult Arrival (Optional)", "tag": "Optional", "content": "If time permits (between 1:15 and 1:45): three cult members arrive seeking to disrupt the binding. Not powerful — Dael is not with them. They retreat if two of three are incapacitated. Adds urgency to Act III without requiring a full fight.", "gm": "Run only if ahead of time. Can happen offscreen (sounds outside) to add pressure without consuming it." }
+    ],
+    "pacing": "At 2:15 players should be reading SP-H03. If still in the Binding Hall at 2:00, summarise Kelen's notes verbally and move them upstairs."
+  },
+  "act3": {
+    "title": "Act III — The Summoning Spire",
+    "goal": "Meet Vorak. Hear Kelen's account. Make the moral choice. Resolve.",
+    "locations": [
+      { "id": "arrival", "name": "The Spire Chamber", "tag": "Climax", "content": "The upper chamber is large. Vorak is already here — not arriving, present. It fills the room the way heat fills a room: pervasively, without a single point of origin. Kelen is in the corner. He stands when the players enter. He does not look surprised. He begins talking immediately." },
+      { "id": "kelen-talk", "name": "Kelen's Account", "tag": "Roleplay", "content": "Kelen explains without being asked: Vorak is three-quarters manifested. The final quarter comes through in hours regardless. A completed binding requires a willing soul, an external sacrifice of significant Power, or binding to an object of sufficient resonance. The cult wants it unbound — releasing a three-quarters-manifested chaos demon into the Eastern Marches. He is not asking them to save him." }
+    ],
+    "moral": {
+      "title": "The Moral Choice",
+      "options": [
+        { "label": "Option 1 — Kelen's Self-Binding", "text": "Kelen completes the binding using his own soul as anchor. Vorak is bound; the storms end immediately. Kelen dies in the process — not violently, but finally, and knowing why. This is what Kelen wants." },
+        { "label": "Option 2 — External POW Sacrifice", "text": "One or more players contribute POW to complete the binding. 8 total POW required (can be split). Each contributor loses that POW permanently. Kelen survives. Vorak is bound. No one is forced — but the math is visible." },
+        { "label": "Option 3 — Binding to an Object", "text": "A sufficiently resonant object can anchor Vorak — something with personal significance and material weight. If Tally is present, Bran's lead rope qualifies. Requires a Summon Demon roll (Kelen assists: +20%). On failure, Vorak disperses to Chaos — binding fails, storms continue. On success: storms end, Kelen lives, object destroyed." }
+      ],
+      "note": "If players attempt Options 1 + 2 simultaneously (Kelen's soul plus player POW), the binding over-completes — Vorak is bound more deeply than intended, and the effects extend: the Eastern Marches are calmer than they have been in decades. Unintended benefit; not a trick."
+    },
+    "pacing": "Moral choice should land at 2:45. If running short, compress Kelen's account to its essentials: three options, thirty seconds each. The choice is the scene."
+  },
+  "epilogue": {
+    "title": "Epilogue",
+    "goal": "Land the consequences. Let players speak to what their characters do next.",
+    "sections": [
+      { "name": "Option 1 — Kelen's Self-Binding", "content": "The storms end within the hour. Kelen's body is found in the Spire, peaceful. The binding holds — Vorak anchored to the Spire. Elder Thara pays the reward without knowing what it cost. Tally asks if her brother is still on the moors." },
+      { "name": "Option 2 — External POW Sacrifice", "content": "The storms end. Kelen is alive and quietly stunned by this. He returns to Mael's Ford. The players who contributed POW feel the absence — less themselves in a way they cannot fully explain. Tally finds Sevel in the moors, confused and dehydrated but alive." },
+      { "name": "Option 3 — Object-Binding (success)", "content": "The binding completes with a sound like a room becoming quieter. The object chars and crumbles. Storms end. Kelen is shaken but alive. He says: 'That worked better than I expected.' He means it as a compliment." },
+      { "name": "Loose Ends", "content": "The Chaos cult (Dael and her group) is still in the Eastern Marches. Sevel's fate depends on which option was chosen. Tally is going to grow up to be someone remarkable. The cult's interest in Vorak does not end with this session." }
+    ],
+    "pacing": "Epilogue at 3:15+. One sentence per outcome, then go around the table: 'What does your character do in the next week?' End when it feels done."
+  }
+}
+</script>
+
+<!-- Reference data -->
+<script type="application/json" id="ref-data-json">
+{
+  "pow": "<div class='ref-section'><h3>POW Resistance — Vorak Proximity</h3><p>Formula: roll D100 under <strong>(Active &times; 5) &minus; (Passive &times; 5) + 50</strong>.</p><table class='ref-table' style='margin-top:8px'><thead><tr><th>Moment</th><th>Active vs Passive</th><th>Fail</th><th>Pass</th></tr></thead><tbody><tr><td>Vorak proximity (Spire)</td><td>PC POW vs 18</td><td>&minus;2 permanent POW</td><td>No effect</td></tr><tr><td>Fragment ritual (Act II)</td><td>PC POW vs 14</td><td>Shaken &mdash; &minus;20% next roll</td><td>Insight into Vorak's nature</td></tr><tr><td>Binding attempt</td><td>PC POW vs 18</td><td>&minus;1D4 POW (temp)</td><td>Binding holds one round</td></tr><tr><td>Long exposure (30+ min)</td><td>CON vs 12</td><td>Nausea &mdash; &minus;20% all skills</td><td>Adapts, no further rolls</td></tr></tbody></table><p style='margin-top:10px;color:var(--amber);font-size:12px;'>PC POW 0 = catatonia. Kelen's POW 0 = Vorak fully manifests unbound.</p></div>",
+  "skills": "<div class='ref-section'><h3>Key Skill Rolls — Quick Reference</h3><table class='ref-table'><thead><tr><th>Roll</th><th>Location</th><th>Effect on Pass</th></tr></thead><tbody><tr><td>Lore (Melnibonéan) 40%</td><td>Gate Arch</td><td>Wards eroding from inside (clue c4)</td></tr><tr><td>Spot 30%</td><td>Village Square</td><td>Cattle pen damage from inside (opt o1)</td></tr><tr><td>Spot 40%</td><td>Binding Hall</td><td>Sevel's cloak fragment (opt o4)</td></tr><tr><td>Insight 40%</td><td>Joran (follow-up)</td><td>Kelen looked frightened, not hurried (opt o5)</td></tr><tr><td>Navigate/Spot 35%</td><td>Moor crossing</td><td>Radial grass patterns, 1-mile radius (opt o3)</td></tr><tr><td>Persuade 40%</td><td>Harrek (with drink)</td><td>Dael's name and backstory (opt o6)</td></tr><tr><td>Summon Demon</td><td>Spire — Option 3</td><td>Object binding succeeds; +20% with Kelen assisting</td></tr></tbody></table></div>",
+  "combat": "<div class='ref-section'><h3>Stormbringer 1e Combat Sequence</h3><ol><li>Declare actions (mandatory before rolling)</li><li>Roll D10 + DEX for initiative (highest goes first)</li><li>Attacker rolls weapon skill % on D100 — success hits</li><li>Defender rolls Dodge or Parry % — success negates</li><li>Roll damage + DB if hit connects</li><li>Apply HP loss — 0 HP = unconscious, negative = dead</li><li>Major wound: single hit &gt; half max HP — roll on major wound table</li></ol></div><div class='ref-section'><h3>Modifiers</h3><table class='ref-table'><thead><tr><th>Condition</th><th>Modifier</th></tr></thead><tbody><tr><td>Outnumbered 2:1</td><td>&minus;20% all combat</td></tr><tr><td>Fighting in darkness</td><td>&minus;40% (or &minus;20% if accustomed)</td></tr><tr><td>Wounded (HP &lt; &frac12;)</td><td>&minus;20% DEX-based skills</td></tr><tr><td>Surprise (first round)</td><td>&minus;50% Dodge only</td></tr><tr><td>Called shot</td><td>&minus;20% attack; +1D6 damage on hit</td></tr></tbody></table></div>",
+  "damage": "<div class='ref-section'><h3>Damage Bonus — STR + SIZ</h3><table class='ref-table'><thead><tr><th>STR + SIZ</th><th>Damage Bonus</th></tr></thead><tbody><tr><td>2–12</td><td>&minus;1D6</td></tr><tr><td>13–16</td><td>&minus;1D4</td></tr><tr><td>17–24</td><td>None</td></tr><tr><td>25–32</td><td>+1D4</td></tr><tr><td>33–40</td><td>+1D6</td></tr><tr><td>41–56</td><td>+2D6</td></tr><tr><td>57+</td><td>+3D6</td></tr></tbody></table></div><div class='ref-section'><h3>Pre-Gen Damage Bonuses</h3><table class='ref-table'><thead><tr><th>Character</th><th>STR+SIZ</th><th>DB</th></tr></thead><tbody><tr><td>Davin Kell</td><td>15+12 = 27</td><td>+1D4</td></tr><tr><td>Ysolde of Vilmir</td><td>9+10 = 19</td><td>None</td></tr><tr><td>Cray</td><td>11+9 = 20</td><td>None</td></tr><tr><td>Sarath the Twice-Turned</td><td>12+11 = 23</td><td>None</td></tr><tr><td>Captain Brenn</td><td>14+13 = 27</td><td>+1D4</td></tr><tr><td>Lian</td><td>10+10 = 20</td><td>None</td></tr></tbody></table></div>",
+  "vorak": "<div class='ref-section'><h3>Vorak — Vitalic Demon of Chaos</h3><table class='ref-table'><thead><tr><th>Stat</th><th>Value</th><th>Stat</th><th>Value</th></tr></thead><tbody><tr><td>STR</td><td>22</td><td>INT</td><td>14</td></tr><tr><td>CON</td><td>20</td><td>POW</td><td>18</td></tr><tr><td>SIZ</td><td>18</td><td>DEX</td><td>10</td></tr><tr><td>HP</td><td>19</td><td>PP</td><td>18</td></tr></tbody></table></div><div class='ref-section'><h3>Combat</h3><p>Chaos-lash: 60% &mdash; 1D10, ignores non-magical armour.</p><p style='margin-top:4px'>POW resistance vs 18 on contact: fail = &minus;2 permanent POW (no save).</p><p style='margin-top:4px'>Cannot be permanently killed &mdash; disperses to Chaos at HP 0. Reforms in 1D6 days.</p></div><div class='ref-section'><h3>Behaviour</h3><p><strong>Intent is everything.</strong> Approaching with a binding attempt = permission. Approaching with a weapon = combat. Not communicating verbally.</p><p style='margin-top:4px'>Three-quarters manifested. Final quarter arrives in hours regardless. The question is not <em>whether</em> Vorak manifests but <em>how</em>.</p></div><div class='ref-section'><h3>Binding Options</h3><table class='ref-table'><thead><tr><th>Option</th><th>Requirement</th><th>Outcome</th></tr></thead><tbody><tr><td>Self-binding (Kelen)</td><td>Kelen's willing soul</td><td>Storms end; Kelen dies; Vorak bound to Spire</td></tr><tr><td>External POW</td><td>8 total POW sacrificed</td><td>Storms end; Kelen lives; contributors permanently reduced</td></tr><tr><td>Object-binding</td><td>Resonant object + Summon Demon roll</td><td>Success: storms end, object destroyed. Fail: Vorak disperses, storms continue</td></tr></tbody></table></div>"
+}
+</script>
+
+<script>
+// ── Data ──────────────────────────────────────────────────────────────────
+const NPCS = [
+  { name: 'Elder Thara', role: 'Village Leader', disp: 'helpful', dispLabel: 'Cooperative', act: 'Intro / Act I / Epilogue',
+    portrait: null,
+    physical: 'Late 60s. Silver hair in tight braids, weathered face, ceremonial cloak with the village crest. Carries herself with the authority of someone who has governed through several crises.',
+    motivation: 'Her village. Not abstract — specific people she has known for thirty years.',
+    knows: "Kelen was ill. Sent her nephew Farren to check on Kelen twenty days ago; he came back confused and two days later left again toward the moors. She has not told anyone about Farren.",
+    stats: 'STR 9 | CON 12 | SIZ 10 | INT 14 | POW 15 | DEX 11 | APP 13\nHP 11 | PP 15 | DB None | Move 9\nInfluence 70%, Insight 60%, Persuade 55%, Lore (Local History) 65%',
+    hp: 11, maxHp: 11 },
+  { name: 'Joran', role: 'Blacksmith', disp: 'helpful', dispLabel: 'Cooperative', act: 'Act I',
+    portrait: { src: '../../scenarios/art/stormbringer/sb-c07-tarkeshite-captain.png', alt: 'Joran' },
+    physical: 'Mid-forties, broad, soot-streaked face, short hair, apron that has absorbed twenty years of forge work. The quiet that comes from working alone with loud machinery.',
+    motivation: 'The village, and specifically his family, who have three months of food left if the storms continue.',
+    knows: "Kelen's direction (northeast), the cart contents (rope, caged goat). Also knows — will not say unless asked — that Kelen looked frightened, not hurried, when he left.",
+    stats: 'STR 16 | CON 14 | SIZ 13 | INT 10 | POW 11 | DEX 12 | APP 10\nHP 14 | PP 11 | DB +1D4 | Move 10\nCraft (Blacksmithing) 75%, Spot 50%, Brawl 60%, Insight 40%',
+    hp: 14, maxHp: 14 },
+  { name: 'Mira', role: 'Herbalist', disp: 'helpful', dispLabel: 'Guarded', act: 'Act I',
+    portrait: null,
+    physical: "Early twenties. Quick, precise hands. Dark hair in a practical braid. Speaks in complete sentences and is always slightly impatient with people who don't.",
+    motivation: 'Accuracy. She saw what she saw and wants someone to believe her.',
+    knows: 'The blue-white lights on the moors three nights before the storms. The direction: the old tower. Also: no birds in the eastern moor section for weeks.',
+    stats: 'STR 8 | CON 11 | SIZ 9 | INT 15 | POW 13 | DEX 14 | APP 13\nHP 10 | PP 13 | DB None | Move 10\nLore (Herbs/Medicine) 70%, Spot 55%, Insight 50%, Persuade 40%',
+    hp: 10, maxHp: 10 },
+  { name: 'Old Harrek', role: 'Former Adventurer', disp: 'cautious', dispLabel: 'Unhurried', act: 'Act I',
+    portrait: null,
+    physical: "Late seventies. Still broad in the shoulder but moving carefully. Pipe always present. Eyes still quick. A belt scar along the left arm he will not discuss.",
+    motivation: 'Remaining alive and comfortable. He has earned these goals.',
+    knows: "Chaos cult trail-marks on trees twice in the past month. A young cult member asked questions about Kelen's ruin. Dael — former Law novice, now cult leader — 'found something on the moors that changed her mind.'",
+    stats: 'STR 11 | CON 13 | SIZ 12 | INT 16 | POW 14 | DEX 10 | APP 11\nHP 13 | PP 14 | DB None | Move 8\nLore (Young Kingdoms) 75%, Insight 65%, Spot 55%, Streetwise 60%',
+    hp: 13, maxHp: 13 },
+  { name: 'Tally', role: 'Village Shepherd', disp: 'hidden', dispLabel: 'Unstoppable', act: 'Act I / Act II',
+    portrait: null,
+    physical: "Sixteen, compact, messy dark curls, patched clothes. Absolute sincerity more disconcerting than attitude. Carries a wooden flute she plays at the worst moments.",
+    motivation: "Justice for Bran (the goat). Discovery of what happened to her brother Sevel — she does not admit this until safe and trusted.",
+    knows: "The goat's name was Bran. The shortcut path to the Spire. Sevel came back from the moors 'like himself but from far away' — then left again toward the moors voluntarily.",
+    stats: 'STR 8 | CON 10 | SIZ 9 | INT 13 | POW 12 | DEX 15 | APP 14\nHP 10 | PP 12 | DB None | Move 11\nFast Talk 65%, Navigate 60%, Spot 50%, Stealth 40%',
+    hp: 10, maxHp: 10 },
+  { name: 'Kelen', role: 'Sorcerer', disp: 'hidden', dispLabel: 'Direct / Urgent', act: 'Act II / Act III',
+    portrait: { src: '../../scenarios/art/stormbringer/sb-c06-sorcerer.png', alt: 'Kelen' },
+    physical: 'Early sixties, gaunt from illness. White hair largely wild after six weeks in the Spire. Worn robes with Chaos sigils added in his own hand. Hands shake at the tendons but hold steady in the decisions.',
+    motivation: 'To complete what he started. To stop the storms, because they are his fault. To not die having failed. In that order.',
+    knows: "Everything about Vorak and the binding. The three options. His prognosis (weeks, not months). The cult's interest. He will share all of this without being asked — he has no time for games.",
+    stats: 'STR 9 | CON 8 | SIZ 11 | INT 16 | POW 17 | DEX 12 | APP 8\nHP 10 | PP 17 | DB None | Move 8\nSummon Demon 75%, Lore (Chaos) 65%, Lore (Melnibonéan) 60%, Read/Write 70%, Insight 55%',
+    hp: 10, maxHp: 10 },
+  { name: 'Vorak', role: 'Vitalic Demon of Chaos', disp: 'hostile', dispLabel: 'Partially Manifested', act: 'Act III',
+    portrait: { src: '../../scenarios/art/stormbringer/sb-d03-intellect-demon.png', alt: 'Vorak' },
+    physical: "The players' senses will not agree on what Vorak looks like. Approximately the size of the room. A quality of warmth. Moves slowly, suggesting enormity. No eyes. When it pays attention to a specific person, that person knows it.",
+    motivation: "To complete the binding — being bound is better than being half-manifested. Not hostile. Not patient either.",
+    knows: "Intent is everything. Approaching with a binding attempt = permission. Approaching with a weapon = combat. It is not communicating verbally.",
+    stats: 'STR 22 | CON 20 | SIZ 18 | INT 14 | POW 18 | DEX 10\nHP 19 | PP 18 | Move: fills available space\nChaos-lash 60%, 1D10 — ignores non-magical armour\nPOW resistance vs 18 or −2 permanent POW\nCannot be permanently killed — only dispersed to Chaos',
+    hp: 19, maxHp: 19 },
+];
+
+const CLUES_ESSENTIAL = [
+  { id: 'c1', name: 'Kelen went northeast', location: 'Joran — the forge', how: 'Conversation', reveals: 'Kelen left northeast with rope, reagents, and a caged goat (borrowed without asking). Cart loaded for ritual work. He had a destination.' },
+  { id: 'c2', name: 'Lights three nights before the storms', location: 'Mira — herb garden', how: 'Conversation', reveals: 'Blue-white lights on the moors, from the ground up, not the sky. Three nights before the storms started. Coming from the direction of the old tower.' },
+  { id: 'c3', name: 'Sevel returned voluntarily', location: 'Tally — village square', how: 'Conversation', reveals: "Tally's brother Sevel went to look for Kelen, came back 'like himself but from far away,' then left again toward the moors voluntarily. Vorak's influence predates the storms." },
+  { id: 'c4', name: 'Ward glyphs eroding from inside', location: 'Gate Arch', how: 'Lore (Melnibonéan) 40%', reveals: 'The containment wards are being eroded from inside, not outside. Whatever is in there has been pushing against them for weeks. Without them Vorak would already be in the world.' },
+  { id: 'c5', name: 'The broken binding circle', location: 'Binding Hall', how: 'Visual + Lore 40%', reveals: 'The binding circle is incomplete at the eastern arc — a deep gouge where a panicking animal broke free. Vorak was three-quarters through when containment failed. It cannot advance; it cannot retreat.' },
+  { id: 'c6', name: "Kelen's confession letter (SP-H03)", location: "Warden's Chamber", how: 'Visual — hand SP-H03', reveals: "Kelen's own account: the wasting sickness, the bargain with Vorak, the goat's fault, the three options. He is not asking forgiveness. He is asking whoever finds this to understand." },
+  { id: 'c7', name: "Kelen's direct account", location: 'Summoning Spire', how: 'Roleplay', reveals: 'Vorak is three-quarters manifested. Final quarter arrives in hours regardless. A completed binding requires a willing soul, external POW sacrifice, or binding to an object. The cult wants it unbound.' },
+];
+
+const CLUES_OPTIONAL = [
+  { id: 'o1', name: 'Cattle pen damage from inside', location: 'Village square', how: 'Spot 30%', reveals: "Something broke through the cattle pen from inside, not outside. Vorak's influence is already affecting local animals." },
+  { id: 'o2', name: 'Chaos cult trail-marks', location: 'Old Harrek', how: 'Conversation + drink', reveals: "A Chaos cult has been active in the Eastern Marches. They have taken interest in Kelen's ruin. They have not yet reached the Spire." },
+  { id: 'o3', name: 'Grass radial patterns on the moors', location: 'Moor crossing', how: 'Navigate or Spot 35%', reveals: 'Grass grows in radial patterns centred on the Spire. The affected radius is approximately one mile. Six weeks of environmental influence; the radius is widening.' },
+  { id: 'o4', name: "Sevel's cloak fragment", location: 'Binding Hall', how: 'Spot 40%', reveals: "A piece of fabric from Sevel's distinctive cloak, near the broken arc. He was here recently. Personal impact; confirms voluntary return to the Spire." },
+  { id: 'o5', name: 'Kelen looked frightened, not hurried', location: 'Joran (follow-up)', how: 'Insight 40%', reveals: 'Kelen knew the risk before he went. This was not impulse — a calculated decision by someone who had weighed his options and found them all bad.' },
+  { id: 'o6', name: 'Dael — former Law devotee, now cult leader', location: 'Old Harrek', how: 'Persuade 40% (with drink)', reveals: "The cult leader was until recently a novice of Law. 'Found something on the moors that changed her mind.' A direct mirror of Lian's arc." },
+];
+
+const HANDOUTS = [
+  { id: 'SP-H00', title: 'Village Notice', when: 'Table setup — before play', style: 'plain',
+    content: "NOTICE — MAEL'S FORD\n\nBy authority of the village elder\n\nA reward is offered for information leading to the location of KELEN, sorcerer, formerly resident of the east quarter of Mael's Ford.\n\nKelen is believed to have departed the village six weeks past. The village holds him responsible for the storms that have afflicted the land since that time.\n\nReward: ten gold pieces per person for resolution of the matter.\n\nSpeak to Elder Thara at the village hall.\n\nThe village does not endorse violence toward any person unless necessary." },
+  { id: 'SP-H01', title: "Kelen's Working Notes (Fragment)", when: 'Binding Hall — Act II', style: 'handwritten',
+    content: "...the eastern arc requires three repetitions of the containment glyph — Melnibonéan variant, not the common Young Kingdoms copy, which lacks the recursive structure...\n\n...the animal must be ritually prepared for no fewer than three days. I did not have three days. Borrowed and unprepared. This was the error. The circle cannot hold a subject that has not been brought into alignment with the working...\n\n...Vorak will not take payment in ordinary coin. It requires vitality — a life's surplus. What the goat has, I do not. The circle must hold until the exchange is complete. If it does not hold —\n\n(page torn)" },
+  { id: 'SP-H02', title: 'The Binding Circle (Floor Diagram)', when: 'Binding Hall — Act II', style: 'plain',
+    content: "(A circular diagram, four metres across. A complex geometric pattern of concentric shapes and radial lines. Clear and deliberate in construction — the work of an educated sorcerer who knew what he was doing.)\n\n(At the eastern arc, a clear break in the pattern. The line ends. Near the break: a deep gouge in the stone — the kind made by a panicking hooved animal. A dark stain.)\n\n(In the margin, Kelen's notation:)\n\"The break is here. Approximately 40cm. Vorak was three-quarters through when containment failed. It cannot advance; it cannot retreat. The pressure outward is the source of the atmospheric effect.\"" },
+  { id: 'SP-H03', title: "Kelen's Confession Letter", when: "Warden's Chamber — Act II (hand separately)", style: 'handwritten',
+    content: "I am Kelen. I was a sorcerer of modest gifts and immodest ambition. I have the wasting sickness — my physician gave me eight months two years ago, and she was generous.\n\nVorak is a demon of vitality and corrosion — what is alive, it sustains; what is failing, it reclaims. I summoned it to offer a bargain: I would give it anchor in the world, a vessel, a purpose — in exchange for the years I am owed.\n\nThe circle broke. The goat is to blame — it is also my fault for using a borrowed animal that had not been ritually prepared. The binding is incomplete. Vorak cannot fully manifest; I cannot complete the exchange. The storms are the pressure of this.\n\nI am in the Summoning Spire, attempting a second binding. I do not have much time. I do not ask forgiveness. I ask whoever finds this to understand that there are no good options here — only less-bad ones.\n\nThe demon is not evil. It is what it is. I am not evil. I am dying. We were both making a practical arrangement. The world is worse at arrangements than it pretends.\n\n— K." },
+];
+
+// ── State ─────────────────────────────────────────────────────────────────
+let elapsed = 0, totalSeconds = 210 * 60, timerRunning = false, timerInterval, lastAlertFired = -1;
+let clueState = {}, npcState = {}, handoutState = {}, locationState = {}, sessionNotes = {}, pinnedItems = [];
+
+let pcState = [
+  { name: 'Davin Kell',           player: 'Mercenary — Ilmioran',       hp: 14, maxHp: 14, pow: 12, maxPow: 12, pp: 12, maxPp: 12, status: { injured: false, chaosTouched: false, dead: false } },
+  { name: 'Ysolde of Vilmir',     player: 'Scholar-Sorcerer',           hp: 11, maxHp: 11, pow: 16, maxPow: 16, pp: 16, maxPp: 16, status: { injured: false, chaosTouched: false, dead: false } },
+  { name: 'Cray',                 player: 'Cutpurse — Nadsokor',        hp: 11, maxHp: 11, pow: 12, maxPow: 12, pp: 12, maxPp: 12, status: { injured: false, chaosTouched: false, dead: false } },
+  { name: 'Sarath the Twice-Turned', player: 'Former Cultist — Pan Tang', hp: 12, maxHp: 12, pow: 15, maxPow: 15, pp: 15, maxPp: 15, status: { injured: false, chaosTouched: false, dead: false } },
+  { name: 'Captain Brenn',        player: 'Sailor — Tarkeshite',        hp: 14, maxHp: 14, pow: 11, maxPow: 11, pp: 11, maxPp: 11, status: { injured: false, chaosTouched: false, dead: false } },
+  { name: 'Lian',                 player: 'Devotee of Law — Ilmioran',  hp: 11, maxHp: 11, pow: 14, maxPow: 14, pp: 14, maxPp: 14, status: { injured: false, chaosTouched: false, dead: false } },
+];
+
+// ── Timer ─────────────────────────────────────────────────────────────────
+function toggleTimer() {
+  if (timerRunning) {
+    clearInterval(timerInterval); timerRunning = false;
+    document.getElementById('btn-start').textContent = '▶ Resume';
+  } else {
+    timerRunning = true;
+    document.getElementById('btn-start').textContent = '⏸ Pause';
+    timerInterval = setInterval(tick, 1000);
+  }
+}
+function resetTimer() {
+  clearInterval(timerInterval); timerRunning = false; elapsed = 0; lastAlertFired = -1;
+  document.getElementById('btn-start').textContent = '▶ Start';
+  document.getElementById('alert-bar').className = '';
+  updateTimer(); saveState();
+}
+function tick() {
+  elapsed++;
+  if (elapsed >= totalSeconds) { clearInterval(timerInterval); timerRunning = false; }
+  updateTimer(); checkAlerts();
+  if (elapsed % 30 === 0) saveState();
+}
+function fmtTime(s) {
+  const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
+  if (h > 0) return h + ':' + String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+  return m + ':' + String(sec).padStart(2, '0');
+}
+function updateTimer() {
+  const rem = Math.max(0, totalSeconds - elapsed);
+  const el = document.getElementById('timer-main');
+  el.textContent = fmtTime(rem);
+  el.className = elapsed >= 165 * 60 ? 'danger' : elapsed >= 150 * 60 ? 'warn' : '';
+  document.getElementById('timer-act').textContent =
+    elapsed < 15 * 60 ? 'Intro' : elapsed < 45 * 60 ? 'Act I' :
+    elapsed < 135 * 60 ? 'Act II' : elapsed < 165 * 60 ? 'Act III' : 'Epilogue';
+  const pct = Math.min(100, (elapsed / totalSeconds) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  ['pl-intro', 'pl-a1', 'pl-a2', 'pl-a3', 'pl-ep'].forEach(id => document.getElementById(id).className = '');
+  const active = elapsed < 15 * 60 ? 'pl-intro' : elapsed < 45 * 60 ? 'pl-a1' :
+    elapsed < 135 * 60 ? 'pl-a2' : elapsed < 165 * 60 ? 'pl-a3' : 'pl-ep';
+  document.getElementById(active).className = 'active';
+}
+function checkAlerts() {
+  const bar = document.getElementById('alert-bar');
+  if (elapsed >= 105 * 60 && lastAlertFired < 1) {
+    lastAlertFired = 1;
+    bar.textContent = '⚠ 1:45 — PLAYERS MUST BE INSIDE THE SPIRE';
+    bar.className = 'show amber';
+    setTimeout(() => { if (lastAlertFired === 1) bar.className = ''; }, 30000);
+  }
+  if (elapsed >= 150 * 60 && lastAlertFired < 2) {
+    lastAlertFired = 2;
+    bar.textContent = '⚠ 2:30 — KELEN MUST BE FOUND AND TALKING';
+    bar.className = 'show amber';
+    setTimeout(() => { if (lastAlertFired === 2) bar.className = ''; }, 30000);
+  }
+  if (elapsed >= 165 * 60 && lastAlertFired < 3) {
+    lastAlertFired = 3;
+    bar.textContent = '🔴 2:45 — MORAL CHOICE NOW';
+    bar.className = 'show red';
+  }
+}
+
+// ── Navigation ────────────────────────────────────────────────────────────
+function navTo(id, btn) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+// ── Overview ──────────────────────────────────────────────────────────────
+const ACT_DATA = JSON.parse(document.getElementById('act-data-json').textContent);
+
+function switchAct(id, btn) {
+  document.querySelectorAll('.act-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderActContent(id);
+}
+
+function renderActContent(id) {
+  const act = ACT_DATA[id];
+  if (!act) return;
+  let html = '<div class="act-header"><h2>' + act.title + '</h2><div class="goal">' + act.goal + '</div>';
+  if (act.pacing) html += '<div class="pacing">' + act.pacing + '</div>';
+  html += '</div>';
+
+  (act.sections || []).forEach(s => {
+    const lid = 'loc-' + id + '-' + s.name.replace(/\s+/g, '-').toLowerCase();
+    const open = locationState[lid] ? 'open' : '';
+    html += '<div class="loc-card"><div class="loc-head ' + open + '" onclick="toggleLoc(\'' + lid + '\',this)">' +
+      '<span class="loc-name">' + s.name + '</span><span class="chevron">▶</span></div>' +
+      '<div class="loc-body ' + open + '"><p>' + s.content + '</p></div></div>';
+  });
+
+  (act.locations || []).forEach(loc => {
+    const lid = 'loc-' + loc.id;
+    const open = locationState[lid] ? 'open' : '';
+    html += '<div class="loc-card"><div class="loc-head ' + open + '" onclick="toggleLoc(\'' + lid + '\',this)">' +
+      '<span class="loc-name">' + loc.name + '</span><span class="loc-tag">' + loc.tag + '</span><span class="chevron">▶</span></div>' +
+      '<div class="loc-body ' + open + '"><p>' + loc.content + '</p>' +
+      (loc.gm ? '<div class="loc-section"><h4>GM</h4><p>' + loc.gm + '</p></div>' : '') +
+      '</div></div>';
+  });
+
+  if (act.moral) {
+    html += '<div class="moral-block"><h3>' + act.moral.title + '</h3>';
+    act.moral.options.forEach(o => {
+      html += '<div class="moral-option"><h4>' + o.label + '</h4><p>' + o.text + '</p></div>';
+    });
+    if (act.moral.note) html += '<div class="moral-note">' + act.moral.note + '</div>';
+    html += '</div>';
+  }
+
+  document.getElementById('act-content').innerHTML = html;
+}
+
+function toggleLoc(id, head) {
+  const open = head.classList.contains('open');
+  head.classList.toggle('open', !open);
+  head.nextElementSibling.classList.toggle('open', !open);
+  locationState[id] = !open;
+  saveState();
+}
+
+// ── NPCs ──────────────────────────────────────────────────────────────────
+function buildNPCs() {
+  document.getElementById('npc-grid').innerHTML = NPCS.map((npc, i) => {
+    const open = npcState['npc-' + i] ? 'open' : '';
+    const introed = npcState['intro-' + npc.name];
+    let port = '<div class="npc-portrait">👤</div>';
+    if (npc.portrait) {
+      port = '<div class="npc-portrait"><img src="' + npc.portrait.src + '" alt="' + npc.portrait.alt +
+        '" onclick="event.stopPropagation();openPortrait(\'' + npc.portrait.src + '\',\'' + npc.portrait.alt + '\')"></div>';
+    }
+    return '<div class="npc-card">' +
+      '<div class="npc-head" onclick="toggleNpc(' + i + ',this)">' + port +
+      '<div class="npc-meta"><div class="npc-name">' + npc.name + '</div><div class="npc-role">' + npc.role + '</div></div>' +
+      '<span class="npc-disp ' + npc.disp + '">' + npc.dispLabel + '</span></div>' +
+      '<div class="npc-body ' + open + '" id="npc-body-' + i + '">' +
+      '<div class="npc-section"><h4>When</h4><p>' + npc.act + '</p></div>' +
+      '<div class="npc-section"><h4>Physical</h4><p>' + npc.physical + '</p></div>' +
+      '<div class="npc-section"><h4>Motivation</h4><p>' + npc.motivation + '</p></div>' +
+      '<div class="npc-section"><h4>Knows</h4><p>' + npc.knows + '</p></div>' +
+      '<div class="npc-section"><h4>Stats</h4><pre>' + npc.stats + '</pre></div>' +
+      '<div class="npc-section"><h4>HP: <span id="nhpv-' + i + '">' + npc.hp + '</span> / ' + npc.maxHp + '</h4>' +
+      '<div class="npc-hp-row"><input type="range" min="0" max="' + npc.maxHp + '" value="' + npc.hp +
+      '" oninput="npcHp(' + i + ',this.value)"></div></div>' +
+      '<div class="npc-actions"><button class="' + (introed ? 'introduced' : '') + '" id="ibtn-' + i +
+      '" onclick="markIntro(\'' + npc.name + '\',' + i + ')">' + (introed ? '✓ Introduced' : 'Mark Introduced') + '</button></div>' +
+      '</div></div>';
+  }).join('');
+}
+
+function toggleNpc(i, head) {
+  const body = document.getElementById('npc-body-' + i);
+  const open = body.classList.contains('open');
+  body.classList.toggle('open', !open);
+  npcState['npc-' + i] = !open;
+  saveState();
+}
+
+function markIntro(name, i) {
+  npcState['intro-' + name] = !npcState['intro-' + name];
+  const btn = document.getElementById('ibtn-' + i);
+  btn.textContent = npcState['intro-' + name] ? '✓ Introduced' : 'Mark Introduced';
+  btn.className = npcState['intro-' + name] ? 'introduced' : '';
+  saveState();
+}
+
+function npcHp(i, val) {
+  NPCS[i].hp = parseInt(val);
+  document.getElementById('nhpv-' + i).textContent = val;
+  saveState();
+}
+
+function openPortrait(src, name) {
+  document.getElementById('portrait-img').src = src;
+  document.getElementById('portrait-caption').textContent = name;
+  document.getElementById('portrait-overlay').classList.add('open');
+}
+function closePortrait() { document.getElementById('portrait-overlay').classList.remove('open'); }
+
+// ── Clues ─────────────────────────────────────────────────────────────────
+function buildClues() {
+  buildClueList('clues-essential', CLUES_ESSENTIAL);
+  buildClueList('clues-optional', CLUES_OPTIONAL);
+}
+function buildClueList(cid, list) {
+  document.getElementById(cid).innerHTML = list.map(c => {
+    const st = clueState[c.id] || 'unseen';
+    const expanded = st === 'found' ? 'expanded' : '';
+    return '<div class="clue-item ' + expanded + '" id="ci-' + c.id + '" onclick="cycleClue(\'' + c.id + '\')">' +
+      '<div class="clue-dot ' + st + '" id="cd-' + c.id + '"></div>' +
+      '<div class="clue-info"><div class="clue-name">' + c.name + '</div>' +
+      '<div class="clue-loc">' + c.location + '</div>' +
+      '<div class="clue-how">' + c.how + '</div>' +
+      '<div class="clue-reveals">' + c.reveals + '</div></div>' +
+      '<span class="clue-state ' + st + '" id="cs-' + c.id + '">' + st + '</span></div>';
+  }).join('');
+}
+function cycleClue(id) {
+  const states = ['unseen', 'found', 'missed'];
+  const cur = clueState[id] || 'unseen';
+  const next = states[(states.indexOf(cur) + 1) % states.length];
+  clueState[id] = next;
+  document.getElementById('cd-' + id).className = 'clue-dot ' + next;
+  const cs = document.getElementById('cs-' + id);
+  cs.className = 'clue-state ' + next; cs.textContent = next;
+  document.getElementById('ci-' + id).classList.toggle('expanded', next === 'found');
+  updateClueBadge(); saveState();
+}
+function updateClueBadge() {
+  const missed = [...CLUES_ESSENTIAL, ...CLUES_OPTIONAL].filter(c => (clueState[c.id] || 'unseen') === 'missed').length;
+  const b = document.getElementById('clue-badge');
+  if (missed > 0) { b.textContent = missed; b.style.display = ''; } else b.style.display = 'none';
+}
+
+// ── Handouts ──────────────────────────────────────────────────────────────
+function buildHandouts() {
+  document.getElementById('handout-grid').innerHTML = HANDOUTS.map(h => {
+    const open = handoutState['o-' + h.id] ? 'open' : '';
+    const shown = handoutState['s-' + h.id];
+    return '<div class="handout-card">' +
+      '<div class="handout-head" onclick="toggleHandout(\'' + h.id + '\')">' +
+      '<span class="handout-id">' + h.id + '</span>' +
+      '<span class="handout-title">' + h.title + '</span>' +
+      '<span class="handout-when">' + h.when + '</span></div>' +
+      '<div class="handout-body ' + open + '" id="hb-' + h.id + '">' +
+      '<div class="handout-text' + (h.style === 'handwritten' ? ' handwritten' : '') + '">' + h.content + '</div>' +
+      '<div class="handout-actions"><button class="' + (shown ? 'shown' : '') + '" id="hbtn-' + h.id +
+      '" onclick="markShown(\'' + h.id + '\')">' + (shown ? '✓ Shown to Players' : 'Mark as Shown') + '</button></div>' +
+      '</div></div>';
+  }).join('');
+}
+function toggleHandout(id) {
+  const body = document.getElementById('hb-' + id);
+  const open = body.classList.contains('open');
+  body.classList.toggle('open', !open);
+  handoutState['o-' + id] = !open;
+  saveState();
+}
+function markShown(id) {
+  handoutState['s-' + id] = !handoutState['s-' + id];
+  const btn = document.getElementById('hbtn-' + id);
+  btn.textContent = handoutState['s-' + id] ? '✓ Shown to Players' : 'Mark as Shown';
+  btn.className = handoutState['s-' + id] ? 'shown' : '';
+  saveState();
+}
+
+// ── Players ───────────────────────────────────────────────────────────────
+function hpCol(v, m) { const p = v / m; return p > .5 ? 'var(--green)' : p > .25 ? 'var(--amber)' : 'var(--red)'; }
+function powCol(v, m) { const p = v / m; return p > .6 ? 'var(--text)' : p > .3 ? 'var(--amber)' : 'var(--red)'; }
+
+function buildPlayers() {
+  document.getElementById('player-grid').innerHTML = pcState.map((pc, i) => {
+    const s = pc.status;
+    return '<div class="player-card">' +
+      '<div class="player-header"><span class="player-name">' + pc.name + '</span><span class="player-role">' + pc.player + '</span></div>' +
+      '<div class="stat-row">' +
+      statBox(i, 'hp', 'HP', pc.hp, pc.maxHp, hpCol(pc.hp, pc.maxHp)) +
+      statBox(i, 'pow', 'POW', pc.pow, pc.maxPow, powCol(pc.pow, pc.maxPow)) +
+      statBox(i, 'pp', 'PP', pc.pp, pc.maxPp, 'var(--purple)') +
+      '</div>' +
+      '<div class="status-row">' +
+      '<button class="status-btn injured' + (s.injured ? ' active' : '') + '" onclick="toggleStatus(' + i + ',\'injured\')">' + (s.injured ? '✓ ' : '') + 'Injured</button>' +
+      '<button class="status-btn chaos' + (s.chaosTouched ? ' active' : '') + '" onclick="toggleStatus(' + i + ',\'chaosTouched\')">' + (s.chaosTouched ? '✓ ' : '') + 'Chaos-Touched</button>' +
+      '<button class="status-btn dead' + (s.dead ? ' active' : '') + '" onclick="toggleStatus(' + i + ',\'dead\')">' + (s.dead ? '✓ ' : '') + 'Dead</button>' +
+      '</div></div>';
+  }).join('');
+}
+function statBox(i, key, label, val, max, col) {
+  return '<div class="stat-box"><div class="stat-label">' + label + '</div>' +
+    '<div class="stat-display" id="pc-' + key + '-' + i + '" style="color:' + col + '">' + val + '/' + max + '</div>' +
+    '<div class="stat-controls">' +
+    '<button onclick="adjStat(' + i + ',\'' + key + '\',-1)">&#8722;</button>' +
+    '<button onclick="adjStat(' + i + ',\'' + key + '\',+1)">+</button>' +
+    '</div></div>';
+}
+function adjStat(i, key, delta) {
+  const pc = pcState[i];
+  const mk = key === 'hp' ? 'maxHp' : key === 'pow' ? 'maxPow' : 'maxPp';
+  pc[key] = Math.max(0, Math.min(pc[mk], pc[key] + delta));
+  const el = document.getElementById('pc-' + key + '-' + i);
+  el.textContent = pc[key] + '/' + pc[mk];
+  if (key === 'hp') el.style.color = hpCol(pc.hp, pc.maxHp);
+  if (key === 'pow') el.style.color = powCol(pc.pow, pc.maxPow);
+  saveState();
+}
+function toggleStatus(i, key) {
+  pcState[i].status[key] = !pcState[i].status[key];
+  buildPlayers(); saveState();
+}
+
+// ── Reference ─────────────────────────────────────────────────────────────
+const REF_DATA = JSON.parse(document.getElementById('ref-data-json').textContent);
+function renderRefContent(id, btn) {
+  document.getElementById('ref-content').innerHTML = REF_DATA[id] || '<p>No data.</p>';
+  if (btn) {
+    document.querySelectorAll('.ref-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+  }
+}
+
+// ── Pinboard ──────────────────────────────────────────────────────────────
+function buildPinnedArea() {
+  document.getElementById('pin-area').innerHTML = pinnedItems.map((txt, i) =>
+    '<div class="pin-item"><div class="pin-content">' + txt + '</div>' +
+    '<button class="pin-remove" onclick="removePin(' + i + ')">✕</button></div>'
+  ).join('');
+  const ta = document.getElementById('session-notes');
+  if (ta) ta.value = sessionNotes.main || '';
+}
+function addPin() {
+  const inp = document.getElementById('pin-input');
+  const v = inp.value.trim();
+  if (!v) return;
+  pinnedItems.push(v); inp.value = '';
+  buildPinnedArea(); saveState();
+}
+function removePin(i) {
+  pinnedItems.splice(i, 1);
+  buildPinnedArea(); saveState();
+}
+
+// ── POW modal ─────────────────────────────────────────────────────────────
+function showPowModal() { document.getElementById('pow-modal').classList.add('open'); }
+function closePowModal() { document.getElementById('pow-modal').classList.remove('open'); }
+
+// ── Persistence ───────────────────────────────────────────────────────────
+function saveState() {
+  try {
+    const ta = document.getElementById('session-notes');
+    if (ta) sessionNotes.main = ta.value;
+    localStorage.setItem('sp_storm_pact_v1', JSON.stringify({
+      clueState, npcState, handoutState, locationState, sessionNotes, pinnedItems,
+      pcs: pcState.map(p => ({ hp: p.hp, pow: p.pow, pp: p.pp, status: p.status })),
+      npcHp: NPCS.map(n => n.hp),
+      elapsed, lastAlertFired
+    }));
+  } catch (e) {}
+}
+function loadState() {
+  try {
+    const raw = localStorage.getItem('sp_storm_pact_v1');
+    if (!raw) return;
+    const s = JSON.parse(raw);
+    if (s.clueState)     Object.assign(clueState, s.clueState);
+    if (s.npcState)      Object.assign(npcState, s.npcState);
+    if (s.handoutState)  Object.assign(handoutState, s.handoutState);
+    if (s.locationState) Object.assign(locationState, s.locationState);
+    if (s.sessionNotes)  Object.assign(sessionNotes, s.sessionNotes);
+    if (s.pinnedItems)   pinnedItems = s.pinnedItems;
+    if (s.pcs) s.pcs.forEach((p, i) => {
+      if (pcState[i]) { pcState[i].hp = p.hp; pcState[i].pow = p.pow; pcState[i].pp = p.pp; pcState[i].status = p.status; }
+    });
+    if (s.npcHp) s.npcHp.forEach((hp, i) => { if (NPCS[i]) NPCS[i].hp = hp; });
+    if (typeof s.elapsed === 'number') elapsed = s.elapsed;
+    if (typeof s.lastAlertFired === 'number') lastAlertFired = s.lastAlertFired;
+  } catch (e) {}
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+loadState();
+buildNPCs();
+buildClues();
+buildHandouts();
+buildPlayers();
+buildPinnedArea();
+updateTimer();
+renderActContent('intro');
+renderRefContent('pow');
+updateClueBadge();
+</script>
+</body>
+</html>
