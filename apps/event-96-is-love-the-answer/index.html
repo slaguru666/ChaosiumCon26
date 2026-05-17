@@ -1,0 +1,1743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event 96 – Is Love the Answer? | GM</title>
+<style>
+/* ============================================================
+   DESIGN SYSTEM — Ringworld: warm light, ancient dark
+   Dark bg with warm gold/amber accents. Red-orange for threat.
+   Touch targets: min 48px. Font: min 15px body.
+   ============================================================ */
+:root {
+  --bg:         #0c0e12;
+  --surface:    #14161d;
+  --surface-hi: #1a1d28;
+  --surface-top:#22263a;
+  --border:     #2a2e42;
+  --border-hi:  #3a4060;
+
+  --text:       #f0ece0;
+  --text-sub:   #c0b890;
+  --text-muted: #706850;
+
+  --gold:   #e8b84a;
+  --gold-dim:#6a5020;
+  --sky:    #5ab8d8;
+  --sky-dim:#1a4050;
+  --threat: #e05540;
+  --threat-dim:#502010;
+  --bond:   #e87850;
+  --bond-dim:#502010;
+  --green:  #44cc88;
+  --purple: #aa88dd;
+
+  --done-bg:    rgba(68,204,136,0.12);
+  --done-color: #44cc88;
+  --missed-bg:  rgba(224,85,64,0.12);
+
+  --font: "Courier New", Courier, monospace;
+  --r: 7px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-tap-highlight-color: transparent;
+  overflow: hidden;
+}
+
+/* ── LAYOUT ── */
+#app {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  grid-template-columns: 200px 1fr;
+  grid-template-areas:
+    "header  header"
+    "progress progress"
+    "sidebar  main";
+  height: 100vh;
+  overflow: hidden;
+}
+
+@media (max-width: 800px) {
+  #app {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr auto;
+    grid-template-areas: "header" "progress" "main" "sidebar";
+  }
+  #sidebar { flex-direction: row; border-right: none; border-top: 1px solid var(--border); }
+  #sidebar .nav-label { display: none; }
+  .nav-item { flex: 1; flex-direction: column; padding: 10px 4px; min-height: 58px; }
+}
+
+/* ── HEADER ── */
+#header {
+  grid-area: header;
+  background: var(--surface);
+  border-bottom: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  gap: 16px;
+}
+#hdr-left { display: flex; flex-direction: column; gap: 2px; }
+#hdr-event { font-size: 11px; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; }
+#hdr-title { font-size: 17px; color: var(--gold); font-weight: bold; letter-spacing: 1px; }
+#hdr-right { display: flex; align-items: center; gap: 16px; }
+
+#timer-block { text-align: right; }
+#timer-main { font-size: 28px; font-weight: bold; color: var(--gold); letter-spacing: 2px; line-height: 1; }
+#timer-act { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+#timer-main.warn { color: var(--bond); animation: pulse 1s infinite; }
+#timer-main.danger { color: var(--threat); animation: pulse 0.5s infinite; }
+
+#threat-block { text-align: right; display: none; }
+#threat-label { font-size: 10px; color: var(--threat); letter-spacing: 1px; text-transform: uppercase; }
+#threat-val { font-size: 20px; font-weight: bold; color: var(--threat); }
+
+.hdr-btn {
+  background: var(--surface-hi);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 13px;
+  padding: 10px 18px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  min-height: 44px;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.hdr-btn:hover { background: var(--surface-top); }
+.hdr-btn.primary { border-color: var(--gold); color: var(--gold); }
+.hdr-btn.threat-btn { border-color: var(--threat); color: var(--threat); }
+
+/* ── PROGRESS ── */
+#progress {
+  grid-area: progress;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+#progress-track { height: 8px; background: var(--surface-top); border-radius: 4px; overflow: hidden; }
+#progress-fill { height: 100%; background: linear-gradient(90deg, var(--sky), var(--gold), var(--threat)); border-radius: 4px; width: 0%; transition: width 0.5s; }
+#progress-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); letter-spacing: 1px; }
+
+/* ── SIDEBAR NAV ── */
+#sidebar {
+  grid-area: sidebar;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  color: var(--text-muted);
+  transition: all 0.15s;
+  min-height: 52px;
+  user-select: none;
+}
+.nav-item:hover { background: var(--surface-hi); color: var(--text-sub); }
+.nav-item.active { background: var(--surface-hi); color: var(--gold); border-left-color: var(--gold); }
+.nav-icon { font-size: 18px; flex-shrink: 0; }
+.nav-label { font-size: 13px; letter-spacing: 1px; text-transform: uppercase; }
+.nav-badge {
+  margin-left: auto;
+  background: var(--gold-dim);
+  color: var(--gold);
+  font-size: 11px;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+}
+
+/* ── MAIN CONTENT ── */
+#main {
+  grid-area: main;
+  overflow-y: auto;
+  padding: 20px 24px;
+  max-width: 900px;
+}
+
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ── CARDS & TILES ── */
+.card {
+  background: var(--surface-hi);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.card-head {
+  background: var(--surface-top);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.card-title { font-size: 13px; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; }
+.card-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.card-body { padding: 16px; }
+
+.dash-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+@media (max-width: 600px) { .dash-grid { grid-template-columns: repeat(2, 1fr); } }
+.dash-tile {
+  background: var(--surface-hi);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 18px 14px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+  user-select: none;
+}
+.dash-tile:hover { border-color: var(--gold); background: var(--surface-top); }
+.dash-tile.gold { border-color: var(--gold-dim); }
+.dash-tile.gold:hover { border-color: var(--gold); }
+.dash-tile.threat { border-color: var(--threat-dim); }
+.dash-tile.threat:hover { border-color: var(--threat); }
+.dash-tile.bond { border-color: var(--bond-dim); }
+.dash-tile.bond:hover { border-color: var(--bond); }
+.dash-tile-icon { font-size: 24px; margin-bottom: 6px; }
+.dash-tile-label { font-size: 11px; color: var(--text-sub); letter-spacing: 1px; text-transform: uppercase; }
+
+/* ── ACTS SCREEN ── */
+.act-tabs { display: flex; gap: 4px; margin-bottom: 16px; flex-wrap: wrap; }
+.act-tab {
+  background: var(--surface-hi);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  transition: all 0.15s;
+}
+.act-tab.active { border-color: var(--gold); color: var(--gold); background: var(--surface-top); }
+.act-tab:hover { color: var(--text-sub); border-color: var(--border-hi); }
+.act-panel { display: none; }
+.act-panel.active { display: block; }
+.act-timing {
+  background: var(--surface-top);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--r);
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--text-sub);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.act-timing-icon { font-size: 18px; }
+.act-goal { color: var(--text-muted); font-size: 11px; letter-spacing: 1px; margin-top: 3px; }
+
+.location-block {
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+.location-head {
+  background: var(--surface-top);
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+.location-name { font-size: 13px; color: var(--sky); letter-spacing: 1px; text-transform: uppercase; }
+.location-toggle { font-size: 12px; color: var(--text-muted); }
+.location-body { padding: 12px 14px; display: none; font-size: 13px; color: var(--text-sub); line-height: 1.7; }
+.location-body.open { display: block; }
+
+.mechanic {
+  background: var(--surface-top);
+  border: 1px solid var(--border-hi);
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 11px;
+  color: var(--gold);
+  display: inline-block;
+  margin: 4px 0;
+  letter-spacing: 0.5px;
+}
+
+.read-aloud {
+  background: var(--surface-top);
+  border-left: 3px solid var(--gold);
+  padding: 14px 16px;
+  margin: 12px 0;
+  font-size: 13px;
+  color: var(--text-sub);
+  line-height: 1.8;
+  font-style: italic;
+  border-radius: 0 var(--r) var(--r) 0;
+}
+
+.pacing-alert {
+  background: var(--threat-dim);
+  border: 1px solid var(--threat);
+  border-radius: var(--r);
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--threat);
+  margin: 12px 0;
+  letter-spacing: 0.5px;
+}
+.pacing-alert .pal { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; display: block; margin-bottom: 4px; opacity: 0.8; }
+
+.bond-note {
+  background: rgba(232,120,80,0.1);
+  border: 1px solid var(--bond-dim);
+  border-left: 3px solid var(--bond);
+  border-radius: 0 var(--r) var(--r) 0;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: #d0a080;
+  margin: 12px 0;
+  line-height: 1.6;
+}
+.bond-note strong { color: var(--bond); }
+
+.gm-note {
+  background: var(--surface-hi);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--r);
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 8px 0;
+  line-height: 1.6;
+}
+.gm-note .gnl { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; display: block; margin-bottom: 4px; color: var(--text-muted); }
+
+/* ── NPC SCREEN ── */
+.npc-card {
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  margin-bottom: 12px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+  cursor: pointer;
+}
+.npc-card:hover { border-color: var(--border-hi); }
+.npc-card.bond-npc { border-color: var(--bond-dim); }
+.npc-card.bond-npc:hover { border-color: var(--bond); }
+.npc-card.threat-npc { border-color: var(--threat-dim); }
+.npc-card.threat-npc:hover { border-color: var(--threat); }
+.npc-card.open.bond-npc { border-color: var(--bond); }
+.npc-card.open.threat-npc { border-color: var(--threat); }
+.npc-card.open { border-color: var(--border-hi); }
+
+.npc-head {
+  background: var(--surface-hi);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.npc-name { font-size: 15px; color: var(--text); font-weight: bold; }
+.npc-role { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.npc-badge {
+  margin-left: auto;
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 3px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+.badge-bond { background: var(--bond-dim); color: var(--bond); }
+.badge-threat { background: var(--threat-dim); color: var(--threat); }
+.badge-ally { background: rgba(90,184,216,0.15); color: var(--sky); }
+.badge-neutral { background: rgba(170,136,221,0.15); color: var(--purple); }
+.badge-hostile { background: rgba(224,85,64,0.15); color: #cc7060; }
+.badge-comms { background: rgba(112,104,80,0.2); color: var(--text-muted); }
+
+.npc-body { padding: 14px 16px; display: none; border-top: 1px solid var(--border); }
+.npc-card.open .npc-body { display: block; }
+.npc-section { font-size: 11px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; margin: 10px 0 5px; }
+.npc-text { font-size: 13px; color: var(--text-sub); line-height: 1.65; margin-bottom: 8px; }
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 3px;
+  margin: 8px 0;
+  background: var(--surface-top);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 8px;
+}
+.sg { text-align: center; }
+.sg .sl { font-size: 9px; color: var(--text-muted); display: block; }
+.sg .sv { font-size: 15px; font-weight: bold; color: var(--gold); }
+
+.derived-row {
+  display: flex;
+  gap: 8px;
+  margin: 6px 0;
+  flex-wrap: wrap;
+}
+.ds {
+  background: var(--surface-top);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 5px 10px;
+  text-align: center;
+}
+.ds .dl { font-size: 9px; color: var(--text-muted); display: block; }
+.ds .dv { font-size: 13px; font-weight: bold; color: var(--sky); }
+
+.skill-tags { display: flex; flex-wrap: wrap; gap: 4px; margin: 6px 0; }
+.skill-tag {
+  background: var(--surface-top);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 3px 8px;
+  font-size: 11px;
+  color: var(--text-sub);
+}
+.npc-special {
+  background: rgba(232,184,74,0.08);
+  border: 1px solid var(--gold-dim);
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #c0a060;
+  font-style: italic;
+  line-height: 1.6;
+}
+
+/* ── CLUE SCREEN ── */
+.section-head {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+  margin-top: 16px;
+}
+.section-head:first-child { margin-top: 0; }
+
+.clue-item {
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  margin-bottom: 8px;
+  overflow: hidden;
+  transition: all 0.15s;
+  cursor: pointer;
+  user-select: none;
+}
+.clue-item:hover { border-color: var(--border-hi); }
+.clue-item.state-found { background: var(--done-bg); border-color: var(--green); }
+.clue-item.state-missed { background: var(--missed-bg); border-color: var(--threat); }
+
+.clue-head {
+  padding: 10px 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.clue-num {
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid var(--border-hi);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+  color: var(--text-sub);
+  font-weight: bold;
+}
+.clue-item.state-found .clue-num { border-color: var(--green); color: var(--green); }
+.clue-item.state-missed .clue-num { border-color: var(--threat); color: var(--threat); }
+.clue-num.opt { border-style: dashed; color: var(--text-muted); }
+
+.clue-info { flex: 1; }
+.clue-tag { font-size: 10px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 3px; }
+.clue-text { font-size: 13px; color: var(--text-sub); line-height: 1.5; }
+.clue-state-indicator { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; flex-shrink: 0; padding-top: 6px; }
+.clue-item.state-found .clue-state-indicator { color: var(--green); }
+.clue-item.state-missed .clue-state-indicator { color: var(--threat); }
+.clue-item:not(.state-found):not(.state-missed) .clue-state-indicator { color: var(--text-muted); }
+
+.clue-fallback {
+  font-size: 11px;
+  color: var(--bond);
+  padding: 0 14px 10px 54px;
+  font-style: italic;
+  line-height: 1.5;
+  display: none;
+}
+.clue-item:not(.state-found) .clue-fallback { display: block; }
+
+/* ── HANDOUT SCREEN ── */
+.handout-item {
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+.handout-head {
+  background: var(--surface-hi);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+.handout-id { font-size: 12px; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; }
+.handout-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.handout-status {
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  flex-shrink: 0;
+}
+.handout-status.shown { background: var(--done-bg); color: var(--green); }
+.handout-status.pending { background: var(--surface-top); color: var(--text-muted); }
+
+.handout-body { padding: 16px; display: none; border-top: 1px solid var(--border); }
+.handout-body.open { display: block; }
+
+.handout-doc {
+  border: 1px solid var(--border-hi);
+  border-radius: var(--r);
+  padding: 16px;
+  background: var(--surface-top);
+  font-size: 13px;
+  color: var(--text-sub);
+  line-height: 1.8;
+  margin-bottom: 12px;
+}
+.handout-doc .hd-title {
+  font-size: 14px;
+  color: var(--gold);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.handout-doc .hd-label { font-size: 10px; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; display: block; margin-top: 8px; margin-bottom: 2px; }
+.handout-doc.comms { border-color: var(--sky-dim); font-family: monospace; font-size: 12px; }
+.handout-doc.comms .hd-title { color: var(--sky); }
+.handout-doc.threat-doc { border-color: var(--threat-dim); }
+.handout-doc.threat-doc .hd-title { color: var(--threat); }
+.handout-doc .handwritten { font-family: Georgia, serif; font-style: italic; font-size: 13px; color: #c0b080; }
+
+.show-btn {
+  background: var(--surface-top);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--r);
+  color: var(--sky);
+  font-family: var(--font);
+  font-size: 12px;
+  padding: 8px 16px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.15s;
+}
+.show-btn:hover { border-color: var(--sky); background: var(--sky-dim); }
+.show-btn.shown { color: var(--green); border-color: var(--green); }
+
+/* ── PLAYER TRACKER SCREEN ── */
+.player-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 600px) { .player-grid { grid-template-columns: 1fr; } }
+
+.player-card {
+  background: var(--surface-hi);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+.player-card.bond-player { border-color: var(--bond-dim); }
+.player-head {
+  background: var(--surface-top);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.player-name { font-size: 13px; color: var(--text); font-weight: bold; }
+.player-role { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.player-species { font-size: 10px; padding: 2px 6px; border-radius: 3px; background: var(--surface); color: var(--text-muted); letter-spacing: 1px; }
+
+.player-body { padding: 12px 14px; }
+.stat-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; min-width: 30px; }
+.stat-bar-wrap { flex: 1; height: 18px; background: var(--surface-top); border-radius: 3px; overflow: hidden; position: relative; }
+.stat-bar { height: 100%; border-radius: 3px; transition: width 0.2s; }
+.bar-hp { background: linear-gradient(90deg, #cc4444, #ee8844); }
+.bar-pow { background: linear-gradient(90deg, #4466cc, #44aacc); }
+.stat-val { font-size: 13px; font-weight: bold; min-width: 50px; text-align: right; color: var(--text); }
+
+.ctrl-row { display: flex; gap: 6px; margin-top: 6px; }
+.ctrl-btn {
+  background: var(--surface-top);
+  border: 1px solid var(--border-hi);
+  border-radius: 4px;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.1s;
+  flex-shrink: 0;
+}
+.ctrl-btn:hover { background: var(--border); }
+.ctrl-btn.minus:hover { background: var(--threat-dim); }
+.ctrl-btn.plus:hover { background: rgba(68,204,136,0.15); }
+.status-badge {
+  font-size: 10px;
+  padding: 3px 7px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s;
+}
+.status-badge:hover { border-color: var(--border-hi); }
+.status-injured { background: rgba(224,85,64,0.15); color: var(--threat); }
+.status-ok { background: rgba(68,204,136,0.1); color: var(--green); }
+
+/* ── REFERENCE SCREEN ── */
+.ref-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin-bottom: 16px;
+}
+.ref-table th {
+  background: var(--surface-top);
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 10px;
+  padding: 8px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-hi);
+}
+.ref-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-sub);
+  vertical-align: top;
+}
+.ref-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+.ref-table .key { color: var(--sky); font-weight: bold; }
+.ref-table .diff { font-size: 10px; color: var(--text-muted); letter-spacing: 0.5px; }
+
+/* ── MORAL DILEMMA ── */
+.dilemma-box {
+  border: 2px solid var(--bond-dim);
+  border-radius: var(--r);
+  margin: 16px 0;
+  overflow: hidden;
+}
+.dilemma-header {
+  background: rgba(232,120,80,0.15);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--bond-dim);
+}
+.dilemma-title { font-size: 15px; color: var(--bond); letter-spacing: 2px; text-transform: uppercase; }
+.dilemma-subtitle { font-size: 12px; color: #c08060; margin-top: 3px; font-style: italic; }
+
+.dilemma-option {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.dilemma-option:last-child { border-bottom: none; }
+.dilemma-opt-label { font-size: 12px; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px; }
+.dilemma-opt-text { font-size: 13px; color: var(--text-sub); line-height: 1.6; }
+.dilemma-question { font-size: 11px; color: var(--bond); font-style: italic; margin-top: 5px; }
+
+/* ── OUTCOME CARDS ── */
+.outcome-card {
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.outcome-head {
+  background: var(--surface-top);
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.outcome-name { font-size: 13px; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; }
+.outcome-trigger { font-size: 11px; color: var(--text-muted); max-width: 55%; text-align: right; line-height: 1.4; }
+.outcome-body { padding: 12px 14px; font-size: 13px; color: var(--text-sub); line-height: 1.65; }
+
+/* ── ANIMATIONS ── */
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+
+/* ── ALERT BANNER ── */
+#alert-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--threat-dim);
+  border-top: 2px solid var(--threat);
+  padding: 12px 20px;
+  font-size: 13px;
+  color: var(--threat);
+  letter-spacing: 1px;
+  text-align: center;
+  z-index: 100;
+  display: none;
+  animation: pulse 1s infinite;
+}
+#alert-banner.show { display: block; }
+#alert-close { float: right; cursor: pointer; font-size: 16px; color: var(--threat); background: none; border: none; font-family: var(--font); }
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ── HEADER ── -->
+<div id="header">
+  <div id="hdr-left">
+    <div id="hdr-event">EVENT 96 · RINGWORLD RPG · SAT DAY 3 14:00</div>
+    <div id="hdr-title">Is Love the Answer?</div>
+  </div>
+  <div id="hdr-right">
+    <div id="threat-block">
+      <div id="threat-label">⚠ Ghresh-Ka ETA</div>
+      <div id="threat-val">—</div>
+    </div>
+    <div id="timer-block">
+      <div id="timer-main">0:00</div>
+      <div id="timer-act">Session not started</div>
+    </div>
+    <button class="hdr-btn primary" id="btn-start" onclick="toggleTimer()">▶ Start</button>
+    <button class="hdr-btn" onclick="resetTimer()">↺</button>
+  </div>
+</div>
+
+<!-- ── PROGRESS ── -->
+<div id="progress">
+  <div id="progress-track"><div id="progress-fill"></div></div>
+  <div id="progress-labels">
+    <span>INTRO</span><span>ACT ONE</span><span>ACT TWO</span><span>ACT THREE</span><span>EPILOGUE</span>
+  </div>
+</div>
+
+<!-- ── SIDEBAR ── -->
+<div id="sidebar">
+  <div class="nav-item active" id="nav-home"     onclick="navTo('home')">    <span class="nav-icon">⌂</span><span class="nav-label">Home</span></div>
+  <div class="nav-item"        id="nav-acts"     onclick="navTo('acts')">    <span class="nav-icon">🎭</span><span class="nav-label">Acts</span></div>
+  <div class="nav-item"        id="nav-npcs"     onclick="navTo('npcs')">    <span class="nav-icon">👤</span><span class="nav-label">NPCs</span></div>
+  <div class="nav-item"        id="nav-clues"    onclick="navTo('clues')">   <span class="nav-icon">🔍</span><span class="nav-label">Clues</span><span class="nav-badge" id="badge-clues">8</span></div>
+  <div class="nav-item"        id="nav-handouts" onclick="navTo('handouts')"><span class="nav-icon">📄</span><span class="nav-label">Handouts</span></div>
+  <div class="nav-item"        id="nav-players"  onclick="navTo('players')"> <span class="nav-icon">♟</span><span class="nav-label">Players</span></div>
+  <div class="nav-item"        id="nav-ref"      onclick="navTo('ref')">     <span class="nav-icon">📋</span><span class="nav-label">Reference</span></div>
+</div>
+
+<!-- ── MAIN ── -->
+<div id="main">
+
+<!-- ===== HOME ===== -->
+<div class="screen active" id="screen-home">
+  <div class="dash-grid">
+    <div class="dash-tile gold"   onclick="navTo('acts')">  <div class="dash-tile-icon">🎭</div><div class="dash-tile-label">Acts</div></div>
+    <div class="dash-tile gold"   onclick="navTo('npcs')">  <div class="dash-tile-icon">👤</div><div class="dash-tile-label">NPCs</div></div>
+    <div class="dash-tile"        onclick="navTo('clues')"> <div class="dash-tile-icon">🔍</div><div class="dash-tile-label">Clues</div></div>
+    <div class="dash-tile"        onclick="navTo('handouts')"><div class="dash-tile-icon">📄</div><div class="dash-tile-label">Handouts</div></div>
+    <div class="dash-tile bond"   onclick="navTo('players')"><div class="dash-tile-icon">♟</div><div class="dash-tile-label">Players</div></div>
+    <div class="dash-tile threat" onclick="navTo('ref')">   <div class="dash-tile-icon">📋</div><div class="dash-tile-label">Reference</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div><div class="card-title">Session Brief</div><div class="card-sub">One-minute brief — read before play begins</div></div></div>
+    <div class="card-body" style="font-size:13px;color:var(--text-sub);line-height:1.7;">
+      You are the landing crew of the <em>Foolish Endeavour</em>, dispatched to conduct a cultural survey of Wheel-Spoke — a circular trading settlement built around the base of an ancient Ringworld spire. The mission should take three hours. It will not.<br><br>
+      Something in this settlement has been waiting for you. You don't know it yet.
+    </div>
+  </div>
+
+  <div class="bond-note">
+    <strong>⬡ THE BOND MECHANIC</strong><br>
+    Watch the table in Act One. The player who engages most directly with Serenthis becomes the bond character. Default: <strong>Dr. Mira Chen</strong>. The bond is the emotional centre of this scenario — everything else is scaffolding. Do not rush it.
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div><div class="card-title">Session Timing</div></div></div>
+    <div class="card-body">
+      <table class="ref-table">
+        <tr><th>Section</th><th>Duration</th><th>Clock</th><th>GM Checkpoint</th></tr>
+        <tr><td>Introduction</td><td>~15 min</td><td>0:15</td><td>Atmosphere set, bond PC identified</td></tr>
+        <tr><td>Act One — First Contact</td><td>~60 min</td><td>1:15</td><td>Serenthis met, bond formed, threat known</td></tr>
+        <tr><td>Act Two — The Complication</td><td>~90 min</td><td>2:45</td><td>Vault truth revealed, storm clock critical</td></tr>
+        <tr><td>Act Three — The Choice</td><td>~30 min</td><td>3:15</td><td>Moral dilemma resolved</td></tr>
+        <tr><td>Epilogue</td><td>~15 min</td><td>3:30</td><td>Outcome played, table debrief</td></tr>
+      </table>
+      <div class="pacing-alert"><span class="pal">Hard Rule</span>At 2:45 — move to Act Three regardless. Ghresh-Ka arrives. The storm arrives. The sprint begins.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div><div class="card-title">Player Roster</div></div></div>
+    <div class="card-body">
+      <table class="ref-table">
+        <tr><th>Seat</th><th>Player</th><th>Character</th><th>Notes</th></tr>
+        <tr><td>1</td><td>Maija Perfiljeva</td><td>—</td><td></td></tr>
+        <tr><td>2</td><td>Alex Winkel</td><td>—</td><td></td></tr>
+        <tr><td>3</td><td>Kari Law</td><td>—</td><td></td></tr>
+        <tr><td>4</td><td>Andrew Smith</td><td>—</td><td></td></tr>
+        <tr><td>5</td><td>Stephen Mooney</td><td>—</td><td></td></tr>
+        <tr><td>6</td><td>pookie __</td><td>—</td><td></td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+<!-- ===== ACTS ===== -->
+<div class="screen" id="screen-acts">
+  <div class="act-tabs">
+    <div class="act-tab active" onclick="showAct('intro')">Intro</div>
+    <div class="act-tab" onclick="showAct('act1')">Act One</div>
+    <div class="act-tab" onclick="showAct('act2')">Act Two</div>
+    <div class="act-tab" onclick="showAct('act3')">Act Three</div>
+    <div class="act-tab" onclick="showAct('epilogue')">Epilogue</div>
+  </div>
+
+  <!-- INTRO -->
+  <div class="act-panel active" id="panel-intro">
+    <div class="act-timing"><span class="act-timing-icon">⏱</span><div><div>~15 minutes · 0:00 → 0:15</div><div class="act-goal">Atmosphere set · Bond character identified · Mission briefed</div></div></div>
+    <div class="read-aloud">The landing craft sets down two hundred metres outside the settlement boundary, in a flat clearing that your instruments say has been used as a landing point before. How long ago is harder to determine.<br><br>
+    Wheel-Spoke sits at the base of a spire that rises — you cannot see the top of it — into the upper atmosphere. The settlement is exactly what its name implies: circular, with eight radial avenues running from a central plaza out to a ring-road market. It is old. The scrith foundation beneath the buildings is older still. What the inhabitants have built on top of it is vivid and dense and loud.<br><br>
+    Your mission is a cultural survey. Standard procedure: observe, document, do not destabilise. You have six hours before the Foolish Endeavour must reposition.<br><br>
+    Vorn's voice comes through the comms: <em>"Weather systems are doing something I don't like. Not a problem yet. Keep the mission short."</em><br><br>
+    The market gates are open.</div>
+    <div class="gm-note"><span class="gnl">GM Note — The Bond</span>Identify the bond character before Act One begins. Watch who engages most openly with the setting. The bond character is whoever treats Wheel-Spoke as a <em>place</em> rather than an obstacle. Default is Mira Chen. Flex accordingly.</div>
+  </div>
+
+  <!-- ACT ONE -->
+  <div class="act-panel" id="panel-act1">
+    <div class="act-timing"><span class="act-timing-icon">⏱</span><div><div>~60 minutes · 0:15 → 1:15</div><div class="act-goal">Goal: Serenthis met · Bond formed · Ghresh-Ka threat established</div></div></div>
+    <div class="bond-note"><strong>ACT ONE JOB:</strong> Make Serenthis real before the danger arrives. Give each player one market moment. The bond should form through play, not instruction. The collapse trap triggers at 1:00 latest if players haven't found her naturally.</div>
+
+    <div class="location-block">
+      <div class="location-head" onclick="toggleLocation(this)"><span class="location-name">The Market Ring</span><span class="location-toggle">▼</span></div>
+      <div class="location-body">
+        Outer ring of Wheel-Spoke: continuous market, stalls and awnings, traders of a dozen hominid species. Bright fabric, bartered goods, four languages at once. The central plaza and spire are visible through gaps. <strong>Warm, chaotic, alive.</strong> Give each player a market moment — an odd item, an unusual trader, a strange custom. This is the only pure joy the scenario provides.<br><br>
+        At the base of one radial avenue: a collapsed awning has exposed old scrith foundations with a maintenance hatch that's been covered by market stalls. Browsing one stall causes the owner to shift position — depressing a contact panel in the wall. This is the collapse trap.
+        <div class="mechanic">[Ringworld: Awareness — spot instability before panel triggers. Hard. If failed, trap fires.]</div>
+      </div>
+    </div>
+
+    <div class="location-block">
+      <div class="location-head" onclick="toggleLocation(this)"><span class="location-name">The Collapse Trap → Serenthis</span><span class="location-toggle">▼</span></div>
+      <div class="location-body">
+        Wall panel triggers scrith reconfiguration. Two stalls drop half a metre, roof collapses. <strong>1D6 damage, player pinned.</strong> Crowd scatters in a circle.<br><br>
+        Before any crew member reaches the trapped player — Serenthis is already there. She crosses the crowd in seconds, places both hands on the panel in the exposed wall. The scrith <em>lifts</em>. She does not appear surprised. She appears to have been expecting this moment.
+        <div class="mechanic">[First Aid — reduce damage to 1 if treated within 1 minute]</div>
+        <div class="bond-note"><strong>This is the first meeting.</strong> The bond character is the one Serenthis looks at last. She holds their eye for a moment longer than necessary before looking away.</div>
+      </div>
+    </div>
+
+    <div class="location-block">
+      <div class="location-head" onclick="toggleLocation(this)"><span class="location-name">Serenthis's Workshop</span><span class="location-toggle">▼</span></div>
+      <div class="location-body">
+        Narrow building on the inner ring. Floor-to-ceiling samples, weaving tools, maps, small artefacts. Cot in the back. Cooking fire. She brings the crew here to treat the injured player and to look at them properly.<br><br>
+        <strong>Key items:</strong> Maps on the walls — far more detailed than any survey should produce; one shows a chamber beneath the spire not in any public record. A flat oval of unknown material (dormant Rememberer interface token) grows warm when the bond character touches it. Woven bands on Serenthis's wrists are an encoded lineage record.
+        <div class="mechanic">[Awareness — map shows vault chamber beneath spire]</div>
+        <div class="mechanic">[Touch — interface token responds to bond character only; Serenthis says she's never seen it react before]</div>
+        <div class="gm-note"><span class="gnl">Scene Note</span>This scene should breathe. Don't rush to the threat. Let the bond character talk to her. Let them ask questions. She answers directly. She does not perform mysteriousness.</div>
+      </div>
+    </div>
+
+    <div class="pacing-alert"><span class="pal">Act One Pacing</span>At 1:00 — trigger the collapse trap if it hasn't fired. Act One ends when Woven-Branch arrives at the workshop and says: <em>"Ghresh-Ka will be here by tomorrow's shadow cycle. And the vault will not wait that long."</em></div>
+  </div>
+
+  <!-- ACT TWO -->
+  <div class="act-panel" id="panel-act2">
+    <div class="act-timing"><span class="act-timing-icon">⏱</span><div><div>~90 minutes · 1:15 → 2:45</div><div class="act-goal">Goal: Vault truth revealed · Ghresh-Ka forces arrive · Storm clock critical</div></div></div>
+    <div class="gm-note"><span class="gnl">Three Simultaneous Threads</span><strong>Vault expedition</strong> (main thread) · <strong>Ghresh-Ka's advance force</strong> (escalating threat) · <strong>Ship comms tightening clock</strong> (pressure). Players will feel pulled in multiple directions. This is intentional.</div>
+
+    <div class="location-block">
+      <div class="location-head" onclick="toggleLocation(this)"><span class="location-name">The Spire Base Passage</span><span class="location-toggle">▼</span></div>
+      <div class="location-body">
+        200m descent at gentle angle. Scrith walls. Dim bioluminescent growth. The air is different — cooler, cleaner, smelling of something unnameable.<br><br>
+        Partway down: a scrith iris sealed for centuries. Serenthis places her hand on the wall beside it. The iris opens. She is visibly shaken by the ease of it. First time she's done this consciously.
+        <div class="mechanic">[Awareness — iris shows signs of recent opening, 3–4 times in last decade]</div>
+      </div>
+    </div>
+
+    <div class="location-block">
+      <div class="location-head" onclick="toggleLocation(this)"><span class="location-name">The Rememberer's Vault</span><span class="location-toggle">▼</span></div>
+      <div class="location-body">
+        40m diameter, 20m high dome. Passive lighting activates fully when Serenthis enters. Walls covered in organic interface panels. Central dais with a 2m column covered in notation no one recognises.<br><br>
+        The column notation is pre-Pak Protector-script. <em>Full translation:</em> this is an emergency uplift mechanism — if Ringworld maintenance fails critically, a Rememberer accepts the full encoding and becomes a distributed Protector-class intelligence capable of emergency repair. <strong>The transition is irreversible.</strong>
+        <div class="mechanic">[Computer + Linguistics Hard — partial translation]</div>
+        <div class="mechanic">[Science (Physics) + Computer Extreme — full understanding of encoding mechanism]</div>
+        <div class="bond-note"><strong>Fallback:</strong> If no one achieves the roll, Serenthis translates it herself — haltingly, like reading her own name in a language she learned this morning. She understands what it says. She tells them.</div>
+      </div>
+    </div>
+
+    <div class="pacing-alert"><span class="pal">At 2:15 Mark</span>Ghresh-Ka's advance force reaches the settlement perimeter. Serin opens the eastern gate if she hasn't been dealt with. Fighting begins at the vault entrance.</div>
+    <div class="pacing-alert"><span class="pal">At 2:30 Mark</span>Vorn sends the 90-minute warning: <em>"Window is now two hours and closing."</em> Show Handout H02-B.</div>
+    <div class="pacing-alert"><span class="pal">At 2:45 — HARD STOP → Act Three</span>Ghresh-Ka arrives at vault perimeter personally. The crew is retreating or at the vault exit. Begin Act Three regardless of where players are.</div>
+  </div>
+
+  <!-- ACT THREE -->
+  <div class="act-panel" id="panel-act3">
+    <div class="act-timing"><span class="act-timing-icon">⏱</span><div><div>~30 minutes MAXIMUM · 2:45 → 3:15</div><div class="act-goal">Goal: The choice. 30 minutes. It always happens.</div></div></div>
+
+    <div class="pacing-alert"><span class="pal">The Sprint</span>Vault to landing craft: 3 miles. Storm: 40 minutes from Wheel-Spoke. Ship: under 1 hour before forced reposition. Ghresh-Ka: behind them.
+    <div class="mechanic">[DEX × 5 — maintain pace over rough terrain]</div>
+    <div class="mechanic">[CON × 5 — sustain pace if already injured]</div></div>
+
+    <div class="location-block">
+      <div class="location-head" onclick="toggleLocation(this)"><span class="location-name">The Landing Craft Clearing</span><span class="location-toggle">▼</span></div>
+      <div class="location-body">
+        Open. Final. No cover. Storm wall visible to the north. Ghresh-Ka's force visible to the east.<br><br>
+        <strong>Math:</strong> Landing craft lifts in 4 minutes from standby. Ghresh-Ka is 8 minutes away. Storm is 15 minutes from this position. There is time — but only if the crew stops doing anything else.
+      </div>
+    </div>
+
+    <div class="location-block">
+      <div class="location-head" onclick="toggleLocation(this)"><span class="location-name">The Interception</span><span class="location-toggle">▼</span></div>
+      <div class="location-body">
+        Ghresh-Ka comes himself, with two guards. Calls a halt at 200m. Speaks calmly:<br><br>
+        <em>"I am not interested in your crew. I am not interested in your ship. I am interested in one person. Give her to me and you leave. We do not need to lose anyone today."</em><br><br>
+        <strong>This is a genuine offer. He means it.</strong> He'd rather not fight a crew with a Known Space vessel in orbit.<br><br>
+        <strong>RR'raan option:</strong> Ghresh-Ka will accept a one-on-one honour challenge, pausing his force. This buys time and may end the threat entirely.
+        <div class="mechanic">[Combat: Ghresh-Ka HP 18, Armour 3, DB +1D6, Claws 85%, Carbine 70%]</div>
+      </div>
+    </div>
+
+    <div class="dilemma-box">
+      <div class="dilemma-header">
+        <div class="dilemma-title">⬡ The Moral Dilemma</div>
+        <div class="dilemma-subtitle">Serenthis speaks to the bond character. The crew can hear. She says: <em>"What do you want me to do?"</em></div>
+      </div>
+      <div class="dilemma-option">
+        <div class="dilemma-opt-label">Option A — Come With Us</div>
+        <div class="dilemma-opt-text">Serenthis boards the craft. She leaves the Ringworld, her people, her settlement, everything she has ever known. The encoding is incomplete — she will live with it unresolved. Ghresh-Ka is left without his key. Woven-Branch without her Rememberer.</div>
+        <div class="dilemma-question">Is love taking someone from their world because you cannot bear to leave them?</div>
+      </div>
+      <div class="dilemma-option">
+        <div class="dilemma-opt-label">Option B — She Stays</div>
+        <div class="dilemma-opt-text">The crew leaves. They cannot fight Ghresh-Ka, reach the ship, and protect Serenthis simultaneously. She remains with her people. She has partial vault access. Maybe she wins. Maybe she doesn't. The bond character will never know.</div>
+        <div class="dilemma-question">Is love letting go when holding on would break what you love?</div>
+      </div>
+      <div class="dilemma-option">
+        <div class="dilemma-opt-label">Option C — She Transforms (vault accessed in Act Two)</div>
+        <div class="dilemma-opt-text">Serenthis calls what she is becoming. The storm responds. Shadow squares shift. Ghresh-Ka's force is dispersed with impossible precision. She is alive. But she is already different. The person the bond character knew is becoming something the Ringworld built her to be.</div>
+        <div class="dilemma-question">Is love enough when the person you love is becoming something greater than the love you had?</div>
+      </div>
+      <div class="dilemma-option">
+        <div class="dilemma-opt-label">Option D — The Crew Stays and Fights</div>
+        <div class="dilemma-opt-text">They miss the ship. They fight Ghresh-Ka. They may win. The ship comes back in six hours. Six hours on the Ringworld surface in the aftermath of a storm. Serenthis alive and unchanged. The bond character chose her over the mission.</div>
+        <div class="dilemma-question">Is love worth breaking every rule you came with?</div>
+      </div>
+    </div>
+
+    <div class="pacing-alert"><span class="pal">At 3:10</span>Ghresh-Ka's terms expire — force resumes advance. This forces a decision.</div>
+    <div class="pacing-alert"><span class="pal">At 3:15 — Hard Close</span>Storm front reaches landing zone. Craft must lift NOW or be grounded for hours. Ask the bond character directly: <em>"What do you say to her?"</em> Do not let the dilemma drift. Last five minutes.</div>
+  </div>
+
+  <!-- EPILOGUE -->
+  <div class="act-panel" id="panel-epilogue">
+    <div class="act-timing"><span class="act-timing-icon">⏱</span><div><div>~15 minutes · 3:15 → 3:30</div><div class="act-goal">Play the outcome. Close the session.</div></div></div>
+
+    <div class="outcome-card">
+      <div class="outcome-head"><div class="outcome-name">Option A — Taken</div><div class="outcome-trigger">Serenthis boards the craft</div></div>
+      <div class="outcome-body">Off the Ringworld for the first time. She sits by the viewport for the entire ascent, not speaking. The encoding is unresolved. What happens to her is a campaign question.</div>
+    </div>
+    <div class="outcome-card">
+      <div class="outcome-head"><div class="outcome-name">Option B — Left Behind</div><div class="outcome-trigger">Crew departs without Serenthis</div></div>
+      <div class="outcome-body">Clean departure. The bond character watches the surface recede. Woven-Branch's people were grouping at the vault entrance as they lifted. Whether Serenthis survives the next confrontation with Ghresh-Ka is genuinely unknown.</div>
+    </div>
+    <div class="outcome-card">
+      <div class="outcome-head"><div class="outcome-name">Option C — Transformed</div><div class="outcome-trigger">Vault interface completed, encoding full</div></div>
+      <div class="outcome-body">Crew lifts on schedule. Serenthis stands at the vault entrance as they go. She raises a hand. The gesture is hers. The thing behind the eyes that makes it her gesture may not be. The storm dissipates thirty minutes after departure.</div>
+    </div>
+    <div class="outcome-card">
+      <div class="outcome-head"><div class="outcome-name">Option D — Stayed</div><div class="outcome-trigger">Crew misses the ship</div></div>
+      <div class="outcome-body">Ghresh-Ka defeated or retreated. Six hours on the surface. Serenthis alive. The bond character sits next to her while they wait. When the Foolish Endeavour returns, Vorn's first words: <em>"I'm filing the incident report. You're explaining it."</em></div>
+    </div>
+
+    <div class="read-aloud" style="margin-top:16px;"><strong>Closing — Option A (read aloud):</strong><br><br>
+    The landing craft clears the storm front three minutes after lift.<br>
+    Serenthis has not moved from the viewport.<br>
+    She says, without turning: <em>"I could feel the vault from here. Until now."</em><br>
+    A pause. <em>"I can't feel it anymore."</em><br>
+    Another pause. Longer.<br>
+    <em>"Is that what leaving always feels like?"</em><br><br>
+    The bond character may answer. There is no right answer. The session ends.</div>
+  </div>
+</div>
+<!-- ===== NPCS ===== -->
+<div class="screen" id="screen-npcs">
+
+  <!-- SERENTHIS -->
+  <div class="npc-card bond-npc" onclick="toggleNPC(this)">
+    <div class="npc-head">
+      <div><div class="npc-name">Serenthis</div><div class="npc-role">Ringworld Hominid · Rememberer Lineage</div></div>
+      <div class="npc-badge badge-bond">⬡ Bond</div>
+    </div>
+    <div class="npc-body">
+      <div class="npc-section">Appearance</div>
+      <div class="npc-text">Female, mid-twenties. Tall for the settlement population. Dark skin, close-cut hair with a single braid from temple to shoulder. Layered fabrics in greys and deep greens. Woven bands at both wrists — lineage record. Eyes that listen like they're taking notes.</div>
+      <div class="npc-section">Motivation</div>
+      <div class="npc-text">She doesn't yet understand why these off-worlders matter, but she's known for three days they were coming. Her dreams told her. She wants to understand what she is, and believes these people may be the only ones who can help.</div>
+      <div class="npc-section">What She Knows</div>
+      <div class="npc-text">The vault beneath the spire exists — she feels it. She can interface with Ringworld systems (no language for it until now). Ghresh-Ka has been sending scouts for two seasons. The elders are frightened of what she is becoming.</div>
+      <div class="stat-grid">
+        <div class="sg"><span class="sl">STR</span><span class="sv">09</span></div>
+        <div class="sg"><span class="sl">CON</span><span class="sv">12</span></div>
+        <div class="sg"><span class="sl">SIZ</span><span class="sv">10</span></div>
+        <div class="sg"><span class="sl">INT</span><span class="sv">18</span></div>
+        <div class="sg"><span class="sl">POW</span><span class="sv">17</span></div>
+        <div class="sg"><span class="sl">DEX</span><span class="sv">13</span></div>
+        <div class="sg"><span class="sl">APP</span><span class="sv">16</span></div>
+        <div class="sg"><span class="sl">EDU</span><span class="sv">12</span></div>
+      </div>
+      <div class="derived-row">
+        <div class="ds"><span class="dl">HP</span><span class="dv">11</span></div>
+        <div class="ds"><span class="dl">Move</span><span class="dv">10</span></div>
+        <div class="ds"><span class="dl">DB</span><span class="dv">None</span></div>
+      </div>
+      <div class="skill-tags">
+        <span class="skill-tag">Awareness 80%</span><span class="skill-tag">Survival (Ringworld) 85%</span><span class="skill-tag">Linguistics (Ancient) 75%</span><span class="skill-tag">Medicine 40%</span><span class="skill-tag">Persuade 60%</span><span class="skill-tag">Craft (Encoding) 70%</span>
+      </div>
+      <div class="npc-special">⬡ Rememberer's Touch — Direct contact with Ringworld interface systems activates or calms them without technology. She does not fully understand this ability. Range: direct contact only.</div>
+    </div>
+  </div>
+
+  <!-- WOVEN-BRANCH -->
+  <div class="npc-card" onclick="toggleNPC(this)">
+    <div class="npc-head">
+      <div><div class="npc-name">Woven-Branch</div><div class="npc-role">Elder of Wheel-Spoke</div></div>
+      <div class="npc-badge badge-ally">Ally</div>
+    </div>
+    <div class="npc-body">
+      <div class="npc-section">Appearance</div>
+      <div class="npc-text">Old, female, moves slowly and deliberately. Hair fully silver in a complex braid encoding her lineage — not metaphorically; the pattern is a record. Carries a carved staff that is also a map.</div>
+      <div class="npc-section">Motivation</div>
+      <div class="npc-text">Protect Serenthis. Protect the settlement. In that order. She has known what Serenthis is since childhood. Containment is over. The off-worlders' arrival signals it.</div>
+      <div class="npc-section">What She Knows</div>
+      <div class="npc-text">Full history of the Rememberer lineage. The vault is "a place of last instruction." Three previous Rememberers attempted the interface — all were lost to the transition. The transition is not death. But it is not life as the settlement understands it.</div>
+      <div class="stat-grid">
+        <div class="sg"><span class="sl">STR</span><span class="sv">07</span></div>
+        <div class="sg"><span class="sl">CON</span><span class="sv">10</span></div>
+        <div class="sg"><span class="sl">SIZ</span><span class="sv">09</span></div>
+        <div class="sg"><span class="sl">INT</span><span class="sv">15</span></div>
+        <div class="sg"><span class="sl">POW</span><span class="sv">12</span></div>
+        <div class="sg"><span class="sl">DEX</span><span class="sv">09</span></div>
+        <div class="sg"><span class="sl">APP</span><span class="sv">11</span></div>
+        <div class="sg"><span class="sl">EDU</span><span class="sv">14</span></div>
+      </div>
+      <div class="derived-row">
+        <div class="ds"><span class="dl">HP</span><span class="dv">10</span></div>
+        <div class="ds"><span class="dl">Move</span><span class="dv">8</span></div>
+        <div class="ds"><span class="dl">DB</span><span class="dv">None</span></div>
+      </div>
+      <div class="skill-tags">
+        <span class="skill-tag">History (Rememberer) 85%</span><span class="skill-tag">Persuade 65%</span><span class="skill-tag">Awareness 55%</span><span class="skill-tag">Linguistics 80%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SERIN -->
+  <div class="npc-card" onclick="toggleNPC(this)">
+    <div class="npc-head">
+      <div><div class="npc-name">Serin</div><div class="npc-role">Human Mercenary · Ghresh-Ka's Lieutenant</div></div>
+      <div class="npc-badge badge-neutral">Neutral</div>
+    </div>
+    <div class="npc-body">
+      <div class="npc-section">Appearance</div>
+      <div class="npc-text">Female, early 30s, light build, dressed as a trader — she blends. Dark eyes that move constantly. Long scar on back of left hand, covered with a glove. Three gold teeth visible when she speaks.</div>
+      <div class="npc-section">Motivation</div>
+      <div class="npc-text">Professional mercenary. Deliver Serenthis. Collect payment. No ideological investment in Ghresh-Ka's project. <strong>She can be flipped</strong> — a better offer, or a convincing argument about what Ghresh-Ka will actually do to a Rememberer mid-transition, may turn her.</div>
+      <div class="npc-section">What She Knows</div>
+      <div class="npc-text">Ghresh-Ka wants Serenthis specifically. He arrives with full force in ~20 hours. Her job: confirm location, assess obstacles, arrange quiet extraction if possible.</div>
+      <div class="stat-grid">
+        <div class="sg"><span class="sl">STR</span><span class="sv">12</span></div>
+        <div class="sg"><span class="sl">CON</span><span class="sv">13</span></div>
+        <div class="sg"><span class="sl">SIZ</span><span class="sv">11</span></div>
+        <div class="sg"><span class="sl">INT</span><span class="sv">14</span></div>
+        <div class="sg"><span class="sl">POW</span><span class="sv">11</span></div>
+        <div class="sg"><span class="sl">DEX</span><span class="sv">15</span></div>
+        <div class="sg"><span class="sl">APP</span><span class="sv">12</span></div>
+        <div class="sg"><span class="sl">EDU</span><span class="sv">13</span></div>
+      </div>
+      <div class="derived-row">
+        <div class="ds"><span class="dl">HP</span><span class="dv">12</span></div>
+        <div class="ds"><span class="dl">Move</span><span class="dv">10</span></div>
+        <div class="ds"><span class="dl">DB</span><span class="dv">None</span></div>
+      </div>
+      <div class="skill-tags">
+        <span class="skill-tag">Stealth 70%</span><span class="skill-tag">Awareness 65%</span><span class="skill-tag">Fast Talk 65%</span><span class="skill-tag">Pilot (skimmer) 70%</span><span class="skill-tag">Combat (laser) 75%</span><span class="skill-tag">Combat (knife) 60%</span>
+      </div>
+      <div class="npc-special">Concealed flashlight-laser (2D6+2) · Combat knife (1D4+DB)</div>
+    </div>
+  </div>
+
+  <!-- GHRESH-KA -->
+  <div class="npc-card threat-npc" onclick="toggleNPC(this)">
+    <div class="npc-head">
+      <div><div class="npc-name">Ghresh-Ka</div><div class="npc-role">Kzin Warlord · Ringworld Territorial Commander</div></div>
+      <div class="npc-badge badge-threat">⚠ Threat</div>
+    </div>
+    <div class="npc-body">
+      <div class="npc-section">Appearance</div>
+      <div class="npc-text">Nearly 3 metres, heavily muscled. Orange-cream fur, short at muzzle, longer mane. Adapted Ringworld battle-mesh over Kzin undersuit — functional, battered, used. One ear half-missing. Amber eyes, always calculating. <strong>He does not snarl. He does not posture. He watches.</strong></div>
+      <div class="npc-section">Motivation</div>
+      <div class="npc-text">Vault access via the Rememberer key. Eleven years building a territorial base for this. He wants the vault's systems to function as weapons or leverage at Known Space political scale. He is not wrong that the vault is powerful. He is catastrophically wrong about what the encoding does to the key.</div>
+      <div class="npc-section">What He Knows</div>
+      <div class="npc-text">What a Rememberer is, broadly. That the encoding transition happens — he does not know what it produces. He believes the resulting entity will be controllable. It will not.</div>
+      <div class="stat-grid">
+        <div class="sg"><span class="sl">STR</span><span class="sv">22</span></div>
+        <div class="sg"><span class="sl">CON</span><span class="sv">16</span></div>
+        <div class="sg"><span class="sl">SIZ</span><span class="sv">20</span></div>
+        <div class="sg"><span class="sl">INT</span><span class="sv">15</span></div>
+        <div class="sg"><span class="sl">POW</span><span class="sv">13</span></div>
+        <div class="sg"><span class="sl">DEX</span><span class="sv">16</span></div>
+        <div class="sg"><span class="sl">APP</span><span class="sv">08</span></div>
+        <div class="sg"><span class="sl">EDU</span><span class="sv">12</span></div>
+      </div>
+      <div class="derived-row">
+        <div class="ds"><span class="dl">HP</span><span class="dv">18</span></div>
+        <div class="ds"><span class="dl">Move</span><span class="dv">12</span></div>
+        <div class="ds"><span class="dl">DB</span><span class="dv">+1D6</span></div>
+        <div class="ds"><span class="dl">Armour</span><span class="dv">3pts</span></div>
+      </div>
+      <div class="skill-tags">
+        <span class="skill-tag">Claws 85%</span><span class="skill-tag">Carbine 70%</span><span class="skill-tag">Tactics 80%</span><span class="skill-tag">Awareness 65%</span><span class="skill-tag">Intimidate 85%</span><span class="skill-tag">Command 75%</span>
+      </div>
+      <div class="npc-special">⚠ Warlord's Patience — Does NOT charge recklessly. He manoeuvres. He never enters a space he cannot exit. If cornered, he becomes more dangerous, not less. He does not rage; he focuses.<br><br>
+      Weapons: Kzin fighting claws (STR+1D6+DB) · Adapted laser carbine (2D6+3, 60m) · Variable sword (1D6+4+DB — rarely drawn)</div>
+      <div class="gm-note"><span class="gnl">RR'raan Interaction</span>If the Kzin player engages, Ghresh-Ka represents what a Kzin becomes when patience is forced on them by circumstance. RR'raan's player may find this deeply uncomfortable or deeply resonant. Either is good.</div>
+    </div>
+  </div>
+
+  <!-- ADVANCE FORCE -->
+  <div class="npc-card" onclick="toggleNPC(this)">
+    <div class="npc-head">
+      <div><div class="npc-name">Ghresh-Ka's Advance Force</div><div class="npc-role">6 Mixed-Species Mercenaries</div></div>
+      <div class="npc-badge badge-hostile">Hostile</div>
+    </div>
+    <div class="npc-body">
+      <div class="npc-text">Professionals but not elite. A tactically active crew using terrain can hold against them. Ghresh-Ka's full force arriving 20 minutes later cannot be held.</div>
+      <div class="stat-grid">
+        <div class="sg"><span class="sl">STR</span><span class="sv">12</span></div>
+        <div class="sg"><span class="sl">CON</span><span class="sv">12</span></div>
+        <div class="sg"><span class="sl">SIZ</span><span class="sv">12</span></div>
+        <div class="sg"><span class="sl">INT</span><span class="sv">11</span></div>
+        <div class="sg"><span class="sl">POW</span><span class="sv">10</span></div>
+        <div class="sg"><span class="sl">DEX</span><span class="sv">13</span></div>
+        <div class="sg"><span class="sl">APP</span><span class="sv">—</span></div>
+        <div class="sg"><span class="sl">EDU</span><span class="sv">—</span></div>
+      </div>
+      <div class="derived-row">
+        <div class="ds"><span class="dl">HP avg</span><span class="dv">12</span></div>
+        <div class="ds"><span class="dl">Combat</span><span class="dv">60%</span></div>
+        <div class="ds"><span class="dl">Stealth</span><span class="dv">50%</span></div>
+      </div>
+      <div class="npc-special">Flashlight-lasers (2D6+2) · Combat knives. Treat as a single tactical unit unless crew engages individually.</div>
+    </div>
+  </div>
+
+  <!-- SHIP CREW -->
+  <div class="npc-card" onclick="toggleNPC(this)">
+    <div class="npc-head">
+      <div><div class="npc-name">Foolish Endeavour — Ship Crew</div><div class="npc-role">Vorn (Captain) · Talren (Navigator) · Brakk (Weapons)</div></div>
+      <div class="npc-badge badge-comms">Comms Only</div>
+    </div>
+    <div class="npc-body">
+      <div class="npc-text">Never appear in person. Heard only over comms. Use them to embody the three possible attitudes to the scenario:</div>
+      <div class="npc-text">🔵 <strong>Vorn</strong> — Withdrawal. Professional, increasingly urgent. Gives orders to return. By Act Three he is giving a direct withdrawal order.</div>
+      <div class="npc-text">🟡 <strong>Talren</strong> — Engagement. Dangerously enthusiastic. Wants data. Pushes players toward deeper investigation without considering consequences.</div>
+      <div class="npc-text">🔴 <strong>Brakk</strong> — Destruction. Tactical. "If there's a problem, call early." If he knows Ghresh-Ka is present, he will propose an orbital solution.</div>
+      <div class="gm-note"><span class="gnl">Use Them As Pressure</span>Let their disagreements escalate over comms. They mirror the players' own likely disagreements. As the clock tightens, Vorn's transmissions become shorter and more clipped. Talren's more excited. Brakk's more ominous.</div>
+    </div>
+  </div>
+
+</div>
+<!-- ===== CLUES ===== -->
+<div class="screen" id="screen-clues">
+  <div class="gm-note" style="margin-bottom:16px;"><span class="gnl">Tap to cycle</span>Pending → Found → Missed. Solid border = Essential. Dashed = Optional. Fallback shown when not found.</div>
+
+  <div class="section-head">Act One — First Contact</div>
+  <div class="clue-item" onclick="cycleClue(this)" data-id="c1">
+    <div class="clue-head">
+      <div class="clue-num">C1</div>
+      <div class="clue-info">
+        <div class="clue-tag">Essential · The Collapse Trap · Witnessed</div>
+        <div class="clue-text">Serenthis lifts the scrith with her bare hands, releasing the trapped player. She can interface with Ringworld systems directly — this is not normal.</div>
+      </div>
+      <div class="clue-state-indicator">○ Pending</div>
+    </div>
+    <div class="clue-fallback">Fallback: Cannot be missed — it is a witnessed scene. If somehow not registered, Woven-Branch states directly: "She has always been able to do that. Since she was old enough to walk."</div>
+  </div>
+
+  <div class="clue-item" onclick="cycleClue(this)" data-id="c2">
+    <div class="clue-head">
+      <div class="clue-num">C2</div>
+      <div class="clue-info">
+        <div class="clue-tag">Essential · Workshop · Awareness Roll</div>
+        <div class="clue-text">A map on the workshop wall shows a chamber beneath the spire that no public survey record contains. The Rememberer's Vault exists and Serenthis already knows roughly where it is.</div>
+      </div>
+      <div class="clue-state-indicator">○ Pending</div>
+    </div>
+    <div class="clue-fallback">Fallback: Serenthis references it in conversation — "There is something beneath this spire. It has been asking me to come closer for two years."</div>
+  </div>
+
+  <div class="clue-item" onclick="cycleClue(this)" data-id="c3">
+    <div class="clue-head">
+      <div class="clue-num opt">C3</div>
+      <div class="clue-info">
+        <div class="clue-tag">Optional · Market Ring · Spot Hidden</div>
+        <div class="clue-text">Someone in the market crowd is watching the crew and Serenthis with professional attention. Serin — a trained observer following them since arrival.</div>
+      </div>
+      <div class="clue-state-indicator">○ Pending</div>
+    </div>
+    <div class="clue-fallback">Fallback: Not finding Serin in Act One means the advance force arrives unannounced in Act Two. She opens the gate.</div>
+  </div>
+
+  <div class="clue-item" onclick="cycleClue(this)" data-id="c4">
+    <div class="clue-head">
+      <div class="clue-num opt">C4</div>
+      <div class="clue-info">
+        <div class="clue-tag">Optional · Workshop · Touch / Roleplay</div>
+        <div class="clue-text">The interface token grows warm when the bond character touches it. Serenthis says she has never seen it react before. The token responds to specific people.</div>
+      </div>
+      <div class="clue-state-indicator">○ Pending</div>
+    </div>
+  </div>
+
+  <div class="section-head">Act Two — The Complication</div>
+  <div class="clue-item" onclick="cycleClue(this)" data-id="c5">
+    <div class="clue-head">
+      <div class="clue-num opt">C5</div>
+      <div class="clue-info">
+        <div class="clue-tag">Optional · Passage Iris · Awareness</div>
+        <div class="clue-text">The iris in the passage shows signs of having been opened recently — three or four times in the last decade. Ghresh-Ka has been closer to the vault than anyone knew.</div>
+      </div>
+      <div class="clue-state-indicator">○ Pending</div>
+    </div>
+  </div>
+
+  <div class="clue-item" onclick="cycleClue(this)" data-id="c6">
+    <div class="clue-head">
+      <div class="clue-num">C6</div>
+      <div class="clue-info">
+        <div class="clue-tag">Essential · Vault Column · Computer + Linguistics Hard</div>
+        <div class="clue-text">Full vault translation reveals the encoding mechanism: emergency uplift protocol. If Serenthis interfaces fully, she becomes a distributed Protector-class intelligence. The transition is irreversible.</div>
+      </div>
+      <div class="clue-state-indicator">○ Pending</div>
+    </div>
+    <div class="clue-fallback">Fallback: Serenthis translates it herself, haltingly, like reading her own name in a language learned today. She tells them everything.</div>
+  </div>
+
+  <div class="clue-item" onclick="cycleClue(this)" data-id="c7">
+    <div class="clue-head">
+      <div class="clue-num">C7</div>
+      <div class="clue-info">
+        <div class="clue-tag">Essential · Vault · Research (Whisper player) or Science (Xenobiology) + Computer</div>
+        <div class="clue-text">Analysis of the encoding mechanism reveals the resulting entity will not be Serenthis as they know her. It will be something that contains Serenthis but is no longer limited to her.</div>
+      </div>
+      <div class="clue-state-indicator">○ Pending</div>
+    </div>
+    <div class="clue-fallback">Fallback: Mira attempts Science (Xenobiology) + Computer. She identifies the biological component — reaches the same conclusion without understanding the technical system.</div>
+  </div>
+
+  <div class="clue-item" onclick="cycleClue(this)" data-id="c8">
+    <div class="clue-head">
+      <div class="clue-num opt">C8</div>
+      <div class="clue-info">
+        <div class="clue-tag">Optional · Settlement Perimeter · Confrontation or Fast Talk</div>
+        <div class="clue-text">Serin, confronted directly, confirms that Ghresh-Ka arrives with his full force within twenty minutes of his advance guard. She will tell them this if she believes it changes the outcome for her.</div>
+      </div>
+      <div class="clue-state-indicator">○ Pending</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== HANDOUTS ===== -->
+<div class="screen" id="screen-handouts">
+
+  <div class="handout-item">
+    <div class="handout-head" onclick="toggleHandout(this)">
+      <div><div class="handout-id">H01-A · Serenthis's Woven Band</div><div class="handout-desc">Act One — when players examine the bands in the workshop</div></div>
+      <div class="handout-status pending" id="status-h01a">Pending</div>
+    </div>
+    <div class="handout-body">
+      <div class="handout-doc">
+        <div class="hd-title">Encoded Lineage Band — Partial Reading</div>
+        <div class="handwritten">
+          [Pattern of interwoven threads — systematic, not decorative]<br><br>
+          <span class="hd-label">Partial Translation (Linguistics partial success):</span>
+          <em>"...daughter of Bright-Current, who was daughter of Still-Water, who was daughter of the one called First-Speaking, who was the last before the silence..."</em><br><br>
+          <em>"...the vault speaks in the old language. It speaks to those with old blood. It spoke to First-Speaking and she was changed. It spoke to Three-Rivers and she was changed. The band does not say changed into what..."</em><br><br>
+          <em>"...the current one hears it already. The off-worlders will not understand what they are carrying when they carry her toward it..."</em>
+        </div>
+        <div style="margin-top:10px;"><button class="show-btn" id="show-h01a" onclick="markShown('h01a')">Show to Players</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="handout-item">
+    <div class="handout-head" onclick="toggleHandout(this)">
+      <div><div class="handout-id">H01-B · Vorn's Storm Warning</div><div class="handout-desc">End of Act One — first ship comms pressure</div></div>
+      <div class="handout-status pending" id="status-h01b">Pending</div>
+    </div>
+    <div class="handout-body">
+      <div class="handout-doc comms">
+        <div class="hd-title">Foolish Endeavour — Comms Transmission</div>
+        FROM: VORN, CAPT. // FOOLISH ENDEAVOUR<br>
+        TO: SURFACE TEAM<br>
+        PRIORITY: STANDARD<br><br>
+        Storm systems developing faster than projected. Not a problem yet. Window revised to four hours from current time. Confirm status and estimated return. Over.
+        <div style="margin-top:10px;"><button class="show-btn" id="show-h01b" onclick="markShown('h01b')">Show to Players</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="handout-item">
+    <div class="handout-head" onclick="toggleHandout(this)">
+      <div><div class="handout-id">H02-A · Vault Column Translation</div><div class="handout-desc">Act Two — after Computer + Linguistics roll</div></div>
+      <div class="handout-status pending" id="status-h02a">Pending</div>
+    </div>
+    <div class="handout-body">
+      <div class="handout-doc">
+        <div class="hd-title">Vault Column — Partial Translation</div>
+        <span class="hd-label">Translation Status: Partial · Several lines unresolved</span>
+        <em>"...designated repository for continuity of maintenance function...in the event of catastrophic system failure..."</em><br><br>
+        <em>"...the carrier of the encoding will receive the full inheritance at point of contact...the inheritance cannot be refused once contact is initiated..."</em><br><br>
+        [SEVERAL LINES — NOTATION UNRESOLVED]<br><br>
+        <em>"...the one who receives will not be diminished...they will be...expanded beyond the original structure of..."</em><br><br>
+        [FINAL LINES — NOTATION UNRESOLVED]<br><br>
+        <span style="color:var(--text-muted);font-size:11px;">[Full translation requires Science (Physics). The unresolved lines contain the critical detail about what "expanded" means.]</span>
+        <div style="margin-top:10px;"><button class="show-btn" id="show-h02a" onclick="markShown('h02a')">Show to Players</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="handout-item">
+    <div class="handout-head" onclick="toggleHandout(this)">
+      <div><div class="handout-id">H02-B · Vorn's 90-Minute Warning</div><div class="handout-desc">Act Two at 2:30 mark — urgent ship comms</div></div>
+      <div class="handout-status pending" id="status-h02b">Pending</div>
+    </div>
+    <div class="handout-body">
+      <div class="handout-doc comms">
+        <div class="hd-title">Foolish Endeavour — Comms Transmission</div>
+        FROM: VORN, CAPT. // FOOLISH ENDEAVOUR<br>
+        TO: SURFACE TEAM<br>
+        PRIORITY: URGENT<br><br>
+        Storm front accelerating. I don't know why. Window is now two hours and closing. If you are not on approach in ninety minutes, we reposition without you and return in six hours. This is not a negotiation. Confirm receipt immediately.
+        <div style="margin-top:10px;"><button class="show-btn" id="show-h02b" onclick="markShown('h02b')">Show to Players</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="handout-item">
+    <div class="handout-head" onclick="toggleHandout(this)">
+      <div><div class="handout-id">H02-C · Serin's Contract</div><div class="handout-desc">Act Two — if Serin is searched after capture or death</div></div>
+      <div class="handout-status pending" id="status-h02c">Pending</div>
+    </div>
+    <div class="handout-body">
+      <div class="handout-doc threat-doc">
+        <div class="hd-title">Commission Document — Sealed</div>
+        <span class="hd-label">Subject Description:</span>
+        Female, Ringworld hominid, settlement of Wheel-Spoke. 24-28 years apparent age. Unusual knowledge of local infrastructure. Identified by cultural liaison role and woven bands worn at wrists.<br><br>
+        <span class="hd-label">Commission Terms:</span>
+        Standard extraction fee + location bonus upon confirmed delivery. <em>[Figure — significant. This is serious money.]</em><br><br>
+        <span class="hd-label">Critical Note:</span>
+        <strong>LIVING ONLY. Encoding must be intact.</strong> Any interference with the subject's physiological state voids the contract. Verify before extraction is initiated.
+        <div style="margin-top:10px;"><button class="show-btn" id="show-h02c" onclick="markShown('h02c')">Show to Players</button></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- ===== PLAYERS ===== -->
+<div class="screen" id="screen-players">
+  <div class="bond-note" style="margin-bottom:16px;"><strong>⬡ Bond Character:</strong> Default is <strong>Dr. Mira Chen</strong>. Watch the table and flex this to whichever player engages most openly with Serenthis.</div>
+  <div class="player-grid" id="player-grid">
+    <!-- Populated by JS -->
+  </div>
+</div>
+
+<!-- ===== REFERENCE ===== -->
+<div class="screen" id="screen-ref">
+
+  <div class="card">
+    <div class="card-head"><div class="card-title">Characteristic Rolls</div></div>
+    <div class="card-body">
+      <table class="ref-table">
+        <tr><th>Roll</th><th>Use</th><th>Difficulty</th></tr>
+        <tr><td class="key">STR × 5</td><td>Physical force, breaking free, lifting</td><td></td></tr>
+        <tr><td class="key">CON × 5</td><td>Resist hardship, sustain pace, gravity fluctuation</td><td></td></tr>
+        <tr><td class="key">SIZ × 5</td><td>Resist being moved or knocked down</td><td></td></tr>
+        <tr><td class="key">INT × 5</td><td>Memory, recall, pattern recognition</td><td></td></tr>
+        <tr><td class="key">POW × 5</td><td>Resist subtle effects, psi-adjacent, Ringworld resonance</td><td></td></tr>
+        <tr><td class="key">DEX × 5</td><td>Reflexes, terrain speed, quick action</td><td></td></tr>
+        <tr><td class="key">APP × 5</td><td>First impression, social standing with locals</td><td></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="card-title">Key Scenario Mechanics</div></div>
+    <div class="card-body">
+      <table class="ref-table">
+        <tr><th>Mechanic</th><th>When</th><th>Note</th></tr>
+        <tr><td>Awareness</td><td>Market (Serin), Workshop (map), Passage (iris)</td><td>Standard vs Hard</td></tr>
+        <tr><td>Computer + Linguistics Hard</td><td>Vault column partial translation</td><td>Need both skills</td></tr>
+        <tr><td>Sci (Physics) + Computer Extreme</td><td>Vault full encoding understanding</td><td>Unlocks Option C implications</td></tr>
+        <tr><td>Research (Whisper only)</td><td>Encoding mechanism analysis</td><td>Puppeteer advantage — first to know</td></tr>
+        <tr><td>Fast Talk</td><td>Serin confrontation</td><td>She flips with better offer or real info</td></tr>
+        <tr><td>DEX × 5</td><td>Sprint to landing craft</td><td>Standard difficulty</td></tr>
+        <tr><td>CON × 5</td><td>Sprint while injured</td><td>Standard difficulty</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="card-title">Combat Quick Reference</div></div>
+    <div class="card-body">
+      <table class="ref-table">
+        <tr><th>Combatant</th><th>HP</th><th>Armour</th><th>Key Attack</th><th>Skill</th></tr>
+        <tr><td class="key">Ghresh-Ka</td><td>18</td><td>3pts</td><td>Claws (STR+1D6+DB = ~8D6)</td><td>85%</td></tr>
+        <tr><td class="key">Ghresh-Ka</td><td>—</td><td>—</td><td>Carbine (2D6+3, 60m)</td><td>70%</td></tr>
+        <tr><td class="key">Serin</td><td>12</td><td>None</td><td>Laser (2D6+2)</td><td>75%</td></tr>
+        <tr><td class="key">Advance Force ×6</td><td>12 avg</td><td>None</td><td>Laser (2D6+2)</td><td>60%</td></tr>
+        <tr><td class="key">RR'raan (PC)</td><td>18</td><td>None</td><td>Claws (STR+1D6+DB)</td><td>80%</td></tr>
+        <tr><td class="key">Korr (PC)</td><td>14</td><td>2pts</td><td>Laser (2D6+2)</td><td>75%</td></tr>
+      </table>
+      <div class="gm-note" style="margin-top:8px;"><span class="gnl">Damage Bonus Table</span>STR+SIZ 2–12: -1D6 · 13–16: -1D4 · 17–24: None · 25–32: +1D4 · 33–40: +1D6<br>Ghresh-Ka: STR 22 + SIZ 20 = 42 → +1D6+2D6 (effectively massive)</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="card-title">Technology Quick Reference</div></div>
+    <div class="card-body">
+      <table class="ref-table">
+        <tr><th>Item</th><th>Function</th><th>Notes</th></tr>
+        <tr><td class="key">Flashlight-laser</td><td>2D6+2, burns, ignites</td><td>Standard crew weapon</td></tr>
+        <tr><td class="key">Variable sword</td><td>1D6+4+DB, cuts through most materials</td><td>Ghresh-Ka carries; rarely uses</td></tr>
+        <tr><td class="key">Autodoc</td><td>Full medical repair</td><td>On landing craft</td></tr>
+        <tr><td class="key">Scrith</td><td>Near-indestructible Ringworld material</td><td>Serenthis can interface with it</td></tr>
+        <tr><td class="key">Rememberer interface token</td><td>Dormant — activates with bond character</td><td>Found in Serenthis's workshop</td></tr>
+        <tr><td class="key">GP Hull (landing craft)</td><td>Transparent, near-indestructible</td><td>Their ride home</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="card-title">Species Quick Reference</div></div>
+    <div class="card-body">
+      <table class="ref-table">
+        <tr><th>Species</th><th>Notable Traits</th><th>In This Scenario</th></tr>
+        <tr><td class="key">Human</td><td>Versatile, adaptable, standard stats</td><td>Mira, Korr, Tomas, Sola, Serin, Woven-Branch, Serenthis</td></tr>
+        <tr><td class="key">Kzin</td><td>STR+2D6, SIZ+2D6, aggressive instinct, honour culture</td><td>RR'raan (PC), Ghresh-Ka (NPC)</td></tr>
+        <tr><td class="key">Puppeteer</td><td>INT+1D6, never fights directly, genius manipulators</td><td>Whisper (PC) — first to understand the encoding</td></tr>
+        <tr><td class="key">Ringworld Hominid</td><td>Varies widely by lineage and region</td><td>Serenthis, Woven-Branch, Settlement population</td></tr>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+</div><!-- end #main -->
+</div><!-- end #app -->
+
+<!-- Alert Banner -->
+<div id="alert-banner"><button id="alert-close" onclick="dismissAlert()">✕</button><span id="alert-msg"></span></div>
+<script>
+// ── DATA ──
+const PLAYERS = [
+  { name: "Dr. Mira Chen", role: "Xenobiologist", species: "Human", bond: true,
+    hpMax: 11, hp: 11, powMax: 13, pow: 13 },
+  { name: "Lt. Yashti Korr", role: "Security / Military", species: "Human", bond: false,
+    hpMax: 14, hp: 14, powMax: 12, pow: 12 },
+  { name: "RR'raan", role: "Combat Specialist", species: "Kzin", bond: false,
+    hpMax: 18, hp: 18, powMax: 11, pow: 11 },
+  { name: "Whisper", role: "Intelligence Analyst", species: "Puppeteer", bond: false,
+    hpMax: 12, hp: 12, powMax: 15, pow: 15 },
+  { name: "Tomas Veld", role: "Engineer / Pilot", species: "Human", bond: false,
+    hpMax: 13, hp: 13, powMax: 12, pow: 12 },
+  { name: "Sola Reyes", role: "Survey Specialist", species: "Human", bond: false,
+    hpMax: 12, hp: 12, powMax: 13, pow: 13 },
+];
+
+// ── TIMER ──
+let timerRunning = false;
+let timerSeconds = 0;
+let timerInterval = null;
+let alertsFired = {};
+
+const ALERTS = [
+  { sec: 15*60,  msg: "0:15 — ACT ONE BEGINS. Head to market. Watch for bond character." },
+  { sec: 60*60,  msg: "1:00 — TRIGGER COLLAPSE TRAP if Serenthis not yet met." },
+  { sec: 75*60,  msg: "1:15 — ACT ONE END. Woven-Branch arrives. Ghresh-Ka threat revealed." },
+  { sec: 135*60, msg: "2:15 — GHRESH-KA ADVANCE FORCE arrives at settlement perimeter." },
+  { sec: 150*60, msg: "2:30 — Show Handout H02-B. Vorn's 90-minute warning." },
+  { sec: 165*60, msg: "2:45 — HARD STOP → ACT THREE. Ghresh-Ka arrives personally." },
+  { sec: 190*60, msg: "3:10 — Ghresh-Ka's terms expire. Force resumes advance." },
+  { sec: 195*60, msg: "3:15 — STORM REACHES LANDING ZONE. Ask bond character: 'What do you say to her?'" },
+  { sec: 210*60, msg: "3:30 — SESSION END. Epilogue only." },
+];
+
+function toggleTimer() {
+  if (!timerRunning) {
+    timerRunning = true;
+    timerInterval = setInterval(() => { timerSeconds++; updateTimer(); }, 1000);
+    document.getElementById('btn-start').textContent = '⏸ Pause';
+    document.getElementById('btn-start').classList.add('warn-btn');
+  } else {
+    timerRunning = false;
+    clearInterval(timerInterval);
+    document.getElementById('btn-start').textContent = '▶ Resume';
+    document.getElementById('btn-start').classList.remove('warn-btn');
+  }
+}
+
+function resetTimer() {
+  timerRunning = false;
+  clearInterval(timerInterval);
+  timerSeconds = 0;
+  alertsFired = {};
+  document.getElementById('btn-start').textContent = '▶ Start';
+  document.getElementById('btn-start').classList.remove('warn-btn');
+  updateTimer();
+  dismissAlert();
+}
+
+function updateTimer() {
+  const m = Math.floor(timerSeconds / 60);
+  const s = timerSeconds % 60;
+  const display = `${m}:${s.toString().padStart(2,'0')}`;
+  const el = document.getElementById('timer-main');
+  el.textContent = display;
+
+  // Act label and progress
+  let act = 'Session not started', pct = 0;
+  if (timerSeconds === 0) { act = 'Not started'; }
+  else if (timerSeconds < 15*60)  { act = 'Introduction'; pct = (timerSeconds/(15*60))*10; }
+  else if (timerSeconds < 75*60)  { act = 'Act One'; pct = 10 + ((timerSeconds-15*60)/(60*60))*30; }
+  else if (timerSeconds < 165*60) { act = 'Act Two'; pct = 40 + ((timerSeconds-75*60)/(90*60))*45; }
+  else if (timerSeconds < 195*60) { act = 'Act Three'; pct = 85 + ((timerSeconds-165*60)/(30*60))*10; }
+  else                             { act = 'Epilogue'; pct = 95 + ((timerSeconds-195*60)/(15*60))*5; }
+
+  document.getElementById('timer-act').textContent = act;
+  document.getElementById('progress-fill').style.width = Math.min(pct, 100) + '%';
+
+  // Timer colour
+  el.classList.remove('warn','danger');
+  if (timerSeconds >= 165*60) el.classList.add('danger');
+  else if (timerSeconds >= 135*60) el.classList.add('warn');
+
+  // Threat block
+  const tb = document.getElementById('threat-block');
+  if (timerSeconds >= 135*60 && timerSeconds < 195*60) {
+    tb.style.display = 'block';
+    const eta = Math.max(0, 165*60 - timerSeconds);
+    const em = Math.floor(eta/60), es = eta%60;
+    document.getElementById('threat-val').textContent = eta > 0 ? `${em}:${es.toString().padStart(2,'0')}` : 'HERE';
+  } else {
+    tb.style.display = 'none';
+  }
+
+  // Alerts
+  ALERTS.forEach(a => {
+    if (timerSeconds >= a.sec && !alertsFired[a.sec]) {
+      alertsFired[a.sec] = true;
+      showAlert(a.msg);
+    }
+  });
+}
+
+function showAlert(msg) {
+  document.getElementById('alert-msg').textContent = msg;
+  document.getElementById('alert-banner').classList.add('show');
+}
+function dismissAlert() {
+  document.getElementById('alert-banner').classList.remove('show');
+}
+
+// ── NAVIGATION ──
+function navTo(screen) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('screen-' + screen).classList.add('active');
+  document.getElementById('nav-' + screen).classList.add('active');
+  document.getElementById('main').scrollTop = 0;
+}
+
+// ── ACTS ──
+function showAct(act) {
+  document.querySelectorAll('.act-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.act-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + act).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ── LOCATIONS ──
+function toggleLocation(head) {
+  const body = head.nextElementSibling;
+  const toggle = head.querySelector('.location-toggle');
+  body.classList.toggle('open');
+  toggle.textContent = body.classList.contains('open') ? '▲' : '▼';
+}
+
+// ── NPCS ──
+function toggleNPC(card) { card.classList.toggle('open'); }
+
+// ── HANDOUTS ──
+function toggleHandout(head) {
+  const body = head.nextElementSibling;
+  body.classList.toggle('open');
+}
+function markShown(id) {
+  const statusEl = document.getElementById('status-' + id);
+  const btnEl = document.getElementById('show-' + id);
+  if (statusEl) { statusEl.textContent = 'Shown'; statusEl.className = 'handout-status shown'; }
+  if (btnEl) { btnEl.textContent = '✓ Shown'; btnEl.classList.add('shown'); }
+}
+
+// ── CLUES ──
+const clueStates = {};
+function cycleClue(item) {
+  const id = item.dataset.id;
+  const states = ['', 'state-found', 'state-missed'];
+  const labels = ['○ Pending', '✓ Found', '✕ Missed'];
+  const current = states.indexOf(item.dataset.state || '');
+  const next = (current + 1) % 3;
+  item.classList.remove(...states.filter(Boolean));
+  if (states[next]) item.classList.add(states[next]);
+  item.dataset.state = states[next];
+  item.querySelector('.clue-state-indicator').textContent = labels[next];
+  // Update badge
+  const found = document.querySelectorAll('.clue-item.state-found').length;
+  const total = document.querySelectorAll('.clue-item').length;
+  const remaining = total - found;
+  document.getElementById('badge-clues').textContent = remaining;
+}
+
+// ── PLAYERS ──
+function buildPlayers() {
+  const grid = document.getElementById('player-grid');
+  PLAYERS.forEach((p, idx) => {
+    const hpPct = (p.hp / p.hpMax) * 100;
+    const powPct = (p.pow / p.powMax) * 100;
+    const bondClass = p.bond ? ' bond-player' : '';
+    grid.innerHTML += `
+      <div class="player-card${bondClass}" id="pc-${idx}">
+        <div class="player-head">
+          <div><div class="player-name">${p.bond ? '⬡ ' : ''}${p.name}</div><div class="player-role">${p.role}</div></div>
+          <div class="player-species">${p.species}</div>
+        </div>
+        <div class="player-body">
+          <div class="stat-row">
+            <div class="stat-label">HP</div>
+            <div class="stat-bar-wrap"><div class="stat-bar bar-hp" id="bar-hp-${idx}" style="width:${hpPct}%"></div></div>
+            <div class="stat-val" id="val-hp-${idx}">${p.hp} / ${p.hpMax}</div>
+          </div>
+          <div class="ctrl-row">
+            <button class="ctrl-btn minus" onclick="adjustStat(${idx},'hp',-1)">−</button>
+            <button class="ctrl-btn plus"  onclick="adjustStat(${idx},'hp',+1)">+</button>
+            <span class="status-badge ${p.hp === p.hpMax ? 'status-ok' : 'status-injured'}" id="status-hp-${idx}" onclick="resetHP(${idx})">
+              ${p.hp === p.hpMax ? 'OK' : 'Injured'}
+            </span>
+          </div>
+          <div class="stat-row" style="margin-top:10px;">
+            <div class="stat-label">POW</div>
+            <div class="stat-bar-wrap"><div class="stat-bar bar-pow" id="bar-pow-${idx}" style="width:${powPct}%"></div></div>
+            <div class="stat-val" id="val-pow-${idx}">${p.pow} / ${p.powMax}</div>
+          </div>
+          <div class="ctrl-row">
+            <button class="ctrl-btn minus" onclick="adjustStat(${idx},'pow',-1)">−</button>
+            <button class="ctrl-btn plus"  onclick="adjustStat(${idx},'pow',+1)">+</button>
+          </div>
+        </div>
+      </div>`;
+  });
+}
+
+function adjustStat(idx, stat, delta) {
+  const p = PLAYERS[idx];
+  const key = stat;
+  const maxKey = stat + 'Max';
+  p[key] = Math.max(0, Math.min(p[maxKey], p[key] + delta));
+  const pct = (p[key] / p[maxKey]) * 100;
+  document.getElementById(`bar-${stat}-${idx}`).style.width = pct + '%';
+  document.getElementById(`val-${stat}-${idx}`).textContent = `${p[key]} / ${p[maxKey]}`;
+  if (stat === 'hp') {
+    const sb = document.getElementById(`status-hp-${idx}`);
+    if (p.hp <= 0) { sb.textContent = 'Down'; sb.className = 'status-badge status-injured'; }
+    else if (p.hp < p.hpMax) { sb.textContent = 'Injured'; sb.className = 'status-badge status-injured'; }
+    else { sb.textContent = 'OK'; sb.className = 'status-badge status-ok'; }
+  }
+}
+
+function resetHP(idx) {
+  const p = PLAYERS[idx];
+  p.hp = p.hpMax;
+  document.getElementById(`bar-hp-${idx}`).style.width = '100%';
+  document.getElementById(`val-hp-${idx}`).textContent = `${p.hp} / ${p.hpMax}`;
+  document.getElementById(`status-hp-${idx}`).textContent = 'OK';
+  document.getElementById(`status-hp-${idx}`).className = 'status-badge status-ok';
+}
+
+// ── INIT ──
+buildPlayers();
+updateTimer();
+</script>
+</body>
+</html>
