@@ -90,6 +90,12 @@ li{margin-bottom:1mm;line-height:1.6;}
 .tangent-box .tb-label{font-family:var(--mono);font-size:8px;letter-spacing:3px;text-transform:uppercase;opacity:0.55;margin-bottom:2mm;display:block;}
 .tangent-box h3{border:none;padding-bottom:0;font-size:16px;}
 @media print{body{background:white;}.page,.handout-page{margin:0;border:none;page-break-after:always;width:100%;padding:15mm 18mm;}.no-print{display:none;}}
+
+.art-panel{width:100%;margin:4mm 0;page-break-inside:avoid;overflow:hidden;}
+.art-panel img{width:100%;display:block;border:1px solid var(--mid);}
+.art-panel-caption{font-family:var(--mono);font-size:8px;letter-spacing:1px;opacity:0.5;text-align:right;padding:0.5mm 1mm;text-transform:uppercase;}
+.art-panel-half{width:48%;display:inline-block;vertical-align:top;}
+.art-pair{display:flex;gap:4mm;margin:4mm 0;}
 </style>
 </head>
 <body>
@@ -111,38 +117,8 @@ li{margin-bottom:1mm;line-height:1.6;}
     </div>
 
     <div style="margin:4mm 0;">
-      <div class="cover-art-block">
-        <svg width="100%" viewBox="0 0 680 600" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="surf" patternUnits="userSpaceOnUse" width="12" height="12"><line x1="0" y1="12" x2="12" y2="0" stroke="#1a1a1a" stroke-width="0.4" opacity="0.4"/></pattern>
-            <pattern id="xh" patternUnits="userSpaceOnUse" width="8" height="8"><line x1="0" y1="8" x2="8" y2="0" stroke="#1a1a1a" stroke-width="0.5" opacity="0.55"/><line x1="0" y1="0" x2="8" y2="8" stroke="#1a1a1a" stroke-width="0.5" opacity="0.55"/></pattern>
-          </defs>
-          <g fill="#1a1a1a"><circle cx="48" cy="55" r="1.5"/><circle cx="95" cy="28" r="1"/><circle cx="148" cy="88" r="1.5"/><circle cx="202" cy="38" r="1"/><circle cx="418" cy="32" r="1.5"/><circle cx="472" cy="72" r="1"/><circle cx="535" cy="48" r="1"/><circle cx="598" cy="36" r="1.5"/><circle cx="638" cy="88" r="1"/><circle cx="62" cy="122" r="1"/><circle cx="525" cy="128" r="1.5"/><circle cx="55" cy="195" r="1"/><circle cx="460" cy="205" r="1.5"/><circle cx="602" cy="198" r="1"/><circle cx="645" cy="228" r="1.5"/><circle cx="60" cy="278" r="1"/><circle cx="128" cy="268" r="1.5"/><circle cx="555" cy="268" r="1"/><circle cx="622" cy="285" r="1"/></g>
-          <path d="M0,355 Q340,338 680,355 L680,590 L0,590 Z" fill="#f5f3ee" stroke="#1a1a1a" stroke-width="1.5"/>
-          <path d="M0,355 Q340,338 680,355 L680,590 L0,590 Z" fill="url(#surf)"/>
-          <rect x="72" y="355" width="66" height="235" fill="url(#xh)"/>
-          <rect x="305" y="355" width="60" height="235" fill="url(#xh)"/>
-          <rect x="536" y="355" width="68" height="235" fill="url(#xh)"/>
-          <circle cx="490" cy="468" r="54" fill="#f5f3ee" stroke="#1a1a1a" stroke-width="1.2"/>
-          <circle cx="490" cy="468" r="5" fill="none" stroke="#1a1a1a" stroke-width="1"/>
-          <line x1="490" y1="457" x2="490" y2="442" stroke="#1a1a1a" stroke-width="0.7"/><line x1="490" y1="479" x2="490" y2="494" stroke="#1a1a1a" stroke-width="0.7"/><line x1="479" y1="468" x2="464" y2="468" stroke="#1a1a1a" stroke-width="0.7"/><line x1="501" y1="468" x2="516" y2="468" stroke="#1a1a1a" stroke-width="0.7"/>
-          <path d="M433,462 Q441,440 453,445 Q457,426 469,436" fill="none" stroke="#1a1a1a" stroke-width="0.9"/>
-          <rect x="78" y="322" width="86" height="14" rx="1" fill="#1a1a1a"/><rect x="302" y="328" width="80" height="13" rx="1" fill="#1a1a1a"/><rect x="524" y="322" width="88" height="13" rx="1" fill="#1a1a1a"/>
-          <line x1="121" y1="322" x2="121" y2="308" stroke="#1a1a1a" stroke-width="0.5"/><line x1="342" y1="328" x2="342" y2="314" stroke="#1a1a1a" stroke-width="0.5"/><line x1="568" y1="322" x2="568" y2="308" stroke="#1a1a1a" stroke-width="0.5"/>
-          <polygon points="146,168 188,148 406,144 450,162 454,178 450,196 406,214 188,210 146,188 142,178" fill="#f5f3ee" stroke="#1a1a1a" stroke-width="1.5"/>
-          <line x1="188" y1="178" x2="450" y2="178" stroke="#1a1a1a" stroke-width="0.7"/>
-          <line x1="242" y1="150" x2="242" y2="208" stroke="#1a1a1a" stroke-width="0.5"/><line x1="298" y1="146" x2="298" y2="212" stroke="#1a1a1a" stroke-width="0.5"/><line x1="358" y1="145" x2="358" y2="213" stroke="#1a1a1a" stroke-width="0.5"/>
-          <rect x="404" y="130" width="74" height="27" rx="2" fill="#f5f3ee" stroke="#1a1a1a" stroke-width="1.2"/><rect x="404" y="202" width="74" height="27" rx="2" fill="#f5f3ee" stroke="#1a1a1a" stroke-width="1.2"/>
-          <ellipse cx="481" cy="143" rx="10" ry="8" fill="#e8e5dd" stroke="#1a1a1a" stroke-width="1.2"/><ellipse cx="481" cy="216" rx="10" ry="8" fill="#e8e5dd" stroke="#1a1a1a" stroke-width="1.2"/><ellipse cx="456" cy="178" rx="13" ry="10" fill="#e8e5dd" stroke="#1a1a1a" stroke-width="1.5"/>
-          <line x1="491" y1="143" x2="506" y2="143" stroke="#1a1a1a" stroke-width="0.8"/><line x1="502" y1="138" x2="514" y2="138" stroke="#1a1a1a" stroke-width="0.5"/><line x1="502" y1="148" x2="514" y2="148" stroke="#1a1a1a" stroke-width="0.5"/>
-          <line x1="491" y1="216" x2="506" y2="216" stroke="#1a1a1a" stroke-width="0.8"/><line x1="469" y1="178" x2="486" y2="178" stroke="#1a1a1a" stroke-width="1.2"/>
-          <rect x="128" y="162" width="42" height="34" rx="4" fill="#f5f3ee" stroke="#1a1a1a" stroke-width="1.2"/>
-          <rect x="134" y="168" width="8" height="5" rx="1" fill="#e8e5dd" stroke="#1a1a1a" stroke-width="0.8"/><rect x="148" y="168" width="8" height="5" rx="1" fill="#e8e5dd" stroke="#1a1a1a" stroke-width="0.8"/><rect x="134" y="178" width="8" height="5" rx="1" fill="#e8e5dd" stroke="#1a1a1a" stroke-width="0.8"/><rect x="148" y="178" width="8" height="5" rx="1" fill="#e8e5dd" stroke="#1a1a1a" stroke-width="0.8"/>
-          <line x1="128" y1="172" x2="95" y2="168" stroke="#1a1a1a" stroke-width="1"/><circle cx="91" cy="167" r="5" fill="none" stroke="#1a1a1a" stroke-width="1"/>
-          <text x="105" y="130" text-anchor="end" font-family="monospace" font-size="10" fill="#1a1a1a">THE FOOLISH ENDEAVOUR</text>
-          <line x1="490" y1="414" x2="490" y2="402" stroke="#1a1a1a" stroke-width="0.5" stroke-dasharray="2,3"/>
-          <text x="490" y="399" text-anchor="middle" font-family="monospace" font-size="9" fill="#1a1a1a">QUIET ZONE · 40km</text>
-        </svg>
+      <div class="cover-art-block" style="overflow:hidden;border:1px solid var(--mid);">
+        <img src="../art/event-95/95-ART-11-ship-scale.png" alt="The Foolish Endeavour on the Ringworld surface" style="width:100%;display:block;">
       </div>
     </div>
 
@@ -268,6 +244,10 @@ li{margin-bottom:1mm;line-height:1.6;}
 
   <div class="rule-heavy"></div>
 
+  <div class="art-panel" style="max-height:55mm;overflow:hidden;margin-bottom:4mm;">
+    <img src="../art/event-95/95-ART-10-loop-reset.png" alt="The loop reset — gravity inverts" style="width:100%;display:block;object-fit:cover;object-position:center;">
+    <div class="art-panel-caption">The loop reset — gravity inverts</div>
+  </div>
   <div class="section-header">
     <span class="sn">04</span>
     <h2>Act One — The Surface</h2>
@@ -312,6 +292,16 @@ li{margin-bottom:1mm;line-height:1.6;}
 <div class="page">
   <div class="event-bar"><span>Event 95 · A Question of Singularity</span><span>Act One — NPCs + Clues</span></div>
 
+  <div class="art-pair" style="display:flex;gap:4mm;margin:4mm 0;">
+    <div style="flex:1;overflow:hidden;border:1px solid var(--mid);max-height:65mm;">
+      <img src="../art/event-95/95-ART-08-marr-portrait.png" alt="Dr. Silev Marr" style="width:100%;display:block;object-fit:cover;object-position:top;">
+      <div class="art-panel-caption">Dr. Silev Marr</div>
+    </div>
+    <div style="flex:1;overflow:hidden;border:1px solid var(--mid);max-height:65mm;">
+      <img src="../art/event-95/95-ART-12-marr-notebooks.png" alt="Marr's notebooks" style="width:100%;display:block;object-fit:cover;object-position:top;">
+      <div class="art-panel-caption">Evidence of the loops</div>
+    </div>
+  </div>
   <div class="section-header">
     <span class="sn">05</span>
     <h2>Dr. Silev Marr</h2>
@@ -408,6 +398,10 @@ li{margin-bottom:1mm;line-height:1.6;}
 <div class="page">
   <div class="event-bar"><span>Event 95 · A Question of Singularity</span><span>Act Two — The Spire</span></div>
 
+  <div class="art-panel" style="max-height:50mm;overflow:hidden;margin-bottom:4mm;">
+    <img src="../art/event-95/95-ART-09-crew.png" alt="The crew of the Foolish Endeavour" style="width:100%;display:block;object-fit:cover;object-position:center;">
+    <div class="art-panel-caption">The crew of the Foolish Endeavour</div>
+  </div>
   <div class="section-header">
     <span class="sn">07</span>
     <h2>Act Two — The Spire</h2>
@@ -540,6 +534,10 @@ li{margin-bottom:1mm;line-height:1.6;}
 <div class="page">
   <div class="event-bar"><span>Event 95 · A Question of Singularity</span><span>Act Three — The Core</span></div>
 
+  <div class="art-panel" style="max-height:75mm;overflow:hidden;margin-bottom:4mm;">
+    <img src="../art/event-95/95-ART-13-core-chamber.png" alt="The core chamber — the singularity" style="width:100%;display:block;object-fit:cover;object-position:center;">
+    <div class="art-panel-caption">The core chamber — the singularity</div>
+  </div>
   <div class="section-header">
     <span class="sn">09</span>
     <h2>Act Three — The Core</h2>
