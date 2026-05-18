@@ -1035,6 +1035,15 @@ NC_PORTRAITS = {
     'Petra Amis':    f'{ART}/nc-pc06-petra-amis.jpeg',
 }
 
+ART_D1 = '/home/claude/ChaosiumCon26/scenarios/art/event-159/player-characters'
+D1_PORTRAITS = {
+    'Kira Osei-Mensah':   f'{ART_D1}/d1-pc01-kira-osei-mensah.jpeg',
+    'Dev Krishnamurthy':  f'{ART_D1}/d1-pc02-dev-krishnamurthy.jpeg',
+    'Maggie Donnelly':    f'{ART_D1}/d1-pc03-maggie-donnelly.jpeg',
+    'Olu Adeyemi':        f'{ART_D1}/d1-pc04-olu-adeyemi.jpeg',
+    'Priya Mehta':        f'{ART_D1}/d1-pc05-priya-mehta.jpeg',
+    'Tom Becker':         f'{ART_D1}/d1-pc06-tom-becker.jpeg',
+}
 NC_RULES=[
     ['HP = (CON+SIZ)/2  round up','PP = POW','DB: STR+SIZ 17-24 = None'],
     ['SR = DEX + INT','Attack: D100 ≤ skill%','DB 25-32: +1D4 | 33-40: +1D6'],
@@ -1054,7 +1063,7 @@ build_pdf('/mnt/user-data/outputs/brp-night-crawler-v4.pdf', NC_CHARS, NC,
 build_pdf('/mnt/user-data/outputs/brp-day-one-v4.pdf', D1_CHARS, D1,
     "DAY ONE — London Falls","Player Character Reference — South Bank, 17 May 2026",
     "Basic Role-Playing  ·  Event 159  ·  ChaosiumCon 2026",
-    D1_RULES, append_zombie=True)
+    D1_RULES, portraits=D1_PORTRAITS, append_zombie=True)
 
 # ── STANDALONE HANDOUT ───────────────────────────────────────────────────────
 from reportlab.platypus import SimpleDocTemplate
