@@ -194,11 +194,11 @@ def draw_front(c, char, page_num, total_pages):
 
     # Character name
     name_y = PH - header_h + 16*mm
-    text(c, char['name'].upper(), PAD, name_y, 'OrbB', 18, INK)
+    text(c, char['name'].upper(), PAD, name_y, 'OrbB', 18, white)
     # Role
-    text(c, char['role'], PAD, name_y - 6*mm, 'Bar', 8.5, INK)
+    text(c, char['role'], PAD, name_y - 6*mm, 'Bar', 8.5, white)
     # Homeworld / context
-    text(c, char.get('context',''), PAD, name_y - 11*mm, 'Mono', 6.5, INK)
+    text(c, char.get('context',''), PAD, name_y - 11*mm, 'Mono', 6.5, HexColor('#ffffffaa'))
 
     # RINGWORLD masthead - very top strip
     filled_rect(c, 0, PH-3.5*mm, PW, 3.5*mm, INK)
@@ -212,7 +212,7 @@ def draw_front(c, char, page_num, total_pages):
 
     # ── CHARACTERISTICS ───────────────────────────────────────────────────────
     stats_y = PH - header_h - 1.5*mm
-    stats_h = 22*mm
+    stats_h = 26*mm
     filled_rect(c, 0, stats_y - stats_h, PW, stats_h, INK)
 
     stats = [('STR',char['STR']),('CON',char['CON']),('SIZ',char['SIZ']),
@@ -228,9 +228,9 @@ def draw_front(c, char, page_num, total_pages):
         # box
         outline_rect(c, bx, by, bw, bh, A, lw=1.2)
         # label
-        text(c, lbl, bx + bw/2, by + bh - 5, 'OrbB', 6, A, align='centre')
+        text(c, lbl, bx + bw/2, by + bh - 7, 'OrbB', 9, A, align='centre')
         # value
-        text(c, str(val), bx + bw/2, by + 3, 'OrbB', 18, white, align='centre')
+        text(c, str(val), bx + bw/2, by + 4, 'OrbB', 23, white, align='centre')
 
     # ── DERIVED STATS ROW ─────────────────────────────────────────────────────
     der_y = stats_y - stats_h
@@ -334,7 +334,7 @@ def draw_front(c, char, page_num, total_pages):
 
             # Category header bar
             filled_rect(c, cx, cy - cat_h + 2, cw, cat_h, A)
-            text(c, cat_name, cx + 3, cy - cat_h + 5.5, 'OrbB', 6.5, INK)
+            text(c, cat_name, cx + 3, cy - cat_h + 5.5, 'OrbB', 6.5, white)
             
             # Root max info on right of header
             root_max_map = {
@@ -345,7 +345,7 @@ def draw_front(c, char, page_num, total_pages):
                 'TECHNICAL': f"max DEX+INT = {char['DEX']}+{char['INT']}",
             }
             rm_text = root_max_map.get(cat_name, '')
-            text(c, rm_text, cx+cw-2, cy-cat_h+5.5, 'Mono', 4.8, INK, align='right')
+            text(c, rm_text, cx+cw-2, cy-cat_h+5.5, 'Mono', 4.8, white, align='right')
             cy -= cat_h
 
             for skill_name in skill_list:
@@ -383,14 +383,34 @@ def draw_front(c, char, page_num, total_pages):
     filled_rect(c, 0, wpn_y, PW, wpn_h, PALE)
     hline(c, 0, PW, wpn_y + wpn_h, A, lw=1.5)
     filled_rect(c, 0, wpn_y + wpn_h - 9, PW, 9, A)
-    text(c, 'WEAPONS & COMBAT', PAD, wpn_y + wpn_h - 6.5, 'OrbB', 8, INK)
+    text(c, 'WEAPONS & COMBAT', PAD, wpn_y + wpn_h - 6.5, 'OrbB', 8, white)
 
     # Weapons header line
     hdr_y = wpn_y + wpn_h - 20
-    text(c, 'WEAPON NAME', PAD+2, hdr_y, 'OrbB', 7, HexColor('#444455'))
-    text(c, 'SKILL %', PW-PAD, hdr_y, 'OrbB', 7, HexColor('#444455'), align='right')
+    text(c, 'WEAPON NAME', PAD+2, hdr_y, 'OrbB', 7, HexColor('#666677'))
+    text(c, 'SKILL %  /  DAMAGE  /  RANGE', PW-PAD, hdr_y, 'OrbB', 7,
+         HexColor('#666677'), align='right')
     hline(c, PAD, PW-PAD, hdr_y - 2, MID, lw=0.6)
 
+    row_y = hdr_y - 3
+    for wi, wpn in enumerate(char['weapons']):
+        row_y -= 10*mm
+        wpn_bg = HexColor('#eeeefc') if wi % 2 == 0 else white
+        filled_rect(c, PAD, row_y - 1*mm, PW - 2*PAD, 10*mm, wpn_bg)
+        # Weapon name left, skill% right — top line
+        if len(wpn) > 0:
+            text(c, str(wpn[0]), PAD+3, row_y+5.5*mm, 'Bar', 10, INK)
+        if len(wpn) > 1:
+            text(c, str(wpn[1]), PW-PAD, row_y+5.5*mm, 'OrbB', 11, AD, align='right')
+        # Damage · Range · Notes — bottom line
+        details = []
+        if len(wpn) > 2: details.append(f'DMG {wpn[2]}')
+        if len(wpn) > 3: details.append(f'RNG {wpn[3]}')
+        if len(wpn) > 4 and wpn[4]: details.append(str(wpn[4]))
+        if details:
+            text(c, '  ·  '.join(details), PAD+3, row_y+1.8*mm, 'Mono', 7,
+                 HexColor('#444466'))
+        hline(c, PAD, PW-PAD, row_y-1.5, HexColor('#ccccdd'), lw=0.3)
 
     # ── EQUIPMENT + PERSONALITY ───────────────────────────────────────────────
     notes_y = foot_h
@@ -408,11 +428,11 @@ def draw_front(c, char, page_num, total_pages):
     # Personality (right)
     rx = half_w + PAD + 3
     filled_rect(c, rx, notes_y, PW - rx, notes_h, A)
-    text(c, 'CHARACTER', rx + 3, notes_y + notes_h - 7, 'OrbB', 7.5, INK)
+    text(c, 'CHARACTER', rx + 3, notes_y + notes_h - 7, 'OrbB', 7.5, white)
     pers_lines = char['personality']
     py = notes_y + notes_h - 16
     for line in pers_lines:
-        text(c, line, rx + 3, py, 'Bar', 9, INK)
+        text(c, line, rx + 3, py, 'Bar', 9, white)
         py -= 10
 
     # ── FOOTER ────────────────────────────────────────────────────────────────
@@ -670,7 +690,7 @@ def draw_back(c, char, page_num, total_pages):
     # Event 95 (left)
     filled_rect(c, 0, hook_y, PW/2, hook_h, white)
     filled_rect(c, 0, hook_y + hook_h - 9, PW/2, 9, A)
-    text(c, 'EVENT 95 — A QUESTION OF SINGULARITY', PAD, hook_y+hook_h-6, 'OrbB', 6.5, INK)
+    text(c, 'EVENT 95 — A QUESTION OF SINGULARITY', PAD, hook_y+hook_h-6, 'OrbB', 6.5, white)
     h95_lines = char['hook95']
     hy = hook_y + hook_h - 17
     for line in h95_lines:
@@ -683,7 +703,7 @@ def draw_back(c, char, page_num, total_pages):
     c.saveState(); c.setStrokeColor(A); c.setLineWidth(1)
     c.line(PW/2, hook_y, PW/2, hook_y+hook_h); c.restoreState()
     filled_rect(c, PW/2+1.5, hook_y + hook_h - 9, PW/2-1.5, 9, A)
-    text(c, 'EVENT 96 — IS LOVE THE ANSWER?', PW/2+PAD, hook_y+hook_h-6, 'OrbB', 6.5, INK)
+    text(c, 'EVENT 96 — IS LOVE THE ANSWER?', PW/2+PAD, hook_y+hook_h-6, 'OrbB', 6.5, white)
     hy = hook_y + hook_h - 17
     for line in char['hook96']:
         text(c, line, PW/2+PAD, hy, 'Bar', 7.5, HexColor('#222233'))
