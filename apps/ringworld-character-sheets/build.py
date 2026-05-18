@@ -453,7 +453,7 @@ def draw_puppeteer_hloc(c, char):
     con = int(char['CON'])
 
     hloc_y_top = PH - 10*mm
-    hloc_h     = 130*mm
+    hloc_h     = 148*mm
     hloc_y_bot = hloc_y_top - hloc_h
 
     filled_rect(c, 0, hloc_y_bot, PW, hloc_h, HexColor('#0a0a18'))
@@ -584,7 +584,7 @@ def draw_puppeteer_hloc(c, char):
     text(c, f'UNCONSCIOUS: HP ≤ {unc}   ·   DYING: HP = 0   ·   DEAD: HP = −{con}',
          tbl_x+4, unc_y+4.5, 'Mono', 7.5, A)
 
-    tally_y = unc_y - 4*mm - 12*mm
+    tally_y = hloc_y_bot + 12*mm  # anchored from section bottom
     text(c, 'HP TALLY', tbl_x, tally_y+9, 'OrbB', 7.5, A)
     cr = 5; cstep = 14; row_start_x = tbl_x + 26*mm
     for i in range(20):
@@ -613,7 +613,7 @@ def draw_back(c, char, page_num, total_pages):
 
     # ── HIT LOCATION SECTION ──────────────────────────────────────────────────
     hloc_y_top = PH - mast_h
-    hloc_h = 130*mm
+    hloc_h = 148*mm
     hloc_y_bot = hloc_y_top - hloc_h
 
     if char.get('species','').startswith("Pierson"):
@@ -761,7 +761,7 @@ def draw_back(c, char, page_num, total_pages):
              tbl_x+4, unc_y+4.5, 'Mono', 7.5, A)
 
         # HP tally — 20 small white circles to cross out
-        tally_y = unc_y - 4*mm - 12*mm
+        tally_y = hloc_y_bot + 12*mm  # anchored from section bottom
         text(c, 'HP TALLY', tbl_x, tally_y+9, 'OrbB', 7.5, A)
         cr = 5; cstep = 14; row_start_x = tbl_x + 26*mm
         for i in range(20):
