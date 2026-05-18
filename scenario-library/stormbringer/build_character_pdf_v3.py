@@ -107,21 +107,47 @@ class CharacterHeader(Flowable):
             c.rect(-2,-2,4,4,fill=1,stroke=0); c.restoreState()
 
 class StatBlock(Flowable):
+    """Characteristic boxes with label (top) · divider · stat×5% (bottom) in header."""
     def __init__(self, stats, derived, width):
         super().__init__()
-        self._s=stats; self._d=derived; self.width=width; self.height=56
+        self._s=stats; self._d=derived; self.width=width; self.height=64  # was 56 +8pt
     def wrap(self, aW, aH): return (self.width, self.height)
     def draw(self):
         c=self.canv; w=self.width; n=len(self._s); bw=(w-4)/n
+        BOX_TOP = 42   # was 34 — header now 20pt
+        HDR_H   = 20   # was 12
+
         for i,(label,val) in enumerate(self._s):
             x=i*bw+2
-            c.setFillColor(STAT_HEADER); c.rect(x,22,bw-1,12,fill=1,stroke=0)
-            c.setFillColor(PARCHMENT_DARK); c.rect(x,8,bw-1,14,fill=1,stroke=0)
-            c.setStrokeColor(RULE_COLOR); c.setLineWidth(0.5); c.rect(x,8,bw-1,26,fill=0,stroke=1)
-            c.setFillColor(GOLD_LIGHT); c.setFont('Helvetica-Bold',7)
-            c.drawCentredString(x+(bw-1)/2,28,label)
-            c.setFillColor(INK); c.setFont('Times-Bold',13)
-            c.drawCentredString(x+(bw-1)/2,11,str(val))
+            try:    pct_str = f"{int(val)*5}%"
+            except: pct_str = ''
+
+            # Dark header (20pt)
+            c.setFillColor(STAT_HEADER)
+            c.rect(x, BOX_TOP-HDR_H, bw-1, HDR_H, fill=1, stroke=0)
+            # Light value cell (same 14pt as before)
+            c.setFillColor(PARCHMENT_DARK)
+            c.rect(x, 8, bw-1, BOX_TOP-HDR_H-8, fill=1, stroke=0)
+            # Full box border
+            c.setStrokeColor(RULE_COLOR); c.setLineWidth(0.5)
+            c.rect(x, 8, bw-1, BOX_TOP-8, fill=0, stroke=1)
+            # Thin gold divider inside header
+            c.setStrokeColor(GOLD_LIGHT); c.setLineWidth(0.3)
+            c.line(x+3, BOX_TOP-10, x+bw-4, BOX_TOP-10)
+
+            # Label — upper header band
+            c.setFillColor(GOLD_LIGHT); c.setFont('Helvetica-Bold', 7)
+            c.drawCentredString(x+(bw-1)/2, BOX_TOP-7, label)
+
+            # ×5 percentile — lower header band
+            if pct_str:
+                c.setFillColor(GOLD_LIGHT); c.setFont('Helvetica-Bold', 6.5)
+                c.drawCentredString(x+(bw-1)/2, BOX_TOP-18, pct_str)
+
+            # Main stat value — light cell (unchanged)
+            c.setFillColor(INK); c.setFont('Times-Bold', 13)
+            c.drawCentredString(x+(bw-1)/2, 11, str(val))
+
         x_pos=2
         for lbl,val in self._d:
             c.setFillColor(CRIMSON); c.setFont('Helvetica-Bold',7.5)

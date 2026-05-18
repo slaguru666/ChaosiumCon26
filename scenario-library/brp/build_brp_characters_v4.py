@@ -271,31 +271,49 @@ class CharHeader(Flowable):
             c.saveState(); c.translate(cx,cy); c.rotate(45); c.rect(-2,-2,4,4,fill=1,stroke=0); c.restoreState()
 
 class StatBlock(Flowable):
-    """Seven characteristic boxes + dark derived-stats strip below."""
+    """Seven characteristic boxes + dark derived-stats strip below.
+    Header band split: label (top) · thin rule · stat×5% (bottom)."""
     def __init__(self, stats, derived, width, t):
         super().__init__(); self._s=stats; self._d=derived; self.width=width; self._t=t
-        self.height = 62  # 36 (boxes) + 14 (derived strip) + 12 (padding)
+        self.height = 70  # was 62 — +8pt for expanded header
     def wrap(self,a,b): return (self.width,self.height)
     def draw(self):
         c=self.canv; t=self._t; w=self.width; n=len(self._s); bw=(w-4)/n
-        BOX_H = 36
-        # Characteristic boxes
+        BOX_H  = 44   # was 36 — header now 20pt instead of 12pt
+        HDR_H  = 20
+
         for i,(label,val) in enumerate(self._s):
             x=i*bw+2
-            # Dark header row inside box
-            c.setFillColor(t.stat_hdr_bg); c.rect(x,BOX_H-12,bw-1,12,fill=1,stroke=0)
-            # Light value cell
-            c.setFillColor(t.stat_cell_bg); c.rect(x,14,bw-1,BOX_H-12,fill=1,stroke=0)
-            # Border
-            c.setStrokeColor(t.rule); c.setLineWidth(0.5); c.rect(x,14,bw-1,22,fill=0,stroke=1)
-            # Label (in dark header)
-            c.setFillColor(t.stat_hdr_text); c.setFont('Helvetica-Bold',7)
-            c.drawCentredString(x+(bw-1)/2,BOX_H-9,label)
-            # Value (in light cell)
-            c.setFillColor(t.stat_cell_text); c.setFont(t.font_head,14)
-            c.drawCentredString(x+(bw-1)/2,17,str(val))
+            try:    pct_str = f"{int(val)*5}%"
+            except: pct_str = ''
 
-        # Dark derived stats strip
+            # Dark header (20pt)
+            c.setFillColor(t.stat_hdr_bg)
+            c.rect(x, BOX_H-HDR_H, bw-1, HDR_H, fill=1, stroke=0)
+            # Light value cell (same 10pt as before)
+            c.setFillColor(t.stat_cell_bg)
+            c.rect(x, 14, bw-1, BOX_H-HDR_H-14, fill=1, stroke=0)
+            # Full box border
+            c.setStrokeColor(t.rule); c.setLineWidth(0.5)
+            c.rect(x, 14, bw-1, BOX_H-14, fill=0, stroke=1)
+            # Thin divider inside header
+            c.setStrokeColor(t.accent); c.setLineWidth(0.3)
+            c.line(x+3, BOX_H-10, x+bw-4, BOX_H-10)
+
+            # Label — upper header band
+            c.setFillColor(t.stat_hdr_text); c.setFont('Helvetica-Bold', 7)
+            c.drawCentredString(x+(bw-1)/2, BOX_H-7, label)
+
+            # ×5 percentile — lower header band
+            if pct_str:
+                c.setFillColor(t.stat_hdr_text); c.setFont('Helvetica-Bold', 6.5)
+                c.drawCentredString(x+(bw-1)/2, BOX_H-18, pct_str)
+
+            # Main stat value — light cell (unchanged position)
+            c.setFillColor(t.stat_cell_text); c.setFont(t.font_head, 14)
+            c.drawCentredString(x+(bw-1)/2, 17, str(val))
+
+        # Dark derived stats strip (unchanged)
         c.setFillColor(t.derived_bg); c.rect(0,0,w,13,fill=1,stroke=0)
         c.setStrokeColor(t.rule); c.setLineWidth(0.3); c.rect(0,0,w,13,fill=0,stroke=1)
         x_pos=6
