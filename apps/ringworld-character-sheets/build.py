@@ -545,7 +545,7 @@ def draw_puppeteer_hloc(c, char):
     # Location table (right side) — reuse same column structure
     tbl_x = PAD + dia_w + 5*mm
     tbl_w = PW - tbl_x - PAD
-    tbl_y = content_top - 5
+    tbl_y = content_top - 20
     c1=tbl_x; c2=tbl_x+28*mm; c3=tbl_x+46*mm; c4=tbl_x+64*mm; c5=tbl_x+82*mm; c6=tbl_x+100*mm
     for lbl,cx in [('LOCATION',c1),('MELEE',c2),('RANGED',c3),('MAX HP',c4),('CURR HP',c5),('ARMOUR',c6)]:
         text(c, lbl, cx, tbl_y, 'OrbB', 7.5, A)
@@ -572,7 +572,9 @@ def draw_puppeteer_hloc(c, char):
         text(c, r_rng,       c3+9*mm, mid_y, 'Mono', 9.5, MID,  align='centre')
         text(c, str(loc_hp), c4+8*mm, mid_y, 'OrbB', 14,  A,    align='centre')
         bh = row_h-4*mm
+        filled_rect(c, c5, ry+2*mm, 16*mm, bh, white)
         outline_rect(c, c5, ry+2*mm, 16*mm, bh, A, lw=1.2)
+        filled_rect(c, c6, ry+2*mm, 16*mm, bh, white)
         outline_rect(c, c6, ry+2*mm, 16*mm, bh, A, lw=1.2)
         hline(c, tbl_x-1, PW-PAD, ry, HexColor('#181830'), lw=0.5)
 
@@ -584,15 +586,16 @@ def draw_puppeteer_hloc(c, char):
 
     tally_y = unc_y - 4*mm - 12*mm
     text(c, 'HP TALLY', tbl_x, tally_y+9, 'OrbB', 7.5, A)
-    tb = 11*mm; tbx = tbl_x + 26*mm
-    for i in range(min(hp+3, 18)):
-        bx_t = tbx + i*(tb+1.5)
-        if bx_t+tb > PW-PAD: break
-        c.saveState(); c.setStrokeColor(A); c.setLineWidth(1)
-        c.setFillColor(HexColor('#080812'))
-        c.rect(bx_t, tally_y, tb, tb, fill=1, stroke=1)
-        c.setFont('OrbB',7); c.setFillColor(HexColor('#3a5070'))
-        c.drawCentredString(bx_t+tb/2, tally_y+2.5, str(i+1))
+    cr = 5; cstep = 14; row_start_x = tbl_x + 26*mm
+    for i in range(20):
+        cx_c = row_start_x + i*cstep + cr
+        cy_c = tally_y + cr + 1
+        c.saveState()
+        c.setStrokeColor(A); c.setLineWidth(1.2)
+        c.setFillColor(white)
+        c.circle(cx_c, cy_c, cr, fill=1, stroke=1)
+        c.setFont('Mono',5); c.setFillColor(HexColor('#8899aa'))
+        c.drawCentredString(cx_c, cy_c-cr-3.5, str(i+1))
         c.restoreState()
 
 def draw_back(c, char, page_num, total_pages):
@@ -706,7 +709,7 @@ def draw_back(c, char, page_num, total_pages):
         # ── Location table (right side) ───────────────────────────────────
         tbl_x  = PAD + dia_w + 5*mm
         tbl_w  = PW - tbl_x - PAD
-        tbl_y  = content_top - 5
+        tbl_y  = content_top - 20
 
         # Col positions
         c1 = tbl_x
@@ -744,7 +747,9 @@ def draw_back(c, char, page_num, total_pages):
             text(c, r_rng,        c3+9*mm,     mid_y, 'Mono', 9.5, MID,  align='centre')
             text(c, str(loc_hp),  c4+8*mm,     mid_y, 'OrbB', 14,  A,    align='centre')
             bh = row_h - 4*mm
+            filled_rect(c, c5, ry+2*mm, 16*mm, bh, white)
             outline_rect(c, c5, ry+2*mm, 16*mm, bh, A, lw=1.3)
+            filled_rect(c, c6, ry+2*mm, 16*mm, bh, white)
             outline_rect(c, c6, ry+2*mm, 16*mm, bh, A, lw=1.3)
             hline(c, tbl_x-1, PW-PAD, ry, HexColor('#181830'), lw=0.5)
 
@@ -755,20 +760,19 @@ def draw_back(c, char, page_num, total_pages):
         text(c, f'UNCONSCIOUS: HP ≤ {unc}   ·   DYING: HP = 0   ·   DEAD: HP = −{con}',
              tbl_x+4, unc_y+4.5, 'Mono', 7.5, A)
 
-        # HP tally — large numbered boxes
+        # HP tally — 20 small white circles to cross out
         tally_y = unc_y - 4*mm - 12*mm
         text(c, 'HP TALLY', tbl_x, tally_y+9, 'OrbB', 7.5, A)
-        tb = 11*mm
-        tbx = tbl_x + 26*mm
-        for i in range(min(hp+3, 18)):
-            bx_t = tbx + i*(tb + 1.5)
-            if bx_t + tb > PW - PAD: break
+        cr = 5; cstep = 14; row_start_x = tbl_x + 26*mm
+        for i in range(20):
+            cx_c = row_start_x + i*cstep + cr
+            cy_c = tally_y + cr + 1
             c.saveState()
-            c.setStrokeColor(A); c.setLineWidth(1)
-            c.setFillColor(HexColor('#080812'))
-            c.rect(bx_t, tally_y, tb, tb, fill=1, stroke=1)
-            c.setFont('OrbB', 7); c.setFillColor(HexColor('#3a5070'))
-            c.drawCentredString(bx_t+tb/2, tally_y+2.5, str(i+1))
+            c.setStrokeColor(A); c.setLineWidth(1.2)
+            c.setFillColor(white)
+            c.circle(cx_c, cy_c, cr, fill=1, stroke=1)
+            c.setFont('Mono', 5); c.setFillColor(HexColor('#8899aa'))
+            c.drawCentredString(cx_c, cy_c-cr-3.5, str(i+1))
             c.restoreState()
 
         # Under-diagram label (bottom of diagram area)
