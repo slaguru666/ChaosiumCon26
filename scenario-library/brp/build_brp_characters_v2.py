@@ -653,7 +653,7 @@ D1_CHARS = [
 # BUILD
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def build_pdf(path, CHARS, t, cover_title, cover_sub, cover_byline, rules):
+def build_pdf(path, CHARS, t, cover_title, cover_sub, cover_byline, rules, portraits=None):
     S  = make_styles(t)
     LW = UW * 0.62           # left col — stats/skills
     RW = UW * 0.36           # right col — portrait placeholder (2% gap)
@@ -757,7 +757,11 @@ def build_pdf(path, CHARS, t, cover_title, cover_sub, cover_byline, rules):
         left_inner=Table(left_items,colWidths=[LW-4])
         left_inner.setStyle(TableStyle([('LEFTPADDING',(0,0),(-1,-1),0),('RIGHTPADDING',(0,0),(-1,-1),0),('TOPPADDING',(0,0),(-1,-1),0),('BOTTOMPADDING',(0,0),(-1,-1),0)]))
 
-        right_ph=PortraitPlaceholder(char['name'],port_w,port_h,t)
+        if portraits and char['name'] in portraits:
+            from reportlab.platypus import Image as RLImage
+            right_ph = RLImage(portraits[char['name']], width=port_w, height=port_h)
+        else:
+            right_ph=PortraitPlaceholder(char['name'],port_w,port_h,t)
 
         two_col=Table([[left_inner,right_ph]],colWidths=[LW,RW])
         two_col.setStyle(TableStyle([
@@ -863,6 +867,16 @@ def build_pdf(path, CHARS, t, cover_title, cover_sub, cover_byline, rules):
 NC = night_crawler_theme()
 D1 = day_one_theme()
 
+ART = '/home/claude/ChaosiumCon26/scenarios/art/event-91/player-characters'
+NC_PORTRAITS = {
+    'Sable Kress':    f'{ART}/nc-pc01-sable-kress.jpeg',
+    'Juno Rhee':      f'{ART}/nc-pc02-juno-rhee.jpeg',
+    'Viktor Drav':    f'{ART}/nc-pc03-viktor-drav.jpeg',
+    'Tal Morgan':     f'{ART}/nc-pc04-tal-morgan.jpeg',
+    'Reina Vasquez':  f'{ART}/nc-pc05-reina-vasquez.jpeg',
+    'Petra Amis':     f'{ART}/nc-pc06-petra-amis.jpeg',
+}
+
 NC_RULES=[
     ['HP = (CON+SIZ)/2  round up', 'PP = POW', 'DB: STR+SIZ 17-24 = None'],
     ['SR = DEX + INT', 'Attack: D100 ≤ skill%', 'Augment effects: see back page'],
@@ -878,7 +892,7 @@ build_pdf('/mnt/user-data/outputs/brp-night-crawler-v2.pdf', NC_CHARS, NC,
     "THE NIGHT CRAWLER",
     "Player Character Reference — Neo-Ashford, 2087",
     "Basic Role-Playing  ·  Event 91  ·  ChaosiumCon 2026",
-    NC_RULES)
+    NC_RULES, portraits=NC_PORTRAITS)
 
 build_pdf('/mnt/user-data/outputs/brp-day-one-v2.pdf', D1_CHARS, D1,
     "DAY ONE — London Falls",
