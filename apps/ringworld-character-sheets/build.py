@@ -734,7 +734,7 @@ CHARACTERS = [
     'acc':HexColor('#00c8ff'),'acc_dark':HexColor('#00507a'),
     'STR':'09','CON':'11','SIZ':'10','INT':'18','POW':'13','DEX':'11','APP':'13','EDU':'18',
     'hp':11,'move':'3m/impulse','db':'None','pp':'13',
-    'portrait_path':'/tmp/mira.jpg',
+    'portrait_path':'/home/claude/ChaosiumCon26/scenarios/art/event-96/portrait-mira-chen.jpg',
     'skills':{
         'Athletics':20,'Hide':10,'Sneak':5,'Unarmed Combat':10,
         'Bargain':25,'Debate':30,'Fast Talk':18,'Orate':15,
@@ -784,7 +784,7 @@ CHARACTERS = [
     'acc':HexColor('#ff6600'),'acc_dark':HexColor('#884400'),
     'STR':'14','CON':'15','SIZ':'13','INT':'14','POW':'12','DEX':'15','APP':'12','EDU':'14',
     'hp':14,'move':'3m/impulse','db':'+1D4','pp':'12',
-    'portrait_path':None,
+    'portrait_path':'/home/claude/ChaosiumCon26/scenarios/art/event-96/portrait-yashti-korr.jpg',
     'skills':{
         'Athletics':45,'Sneak':50,'Hide':45,'Unarmed Combat':62,
         'V.Sword / F.Laser':75,
@@ -827,7 +827,7 @@ CHARACTERS = [
     'acc':HexColor('#ff2222'),'acc_dark':HexColor('#880000'),
     'STR':'22','CON':'16','SIZ':'20','INT':'13','POW':'11','DEX':'16','APP':'08','EDU':'11',
     'hp':18,'move':'5m / 10m sprint','db':'+2D6','pp':'11',
-    'portrait_path':'/tmp/rraan.jpg',
+    'portrait_path':'/home/claude/ChaosiumCon26/scenarios/art/event-96/portrait-rraan.jpg',
     'skills':{
         'Athletics':72,'Sneak':50,'Hide':45,'Unarmed Combat':78,
         'V.Sword / F.Laser':70,'Archaic Melee Weapon':35,
@@ -871,7 +871,7 @@ CHARACTERS = [
     'acc':HexColor('#aa00ff'),'acc_dark':HexColor('#5c0099'),
     'STR':'07','CON':'12','SIZ':'12','INT':'19','POW':'15','DEX':'14','APP':'10','EDU':'19',
     'hp':12,'move':'3m/impulse','db':'None','pp':'15',
-    'portrait_path':None,
+    'portrait_path':'/home/claude/ChaosiumCon26/scenarios/art/event-96/portrait-whisper.jpg',
     'skills':{
         'Athletics':22,'Sneak':30,'Hide':25,'Unarmed Combat':5,
         'Bargain':78,'Debate':65,'Fast Talk':80,'Own Language':95,'Orate':55,
@@ -916,7 +916,7 @@ CHARACTERS = [
     'acc':HexColor('#ffbb00'),'acc_dark':HexColor('#886600'),
     'STR':'13','CON':'14','SIZ':'12','INT':'15','POW':'12','DEX':'14','APP':'11','EDU':'16',
     'hp':13,'move':'3m/impulse','db':'+1D4','pp':'12',
-    'portrait_path':None,
+    'portrait_path':'/home/claude/ChaosiumCon26/scenarios/art/event-96/portrait-tomas-veld.jpg',
     'skills':{
         'Athletics':35,'Sneak':15,'Unarmed Combat':25,
         'Own Language':75,'Bargain':35,'Fast Talk':22,'Psychology':28,
@@ -960,7 +960,7 @@ CHARACTERS = [
     'acc':HexColor('#00cc55'),'acc_dark':HexColor('#006622'),
     'STR':'11','CON':'12','SIZ':'11','INT':'16','POW':'13','DEX':'13','APP':'14','EDU':'17',
     'hp':12,'move':'3m/impulse','db':'None','pp':'13',
-    'portrait_path':None,
+    'portrait_path':'/home/claude/ChaosiumCon26/scenarios/art/event-96/portrait-sola-reyes.jpg',
     'skills':{
         'Athletics':50,'Sneak':30,'Hide':28,'Unarmed Combat':15,
         'Own Language':80,'Linguistics':35,'Bargain':35,'Psychology':28,'Fast Talk':22,
