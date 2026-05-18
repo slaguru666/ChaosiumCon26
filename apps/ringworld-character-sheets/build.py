@@ -287,8 +287,8 @@ def draw_front(c, char, page_num, total_pages):
 
     # ── SKILLS SECTION ────────────────────────────────────────────────────────
     sk_top = hp_y - hp_sec_h
-    wpn_h  = 28*mm   # weapons
-    notes_h = 20*mm  # equipment + personality
+    wpn_h  = 40*mm   # weapons
+    notes_h = 34*mm  # equipment + personality
     foot_h  = 8*mm   # footer
     sk_bot  = wpn_h + notes_h + foot_h
     sk_h    = sk_top - sk_bot
@@ -383,35 +383,14 @@ def draw_front(c, char, page_num, total_pages):
     filled_rect(c, 0, wpn_y, PW, wpn_h, PALE)
     hline(c, 0, PW, wpn_y + wpn_h, A, lw=1.5)
     filled_rect(c, 0, wpn_y + wpn_h - 9, PW, 9, A)
-    text(c, 'WEAPONS & COMBAT', PAD, wpn_y + wpn_h - 6, 'OrbB', 7, INK)
+    text(c, 'WEAPONS & COMBAT', PAD, wpn_y + wpn_h - 6.5, 'OrbB', 8, INK)
 
-    # Column headers
-    cols_wpn = [
-        (PAD,               70*mm, 'WEAPON'),
-        (PAD + 70*mm,       20*mm, 'SKILL'),
-        (PAD + 90*mm,       30*mm, 'DAMAGE'),
-        (PAD + 120*mm,      30*mm, 'RANGE'),
-        (PAD + 150*mm,      None,  'NOTES'),
-    ]
-    hdr_y = wpn_y + wpn_h - 17
-    for wx, ww, wlbl in cols_wpn:
-        text(c, wlbl, wx, hdr_y, 'OrbB', 6, HexColor('#555566'))
-    hline(c, PAD, PW-PAD, hdr_y - 1.5, MID, lw=0.5)
+    # Weapons header line
+    hdr_y = wpn_y + wpn_h - 20
+    text(c, 'WEAPON NAME', PAD+2, hdr_y, 'OrbB', 7, HexColor('#444455'))
+    text(c, 'SKILL %', PW-PAD, hdr_y, 'OrbB', 7, HexColor('#444455'), align='right')
+    hline(c, PAD, PW-PAD, hdr_y - 2, MID, lw=0.6)
 
-    row_y = hdr_y - 3
-    for wpn in char['weapons']:
-        row_y -= 7.5*mm
-        # alternating bg
-        wpn_bg = HexColor('#e8e8f8') if char['weapons'].index(wpn) % 2 == 0 else white
-        filled_rect(c, PAD, row_y - 1*mm, PW - 2*PAD, 7.5*mm, wpn_bg)
-        for i, (wx, ww, _) in enumerate(cols_wpn):
-            if i < len(wpn):
-                col_w_wpn = ww if ww else PW - 2*PAD - 150*mm
-                val_txt = str(wpn[i])
-                clr = AD if i == 1 else INK
-                ft = 'OrbB' if i == 1 else 'Bar'
-                text(c, val_txt, wx, row_y+1.5*mm, ft, 8, clr)
-        hline(c, PAD, PW-PAD, row_y-1.5, HexColor('#d0d0e0'), lw=0.3)
 
     # ── EQUIPMENT + PERSONALITY ───────────────────────────────────────────────
     notes_y = foot_h
@@ -419,22 +398,22 @@ def draw_front(c, char, page_num, total_pages):
     
     # Equipment (left)
     filled_rect(c, 0, notes_y, half_w + PAD + 1.5, notes_h, INK)
-    text(c, 'EQUIPMENT', PAD, notes_y + notes_h - 5.5, 'OrbB', 6, A)
+    text(c, 'EQUIPMENT', PAD, notes_y + notes_h - 7, 'OrbB', 7.5, A)
     eq_lines = char['equip']
-    ey = notes_y + notes_h - 13
+    ey = notes_y + notes_h - 16
     for eq in eq_lines:
-        text(c, '▸ ' + eq, PAD, ey, 'Mono', 6, HexColor('#ccccee'))
-        ey -= 7
+        text(c, '▸ ' + eq, PAD, ey, 'Bar', 8, HexColor('#ccccee'))
+        ey -= 9
 
     # Personality (right)
     rx = half_w + PAD + 3
     filled_rect(c, rx, notes_y, PW - rx, notes_h, A)
-    text(c, 'CHARACTER', rx + 3, notes_y + notes_h - 5.5, 'OrbB', 6, INK)
+    text(c, 'CHARACTER', rx + 3, notes_y + notes_h - 7, 'OrbB', 7.5, INK)
     pers_lines = char['personality']
-    py = notes_y + notes_h - 13
+    py = notes_y + notes_h - 16
     for line in pers_lines:
-        text(c, line, rx + 3, py, 'Bar', 7.5, INK)
-        py -= 8
+        text(c, line, rx + 3, py, 'Bar', 9, INK)
+        py -= 10
 
     # ── FOOTER ────────────────────────────────────────────────────────────────
     filled_rect(c, 0, 0, PW, foot_h, INK)
