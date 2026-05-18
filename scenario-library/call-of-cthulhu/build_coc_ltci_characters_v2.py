@@ -231,11 +231,11 @@ class StatBlock(Flowable):
     """Eight CoC characteristic boxes — clean sans-serif, no ×5, sharp borders."""
     def __init__(self, stats, derived, width, t):
         super().__init__(); self._s=stats; self._d=derived; self.width=width; self._t=t
-        self.height=68
+        self.height=72
     def wrap(self,a,b): return (self.width,self.height)
     def draw(self):
         c=self.canv; t=self._t; w=self.width; n=len(self._s); bw=(w-4)/n
-        BOX_H=44; HDR_H=14
+        BOX_H=52; HDR_H=18
         for i,(label,val) in enumerate(self._s):
             x=i*bw+2
             # Dark header
@@ -245,13 +245,17 @@ class StatBlock(Flowable):
             c.setFillColor(t.stat_cell_bg)
             c.rect(x, 14, bw-1, BOX_H-HDR_H-14, fill=1, stroke=0)
             # Border
-            c.setStrokeColor(t.rule); c.setLineWidth(0.6)
+            # Border — full box
+            c.setStrokeColor(t.rule); c.setLineWidth(0.8)
             c.rect(x, 14, bw-1, BOX_H-14, fill=0, stroke=1)
-            # Label — condensed bold sans
-            c.setFillColor(t.stat_hdr_text); c.setFont(t.font_subhead, 7.5)
-            c.drawCentredString(x+(bw-1)/2, BOX_H-5.5, label)
-            # Value — Anton for the big number
-            c.setFillColor(t.stat_cell_text); c.setFont(t.font_head, 13)
+            # Red divider line at header/value boundary — explicit separation
+            c.setStrokeColor(t.accent); c.setLineWidth(1.2)
+            c.line(x, BOX_H-HDR_H, x+bw-1, BOX_H-HDR_H)
+            # Label — WHITE on black (not orange, avoids colour confusion)
+            c.setFillColor(colors.HexColor('#F5F2E8')); c.setFont(t.font_subhead, 8.5)
+            c.drawCentredString(x+(bw-1)/2, BOX_H-7, label)
+            # Value — DJVSCondBold 14pt. Cap top ≈ y=27, header bottom y=34 → 7pt gap
+            c.setFillColor(t.stat_cell_text); c.setFont(t.font_subhead, 14)
             c.drawCentredString(x+(bw-1)/2, 16, str(val))
         # Derived stats strip — black band
         c.setFillColor(t.derived_bg); c.rect(0,0,w,13,fill=1,stroke=0)
