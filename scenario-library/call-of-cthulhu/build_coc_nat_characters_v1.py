@@ -238,9 +238,8 @@ class StatBlock(Flowable):
         BOX_H=44; HDR_H=16
         for i,(label,val) in enumerate(self._s):
             x=i*bw+2
-            try:    pct_str = f"{int(val)*5}%"
-            except: pct_str = ''
-            # Dark header cell
+
+            # Dark header cell (full height - no percentile band needed)
             c.setFillColor(t.stat_hdr_bg)
             c.rect(x, BOX_H-HDR_H, bw-1, HDR_H, fill=1, stroke=0)
             # Light value cell
@@ -249,16 +248,9 @@ class StatBlock(Flowable):
             # Full box border
             c.setStrokeColor(t.rule); c.setLineWidth(0.5)
             c.rect(x, 14, bw-1, BOX_H-14, fill=0, stroke=1)
-            # Thin divider at mid-header
-            c.setStrokeColor(t.accent); c.setLineWidth(0.3)
-            c.line(x+3, BOX_H-8, x+bw-4, BOX_H-8)
-            # Label — upper header band
-            c.setFillColor(t.stat_hdr_text); c.setFont('Helvetica-Bold', 7)
-            c.drawCentredString(x+(bw-1)/2, BOX_H-6, label)
-            # ×5 percentile — lower header band
-            if pct_str:
-                c.setFillColor(t.stat_hdr_text); c.setFont('Helvetica-Bold', 6.5)
-                c.drawCentredString(x+(bw-1)/2, BOX_H-14, pct_str)
+            # Label — centred in header band
+            c.setFillColor(t.stat_hdr_text); c.setFont('Helvetica-Bold', 8)
+            c.drawCentredString(x+(bw-1)/2, BOX_H-9, label)
             # Main stat value in light cell
             c.setFillColor(t.stat_cell_text); c.setFont(t.font_head, 14)
             c.drawCentredString(x+(bw-1)/2, 16, str(val))
@@ -511,7 +503,7 @@ NAT_CHARS = [
       ('Stealth','35%'),('First Aid','30%'),('History','45%'),
       ('Language (French)','40%'),('Drive Auto','40%'),
       ('Credit Rating','40%'),('Occult','25%'),
-      ('Fighting (Brawl)','25%'),('Firearms (Handgun)','20%'),
+      ('Fighting (Brawl)','40%'),('Firearms (Handgun)','40%'),
     ],
     'equipment': [
       'Press credentials — New York Tribune (opens doors)',
@@ -522,8 +514,8 @@ NAT_CHARS = [
       '$12 cash and a spare roll of film',
     ],
     'weapons': [
-      {'name':'Fighting (Brawl)', 'skill':'Fighting (Brawl)', 'atk':'25%','par':'—','damage':'1D3+DB','notes':'Unarmed · DB: 0 · last resort'},
-      {'name':'Camera (improvised)','skill':'Fighting (Brawl)','atk':'25%','par':'—','damage':'1D4','notes':'Heavy · one use before damaged'},
+      {'name':'Fighting (Brawl)', 'skill':'Fighting (Brawl)', 'atk':'40%','par':'40%','damage':'1D3+DB','notes':'Unarmed · DB: 0 · survival instinct'},
+      {'name':'Derringer (.22)','skill':'Firearms (Handgun)','atk':'40%','par':'—','damage':'1D6','notes':'Rng 5yds · 2 shots · kept in bag · Mal 96'},
     ],
     'sp_name': 'Investigator Brief — Helen Cross',
     'sp_type': 'Reporter, age 29 · New York Tribune · Investigating occult societies',
@@ -554,7 +546,7 @@ NAT_CHARS = [
       ('Persuade','50%'),('Credit Rating','60%'),('Navigate','40%'),
       ('History','45%'),('Natural World','40%'),('Occult','25%'),
       ('Language (Latin)','35%'),('Drive Auto','40%'),
-      ('Dodge','35%'),('Fighting (Brawl)','35%'),
+      ('Dodge','40%'),('Fighting (Brawl)','40%'),
       ('Pharmacy','50%'),('Science (Chemistry)','40%'),
     ],
     'equipment': [
@@ -566,8 +558,8 @@ NAT_CHARS = [
       'Watch: seventeen minutes fast, always',
     ],
     'weapons': [
-      {'name':'Fighting (Brawl)','skill':'Fighting (Brawl)','atk':'35%','par':'—','damage':'1D3+DB','notes':'Unarmed · DB: 0'},
-      {'name':'Scalpel','skill':'Fighting (Brawl)','atk':'35%','par':'—','damage':'1D4','notes':'From medical bag · can impale'},
+      {'name':'Fighting (Brawl)','skill':'Fighting (Brawl)','atk':'40%','par':'40%','damage':'1D3+DB','notes':'Unarmed · DB: 0 · grapple/restrain'},
+      {'name':'Scalpel','skill':'Fighting (Brawl)','atk':'40%','par':'—','damage':'1D4','notes':'From medical bag · can impale · fine blade'},
     ],
     'sp_name': 'Investigator Brief — Dr. Edmund Graves',
     'sp_type': 'Physician, age 45 · Upper West Side private practice · Whitmore\'s personal doctor',
@@ -689,7 +681,7 @@ NAT_CHARS = [
       ('Art/Craft (Drawing)','55%'),('History','50%'),
       ('Fast Talk','55%'),('Spot Hidden','45%'),
       ('Dodge','40%'),('Navigate','35%'),
-      ('Firearms (Handgun)','35%'),('Drive Auto','50%'),
+      ('Firearms (Handgun)','40%'),('Fighting (Brawl)','40%'),
       ('Language (French)','60%'),('Language (German)','40%'),
       ('Accounting','50%'),('Law','40%'),
     ],
@@ -702,8 +694,8 @@ NAT_CHARS = [
       'Opera glasses (useful in many contexts)',
     ],
     'weapons': [
-      {'name':'.22 Pocket Revolver','skill':'Firearms (Handgun)','atk':'35%','par':'—','damage':'1D6','notes':'Rng 10yds · 6 shots · concealable · Mal 96'},
-      {'name':'Fighting (Brawl)','skill':'Fighting (Brawl)','atk':'15%','par':'—','damage':'1D3+DB','notes':'DB: -1 · last resort only'},
+      {'name':'.22 Pocket Revolver','skill':'Firearms (Handgun)','atk':'40%','par':'—','damage':'1D6','notes':'Rng 10yds · 6 shots · concealable · Mal 96'},
+      {'name':'Fighting (Brawl)','skill':'Fighting (Brawl)','atk':'40%','par':'40%','damage':'1D3+DB','notes':'DB: -1 · composed under pressure'},
     ],
     'sp_name': 'Investigator Brief — Vivienne St. Claire',
     'sp_type': 'Heiress/patron, age 34 · St. Claire Foundation · Funded Whitmore\'s research for 18 months',
@@ -735,7 +727,7 @@ NAT_CHARS = [
       ('Science (Archaeology)','50%'),('Persuade','45%'),
       ('Credit Rating','55%'),('Natural World','45%'),
       ('Language (German)','45%'),('Art/Craft (Writing)','60%'),
-      ('Fighting (Brawl)','25%'),('Dodge','35%'),
+      ('Fighting (Brawl)','40%'),('Dodge','40%'),
       ('Drive Auto','30%'),('Accounting','30%'),
     ],
     'equipment': [
@@ -747,8 +739,8 @@ NAT_CHARS = [
       '$22 cash and an overdue library book',
     ],
     'weapons': [
-      {'name':'Fighting (Brawl)','skill':'Fighting (Brawl)','atk':'25%','par':'—','damage':'1D3+DB','notes':'DB: 0 · purely defensive'},
-      {'name':'Walking Stick','skill':'Fighting (Brawl)','atk':'25%','par':'25%','damage':'1D4+DB','notes':'Always present · can parry'},
+      {'name':'Fighting (Brawl)','skill':'Fighting (Brawl)','atk':'40%','par':'40%','damage':'1D3+DB','notes':'DB: 0 · instinctive, not trained'},
+      {'name':'Walking Stick','skill':'Fighting (Brawl)','atk':'40%','par':'40%','damage':'1D4+DB','notes':'Always present · can parry · heavier than it looks'},
     ],
     'sp_name': 'Investigator Brief — Prof. Walter Finch',
     'sp_type': 'Academic, age 52 · Columbia University, Comparative Religion · Whitmore\'s former student',
