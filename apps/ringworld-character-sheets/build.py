@@ -444,6 +444,157 @@ def draw_front(c, char, page_num, total_pages):
          PW-PAD, 2.5*mm, 'Mono', 6, HexColor('#666688'), align='right')
 
 # ─── Back page ────────────────────────────────────────────────────────────────
+
+def draw_puppeteer_hloc(c, char):
+    """Pierson's Puppeteer hit location diagram — two heads, two forelegs, rear leg, body."""
+    A   = char['acc']
+    AD  = char['acc_dark']
+    hp  = char['hp']
+    con = int(char['CON'])
+
+    hloc_y_top = PH - 10*mm
+    hloc_h     = 130*mm
+    hloc_y_bot = hloc_y_top - hloc_h
+
+    filled_rect(c, 0, hloc_y_bot, PW, hloc_h, HexColor('#0a0a18'))
+    hline(c, 0, PW, hloc_y_bot, A, lw=1.5)
+
+    bar_h = 11
+    bar_y = hloc_y_top - bar_h - 3
+    filled_rect(c, 0, bar_y, PW, bar_h, A)
+    text(c, "HIT LOCATIONS & DAMAGE  —  PIERSON'S PUPPETEER", PAD, bar_y+3, 'OrbB', 8, INK)
+
+    body_hp    = math.ceil(hp * 0.40)
+    neck_hp    = math.ceil(hp * 0.20)
+    head_hp    = math.ceil(hp * 0.25)
+    foreleg_hp = math.ceil(hp * 0.20)
+    rearleg_hp = math.ceil(hp * 0.25)
+    unc        = math.ceil(hp * 0.25)
+
+    content_top = bar_y
+    dia_w = 70*mm
+    bx    = PAD + dia_w / 2
+    body_cy = content_top - 65*mm
+
+    # Barrel body
+    c.saveState(); c.setStrokeColor(A); c.setLineWidth(2); c.setFillColor(Color(0,0,0,0))
+    c.ellipse(bx-20*mm, body_cy-16*mm, bx+20*mm, body_cy+14*mm, fill=0, stroke=1)
+    c.restoreState()
+    text(c, 'BODY',          bx, body_cy+4*mm,   'OrbB', 10, A,     align='centre')
+    text(c, f'{body_hp} HP', bx, body_cy-2*mm,   'OrbB', 11, white, align='centre')
+    text(c, '01-07',         bx, body_cy-8*mm,   'Mono', 9,  MID,   align='centre')
+
+    # Forelegs
+    fl_top = body_cy - 16*mm
+    fl_bh  = 32*mm; fl_bw = 12*mm
+    for side, lbl, rng in [(-1,'R FORE','08-10'),(+1,'L FORE','11-12')]:
+        fx = bx + side*28*mm
+        c.saveState(); c.setStrokeColor(A); c.setLineWidth(1.8); c.setFillColor(Color(0,0,0,0))
+        c.rect(fx-fl_bw/2, fl_top-fl_bh, fl_bw, fl_bh, fill=0, stroke=1)
+        c.restoreState()
+        text(c, lbl,              fx, fl_top-13*mm, 'OrbB', 9,  A,     align='centre')
+        text(c, f'{foreleg_hp} HP',fx, fl_top-19*mm, 'OrbB', 10, white, align='centre')
+        text(c, rng,              fx, fl_top-25*mm, 'Mono', 8,  MID,   align='centre')
+
+    # Rear leg
+    rl_bh = 32*mm; rl_bw = 12*mm
+    c.saveState(); c.setStrokeColor(A); c.setLineWidth(1.8); c.setFillColor(Color(0,0,0,0))
+    c.rect(bx-rl_bw/2, fl_top-rl_bh, rl_bw, rl_bh, fill=0, stroke=1)
+    c.restoreState()
+    text(c, 'REAR LEG',        bx, fl_top-13*mm, 'OrbB', 9,  A,     align='centre')
+    text(c, f'{rearleg_hp} HP',bx, fl_top-19*mm, 'OrbB', 10, white, align='centre')
+    text(c, '13-14',           bx, fl_top-25*mm, 'Mono', 8,  MID,   align='centre')
+
+    # Necks (curved bezier)
+    neck_base = body_cy + 14*mm
+    neck_tip_l = (bx-22*mm, neck_base+32*mm)
+    neck_tip_r = (bx+22*mm, neck_base+32*mm)
+    c.saveState(); c.setStrokeColor(A); c.setLineWidth(9); c.setStrokeAlpha(0.15)
+    c.bezier(bx-6*mm, neck_base, bx-14*mm, neck_base+16*mm,
+             neck_tip_l[0]+4*mm, neck_tip_l[1]-6*mm, neck_tip_l[0], neck_tip_l[1])
+    c.bezier(bx+6*mm, neck_base, bx+14*mm, neck_base+16*mm,
+             neck_tip_r[0]-4*mm, neck_tip_r[1]-6*mm, neck_tip_r[0], neck_tip_r[1])
+    c.restoreState()
+    c.saveState(); c.setStrokeColor(A); c.setLineWidth(1.5)
+    c.bezier(bx-6*mm, neck_base, bx-14*mm, neck_base+16*mm,
+             neck_tip_l[0]+4*mm, neck_tip_l[1]-6*mm, neck_tip_l[0], neck_tip_l[1])
+    c.bezier(bx+6*mm, neck_base, bx+14*mm, neck_base+16*mm,
+             neck_tip_r[0]-4*mm, neck_tip_r[1]-6*mm, neck_tip_r[0], neck_tip_r[1])
+    c.restoreState()
+    # neck labels at midpoint
+    for side, lbl, rng, tx, ty in [
+        (-1,'L NECK','15-16', bx-26*mm, neck_base+15*mm),
+        (+1,'R NECK','17-18', bx+26*mm, neck_base+15*mm),
+    ]:
+        text(c, lbl, tx, ty,       'OrbB', 7.5, A,   align='centre')
+        text(c, f'{neck_hp}HP', tx, ty-5*mm, 'Mono', 7, white, align='centre')
+        text(c, rng, tx, ty-9*mm, 'Mono', 7, MID,  align='centre')
+
+    # Heads
+    for hx, hy, lbl, rng in [
+        (neck_tip_l[0], neck_tip_l[1], 'L HEAD', '20'),
+        (neck_tip_r[0], neck_tip_r[1], 'R HEAD', '19'),
+    ]:
+        c.saveState(); c.setStrokeColor(A); c.setLineWidth(2); c.setFillColor(Color(0,0,0,0))
+        c.ellipse(hx-9*mm, hy, hx+9*mm, hy+14*mm, fill=0, stroke=1)
+        c.restoreState()
+        text(c, lbl,           hx, hy+9*mm,  'OrbB', 9,  A,     align='centre')
+        text(c, f'{head_hp} HP',hx, hy+4*mm,  'OrbB', 10, white, align='centre')
+        text(c, rng,           hx, hy+0.5*mm,'Mono', 8,  MID,   align='centre')
+
+    # Location table (right side) — reuse same column structure
+    tbl_x = PAD + dia_w + 5*mm
+    tbl_w = PW - tbl_x - PAD
+    tbl_y = content_top - 5
+    c1=tbl_x; c2=tbl_x+28*mm; c3=tbl_x+46*mm; c4=tbl_x+64*mm; c5=tbl_x+82*mm; c6=tbl_x+100*mm
+    for lbl,cx in [('LOCATION',c1),('MELEE',c2),('RANGED',c3),('MAX HP',c4),('CURR HP',c5),('ARMOUR',c6)]:
+        text(c, lbl, cx, tbl_y, 'OrbB', 7.5, A)
+    hline(c, tbl_x, PW-PAD, tbl_y-3, A, lw=1.2)
+
+    pup_locs = [
+        ('Body',       '01-07','01-07', body_hp),
+        ('Right Fore', '08-10','08-10', foreleg_hp),
+        ('Left Fore',  '11-12','11-12', foreleg_hp),
+        ('Rear Leg',   '13-14','13-14', rearleg_hp),
+        ('Right Neck', '15-16','15-16', neck_hp),
+        ('Left Neck',  '17-18','17-18', neck_hp),
+        ('Right Head', '19',   '19',    head_hp),
+        ('Left Head',  '20',   '20',    head_hp),
+    ]
+    row_h = 12*mm; ry = tbl_y - 3
+    for i,(loc,m_rng,r_rng,loc_hp) in enumerate(pup_locs):
+        ry -= row_h
+        bg = HexColor('#0e0e22') if i%2==0 else HexColor('#09090f')
+        filled_rect(c, tbl_x-1, ry, tbl_w+1, row_h-1, bg)
+        mid_y = ry + row_h*0.42
+        text(c, loc,         c1+2,    mid_y, 'Bar',  11,  white)
+        text(c, m_rng,       c2+9*mm, mid_y, 'Mono', 9.5, MID,  align='centre')
+        text(c, r_rng,       c3+9*mm, mid_y, 'Mono', 9.5, MID,  align='centre')
+        text(c, str(loc_hp), c4+8*mm, mid_y, 'OrbB', 14,  A,    align='centre')
+        bh = row_h-4*mm
+        outline_rect(c, c5, ry+2*mm, 16*mm, bh, A, lw=1.2)
+        outline_rect(c, c6, ry+2*mm, 16*mm, bh, A, lw=1.2)
+        hline(c, tbl_x-1, PW-PAD, ry, HexColor('#181830'), lw=0.5)
+
+    unc_y = ry - 5*mm
+    filled_rect(c, tbl_x-1, unc_y, tbl_w+1, 14, HexColor('#1a0808'))
+    outline_rect(c, tbl_x-1, unc_y, tbl_w+1, 14, A, lw=1.3)
+    text(c, f'UNCONSCIOUS: HP ≤ {unc}   ·   DYING: HP = 0   ·   DEAD: HP = −{con}',
+         tbl_x+4, unc_y+4.5, 'Mono', 7.5, A)
+
+    tally_y = unc_y - 4*mm - 12*mm
+    text(c, 'HP TALLY', tbl_x, tally_y+9, 'OrbB', 7.5, A)
+    tb = 11*mm; tbx = tbl_x + 26*mm
+    for i in range(min(hp+3, 18)):
+        bx_t = tbx + i*(tb+1.5)
+        if bx_t+tb > PW-PAD: break
+        c.saveState(); c.setStrokeColor(A); c.setLineWidth(1)
+        c.setFillColor(HexColor('#080812'))
+        c.rect(bx_t, tally_y, tb, tb, fill=1, stroke=1)
+        c.setFont('OrbB',7); c.setFillColor(HexColor('#3a5070'))
+        c.drawCentredString(bx_t+tb/2, tally_y+2.5, str(i+1))
+        c.restoreState()
+
 def draw_back(c, char, page_num, total_pages):
     A = char['acc']
     AD = char['acc_dark']
@@ -459,171 +610,173 @@ def draw_back(c, char, page_num, total_pages):
 
     # ── HIT LOCATION SECTION ──────────────────────────────────────────────────
     hloc_y_top = PH - mast_h
-    hloc_h = 100*mm
+    hloc_h = 130*mm
     hloc_y_bot = hloc_y_top - hloc_h
 
-    filled_rect(c, 0, hloc_y_bot, PW, hloc_h, HexColor('#0a0a18'))
-    hline(c, 0, PW, hloc_y_bot, A, lw=1.5)
+    if char.get('species','').startswith("Pierson"):
+        draw_puppeteer_hloc(c, char)
+    else:
+        filled_rect(c, 0, hloc_y_bot, PW, hloc_h, HexColor('#0a0a18'))
+        hline(c, 0, PW, hloc_y_bot, A, lw=1.5)
 
-    # Section header
-    section_label(c, 0, hloc_y_top - 9, PW, 'HIT LOCATIONS & DAMAGE', A, size=7)
+        # Section header — 3mm gap below masthead bottom, text clear of bar
+        bar_h = 11
+        bar_y = hloc_y_top - bar_h - 3
+        filled_rect(c, 0, bar_y, PW, bar_h, A)
+        text(c, 'HIT LOCATIONS & DAMAGE', PAD, bar_y + 3, 'OrbB', 8, INK)
 
-    # Calculate location HPs
-    arm_hp  = math.ceil(hp * 0.25)
-    leg_hp  = math.ceil(hp * 0.30)
-    head_hp = math.ceil(hp * 0.30)
-    abd_hp  = math.ceil(hp * 0.30)
-    chest_hp= math.ceil(hp * 0.35)
-    unc     = math.ceil(hp * 0.25)
+        arm_hp   = math.ceil(hp * 0.25)
+        leg_hp   = math.ceil(hp * 0.30)
+        head_hp  = math.ceil(hp * 0.30)
+        abd_hp   = math.ceil(hp * 0.30)
+        chest_hp = math.ceil(hp * 0.35)
+        unc      = math.ceil(hp * 0.25)
 
-    # ── Body diagram (left side) ──────────────────────────────────────────────
-    dia_x = PAD
-    dia_w = 58*mm
-    dia_y_top = hloc_y_top - 10  # below section header
+        content_top = bar_y  # drawing starts below the header bar
 
-    # Draw body outline
-    bx = dia_x + dia_w/2  # centre x
-    by_head_centre = dia_y_top - 14*mm
-    scale = 2.8  # drawing scale
+        # ── Body diagram (left, 70mm wide) ────────────────────────────────
+        dia_w = 70*mm
+        bx    = PAD + dia_w / 2
 
-    # Head
-    c.saveState()
-    c.setStrokeColor(A); c.setLineWidth(1.5); c.setFillColor(Color(0,0,0,0))
-    c.ellipse(bx-8*mm, by_head_centre-6*mm, bx+8*mm, by_head_centre+8*mm, fill=0, stroke=1)
-    c.restoreState()
-    text(c, 'HEAD', bx, by_head_centre, 'OrbB', 6, A, align='centre')
-    text(c, f'{head_hp}HP', bx, by_head_centre-4*mm, 'Mono', 6, white, align='centre')
-    text(c, '19-20', bx, by_head_centre-7*mm, 'Mono', 5, MID, align='centre')
-
-    # Neck
-    neck_top = by_head_centre - 6*mm
-    c.saveState()
-    c.setStrokeColor(A); c.setLineWidth(1); c.setFillColor(Color(0,0,0,0))
-    c.rect(bx-3*mm, neck_top-5*mm, 6*mm, 5*mm, fill=0, stroke=1)
-    c.restoreState()
-
-    # Chest
-    chest_top = neck_top - 5*mm
-    chest_body_h = 22*mm
-    c.saveState()
-    c.setStrokeColor(A); c.setLineWidth(1.5); c.setFillColor(Color(0,0,0,0))
-    c.rect(bx-13*mm, chest_top-chest_body_h, 26*mm, chest_body_h, fill=0, stroke=1)
-    c.restoreState()
-    text(c, 'CHEST', bx, chest_top-10*mm, 'OrbB', 6, A, align='centre')
-    text(c, f'{chest_hp}HP  ·  11-15', bx, chest_top-15*mm, 'Mono', 5, white, align='centre')
-
-    # Abdomen
-    abd_top = chest_top - chest_body_h
-    abd_h = 15*mm
-    c.saveState()
-    c.setStrokeColor(A); c.setLineWidth(1.4); c.setFillColor(Color(0,0,0,0))
-    c.rect(bx-11*mm, abd_top-abd_h, 22*mm, abd_h, fill=0, stroke=1)
-    c.restoreState()
-    text(c, 'ABD', bx, abd_top-7.5*mm, 'OrbB', 5.5, A, align='centre')
-    text(c, f'{abd_hp}HP  ·  07-10', bx, abd_top-11*mm, 'Mono', 5, white, align='centre')
-
-    # Arms
-    arm_top = chest_top
-    arm_h = 28*mm
-    arm_w = 9*mm
-    # Right arm (viewer's left)
-    c.saveState()
-    c.setStrokeColor(A); c.setLineWidth(1.3); c.setFillColor(Color(0,0,0,0))
-    c.rect(bx-25*mm, arm_top-arm_h, arm_w, arm_h, fill=0, stroke=1)
-    c.restoreState()
-    text(c, 'R ARM', bx-20.5*mm, arm_top-12*mm, 'OrbB', 5, A, align='centre')
-    text(c, f'{arm_hp}HP', bx-20.5*mm, arm_top-17*mm, 'Mono', 5, white, align='centre')
-    text(c, '16-17', bx-20.5*mm, arm_top-21*mm, 'Mono', 5, MID, align='centre')
-    # Left arm (viewer's right)
-    c.saveState()
-    c.setStrokeColor(A); c.setLineWidth(1.3); c.setFillColor(Color(0,0,0,0))
-    c.rect(bx+16*mm, arm_top-arm_h, arm_w, arm_h, fill=0, stroke=1)
-    c.restoreState()
-    text(c, 'L ARM', bx+20.5*mm, arm_top-12*mm, 'OrbB', 5, A, align='centre')
-    text(c, f'{arm_hp}HP', bx+20.5*mm, arm_top-17*mm, 'Mono', 5, white, align='centre')
-    text(c, '18-19', bx+20.5*mm, arm_top-21*mm, 'Mono', 5, MID, align='centre')
-
-    # Legs
-    leg_top = abd_top - abd_h
-    leg_h = 28*mm
-    leg_w = 10*mm
-    # Right leg
-    c.saveState()
-    c.setStrokeColor(A); c.setLineWidth(1.3); c.setFillColor(Color(0,0,0,0))
-    c.rect(bx-14*mm, leg_top-leg_h, leg_w, leg_h, fill=0, stroke=1)
-    c.restoreState()
-    text(c, 'R LEG', bx-9*mm, leg_top-14*mm, 'OrbB', 5, A, align='centre')
-    text(c, f'{leg_hp}HP', bx-9*mm, leg_top-19*mm, 'Mono', 5, white, align='centre')
-    text(c, '01-03', bx-9*mm, leg_top-23*mm, 'Mono', 5, MID, align='centre')
-    # Left leg
-    c.saveState()
-    c.setStrokeColor(A); c.setLineWidth(1.3); c.setFillColor(Color(0,0,0,0))
-    c.rect(bx+4*mm, leg_top-leg_h, leg_w, leg_h, fill=0, stroke=1)
-    c.restoreState()
-    text(c, 'L LEG', bx+9*mm, leg_top-14*mm, 'OrbB', 5, A, align='centre')
-    text(c, f'{leg_hp}HP', bx+9*mm, leg_top-19*mm, 'Mono', 5, white, align='centre')
-    text(c, '04-06', bx+9*mm, leg_top-23*mm, 'Mono', 5, MID, align='centre')
-
-    # ── Location table (right side) ───────────────────────────────────────────
-    tbl_x = dia_x + dia_w + 3*mm
-    tbl_w = PW - tbl_x - PAD
-    tbl_y = hloc_y_top - 12
-
-    # Column headers
-    c1, c2, c3, c4, c5 = tbl_x, tbl_x+28*mm, tbl_x+42*mm, tbl_x+56*mm, tbl_x+67*mm
-    hdrs = [('LOCATION', c1), ('MELEE D20', c2), ('RANGED D20', c3),
-            ('HP', c4), ('AP', c5)]
-    for lbl, cx in hdrs:
-        text(c, lbl, cx, tbl_y, 'OrbB', 6, A)
-    hline(c, tbl_x, PW-PAD, tbl_y - 2, A, lw=0.8)
-
-    locs = [
-        ('Head',     '19-20', '20',    head_hp),
-        ('Right Arm','13-15', '16-17', arm_hp),
-        ('Left Arm', '16-18', '18-19', arm_hp),
-        ('Chest',    '12',    '11-15', chest_hp),
-        ('Abdomen',  '09-11', '07-10', abd_hp),
-        ('Right Leg','01-04', '01-03', leg_hp),
-        ('Left Leg', '05-08', '04-06', leg_hp),
-    ]
-    ry = tbl_y - 6
-    for i, (loc, m_rng, r_rng, loc_hp) in enumerate(locs):
-        ry -= 9
-        if i % 2 == 0:
-            filled_rect(c, tbl_x-1, ry-2, tbl_w+1, 9, HexColor('#0e0e22'))
-        text(c, loc, c1, ry, 'Bar', 8, white)
-        text(c, m_rng, c2+5*mm, ry, 'Mono', 7, MID, align='centre')
-        text(c, r_rng, c3+5*mm, ry, 'Mono', 7, MID, align='centre')
-        # HP value + box
-        text(c, str(loc_hp), c4, ry, 'OrbB', 8, A)
-        outline_rect(c, c4+8*mm, ry-1, 12*mm, 8, A, lw=0.8)
-        # AP box
-        outline_rect(c, c5, ry-1, 12*mm, 8, A, lw=0.8)
-
-    # Unconscious / dying note
-    note_y = ry - 12
-    filled_rect(c, tbl_x-1, note_y, tbl_w+1, 10, HexColor('#1a0a0a'))
-    outline_rect(c, tbl_x-1, note_y, tbl_w+1, 10, A, lw=1)
-    text(c, f'UNCONSCIOUS: HP ≤ {unc}  ·  DYING: HP = 0  ·  DEAD: HP = −{con}',
-         tbl_x+2, note_y+2.5, 'Mono', 6, A)
-
-    # HP tally strip
-    tally_y = note_y - 16
-    filled_rect(c, tbl_x-1, tally_y, tbl_w+1, 14, HexColor('#080810'))
-    text(c, 'HP TALLY:', tbl_x+1, tally_y+5, 'OrbB', 6, A)
-    tally_x = tbl_x + 20*mm
-    tally_box = 7.5
-    for i in range(min(hp+5, 30)):
-        bx_t = tally_x + i*(tally_box+1.5)
-        if bx_t + tally_box > PW - PAD: break
+        # HEAD
+        by_head_c = content_top - 18*mm
         c.saveState()
-        c.setStrokeColor(A); c.setLineWidth(0.6)
-        c.setFillColor(Color(0,0,0,0))
-        c.rect(bx_t, tally_y+2, tally_box, tally_box, fill=0, stroke=1)
-        c.setFont('Mono', 4.5); c.setFillColor(HexColor('#556688'))
-        c.drawCentredString(bx_t+tally_box/2, tally_y+3, str(i+1))
+        c.setStrokeColor(A); c.setLineWidth(2); c.setFillColor(Color(0,0,0,0))
+        c.ellipse(bx-12*mm, by_head_c-9*mm, bx+12*mm, by_head_c+11*mm, fill=0, stroke=1)
+        c.restoreState()
+        text(c, 'HEAD',         bx, by_head_c+2*mm,  'OrbB', 10, A,     align='centre')
+        text(c, f'{head_hp} HP',bx, by_head_c-3.5*mm,'OrbB', 11, white, align='centre')
+        text(c, '19-20',        bx, by_head_c-8.5*mm,'Mono', 9,  MID,   align='centre')
+
+        # Neck
+        neck_top = by_head_c - 9*mm
+        c.saveState(); c.setStrokeColor(A); c.setLineWidth(1.3); c.setFillColor(Color(0,0,0,0))
+        c.rect(bx-4.5*mm, neck_top-7*mm, 9*mm, 7*mm, fill=0, stroke=1)
         c.restoreState()
 
+        # CHEST
+        chest_top = neck_top - 7*mm
+        chest_w   = 36*mm
+        chest_bh  = 30*mm
+        c.saveState(); c.setStrokeColor(A); c.setLineWidth(2); c.setFillColor(Color(0,0,0,0))
+        c.rect(bx-chest_w/2, chest_top-chest_bh, chest_w, chest_bh, fill=0, stroke=1)
+        c.restoreState()
+        text(c, 'CHEST',         bx, chest_top-11*mm, 'OrbB', 10, A,     align='centre')
+        text(c, f'{chest_hp} HP',bx, chest_top-17*mm, 'OrbB', 11, white, align='centre')
+        text(c, '11-15',         bx, chest_top-23*mm, 'Mono', 9,  MID,   align='centre')
+
+        # ABDOMEN
+        abd_top = chest_top - chest_bh
+        abd_bh  = 20*mm
+        abd_w   = 28*mm
+        c.saveState(); c.setStrokeColor(A); c.setLineWidth(1.8); c.setFillColor(Color(0,0,0,0))
+        c.rect(bx-abd_w/2, abd_top-abd_bh, abd_w, abd_bh, fill=0, stroke=1)
+        c.restoreState()
+        text(c, 'ABDOMEN',      bx, abd_top-7*mm,  'OrbB', 10, A,     align='centre')
+        text(c, f'{abd_hp} HP', bx, abd_top-13*mm, 'OrbB', 11, white, align='centre')
+        text(c, '07-10',        bx, abd_top-18*mm, 'Mono', 9,  MID,   align='centre')
+
+        # ARMS
+        arm_bh = 36*mm
+        arm_bw = 13*mm
+        gap    = 3*mm
+        for side, lbl, rng in [(-1,'R ARM','16-17'),(+1,'L ARM','18-19')]:
+            ax = bx + side*(chest_w/2 + gap + arm_bw/2)
+            c.saveState(); c.setStrokeColor(A); c.setLineWidth(1.8); c.setFillColor(Color(0,0,0,0))
+            c.rect(ax-arm_bw/2, chest_top-arm_bh, arm_bw, arm_bh, fill=0, stroke=1)
+            c.restoreState()
+            text(c, lbl,           ax, chest_top-14*mm, 'OrbB', 9,  A,     align='centre')
+            text(c, f'{arm_hp} HP',ax, chest_top-20*mm, 'OrbB', 10, white, align='centre')
+            text(c, rng,           ax, chest_top-26*mm, 'Mono', 8,  MID,   align='centre')
+
+        # LEGS
+        leg_top = abd_top - abd_bh
+        leg_bh  = 38*mm
+        leg_bw  = 14*mm
+        sep     = 3*mm
+        for side, lbl, rng in [(-1,'R LEG','01-03'),(+1,'L LEG','04-06')]:
+            lx = bx + side*(leg_bw/2 + sep/2)
+            c.saveState(); c.setStrokeColor(A); c.setLineWidth(1.8); c.setFillColor(Color(0,0,0,0))
+            c.rect(lx-leg_bw/2, leg_top-leg_bh, leg_bw, leg_bh, fill=0, stroke=1)
+            c.restoreState()
+            text(c, lbl,           lx, leg_top-15*mm, 'OrbB', 9,  A,     align='centre')
+            text(c, f'{leg_hp} HP',lx, leg_top-21*mm, 'OrbB', 10, white, align='centre')
+            text(c, rng,           lx, leg_top-27*mm, 'Mono', 8,  MID,   align='centre')
+
+        # ── Location table (right side) ───────────────────────────────────
+        tbl_x  = PAD + dia_w + 5*mm
+        tbl_w  = PW - tbl_x - PAD
+        tbl_y  = content_top - 5
+
+        # Col positions
+        c1 = tbl_x
+        c2 = tbl_x + 28*mm
+        c3 = tbl_x + 46*mm
+        c4 = tbl_x + 64*mm
+        c5 = tbl_x + 82*mm
+        c6 = tbl_x + 100*mm
+
+        # Column headers
+        for lbl, cx in [('LOCATION',c1),('MELEE',c2),('RANGED',c3),
+                         ('MAX HP',c4),('CURR HP',c5),('ARMOUR',c6)]:
+            text(c, lbl, cx, tbl_y, 'OrbB', 7.5, A)
+        hline(c, tbl_x, PW-PAD, tbl_y - 3, A, lw=1.2)
+
+        locs = [
+            ('Head',     '19-20','20',    head_hp),
+            ('Right Arm','13-15','16-17', arm_hp),
+            ('Left Arm', '16-18','18-19', arm_hp),
+            ('Chest',    '12',   '11-15', chest_hp),
+            ('Abdomen',  '09-11','07-10', abd_hp),
+            ('Right Leg','01-04','01-03', leg_hp),
+            ('Left Leg', '05-08','04-06', leg_hp),
+        ]
+
+        row_h = 14*mm
+        ry    = tbl_y - 3
+        for i,(loc,m_rng,r_rng,loc_hp) in enumerate(locs):
+            ry -= row_h
+            bg = HexColor('#0e0e22') if i%2==0 else HexColor('#09090f')
+            filled_rect(c, tbl_x-1, ry, tbl_w+1, row_h-1, bg)
+            mid_y = ry + row_h * 0.42
+            text(c, loc,          c1+2,        mid_y, 'Bar',  11,  white)
+            text(c, m_rng,        c2+9*mm,     mid_y, 'Mono', 9.5, MID,  align='centre')
+            text(c, r_rng,        c3+9*mm,     mid_y, 'Mono', 9.5, MID,  align='centre')
+            text(c, str(loc_hp),  c4+8*mm,     mid_y, 'OrbB', 14,  A,    align='centre')
+            bh = row_h - 4*mm
+            outline_rect(c, c5, ry+2*mm, 16*mm, bh, A, lw=1.3)
+            outline_rect(c, c6, ry+2*mm, 16*mm, bh, A, lw=1.3)
+            hline(c, tbl_x-1, PW-PAD, ry, HexColor('#181830'), lw=0.5)
+
+        # Unconscious / dying banner — clear gap above
+        unc_y = ry - 5*mm
+        filled_rect(c, tbl_x-1, unc_y, tbl_w+1, 14, HexColor('#1a0808'))
+        outline_rect(c, tbl_x-1, unc_y, tbl_w+1, 14, A, lw=1.3)
+        text(c, f'UNCONSCIOUS: HP ≤ {unc}   ·   DYING: HP = 0   ·   DEAD: HP = −{con}',
+             tbl_x+4, unc_y+4.5, 'Mono', 7.5, A)
+
+        # HP tally — large numbered boxes
+        tally_y = unc_y - 4*mm - 12*mm
+        text(c, 'HP TALLY', tbl_x, tally_y+9, 'OrbB', 7.5, A)
+        tb = 11*mm
+        tbx = tbl_x + 26*mm
+        for i in range(min(hp+3, 18)):
+            bx_t = tbx + i*(tb + 1.5)
+            if bx_t + tb > PW - PAD: break
+            c.saveState()
+            c.setStrokeColor(A); c.setLineWidth(1)
+            c.setFillColor(HexColor('#080812'))
+            c.rect(bx_t, tally_y, tb, tb, fill=1, stroke=1)
+            c.setFont('OrbB', 7); c.setFillColor(HexColor('#3a5070'))
+            c.drawCentredString(bx_t+tb/2, tally_y+2.5, str(i+1))
+            c.restoreState()
+
+        # Under-diagram label (bottom of diagram area)
+        unc_lbl_y = hloc_y_bot + 2*mm
+        filled_rect(c, PAD, unc_lbl_y, dia_w - 2*mm, 11, HexColor('#100608'))
+        outline_rect(c, PAD, unc_lbl_y, dia_w - 2*mm, 11, A, lw=0.9)
+        text(c, f'UNCONSIOUS ≤ {unc} HP', PAD + (dia_w-2*mm)/2,
+             unc_lbl_y+3, 'OrbB', 7.5, A, align='centre')
     # ── COMBAT QUICK REFERENCE ────────────────────────────────────────────────
     cref_h = 34*mm
     cref_y = hloc_y_bot - cref_h
