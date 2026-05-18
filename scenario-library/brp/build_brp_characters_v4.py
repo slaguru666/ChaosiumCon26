@@ -110,7 +110,7 @@ def night_crawler_theme():
     t.cover_title     = colors.HexColor('#00D4FF')   # cyan on dark = fine
     t.cover_sub       = colors.HexColor('#7BDCFF')
     t.cover_byline    = colors.HexColor('#A0C0E0')
-    t.cover_rule_body = colors.HexColor('#C0D8F0')   # body of rules table
+    t.cover_rule_body = colors.white           # was #C0D8F0 — white ensures max contrast on dark rows
     t.accent          = colors.HexColor('#00D4FF')   # purely for borders/decorative
     t.footer          = colors.HexColor('#1E3A5F')
     t.footer_text     = "The Night Crawler  ·  BRP  ·  Event 91  ·  ChaosiumCon 2026"
@@ -188,7 +188,7 @@ def day_one_theme():
     t.cover_title     = colors.HexColor('#CC2200')
     t.cover_sub       = colors.HexColor('#8B3300')
     t.cover_byline    = colors.HexColor('#2A2A2A')
-    t.cover_rule_body = colors.HexColor('#2A2A2A')
+    t.cover_rule_body = colors.white           # was #2A2A2A — was same as row bg, completely invisible!
     t.accent          = colors.HexColor('#CC2200')
     t.footer          = colors.HexColor('#8B3300')
     t.footer_text     = "Day One  ·  BRP  ·  Event 159  ·  ChaosiumCon 2026"
@@ -212,7 +212,7 @@ def make_styles(t):
         'cover_name':  ParagraphStyle('cn', fontName=fh,  fontSize=11, textColor=t.cover_name,   leading=15),
         'cover_arch':  ParagraphStyle('ca', fontName=fb,  fontSize=9,  textColor=t.cover_arch,   leading=13),
         'cover_meta':  ParagraphStyle('cm', fontName=fb,  fontSize=8,  textColor=t.cover_meta,   leading=12),
-        'cover_rule':  ParagraphStyle('cr', fontName=fb,  fontSize=8,  textColor=t.cover_rule_body, alignment=TA_CENTER, leading=12),
+        'cover_rule':  ParagraphStyle('cr', fontName='Helvetica-Bold', fontSize=8.5,textColor=t.cover_rule_body, alignment=TA_CENTER, leading=12),
         'cover_note':  ParagraphStyle('co', fontName='Times-Italic', fontSize=9, textColor=t.cover_note, alignment=TA_CENTER, leading=13),
         'rules_head':  ParagraphStyle('rh', fontName=fh,  fontSize=10, textColor=t.accent,       alignment=TA_CENTER, leading=14, spaceBefore=4, spaceAfter=3),
         'body':        ParagraphStyle('b',  fontName=fb,  fontSize=9,  textColor=t.body,         leading=13, spaceAfter=3, alignment=TA_JUSTIFY),
@@ -272,46 +272,52 @@ class CharHeader(Flowable):
 
 class StatBlock(Flowable):
     """Seven characteristic boxes + dark derived-stats strip below.
-    Header band split: label (top) · thin rule · stat×5% (bottom)."""
+    Header band split: label (top) · thin rule · stat×5% (bottom).
+    Coordinates tuned so ×5 and main value never overlap."""
     def __init__(self, stats, derived, width, t):
         super().__init__(); self._s=stats; self._d=derived; self.width=width; self._t=t
-        self.height = 70  # was 62 — +8pt for expanded header
+        self.height = 70  # 44pt box + 14pt derived strip + 12pt top padding
     def wrap(self,a,b): return (self.width,self.height)
     def draw(self):
         c=self.canv; t=self._t; w=self.width; n=len(self._s); bw=(w-4)/n
-        BOX_H  = 44   # was 36 — header now 20pt instead of 12pt
-        HDR_H  = 20
+        BOX_H = 44   # top of box
+        HDR_H = 16   # was 20 — now 16, giving light cell 14pt instead of 10pt
 
         for i,(label,val) in enumerate(self._s):
             x=i*bw+2
             try:    pct_str = f"{int(val)*5}%"
             except: pct_str = ''
 
-            # Dark header (20pt)
+            # Dark header (16pt: y=28 to y=44)
             c.setFillColor(t.stat_hdr_bg)
             c.rect(x, BOX_H-HDR_H, bw-1, HDR_H, fill=1, stroke=0)
-            # Light value cell (same 10pt as before)
+
+            # Light value cell (14pt: y=14 to y=28) — 4pt taller than before
             c.setFillColor(t.stat_cell_bg)
             c.rect(x, 14, bw-1, BOX_H-HDR_H-14, fill=1, stroke=0)
-            # Full box border
+
+            # Full box border (y=14 to y=44)
             c.setStrokeColor(t.rule); c.setLineWidth(0.5)
             c.rect(x, 14, bw-1, BOX_H-14, fill=0, stroke=1)
-            # Thin divider inside header
+
+            # Thin divider at y=36 (midpoint of 16pt header)
             c.setStrokeColor(t.accent); c.setLineWidth(0.3)
-            c.line(x+3, BOX_H-10, x+bw-4, BOX_H-10)
+            c.line(x+3, BOX_H-8, x+bw-4, BOX_H-8)   # y=36
 
-            # Label — upper header band
+            # Label — upper header band (y=36–44, baseline y=38)
             c.setFillColor(t.stat_hdr_text); c.setFont('Helvetica-Bold', 7)
-            c.drawCentredString(x+(bw-1)/2, BOX_H-7, label)
+            c.drawCentredString(x+(bw-1)/2, BOX_H-6, label)   # y=38
 
-            # ×5 percentile — lower header band
+            # ×5 percentile — lower header band (y=28–36, baseline y=30)
+            # cap top ≈y=34.7, divider at y=36 → 1.3pt clearance ✓
             if pct_str:
                 c.setFillColor(t.stat_hdr_text); c.setFont('Helvetica-Bold', 6.5)
-                c.drawCentredString(x+(bw-1)/2, BOX_H-18, pct_str)
+                c.drawCentredString(x+(bw-1)/2, BOX_H-14, pct_str)  # y=30
 
-            # Main stat value — light cell (unchanged position)
+            # Main stat value — light cell baseline y=16
+            # cap top ≈y=26, header bottom y=28 → 1.9pt clearance ✓
             c.setFillColor(t.stat_cell_text); c.setFont(t.font_head, 14)
-            c.drawCentredString(x+(bw-1)/2, 17, str(val))
+            c.drawCentredString(x+(bw-1)/2, 16, str(val))
 
         # Dark derived stats strip (unchanged)
         c.setFillColor(t.derived_bg); c.rect(0,0,w,13,fill=1,stroke=0)
