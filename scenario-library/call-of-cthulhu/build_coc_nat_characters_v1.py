@@ -286,7 +286,7 @@ class SectionBanner(Flowable):
 
 class HPTrack(Flowable):
     """Numbered HP/SAN/Luck track boxes."""
-    BOX=17; GAP=3
+    BOX=14; GAP=3
     def __init__(self, max_val, width, t, label="HIT POINTS",
                  fill=None, fill5=None, border=None, num=None, lbl_col=None):
         super().__init__()
@@ -300,7 +300,7 @@ class HPTrack(Flowable):
         B,G=self.BOX,self.GAP
         bpr=int(width/(B+G)); self.bpr=max(bpr,1)
         rows=(max_val+self.bpr-1)//self.bpr
-        self.height=20+rows*(B+G)
+        self.height=29+rows*(B+G)
     def wrap(self,a,b): return (self.width,self.height)
     def draw(self):
         c=self.canv; B,G=self.BOX,self.GAP
@@ -311,7 +311,7 @@ class HPTrack(Flowable):
         c.drawRightString(w,top-13,f"MAX  {max_val}")
         c.setStrokeColor(self._border); c.setLineWidth(0.4)
         c.line(0,top-16,w,top-16)
-        y_start=top-20
+        y_start=top-29
         for i in range(max_val):
             row=i//bpr; col=i%bpr
             items_this_row=min(bpr, max_val-row*bpr)
@@ -326,8 +326,8 @@ class HPTrack(Flowable):
             c.setFillColor(fill); c.setStrokeColor(self._border); c.setLineWidth(1.0)
             c.rect(x,y,B,B,fill=1,stroke=1)
             # Number
-            c.setFillColor(self._num); c.setFont('Helvetica-Bold',9)
-            c.drawCentredString(x+B/2, y+(B-7)/2, str(val))
+            c.setFillColor(self._num); c.setFont('Helvetica-Bold',8)
+            c.drawCentredString(x+B/2, y+(B-6)/2, str(val))
 
 
 class PortraitPlaceholder(Flowable):
