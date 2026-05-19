@@ -34,14 +34,14 @@ PAGE_W, PAGE_H = A4
 MARGIN = 17 * mm
 
 # ── IMAGE PATHS ─────────────────────────────────────────────────────────────
-IMG_BASE = '/mnt/user-data/uploads/'
+IMG_BASE = ''
 PORTRAITS = {
-    'Davin Kell':              IMG_BASE + 'slaguru6666_Portrait_of_a_mercenary_warrior_Ilmioran_mid-thir_8f2350d5-3c94-427c-8a15-907aca7f9bef_0_Medium.jpeg',
-    'Ysolde of Vilmir':        IMG_BASE + 'slaguru6666_Portrait_of_a_young_Vilmirian_woman_scholar-sorce_9eafe360-7808-4b56-80ae-0b1acd8c1e21_1_Medium.jpeg',
-    'Cray':                    IMG_BASE + 'slaguru6666_Portrait_of_a_young_woman_thief_from_Nadsokor_the_07aa47cd-ad56-4fe6-b277-9c81d5861791_0_Medium.jpeg',
-    'Sarath the Twice-Turned': IMG_BASE + 'slaguru6666_Portrait_of_a_heavyset_man_in_his_forties_Pan_Tan_d937185c-9eed-4bbc-9b69-8cb28eb5882c_2_Medium.jpeg',
-    'Captain Brenn':           IMG_BASE + 'slaguru6666_Portrait_of_a_Tarkeshite_sea_captain_late_thirtie_a95be513-e159-4beb-ba5e-522c1024ad50_2_Medium.jpeg',
-    'Lian':                    IMG_BASE + 'slaguru6666_Portrait_of_a_young_Ilmioran_devotee_of_Law_mid-t_098976e0-2bbc-47cd-8dd0-2552786a2bac_1_Medium.jpeg',
+    'Davin Kell':              IMG_BASE + '/home/claude/ChaosiumCon26/scenarios/art/stormbringer/sb-pc01-davin-kell.jpeg',
+    'Ysolde of Vilmir':        IMG_BASE + '/home/claude/ChaosiumCon26/scenarios/art/stormbringer/sb-pc02-ysolde-vilmir.jpeg',
+    'Cray':                    IMG_BASE + '/home/claude/ChaosiumCon26/scenarios/art/stormbringer/sb-pc03-cray.jpeg',
+    'Sarath the Twice-Turned': IMG_BASE + '/home/claude/ChaosiumCon26/scenarios/art/stormbringer/sb-pc04-sarath.jpeg',
+    'Captain Brenn':           IMG_BASE + '/home/claude/ChaosiumCon26/scenarios/art/stormbringer/sb-pc05-captain-brenn.jpeg',
+    'Lian':                    IMG_BASE + '/home/claude/ChaosiumCon26/scenarios/art/stormbringer/sb-pc06-lian.jpeg',
 }
 IMG_RATIO = 640 / 427  # height/width
 
@@ -180,7 +180,7 @@ class HitPointTrack(Flowable):
         bpr         = int(width / (self.BOX + self.GAP))
         self.bpr    = bpr
         self.rows   = (max_hp + bpr - 1) // bpr
-        self.height = 18 + self.rows * (self.BOX + 10 + self.GAP)
+        self.height = 29 + self.rows * (self.BOX + 10 + self.GAP)
 
     def wrap(self, aW, aH): return (self.width, self.height)
 
@@ -197,7 +197,7 @@ class HitPointTrack(Flowable):
         c.setStrokeColor(RULE_COLOR); c.setLineWidth(0.4)
         c.line(0,top-15,w,top-15)
 
-        y_start=top-18
+        y_start=top-29  # clear 2pt above label baseline (top-12)
         for i in range(max_hp):
             row=i//bpr; col=i%bpr
             items_in_row=min(bpr,max_hp-row*bpr)

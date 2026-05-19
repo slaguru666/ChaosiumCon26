@@ -346,7 +346,7 @@ class SectionBanner(Flowable):
 
 class HPTrack(Flowable):
     """Clean HP tracker: 20pt boxes, every-5th-shaded, NO milestone text, numbers at 9pt."""
-    BOX=20; GAP=4
+    BOX=14; GAP=3
     def __init__(self, max_hp, width, t, label="HIT POINTS", fill=None, fill5=None, border=None, num=None):
         super().__init__()
         self.max_hp=max_hp; self.width=width; self._t=t
@@ -361,7 +361,7 @@ class HPTrack(Flowable):
         bpr=int(width/(B+G)); self.bpr=max(bpr,1)
         rows=(max_hp+self.bpr-1)//self.bpr
         # Height: 20pt label area + rows*(box+gap) - last gap
-        self.height=20+rows*(B+G)
+        self.height=29+rows*(B+G)
     def wrap(self,a,b): return (self.width,self.height)
     def draw(self):
         c=self.canv; B,G=self.BOX,self.GAP
@@ -374,7 +374,7 @@ class HPTrack(Flowable):
         c.setStrokeColor(self._border); c.setLineWidth(0.4)
         c.line(0,top-16,w,top-16)
 
-        y_start=top-20  # top of first row of boxes
+        y_start=top-29  # clear 2pt above label baseline (top-13)
 
         for i in range(max_hp):
             row=i//bpr; col=i%bpr
@@ -395,7 +395,7 @@ class HPTrack(Flowable):
             c.rect(x,y,B,B,fill=1,stroke=1)
             # Number — 9pt, centered
             c.setFillColor(self._num); c.setFont('Helvetica-Bold',9)
-            c.drawCentredString(x+B/2, y+(B-7)/2, str(hp_val))
+            c.drawCentredString(x+B/2, y+(B-6)/2, str(hp_val))
 
 class PortraitPlaceholder(Flowable):
     """Reserved portrait space — to be replaced with Midjourney art."""
