@@ -430,21 +430,17 @@ def draw_front(c, char, page_num, total_pages):
             text(c, str(wpn[1]), c_skill + (uw*0.14/2), row_y+4.5*mm,
                  'OrbB', 11, AD, align='centre')
 
-        # Col 3: Damage — bold, prominent
+        # Col 3: Damage — word-boundary wrapping, two lines max
         if len(wpn) > 2:
             dmg = str(wpn[2])
-            # Two lines if long
-            if len(dmg) > 12:
-                parts = dmg.split('/')
-                if len(parts) == 2:
-                    text(c, parts[0].strip(), c_dmg+3, row_y+6*mm, 'Bar', 9, INK)
-                    text(c, parts[1].strip(), c_dmg+3, row_y+2*mm, 'Mono', 7,
-                         HexColor('#555566'))
-                else:
-                    text(c, dmg[:14], c_dmg+3, row_y+5.5*mm, 'Bar', 8.5, INK)
-                    text(c, dmg[14:], c_dmg+3, row_y+1.8*mm, 'Bar', 7, INK)
+            # Word-wrap at ~17 chars to stay within damage column
+            import textwrap as _tw
+            lines = _tw.wrap(dmg, width=17) or [dmg]
+            if len(lines) == 1:
+                text(c, lines[0], c_dmg+3, row_y+4.5*mm, 'Bar', 10, INK)
             else:
-                text(c, dmg, c_dmg+3, row_y+4.5*mm, 'Bar', 10, INK)
+                text(c, lines[0], c_dmg+3, row_y+6.2*mm, 'Bar', 9,   INK)
+                text(c, lines[1], c_dmg+3, row_y+2.2*mm, 'Bar', 8.5, INK)
 
         # Col 4: Range
         if len(wpn) > 3:
@@ -791,10 +787,16 @@ def draw_back(c, char, page_num, total_pages):
             text(c, r_rng,        c3+9*mm,     mid_y, 'Mono', 9.5, MID,  align='centre')
             text(c, str(loc_hp),  c4+8*mm,     mid_y, 'OrbB', 14,  A,    align='centre')
             bh = row_h - 4*mm
+            # CURR HP — blank write-in box
             filled_rect(c, c5, ry+2*mm, 16*mm, bh, white)
             outline_rect(c, c5, ry+2*mm, 16*mm, bh, A, lw=1.3)
-            filled_rect(c, c6, ry+2*mm, 16*mm, bh, white)
+            # ARMOUR — populate from char data if present
+            arm_val = char.get('armour', {}).get(loc, '')
+            arm_bg = HexColor('#e8f4e8') if arm_val and arm_val != '—' else white
+            filled_rect(c, c6, ry+2*mm, 16*mm, bh, arm_bg)
             outline_rect(c, c6, ry+2*mm, 16*mm, bh, A, lw=1.3)
+            if arm_val:
+                text(c, arm_val, c6+8*mm, ry+2*mm+bh*0.38, 'OrbB', 7, A, align='centre')
             hline(c, tbl_x-1, PW-PAD, ry, HexColor('#181830'), lw=0.5)
 
         # Unconscious / dying banner — clear gap above
@@ -910,27 +912,19 @@ def draw_back(c, char, page_num, total_pages):
         text(c, line, PW/2+PAD, hy, 'Bar', 7.5, HexColor('#222233'))
         hy -= 8.5
 
-    # ── EQUIPMENT & NOTES ─────────────────────────────────────────────────────
+    # ── SESSION NOTES (full-width — equipment is on front page) ──────────────
     eq_h = hook_y
     eq_y = 8*mm
     eq_sec_h = eq_h - eq_y
 
-    filled_rect(c, 0, eq_y, PW/2, eq_sec_h, INK)
-    filled_rect(c, PW/2+1.5, eq_y, PW/2-1.5, eq_sec_h, HexColor('#f8f8ff'))
+    filled_rect(c, 0, eq_y, PW, eq_sec_h, white)
     hline(c, 0, PW, hook_y, A, lw=1.5)
 
-    filled_rect(c, 0, eq_y+eq_sec_h-9, PW/2, 9, A)
-    text(c, 'EQUIPMENT', PAD, eq_y+eq_sec_h-6, 'OrbB', 6.5, INK)
-    ey = eq_y + eq_sec_h - 17
-    for item in char['equip_detail']:
-        text(c, '▸ ' + item, PAD, ey, 'Mono', 6.5, HexColor('#bbbbdd'))
-        ey -= 8
-
-    filled_rect(c, PW/2+1.5, eq_y+eq_sec_h-9, PW/2-1.5, 9, A)
-    text(c, 'SESSION NOTES', PW/2+PAD, eq_y+eq_sec_h-6, 'OrbB', 6.5, INK)
+    filled_rect(c, 0, eq_y+eq_sec_h-9, PW, 9, A)
+    text(c, 'SESSION NOTES', PAD, eq_y+eq_sec_h-6, 'OrbB', 6.5, INK)
     ny = eq_y + eq_sec_h - 17
     while ny > eq_y + 6:
-        hline(c, PW/2+PAD, PW-PAD, ny, HexColor('#ccccdd'), lw=0.4)
+        hline(c, PAD, PW-PAD, ny, HexColor('#ccccdd'), lw=0.4)
         ny -= 10
 
     # ── BACK FOOTER ───────────────────────────────────────────────────────────
@@ -988,6 +982,7 @@ CHARACTERS = [
         'Will care about Serenthis before',
         'she realises she is doing it.',
     ],
+    'armour': {},  # No armour
     'hook95':['Your bio-scanner shows the zone\'s ecological void as sharply as a',
               'wound. Linguistics translates system logs. Medicine reads Marr\'s',
               'condition. In Act Three the system displays your xenobiological',
@@ -1032,6 +1027,7 @@ CHARACTERS = [
         'they\'re fine." The needle gun is',
         'preferred. Wunderland aristocracy.',
     ],
+    'armour': {'Chest':'AP 2','Abdomen':'AP 2'},  # Body armour AP2 torso
     'hook95':['Awareness makes you first to notice repetition. You\'ll set perimeters',
               'when no one else thinks to. In Act Three, when Vorn orders withdrawal,',
               'the crew looks to you: follow orders, or stay for the science?',
@@ -1076,6 +1072,7 @@ CHARACTERS = [
         'Patience is real. Frustration also.',
         'Kzin honour = a weapon humans can\'t use.',
     ],
+    'armour': {'Head':'AP 1','Chest':'AP 1','Abdomen':'AP 1','Right Arm':'AP 1','Left Arm':'AP 1','Right Leg':'AP 1','Left Leg':'AP 1'},  # Natural Kzin hide AP 1
     'hook95':['The quiet zone registers as total absence of biological signal — your',
               'prey-senses detect it before instruments. Track + Awareness in Act 1.',
               'In Act Three: a threat you cannot fight. The frustration is yours.',
@@ -1121,6 +1118,7 @@ CHARACTERS = [
         'manipulate. Timing is everything.',
         'Knows more than it shares. Always.',
     ],
+    'armour': {},  # No armour (Puppeteer)
     'hook95':['You identify the constructing singularity before anyone else does.',
               'Computer + Science (Physics) cracks the system logs in Act Two.',
               'In Act Three you understand the system\'s logic better than anyone.',
@@ -1165,6 +1163,7 @@ CHARACTERS = [
         'about what can\'t change. Does argue',
         'about what can. Loves the Ringworld.',
     ],
+    'armour': {'Head':'AP 1','Chest':'AP 1','Abdomen':'AP 1','Right Arm':'AP 1','Left Arm':'AP 1','Right Leg':'AP 1','Left Leg':'AP 1'},  # Hard environment suit
     'hook95':['Your Engineering immediately flags the Spire drawing power far beyond',
               'stated function. Science (Physics) + Computer crack the logs together.',
               'In Act Three, you can feed the system the structural data it needs.',
@@ -1210,6 +1209,7 @@ CHARACTERS = [
         '17 Ringworld surveys. Still looks',
         'at the arc overhead every time.',
     ],
+    'armour': {},  # No armour
     'hook95':['The quiet zone is a perfect geometrical absence — nothing matches it.',
               'Your Awareness spots the overlapping footprints before anyone else.',
               'In Act Three the system\'s display of your data is cartographic.',
