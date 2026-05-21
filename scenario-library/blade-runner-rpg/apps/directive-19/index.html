@@ -82,7 +82,7 @@ body::before {
     linear-gradient(180deg, rgba(255,152,24,0.015), transparent 30%, rgba(0,0,0,0.25));
 }
 
-/* CRT scanlines — overlaid on everything, very subtle */
+/* CRT scanlines — overlaid on everything, slow drift + occasional horizontal tear */
 body::after {
   content:"";
   position:fixed; inset:0; pointer-events:none; z-index:1000;
@@ -95,6 +95,55 @@ body::after {
   );
   mix-blend-mode: multiply;
   opacity: 0.7;
+  animation: scanline-drift 9s linear infinite, crt-tear 13s infinite;
+  will-change: transform, background-position;
+}
+
+/* Scanlines drift slowly downward — barely perceptible, just enough to feel alive */
+@keyframes scanline-drift {
+  from { background-position: 0 0; }
+  to   { background-position: 0 -4px; }
+}
+
+/* Occasional one-pixel horizontal tear at irregular intervals — CRT signal drift */
+@keyframes crt-tear {
+  0%, 18%, 19%, 47%, 48%, 72.4%, 73.2%, 91%, 92%, 100% {
+    transform: translateX(0);
+    opacity: 0.7;
+  }
+  18.5% { transform: translateX(1px); }
+  47.5% { transform: translateX(-1px); }
+  72.6%, 73% {
+    transform: translateX(2px);
+    opacity: 0.55; /* this tear also dims slightly — stronger glitch moment */
+  }
+  91.5% { transform: translateX(-1px); }
+}
+
+/* Slow rolling refresh sweep — a faint amber band passes top to bottom every 17s */
+html::before {
+  content: "";
+  position: fixed;
+  left: 0; right: 0;
+  top: 0;
+  height: 180px;
+  pointer-events: none;
+  z-index: 999;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(255, 180, 80, 0.02) 30%,
+    rgba(255, 200, 120, 0.045) 50%,
+    rgba(255, 180, 80, 0.02) 70%,
+    transparent 100%
+  );
+  animation: crt-refresh-sweep 17s linear infinite;
+  will-change: transform;
+}
+
+@keyframes crt-refresh-sweep {
+  0%   { transform: translateY(-180px); }
+  100% { transform: translateY(100vh); }
 }
 
 /* ============================================================
