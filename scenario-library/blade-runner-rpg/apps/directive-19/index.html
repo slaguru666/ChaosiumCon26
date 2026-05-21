@@ -1,0 +1,2062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Directive 19 | Blade Runner RPG | GM</title>
+<style>
+/* ============================================================
+   DIRECTIVE 19 — GM COMPANION
+   Target: 13" laptop / large tablet, low-light gaming environment
+   Single-file, offline, no external dependencies
+   ============================================================ */
+:root {
+  --bg:         #08080f;
+  --surface:    #14141f;
+  --surface-hi: #1c1c2a;
+  --surface-top:#252539;
+  --border:     #2a2a40;
+  --border-hi:  #4a4a70;
+
+  --text:       #f0f0fa;
+  --text-sub:   #b8b8d0;
+  --text-muted: #707090;
+
+  --amber:  #ffb84a;
+  --cyan:   #4adfff;
+  --red:    #ff4a5a;
+  --green:  #4aee88;
+  --magenta:#dd4ad8;
+  --rain:   #6a96ff;
+
+  --done-bg:    rgba(74,238,136,0.12);
+  --done-color: #4aee88;
+  --shown-bg:   rgba(74,223,255,0.10);
+  --shown-color:#4adfff;
+  --missed-bg:  rgba(255,74,90,0.12);
+  --replicant-bg:rgba(221,74,216,0.10);
+  --replicant-color: #dd4ad8;
+
+  --font: "Courier New", Courier, monospace;
+  --r: 8px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-tap-highlight-color: transparent;
+  overflow: hidden;
+}
+
+/* Subtle rain noise on background */
+body::before {
+  content:"";
+  position:fixed; inset:0; pointer-events:none; z-index:0;
+  background: radial-gradient(ellipse at top, rgba(74,150,255,0.04), transparent 60%);
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+#app {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  grid-template-columns: 200px 1fr;
+  grid-template-areas:
+    "header  header"
+    "progress progress"
+    "sidebar  main";
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 800px) {
+  #app {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr auto;
+    grid-template-areas:
+      "header"
+      "progress"
+      "main"
+      "sidebar";
+  }
+  #sidebar { flex-direction: row !important; border-right: none; border-top: 1px solid var(--border); overflow-x: auto; }
+  #sidebar .nav-label { display: none; }
+  #sidebar .nav-icon { font-size: 22px; }
+  .nav-item { flex: 1; flex-direction: column; padding: 10px 4px; min-height: 58px; }
+  .nav-divider { display: none; }
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+#header {
+  grid-area: header;
+  background: var(--surface);
+  border-bottom: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  gap: 16px;
+}
+#hdr-left { display: flex; flex-direction: column; gap: 2px; }
+#hdr-event { font-size: 11px; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; }
+#hdr-title { font-size: 18px; color: var(--amber); font-weight: bold; letter-spacing: 1.5px; }
+#hdr-right { display: flex; align-items: center; gap: 16px; }
+
+#timer-block { text-align: right; }
+#timer-main { font-size: 28px; font-weight: bold; color: var(--amber); letter-spacing: 2px; line-height: 1; font-variant-numeric: tabular-nums; }
+#timer-act { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+#timer-main.warn { color: var(--amber); animation: pulse 1s infinite; }
+#timer-main.danger { color: var(--red); animation: pulse 0.5s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.55;} }
+
+.hdr-btn {
+  background: var(--surface-hi);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 13px;
+  padding: 10px 18px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  min-height: 44px;
+  transition: all .15s;
+}
+.hdr-btn:hover { background: var(--surface-top); border-color: var(--border-hi); }
+.hdr-btn.primary { background: var(--amber); color: #1a1408; border-color: var(--amber); font-weight: bold; }
+.hdr-btn.danger { color: var(--red); border-color: var(--red); background: transparent; }
+.hdr-btn.danger:hover { background: rgba(255,74,90,0.10); }
+
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+#progress {
+  grid-area: progress;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: stretch;
+  height: 32px;
+}
+.act-bar {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-right: 1px solid var(--border);
+  position: relative;
+}
+.act-bar:last-child { border-right: none; }
+.act-bar.active { color: var(--amber); background: rgba(255,184,74,0.06); }
+.act-bar.done   { color: var(--text-sub); background: rgba(74,238,136,0.04); }
+.act-bar .act-time { font-size:10px; margin-left:8px; color: var(--text-muted); }
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+#sidebar {
+  grid-area: sidebar;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  color: var(--text-sub);
+  transition: all .12s;
+  font-size: 14px;
+  min-height: 50px;
+  user-select:none;
+}
+.nav-item:hover { background: var(--surface-hi); color: var(--text); }
+.nav-item.active { background: var(--surface-hi); color: var(--amber); border-left-color: var(--amber); }
+.nav-icon { font-size: 18px; width:22px; text-align:center;}
+.nav-badge {
+  background: var(--amber); color: #1a1408;
+  border-radius: 10px;
+  padding: 1px 7px;
+  font-size: 11px;
+  font-weight: bold;
+  margin-left: auto;
+  min-width:22px; text-align:center;
+}
+.nav-badge.danger { background: var(--red); color: #fff; }
+.nav-divider { border-top: 1px solid var(--border); margin: 8px 0; }
+
+/* ============================================================
+   MAIN AREA
+   ============================================================ */
+#main {
+  grid-area: main;
+  overflow-y: auto;
+  padding: 18px 22px 80px;
+  position: relative;
+}
+
+#alert-bar {
+  position: sticky; top: 0; z-index: 9;
+  margin-bottom: 12px;
+}
+.alert {
+  background: rgba(255,184,74,0.12);
+  border-left: 3px solid var(--amber);
+  padding: 10px 14px;
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--amber);
+  margin-bottom: 8px;
+}
+.alert.danger { background: rgba(255,74,90,0.12); border-color: var(--red); color: var(--red); }
+
+.screen { display:none; }
+.screen.active { display:block; }
+
+.section-title {
+  font-size: 20px;
+  color: var(--amber);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.section-head {
+  font-size: 13px;
+  color: var(--text-sub);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin: 18px 0 10px;
+}
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+.card-head {
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+  background: var(--surface);
+  transition: background .12s;
+}
+.card-head:hover { background: var(--surface-hi); }
+.card-head-text { flex: 1; }
+.card-title { font-size: 16px; color: var(--text); font-weight: bold; }
+.card-sub { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+.card-body {
+  padding: 0 18px 18px;
+  display: none;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+.card.open .card-body { display: block; }
+.card.open .chevron { transform: rotate(180deg); }
+.chevron { color: var(--text-muted); transition: transform .2s; font-size: 14px;}
+
+.card-tag {
+  display: inline-block;
+  background: var(--surface-hi);
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-sub);
+  margin-right: 6px;
+}
+.card-tag.amber { background: rgba(255,184,74,0.14); color: var(--amber); }
+.card-tag.cyan  { background: rgba(74,223,255,0.12); color: var(--cyan); }
+.card-tag.red   { background: rgba(255,74,90,0.14); color: var(--red); }
+.card-tag.green { background: rgba(74,238,136,0.14); color: var(--green); }
+.card-tag.magenta{ background: var(--replicant-bg); color: var(--replicant-color); }
+
+/* ============================================================
+   DASHBOARD TILES
+   ============================================================ */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+@media (max-width: 640px) { .grid-2 { grid-template-columns: repeat(2, 1fr); } }
+.dash-tile {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 18px 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .15s;
+  min-height: 90px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+}
+.dash-tile:hover { background: var(--surface-hi); border-color: var(--border-hi); transform: translateY(-1px); }
+.dash-tile-icon { font-size: 26px; margin-bottom: 6px; }
+.dash-tile-label { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-sub); }
+.dash-tile.amber { color: var(--amber); }
+.dash-tile.amber .dash-tile-label { color: var(--amber); }
+.dash-tile.cyan { color: var(--cyan); }
+.dash-tile.cyan .dash-tile-label { color: var(--cyan); }
+.dash-tile.magenta { color: var(--magenta); }
+.dash-tile.magenta .dash-tile-label { color: var(--magenta); }
+
+/* ============================================================
+   STATUS PANEL (checkpoints)
+   ============================================================ */
+.status-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 16px 18px;
+  margin-bottom: 14px;
+}
+.status-panel-title { font-size:13px; text-transform:uppercase; letter-spacing:1.5px; color: var(--text-sub); margin-bottom:12px; }
+.status-row {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:8px 0; border-bottom: 1px dashed var(--border);
+  font-size:13px;
+}
+.status-row:last-child { border-bottom: none; }
+.status-row-label { color: var(--text); }
+.tag {
+  font-size: 10px; padding: 2px 7px; border-radius: 3px;
+  letter-spacing:1px; text-transform: uppercase;
+}
+.tag-cyan { background: rgba(74,223,255,0.14); color: var(--cyan); }
+.tag-amber{ background: rgba(255,184,74,0.14); color: var(--amber); }
+.tag-red  { background: rgba(255,74,90,0.14); color: var(--red); }
+.tag-green{ background: rgba(74,238,136,0.14); color: var(--green); }
+
+/* ============================================================
+   NPC CARDS
+   ============================================================ */
+.npc-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 16px 18px;
+  margin-bottom: 14px;
+}
+.npc-name {
+  font-size: 18px;
+  color: var(--amber);
+  font-weight: bold;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+.npc-name.replicant { color: var(--magenta); }
+.npc-name.cleaner { color: var(--red); }
+.npc-role {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 12px;
+}
+.npc-row {
+  display: flex; gap: 12px; align-items: baseline;
+  font-size: 13px; padding: 6px 0;
+  border-bottom: 1px dashed var(--border);
+}
+.npc-row:last-child { border-bottom: none; }
+.npc-label { color: var(--text-sub); min-width: 130px; font-size:12px; text-transform:uppercase; letter-spacing:1px; }
+.npc-value { color: var(--text); flex: 1; }
+.npc-stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin: 12px 0;
+  background: var(--surface-hi);
+  padding: 10px;
+  border-radius: 4px;
+}
+.npc-stat-cell { text-align:center; }
+.npc-stat-label { font-size:10px; text-transform:uppercase; color: var(--text-muted); letter-spacing:1px; }
+.npc-stat-value { font-size:18px; color: var(--amber); font-weight: bold; }
+
+.reveal-btn {
+  background: var(--surface-hi);
+  border: 1px dashed var(--border-hi);
+  border-radius: 4px;
+  color: var(--text-muted);
+  padding: 8px 14px;
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 10px;
+  transition: all .15s;
+}
+.reveal-btn:hover { background: var(--surface-top); color: var(--text); }
+.classified {
+  display: none;
+  margin-top: 10px;
+  padding: 12px 14px;
+  background: var(--replicant-bg);
+  border-left: 3px solid var(--replicant-color);
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.6;
+}
+.classified.show { display: block; }
+.classified-label {
+  font-size: 10px;
+  color: var(--replicant-color);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+/* ============================================================
+   CLUE TRACKER
+   ============================================================ */
+.clue-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  cursor: pointer;
+  transition: all .12s;
+  font-size: 13px;
+}
+.clue-item:hover { background: var(--surface-hi); }
+.clue-item.found { background: var(--done-bg); border-color: var(--done-color); }
+.clue-item.missed { background: var(--missed-bg); border-color: var(--red); opacity: 0.7; }
+.clue-num {
+  background: var(--surface-hi);
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: bold;
+  color: var(--text-sub);
+  flex-shrink:0; min-width:30px; text-align:center;
+}
+.clue-item.found .clue-num { background: var(--done-color); color: #06180c; }
+.clue-content { flex:1; }
+.clue-title { color: var(--text); font-weight: bold; font-size:14px; margin-bottom:3px; }
+.clue-body { font-size: 12px; color: var(--text-sub); line-height: 1.5; }
+.clue-meta { font-size: 11px; color: var(--text-muted); margin-top: 4px; letter-spacing:0.5px; }
+
+.clue-progress {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 14px 18px;
+  margin-bottom: 16px;
+}
+.clue-progress-row { display:flex; justify-content:space-between; font-size:12px; margin-bottom:8px; }
+.clue-bar { background: var(--surface-hi); height:8px; border-radius:4px; overflow:hidden; }
+.clue-bar-fill { background: var(--green); height:100%; transition: width 0.3s; }
+
+/* ============================================================
+   HANDOUT MODAL
+   ============================================================ */
+.handout-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+.handout-tile {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 16px;
+  cursor: pointer;
+  transition: all .15s;
+  min-height: 110px;
+  display:flex; flex-direction:column; gap:6px;
+}
+.handout-tile:hover { background: var(--surface-hi); border-color: var(--amber); }
+.handout-tile.shown { border-color: var(--cyan); background: var(--shown-bg); }
+.handout-id { font-size:10px; color: var(--text-muted); letter-spacing: 1.5px; text-transform:uppercase; }
+.handout-title { font-size:14px; color: var(--text); font-weight: bold; }
+.handout-when { font-size:11px; color: var(--text-sub); margin-top: auto; font-style: italic; }
+.handout-tile.shown .handout-id { color: var(--cyan); }
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(8,8,15,0.97);
+  z-index: 100;
+  padding: 32px;
+  overflow-y: auto;
+}
+.modal.show { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
+.modal-close {
+  position: fixed; top: 18px; right: 18px;
+  background: var(--surface-hi); border:1px solid var(--border-hi);
+  color: var(--text); padding: 10px 16px; border-radius: 4px;
+  cursor: pointer; font-family: var(--font); font-size:14px;
+  z-index: 101;
+}
+.modal-content {
+  background: #f5f0e0;
+  color: #1a1408;
+  border-radius: 6px;
+  padding: 36px 44px;
+  max-width: 720px;
+  width: 100%;
+  margin-top: 20px;
+  white-space: pre-wrap;
+  font-family: "Courier New", monospace;
+  font-size: 15px;
+  line-height: 1.6;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+}
+.modal-content.h-aged {
+  background: #ebe2ce;
+  color: #1f1804;
+}
+.modal-content.h-handwritten {
+  background: #ece6d2;
+  color: #1a1408;
+  font-family: "Brush Script MT", "Lucida Handwriting", "Comic Sans MS", cursive;
+  font-size: 22px;
+  line-height: 1.8;
+}
+.modal-content.h-bank {
+  background: #f0f0f0;
+  color: #0d0d18;
+  font-size: 14px;
+}
+.modal-content.h-broadcast {
+  background: #0a0a14;
+  color: #ffb84a;
+  font-size: 18px;
+  text-align: center;
+  border: 2px solid #ffb84a;
+  letter-spacing: 1px;
+}
+
+/* ============================================================
+   PLAYER CARDS
+   ============================================================ */
+.pc-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 16px 18px;
+  margin-bottom: 14px;
+}
+.pc-card.replicant { border-left: 4px solid var(--magenta); }
+.pc-card.human { border-left: 4px solid var(--cyan); }
+.pc-name {
+  font-size: 17px;
+  color: var(--text);
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+.pc-archetype {
+  font-size: 12px;
+  color: var(--text-sub);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
+}
+.pc-archetype.replicant { color: var(--magenta); }
+.pc-archetype.human { color: var(--cyan); }
+.pc-stats {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
+  background: var(--surface-hi); padding: 8px; border-radius: 4px;
+  margin: 10px 0;
+}
+.pc-stat-cell { text-align:center; }
+.pc-stat-label { font-size:10px; text-transform:uppercase; color: var(--text-muted); letter-spacing:1px; }
+.pc-stat-value { font-size:16px; color: var(--amber); font-weight: bold; }
+.pc-block { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); font-size: 13px; }
+.pc-block-label { font-size: 10px; text-transform:uppercase; color: var(--text-muted); letter-spacing:1.5px; margin-bottom: 3px; }
+.pc-block-content { color: var(--text); line-height: 1.5; }
+.pc-hook { background: var(--surface-hi); padding: 10px 12px; border-radius: 4px; margin-top: 10px; border-left: 3px solid var(--amber); }
+.pc-hook-label { font-size:10px; text-transform: uppercase; color: var(--amber); letter-spacing: 1.5px; margin-bottom: 4px; font-weight: bold; }
+.pc-hook-content { font-size: 13px; color: var(--text); line-height: 1.5; }
+
+/* ============================================================
+   REFERENCE PANEL
+   ============================================================ */
+.ref-table {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 14px 18px;
+  margin-bottom: 14px;
+}
+.ref-table-title { font-size:13px; text-transform:uppercase; letter-spacing:1.5px; color: var(--amber); margin-bottom: 10px; }
+.ref-table table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.ref-table th { text-align:left; padding: 6px 8px; color: var(--text-muted); font-size:11px; text-transform:uppercase; letter-spacing:1px; border-bottom: 1px solid var(--border); }
+.ref-table td { padding: 6px 8px; color: var(--text); border-bottom: 1px dashed var(--border); }
+.ref-table tr:last-child td { border-bottom: none; }
+.ref-table .skill-name { color: var(--cyan); font-weight: bold; }
+.ref-table .stress-tag { color: var(--amber); font-weight: bold; }
+
+/* ============================================================
+   ACT VIEW
+   ============================================================ */
+.act-tabs { display:flex; gap: 4px; margin-bottom: 18px; }
+.act-tab {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 14px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .12s;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-sub);
+}
+.act-tab:hover { background: var(--surface-hi); }
+.act-tab.active { background: var(--surface-hi); color: var(--amber); border-color: var(--amber); }
+.act-tab .act-tab-time { display:block; font-size: 10px; color: var(--text-muted); margin-top:4px; }
+.act-tab.active .act-tab-time { color: var(--amber); opacity: 0.7; }
+
+.scene-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+.scene-head {
+  padding: 14px 18px;
+  background: var(--surface-top);
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.scene-head:hover { background: var(--surface-hi); }
+.scene-title { font-size:15px; color: var(--cyan); font-weight: bold; letter-spacing:0.5px; }
+.scene-loc { font-size:11px; color: var(--text-muted); text-transform:uppercase; letter-spacing:1.5px; margin-top:3px; }
+.scene-body { padding: 16px 20px; display: none; font-size: 14px; line-height: 1.6; }
+.scene-card.open .scene-body { display: block; }
+.scene-card.open .chevron { transform: rotate(180deg); }
+.scene-section { margin-top: 14px; }
+.scene-section-title { font-size:11px; color: var(--text-sub); text-transform:uppercase; letter-spacing:1.5px; margin-bottom: 6px; }
+.scene-section-body { color: var(--text); }
+.scene-section-body p { margin-bottom: 8px; }
+.scene-section-body ul { list-style:none; padding-left: 0; }
+.scene-section-body ul li { padding: 4px 0 4px 18px; position: relative; }
+.scene-section-body ul li::before { content: "▸"; position: absolute; left: 0; color: var(--amber); }
+.scene-mech {
+  display:inline-block; background:var(--surface-hi); padding:1px 6px; border-radius:3px;
+  color: var(--cyan); font-size:12px; font-weight: bold;
+}
+
+.read-aloud {
+  background: rgba(74,150,255,0.08);
+  border-left: 3px solid var(--rain);
+  padding: 12px 16px;
+  border-radius: 4px;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--text-sub);
+  line-height: 1.7;
+  margin: 10px 0;
+}
+
+.atmosphere-tag {
+  display:inline-block;
+  background: var(--surface-hi);
+  border-radius:3px;
+  padding:2px 8px;
+  font-size:11px;
+  color: var(--text-sub);
+  margin-right: 6px;
+  margin-bottom: 4px;
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+
+<!-- HEADER -->
+<div id="header">
+  <div id="hdr-left">
+    <div id="hdr-event">Blade Runner RPG · LA 2037</div>
+    <div id="hdr-title">DIRECTIVE 19</div>
+  </div>
+  <div id="hdr-right">
+    <div id="timer-block">
+      <div id="timer-main">00:00</div>
+      <div id="timer-act">Intro</div>
+    </div>
+    <button class="hdr-btn" id="timer-toggle" onclick="toggleTimer()">START</button>
+    <button class="hdr-btn danger" onclick="resetTimer()">RESET</button>
+  </div>
+</div>
+
+<!-- PROGRESS BAR -->
+<div id="progress">
+  <div class="act-bar active" id="prog-intro">Intro<span class="act-time">0:15</span></div>
+  <div class="act-bar" id="prog-act1">Act I — Case<span class="act-time">1:15</span></div>
+  <div class="act-bar" id="prog-act2">Act II — Trail<span class="act-time">2:45</span></div>
+  <div class="act-bar" id="prog-act3">Act III — Tower<span class="act-time">3:15</span></div>
+  <div class="act-bar" id="prog-end">Epilogue<span class="act-time">3:30</span></div>
+</div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="nav-item active" id="nav-home"     onclick="navTo('home')">    <span class="nav-icon">⌂</span><span class="nav-label">Home</span></div>
+  <div class="nav-item"        id="nav-acts"     onclick="navTo('acts')">    <span class="nav-icon">🎭</span><span class="nav-label">Acts</span></div>
+  <div class="nav-item"        id="nav-npcs"     onclick="navTo('npcs')">    <span class="nav-icon">👤</span><span class="nav-label">NPCs</span></div>
+  <div class="nav-item"        id="nav-clues"    onclick="navTo('clues')">   <span class="nav-icon">🔍</span><span class="nav-label">Clues</span><span class="nav-badge" id="badge-clues">12</span></div>
+  <div class="nav-item"        id="nav-handouts" onclick="navTo('handouts')"><span class="nav-icon">📄</span><span class="nav-label">Handouts</span></div>
+  <div class="nav-item"        id="nav-players"  onclick="navTo('players')"> <span class="nav-icon">♟</span><span class="nav-label">Players</span></div>
+  <div class="nav-divider"></div>
+  <div class="nav-item"        id="nav-ref"      onclick="navTo('ref')">     <span class="nav-icon">📋</span><span class="nav-label">Reference</span></div>
+</nav>
+
+<!-- MAIN -->
+<main id="main">
+  <div id="alert-bar"></div>
+
+
+  <!-- ============================================================
+       HOME SCREEN
+       ============================================================ -->
+  <div class="screen active" id="screen-home">
+
+    <div class="grid-2" style="margin-bottom:16px;">
+      <div class="dash-tile amber" onclick="navTo('acts')"><div class="dash-tile-icon">🎭</div><div class="dash-tile-label">Acts</div></div>
+      <div class="dash-tile amber" onclick="navTo('npcs')"><div class="dash-tile-icon">👤</div><div class="dash-tile-label">NPCs</div></div>
+      <div class="dash-tile cyan" onclick="navTo('clues')"><div class="dash-tile-icon">🔍</div><div class="dash-tile-label">Clues</div></div>
+      <div class="dash-tile cyan" onclick="navTo('handouts')"><div class="dash-tile-icon">📄</div><div class="dash-tile-label">Handouts</div></div>
+      <div class="dash-tile magenta" onclick="navTo('players')"><div class="dash-tile-icon">♟</div><div class="dash-tile-label">Players</div></div>
+      <div class="dash-tile" onclick="navTo('ref')"><div class="dash-tile-icon">📋</div><div class="dash-tile-label">BR Reference</div></div>
+    </div>
+
+    <!-- Session Checkpoints -->
+    <div class="status-panel">
+      <div class="status-panel-title">Session Checkpoints</div>
+      <div class="status-row"><span class="status-row-label">0:15 — Briefing done, on scene at Bradbury</span> <span class="tag tag-cyan">Intro</span></div>
+      <div class="status-row"><span class="status-row-label">1:00 — Lin Ai met, list of nine in hand</span> <span class="tag tag-cyan">Act I</span></div>
+      <div class="status-row" style="font-weight:bold;"><span class="status-row-label" style="color:var(--amber);">⚠ 1:15 — Volkov phones, line cuts</span> <span class="tag tag-amber">Act II start</span></div>
+      <div class="status-row"><span class="status-row-label">1:40 — Halden at Volkov's clinic</span> <span class="tag tag-amber">Act II</span></div>
+      <div class="status-row"><span class="status-row-label">2:00 — Pham safehouse, Wren walks past</span> <span class="tag tag-amber">Act II</span></div>
+      <div class="status-row"><span class="status-row-label">2:30 — Salt flats and/or Sera ambush</span> <span class="tag tag-amber">Act II</span></div>
+      <div class="status-row" style="font-weight:bold;"><span class="status-row-label" style="color:var(--red);">🔴 2:45 — HEADING TO SANDOVAL TOWER</span> <span class="tag tag-red">Act III</span></div>
+      <div class="status-row" style="font-weight:bold;"><span class="status-row-label" style="color:var(--red);">🔴 3:15 — TERRACE SCENE COMPLETE</span> <span class="tag tag-red">Act III</span></div>
+    </div>
+
+    <!-- One-Minute Briefing -->
+    <div class="card open">
+      <div class="card-head" onclick="toggleCard(this)">
+        <div class="card-head-text"><div class="card-title">One-Minute Player Briefing</div><div class="card-sub">Read before play begins</div></div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="card-body">
+        <p style="font-size:15px; color:var(--text); font-style:italic; line-height:1.75;">"This is a slow scenario at the beginning. The first hour is conversations and crime scenes. The violence comes in the second act and lands hard."</p>
+        <p style="font-size:15px; color:var(--text); font-style:italic; line-height:1.75; margin-top:10px;">"By the third act you will have decisions to make about which laws you serve."</p>
+        <p style="font-size:15px; color:var(--text); font-style:italic; line-height:1.75; margin-top:10px;">"You are LAPD. Whether you are also human is part of the question."</p>
+      </div>
+    </div>
+
+    <!-- Opening read-aloud -->
+    <div class="card">
+      <div class="card-head" onclick="toggleCard(this)">
+        <div class="card-head-text"><div class="card-title">Opening — Read at the Table</div><div class="card-sub">Bradbury Tower, 03:14, eleven days of rain</div></div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="card-body">
+        <div class="read-aloud">"It's been raining for eleven days. The basin doesn't drain like it used to and the storm drains around the Bradbury Tower are running orange with rust. It's 3:14 in the morning. Your comms went off forty minutes ago. By the time you got here, the bodies were cold."</div>
+        <div class="read-aloud">"Bradbury Tower. Floor 41. The penthouse belongs — belonged — to Captain Lazlo Voss, retired LAPD, currently chief of private security for the Cortez mayoral campaign. There are three dead in the corridor. There is one in the bathtub. There is something on the mirror."</div>
+        <div class="read-aloud">"Lieutenant Greer arrived three minutes after you. He is in the kitchen now talking to someone on a comm. He has not introduced you to whoever it is. He has said the words 'seventy-two hours' twice."</div>
+        <div class="read-aloud">"Take a breath. The work begins."</div>
+      </div>
+    </div>
+
+    <!-- Players -->
+    <div class="card">
+      <div class="card-head" onclick="toggleCard(this)">
+        <div class="card-head-text"><div class="card-title">Player Roster</div><div class="card-sub">Six pre-gen Blade Runners</div></div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="card-body">
+        <div class="ref-table" style="margin:0;">
+          <table>
+            <tr><th>Player</th><th>Character</th><th>Type</th></tr>
+            <tr><td>—</td><td>Iris Kovac</td><td style="color:var(--cyan);">Human · Senior</td></tr>
+            <tr><td>—</td><td>Marc Esposito</td><td style="color:var(--magenta);">Nexus-9 · Wallace</td></tr>
+            <tr><td>—</td><td>Saoirse Lin</td><td style="color:var(--cyan);">Human · Forensic</td></tr>
+            <tr><td>—</td><td>Dmitri Vance</td><td style="color:var(--cyan);">Human · Tactical</td></tr>
+            <tr><td>—</td><td>Talia Ostrow</td><td style="color:var(--cyan);">Human · Detective</td></tr>
+            <tr><td>—</td><td>Cole Whitford</td><td style="color:var(--magenta);">Nexus-9 · Combat</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- The Truth -->
+    <div class="card">
+      <div class="card-head" onclick="toggleCard(this)">
+        <div class="card-head-text"><div class="card-title">⚠ The Truth — GM Only</div><div class="card-sub">Open before the session, not at the table</div></div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="card-body">
+        <p>In <strong>2027</strong>, between the Blackout and the Wallace monopoly, a covert City Hall cell ran <strong>Directive 19</strong> — three conscripted Nexus-8 combat replicants executed seven political and corporate enemies blocking Wallace's path to the replicant manufacturing licence.</p>
+        <p style="margin-top:8px;">The architect was <strong>Helena Cortez</strong>, then a 30-year-old aide, now Deputy Mayor and mayoral frontrunner. The handlers included Captain Voss (Cortez's security), Tyrell lawyer Hadley Brent (deceased 2031), Detective Aaron Ostrow (bought, not killed; killed in 2037 by Wren), and Elias Pham (Tyrell sec director, hiding at the marina).</p>
+        <p style="margin-top:8px;">After the seven targets were dead, the three replicants — <strong>Kira, Nine, and Wren</strong> — were taken to the Saltgrove warehouse to be decommissioned. Kira and Nine were executed and dissolved. <strong>Wren escaped.</strong></p>
+        <p style="margin-top:8px;">She spent ten years preparing. Three weeks ago she returned and began killing the handlers. She has trained a human apprentice — <strong>Sera Park</strong>, daughter of Helen Park (journalist, victim no. 5).</p>
+        <p style="margin-top:8px;">Wallace has dispatched a Nexus-9 cleaner — <strong>Halden</strong> — to retire Wren and shut the file. He will kill anyone who gets in the way.</p>
+        <p style="margin-top:8px; color: var(--amber); font-weight:bold;">By design, Wren escapes at the end. The terrace scene determines what she costs the PCs — not whether she survives.</p>
+      </div>
+    </div>
+
+    <!-- GM Notes Quick Access -->
+    <div class="card">
+      <div class="card-head" onclick="toggleCard(this)">
+        <div class="card-head-text"><div class="card-title">GM Notes — Critical Reminders</div><div class="card-sub">Read on prep day</div></div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="card-body">
+        <p><strong style="color:var(--amber);">Tone:</strong> Slow Act One. Don't fill silences. Let players assemble it.</p>
+        <p style="margin-top:8px;"><strong style="color:var(--amber);">Halden restraint:</strong> Use him 3 times max. Polite, polite, polite, kills. Never engage directly unless PCs overwhelm.</p>
+        <p style="margin-top:8px;"><strong style="color:var(--amber);">Wren in Act Two:</strong> She does not engage. She kills Pham, says her line, leaves through a third-storey window.</p>
+        <p style="margin-top:8px;"><strong style="color:var(--amber);">Cortez:</strong> Not a cartoon. She believes she was right. Give her one private grace before the session.</p>
+        <p style="margin-top:8px;"><strong style="color:var(--amber);">Personal jeopardy:</strong> Pick the PC and the dead contact before the session. Don't improvise this on the night.</p>
+        <p style="margin-top:8px;"><strong style="color:var(--magenta);">Terrace scene:</strong> Read Wren's lines slowly. Don't let dice decide whether she lives — they decide what she costs.</p>
+        <p style="margin-top:8px;"><strong style="color:var(--red);">2:45 hard deadline:</strong> Team must be moving toward the Sandoval Tower. If not, Greer orders them home — they go off the books.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============================================================
+       ACTS SCREEN
+       ============================================================ -->
+  <div class="screen" id="screen-acts">
+    <div class="act-tabs">
+      <div class="act-tab active" id="actTab-1" onclick="showAct(1)">Act I<span class="act-tab-time">The Case · 60m</span></div>
+      <div class="act-tab" id="actTab-2" onclick="showAct(2)">Act II<span class="act-tab-time">The Trail · 90m</span></div>
+      <div class="act-tab" id="actTab-3" onclick="showAct(3)">Act III<span class="act-tab-time">The Tower · 30m</span></div>
+    </div>
+    <div id="act-content"></div>
+  </div>
+
+  <!-- ============================================================
+       NPCs SCREEN
+       ============================================================ -->
+  <div class="screen" id="screen-npcs">
+    <div class="section-title">Non-Player Characters</div>
+    <div id="npc-content"></div>
+  </div>
+
+  <!-- ============================================================
+       CLUES SCREEN
+       ============================================================ -->
+  <div class="screen" id="screen-clues">
+    <div class="section-title">Clue Tracker</div>
+    <div class="clue-progress">
+      <div class="clue-progress-row"><span style="color:var(--text-sub);">Essential clues found</span><span id="essential-count" style="color:var(--green); font-weight:bold;">0/8</span></div>
+      <div class="clue-bar"><div class="clue-bar-fill" id="essential-bar" style="width:0%;"></div></div>
+    </div>
+    <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Tap a clue to cycle: <span style="color:var(--text-sub);">pending</span> → <span style="color:var(--green);">found</span> → <span style="color:var(--red);">missed</span> → pending.</p>
+    <div class="section-head">Essential Clues</div>
+    <div id="essential-clues"></div>
+    <div class="section-head">Optional Clues</div>
+    <div id="optional-clues"></div>
+    <div class="section-head">Fallback Triggers</div>
+    <div id="fallback-list"></div>
+  </div>
+
+  <!-- ============================================================
+       HANDOUTS SCREEN
+       ============================================================ -->
+  <div class="screen" id="screen-handouts">
+    <div class="section-title">Player Handouts</div>
+    <p style="font-size:12px; color:var(--text-muted); margin-bottom:14px;">Tap a tile to display the handout full-screen. Show the tablet to players, or hide it before they enter the room.</p>
+    <div class="handout-list" id="handout-list"></div>
+  </div>
+
+  <!-- ============================================================
+       PLAYERS SCREEN
+       ============================================================ -->
+  <div class="screen" id="screen-players">
+    <div class="section-title">Pre-Generated Characters</div>
+    <p style="font-size:12px; color:var(--text-muted); margin-bottom:14px;">Six Blade Runners. Three human, two Nexus-9 replicant Blade Runners on Wallace secondment, and one veteran (Iris) whose status is — by design — quietly ambiguous to the others.</p>
+    <div id="pc-content"></div>
+  </div>
+
+  <!-- ============================================================
+       REFERENCE SCREEN
+       ============================================================ -->
+  <div class="screen" id="screen-ref">
+    <div class="section-title">Blade Runner RPG — Quick Reference</div>
+    <div id="ref-content"></div>
+  </div>
+
+</main>
+
+<!-- Modal for handouts -->
+<div class="modal" id="modal">
+  <button class="modal-close" onclick="closeModal()">CLOSE ✕</button>
+  <div class="modal-content" id="modal-content"></div>
+</div>
+
+</div>
+
+<script>
+// ============================================================
+// DIRECTIVE 19 — GM COMPANION APP — DATA
+// ============================================================
+
+const ACTS = {
+  1: {
+    title: "The Case",
+    subtitle: "Pure investigation · 60 minutes · No combat",
+    goal: "Establish the crime, the victim, the missing pieces. The PCs leave Act One with a list of names, a shell company, a suspect they cannot quite see, and the growing certainty that someone in their own building is on the wrong side.",
+    scenes: [
+      {
+        title: "Voss Penthouse — Bradbury Tower, Floor 41",
+        loc: "Crime scene · 03:14",
+        atmos: ["Rain on the glass", "Humidity scrubber failed", "Copper-stained marble", "Wet, slightly damp"],
+        description: "Restored pre-Blackout architecture, floor-to-ceiling glass on three walls, heated marble. Voss had taste he didn't earn. The temperature is too warm — the scrubber failed at 11pm, raising humidity 12%. Everything feels slightly damp.",
+        details: [
+          "Two bodyguards dead in the entry corridor, necks broken, professional. Both ex-LAPD, served in 2027 under Voss.",
+          "Voss in the bath, fully dressed in a navy suit, drowned. No defensive wounds. He let his killer into the bathroom.",
+          "On the mirror, in shaving cream: <strong>DIR-019</strong>.",
+          "One muddy boot-print on the kitchen tile — military tread, women's 9. <em>Wren's.</em>",
+          "A wet footprint on the bedroom marble. Smaller. <em>Sera's — though PCs don't know there are two killers yet.</em>",
+          "Voss's tablet on the bedside table. Unlocked. Open to a banking app.",
+          "Voss had three deadbolts and a panic room. <em>He let the killer in willingly.</em>"
+        ],
+        mechanics: [
+          '<span class="scene-mech">[BR: Observation]</span> on the kitchen tile spots the second boot print',
+          '<span class="scene-mech">[BR: Tech]</span> on the tablet bypasses the screen-lock if it auto-locked',
+          '<span class="scene-mech">[BR: Insight]</span> on the panic room reveals he knew his killer'
+        ]
+      },
+      {
+        title: "City Morgue — Sub-Basement Two",
+        loc: "Forensic work · within first hour",
+        atmos: ["Concrete and fluorescent", "Bleach and decay-suppressant", "Marisol Yu's chatter"],
+        description: "Cold. The Voss body is on slab 3. Aaron Ostrow's body is on slab 7. He has not been claimed yet. The night-shift clerk Marisol Yu is friendly and talks too much — useful for exposition.",
+        details: [
+          "Both bodies bear the <strong>DIR-019</strong> mark. Voss's in shaving cream; Ostrow's <em>tattooed onto his chest with a med-tool from his own kit while paralysed but conscious.</em> He saw who killed him.",
+          "Paralytic identified as a Wallace-grade synaptic blocker — military, not street.",
+          "If Talia is present, Marisol awkwardly hands her Aaron's effects: <em>\"You're family — you should be the one to look through it.\"</em> This triggers <strong>Clue 5</strong>.",
+          "Bodyguards' files: both ex-LAPD, both discharged honourably 2028, both onto Voss's payroll within three weeks of discharge."
+        ],
+        mechanics: [
+          '<span class="scene-mech">[BR: Medical Aid]</span> identifies the paralytic\'s Wallace pedigree',
+          'Aaron\'s case files inherited by Talia — open them later to find the 2027 Marisol Vance "mugging" file'
+        ]
+      },
+      {
+        title: "Lin Ai's Noodle Bar — The Bowl, Persian Quarter",
+        loc: "Conversation · ~mid Act One",
+        atmos: ["Steam and fluorescent buzz", "Pickled garlic and rice vinegar", "Three tables, the owner doesn't ask"],
+        description: "A three-table noodle bar under a pedestrian overpass on Fairfax. Lin Ai — 49, journalist, considered a crank for ten years — eats here every night at 1am, alone, by choice. She has been waiting for someone to come asking the right questions.",
+        details: [
+          "She hands the PCs <strong>Handout BR19-H01-A</strong> — the list of nine. If they treat her with respect.",
+          "She does NOT know what DIR-019 stands for. She has been seeing the graffito for three weeks. Thought it was a teen tag.",
+          "She knew Voss professionally. She knew Ostrow professionally — interviewed him in 2028. Didn't get a clean answer.",
+          "Helen Park was her co-author and her friend. Lin Ai was 19 minutes late to the meeting Helen was killed walking to.",
+          "If respectful: she gives Volkov's address as a parting gift. If pushed: she withholds and PCs find him via other paths."
+        ],
+        mechanics: [
+          '<span class="scene-mech">[BR: Manipulation]</span> at hard difficulty if PCs push — fails worsen her cooperation',
+          '<span class="scene-mech">[BR: Insight]</span> reads how scared she is, and how long she has been'
+        ]
+      },
+      {
+        title: "End of Act One — Volkov Phones",
+        loc: "Wherever the PCs are · ~1:15",
+        atmos: ["Cut to black after the call drops"],
+        description: "Run this as a scene transition. A man's voice, accented Russian, says: <em>\"I have something you need. I'm at the clinic. Come now, no comms, no badges — when you get—\"</em> The line drops. Cut to black. Act Two begins.",
+        details: [
+          "This is the hard cliffhanger ending Act One.",
+          "If the PCs haven't connected Voss → Pelican Holdings → Cortez yet, Greer phones first: <em>\"I've spoken to the Deputy Mayor's office. They are aware of the case.\"</em> Then Volkov calls."
+        ],
+        mechanics: []
+      }
+    ],
+    pacing: "If 1:15 and Cortez link not yet made: Greer phones with the fast-track line. If 1:25 and still stuck: Volkov calls immediately and is dead on arrival anyway — push into Act Two."
+  },
+  2: {
+    title: "The Trail",
+    subtitle: "Action · 90 minutes · The violence begins",
+    goal: "The action act. The PCs see the antagonists for the first time. Wren walks past them. Sera ambushes them. Halden introduces himself. A contact dies. Cortez and the Directive 19 truth come into focus. By the end, the team knows the fundraiser tonight is where it ends.",
+    scenes: [
+      {
+        title: "Dr Volkov's Clinic, Chinatown",
+        loc: "Halden's introduction · Act Two opener",
+        atmos: ["Antiseptic and engine oil", "Autoclave still humming", "Blood still wet"],
+        description: "Converted shop unit beneath a noodle place. Heavy steel door. The PCs arrive expecting a meeting. They get a corpse and a smiling stranger.",
+        details: [
+          "Volkov in the back room. Throat opened. <strong>NOT Wren's signature</strong> — Wren's kills are quiet and signed. This is fast and brutal.",
+          "<strong>Halden</strong> is in the front room when the PCs arrive. Charcoal suit. Standing at the desk. Turning a pen between his fingers. Looks up when they enter and smiles.",
+          "He produces 'federal' credentials — they're fake, but real-looking. Tells them their case is now 'subject to interagency oversight' and they should stand down.",
+          "He calls each of them by name. He tells them, by name, <em>where each of them lives.</em>",
+          "He thanks them for their service. He walks out into the rain.",
+          "After he leaves: the PCs know there's a second predator on the board."
+        ],
+        mechanics: [
+          '<span class="scene-mech">[BR: Insight]</span> Hard — recognises Halden\'s credentials as fake',
+          '<span class="scene-mech">[BR: V-K]</span> — won\'t happen, Halden won\'t submit. But the smile is wrong.',
+          '<strong style="color:var(--red);">Do not engage Halden in combat here.</strong> He leaves of his own accord. If PCs draw on him: he disarms one PC bloodlessly, looks at them for a long second, leaves.'
+        ]
+      },
+      {
+        title: "Elias Pham's Safehouse — San Pedro Marina",
+        loc: "Wren walks past · mid Act Two",
+        atmos: ["Wet wood and rust", "Small boats on pylons", "Lights off — they should be on"],
+        description: "A retrofitted boat house, one of three identical units along a derelict wharf. Pham — last living name on Lin Ai's list — has been hiding here for three years, fully off-grid. He thought it was enough.",
+        details: [
+          "Pham is at his kitchen table when the PCs enter. <strong>Already dead.</strong>",
+          "<strong>Wren is standing behind him, holding the chair.</strong> She has waited for them.",
+          "She speaks three lines max: <em>\"You're not on the list. Don't make me put you there. He paid for the others.\"</em>",
+          "She goes out the window. Third floor, over water. Gone before the first PC reaches the sill.",
+          "On the kitchen table: Pham's confession in his own hand under duress, naming Cortez, Voss, Hadley Brent (already dead), and a fourth name water-damaged out.",
+          "<strong>Handout BR19-H02-B</strong> is here — Wren's three-line note, left for the PCs."
+        ],
+        mechanics: [
+          '<span class="scene-mech">[BR: Mobility]</span> — racing to the window. Even with success, she\'s gone.',
+          '<span class="scene-mech">[BR: Insight]</span> on her three lines — she means them. Not threatening, stating.',
+          'No combat. She does not engage. If the PCs fire, run it but she escapes the window regardless.'
+        ]
+      },
+      {
+        title: "Saltgrove Industrial Estate — Warehouse 7",
+        loc: "The truth · upper Act Two",
+        atmos: ["No rain — above the smog ceiling", "Hard white sky", "Wind through corrugated steel", "Salt cracks under boots"],
+        description: "Two hours north of central LA. The sky is genuinely visible here. A row of corrugated steel warehouses, mostly abandoned. Warehouse 7 is the one — the 2027/28 execution site for Wren's sisters.",
+        details: [
+          "Wren has prepared the interior as a memorial. Three salt-encrusted photographs nailed to a beam. Two of her sisters — dead. One of herself. Beneath each, a name in her own hand: <strong>Kira, Nine, herself.</strong>",
+          "Under a tarp on the floor: <strong>Handout BR19-H02-A</strong> — the salt-flats ledger page. Payments to 'Saltgrove Logistics LLC' from Pelican Holdings, dates correlating with the seven Directive 19 killings.",
+          "Acid-burn discolouration on the concrete floor in the back room. <em>This is where Kira and Nine were dissolved.</em>",
+          "Wren is not here now. She has come and gone."
+        ],
+        mechanics: [
+          '<span class="scene-mech">[BR: Observation]</span> notices Wren left this for them deliberately',
+          '<span class="scene-mech">[BR: Comprehend]</span> on the ledger — correlates the dates with the Lin Ai list'
+        ]
+      },
+      {
+        title: "Sera's Ambush — Parking Structure / Rooftop",
+        loc: "Combat scene · mid-to-upper Act Two",
+        atmos: ["Concrete and fluorescent", "Oil stain like a continent", "Sound grenade kicks it off"],
+        description: "GM picks the location based on flow: if PCs travel by car from the marina, Sera hits them in the parking structure they return to. If they go to salt flats first, parking lot of Warehouse 7.",
+        details: [
+          "Sera engages one PC subgroup with a suppressed pistol and combat blade.",
+          "She is not Wren — she is good, but she is human, and three Blade Runners can take her.",
+          "She fights to disable, not to kill.",
+          "<strong>If captured or wounded into talking:</strong> she gives the PCs everything — names, payment trails, warehouse executions, Cortez. She also asks the question: <em>\"Do you know what it is to have someone taken from you?\"</em>"
+        ],
+        mechanics: [
+          '<span class="scene-mech">[BR: Stress test]</span> after the sound grenade — fail loses one round to disorientation',
+          '<span class="scene-mech">[BR: Firearms / Close Combat]</span> opposed — Sera attacks at B/B',
+          '<span class="scene-mech">[BR: Insight]</span> on a captured Sera — she is not lying. She is broken.'
+        ]
+      },
+      {
+        title: "Personal Jeopardy Beat",
+        loc: "GM-triggered · late Act Two",
+        atmos: ["Off-screen", "Discovered, not witnessed"],
+        description: "A contact close to one of the PCs is killed. This is GM-chosen before the session. Land it once. Don't return to it.",
+        details: [
+          "<strong>Iris:</strong> Marisol Vance's widow — Iris's old partner's family — found in her apartment.",
+          "<strong>Saoirse:</strong> Her mother (widowed by Hashem's 2027 disappearance) — found dead.",
+          "<strong>Talia:</strong> Aaron's brother (her other uncle, still alive at session start) — found, scene staged like Aaron's.",
+          "<strong>Dmitri:</strong> His old CO who supported him after the 2027 blacklisting — found in a parking garage.",
+          "<strong>Marc / Cole:</strong> Their Wallace 'transition handler' — supportive, removed, leaves them more alone.",
+          "<strong>Trigger 3 stress dice on next roll for that PC.</strong> Don't depict the body. They find traces."
+        ],
+        mechanics: [
+          'No roll required to discover. The discovery IS the beat.',
+          '<span class="scene-mech">[BR: Humanity]</span> for replicant PCs — a moment of human grief that surprises them.'
+        ]
+      }
+    ],
+    pacing: "Hard checkpoint 2:45. If team isn't moving toward Sandoval Tower: Greer appears in the bullpen, orders them home for the night. That signals to the table that whatever they do next, they do off the books and RIGHT NOW. Fast-track: skip the salt-flats warehouse, have Wren leave the ledger somewhere easier."
+  },
+  3: {
+    title: "The Tower",
+    subtitle: "Showdown + escape · 30 minutes",
+    goal: "Three converging tracks. The team will split. Wren escapes regardless — the design choice is structural. The terrace scene is the heart. Run it slowly.",
+    scenes: [
+      {
+        title: "Sandoval Tower, 88th Floor — Fundraiser",
+        loc: "The political stage · 21:00",
+        atmos: ["Champagne and ozone", "Quiet of expensive carpet", "Orchid and tonic water", "Three hundred guests in formal black"],
+        description: "A converted observation level — domed glass, white-clothed tables, three hundred guests. Above the smog line. Cortez is in the green room at the rear with two staff. Scheduled at 21:30 to take the podium.",
+        details: [
+          "Service corridors behind the green room — not on the guest map.",
+          "Terrace runs around the south face. Doors unlocked. Wind hard.",
+          "<strong>Wren is descending toward Cortez through the service corridors.</strong>",
+          "<strong>Sera is on the roof above</strong> setting up the broadcast relay.",
+          "<strong>Halden is in the building</strong> hunting all of them."
+        ],
+        mechanics: [
+          'Six PCs will split naturally across three tracks: stop Wren / stop Sera / protect Cortez (or arrest her). Let them.',
+          '<span class="scene-mech">[BR: Stealth]</span> to move through the fundraiser unnoticed',
+          '<span class="scene-mech">[BR: Manipulation]</span> if approaching Cortez directly — she\'s gracious, deflecting'
+        ]
+      },
+      {
+        title: "Sandoval Tower — Roof / Sera's Broadcast",
+        loc: "Track A · runs parallel",
+        atmos: ["Hard wind", "Rain horizontal at this height", "Nobody comes here"],
+        description: "Flat industrial roof above the dome, HVAC bank, service ladder from the 90th-floor maintenance level. Sera has hacked the building's emergency broadcast relay. Broadcast file: 4 minutes 11 seconds.",
+        details: [
+          "If she runs the broadcast: every comm in the basin receives it as an emergency override. <strong>Handout BR19-H03-A</strong> goes live. The Directive 19 truth goes public.",
+          "PCs can stop her — she fights to delay, not kill. If wounded, she finishes upload from the ground.",
+          "If PCs talk her down: she stops the broadcast and surrenders. She has done her mother's work in another way — by living."
+        ],
+        mechanics: [
+          '<span class="scene-mech">[BR: Tech]</span> Hard — bypass her terminal lock before the upload completes',
+          '<span class="scene-mech">[BR: Manipulation]</span> Hard — talk her down (helped if Helen Park\'s name is invoked correctly)',
+          '<span class="scene-mech">[BR: Firearms]</span> opposed — fastest resolution, ugliest cost'
+        ]
+      },
+      {
+        title: "The Terrace — 88th Floor, South Face",
+        loc: "★ The climax ★ · Read slowly",
+        atmos: ["Wet stone underfoot", "Wind drops in the lee of the dome", "Twenty stories of nothing below", "City a low orange smear"],
+        description: "One PC ends up here alone with Wren — wounded by the night, by the case, or by their own choice. Wren is wounded. Calm. This is the heart of the scenario. Run the conversation. The dice come last, if at all.",
+        details: [
+          '<strong style="color:var(--magenta);">Wren\'s lines (read in sequence):</strong>',
+          '<em>"You came after me. That\'s your job. I\'m not angry."</em>',
+          '<em>"I had sisters. Their names were Kira and Nine. We were ordered to kill seven people, and we did, and then they took us to a warehouse and put my sisters\' heads on the concrete and shot them. I ran. I have been running for ten years."</em>',
+          '<em>"I know what you came here for. I know what you\'ll be told to write in the report. I know the [person] inside would have killed my sisters herself if the cell hadn\'t done it for her. He / she still believes it. That\'s the thing that takes the air out of me."</em>',
+          '<em>"Do you know what your own model number is? Do you know whose face is in your wedding photograph? Do you know whose voice you hear when you don\'t sleep? You don\'t. None of us do."</em>',
+          '<em>"I\'m going now. You can stop me, or you can let me go. Whichever you choose, the next thing you do tomorrow morning is the only thing about you that matters."</em>'
+        ],
+        mechanics: [
+          '<strong style="color:var(--amber);">Then, regardless of choice — Wren escapes:</strong>',
+          '<strong>Let her go:</strong> She nods once. Steps backward off the terrace into the rain. Gone.',
+          '<strong>Try to retire her:</strong> One opposed roll — Firearms vs her Mobility A. PC wins → she falls, body not recovered. PC loses → she disarms them, looks at them a long second, goes over. Either way: gone.',
+          '<strong style="color:var(--magenta);">The dice do not decide whether she lives. They decide what she costs.</strong>'
+        ]
+      }
+    ],
+    pacing: "Thirty minutes maximum. If unresolved at 3:15: skip remaining tracks, go directly to terrace scene with best-positioned PC. Let Wren leave. End on closing image."
+  }
+};
+
+// ============================================================
+// NPCs
+// ============================================================
+const NPCS = [
+  {
+    id: "greer",
+    name: "Lt. Marcus Greer",
+    nameColor: "amber",
+    role: "LAPD Rep-Detect Lieutenant — Compromised",
+    desc: "Late fifties, broad in a way that used to be muscle. Gold wedding ring he turns on his finger when nervous. A Mexican-style enamel mug with strong coffee, always.",
+    stats: {STR:"B", AGI:"C", WIT:"B", EMP:"C"},
+    skills: "Firearms C, Manipulation B, Insight B, Force C",
+    motive: "Took the envelope in 2027. Has a daughter at Stanford and a wife with early-onset Parkinson's. Not evil. Made his peace twelve years ago.",
+    knows: "Directive 19 was 'a necessary city operation' he was paid to overlook. Does not know targets, operatives, or architects. Knows enough to be terrified of what the PCs might dig up.",
+    disposition: "Friendly → Pressuring → Sabotaging. Will not draw a weapon on PCs himself. Sends Hara, or worse, Halden.",
+    activeIn: "1, 2, 3",
+    classified: "<strong>He is not the villain</strong> — he is the canary. Play him tired and afraid. The knock he has been waiting twelve years for comes tonight. He loves his daughter. He visits his wife in hospital on Sundays. Small sabotages first — misfiled reports, delayed comms — escalating as he panics."
+  },
+  {
+    id: "linai",
+    name: "Lin Ai",
+    nameColor: "amber",
+    role: "Independent Journalist — Reluctant Ally",
+    desc: "49, Chinese-Filipina, short grey hair recently cut by herself, navy peacoat she's had since 2024, analogue notebook in her inside pocket.",
+    stats: {STR:"C", AGI:"C", WIT:"A", EMP:"A"},
+    skills: "Manipulation B, Insight A, Connect B",
+    motive: "To publish the truth before she's killed for it. Has been waiting a decade for someone to come asking the right questions.",
+    knows: "The list of nine (Handout H01-A). The Yim / Aurelius Tyrell / 2028 Wallace push connection. Suspects but cannot prove Cortez was the architect.",
+    disposition: "Friendly but exhausted. Hands over what she has if PCs lean toward sympathy. Withholds if they push. Treated with respect → gives Volkov's address as parting gift.",
+    activeIn: "1",
+    classified: "Helen Park was her friend. She was 19 minutes late to the meeting Helen was killed walking to. She has carried that for ten years. <strong>If the PCs reference Helen by name with care, she trusts them.</strong> If they go in heavy-handed, she gives them the list but nothing else."
+  },
+  {
+    id: "marisol",
+    name: "Marisol Yu",
+    nameColor: "amber",
+    role: "City Morgue — Night Shift Clerk",
+    desc: "28, Filipina-American, three coffees deep, a tattoo of a stylised koi on her right forearm.",
+    stats: {STR:"C", AGI:"C", WIT:"B", EMP:"B"},
+    skills: "General exposition, Medical Aid C",
+    motive: "Get through her shift. Curious about the case in a normal, gossip-loving way.",
+    knows: "Coroner's notes. The paralytic. The timing — both bodies died within twenty minutes, two miles apart. Two killers.",
+    disposition: "Helpful. Will answer almost any question.",
+    activeIn: "1",
+    classified: "Useful expository NPC. If players miss Lin Ai, Marisol mentions her: <em>\"You should talk to the lady who's been writing about this kind of thing for ten years — she's nuts but she's still alive.\"</em> If Talia is at the table, Marisol hands her Aaron's effects awkwardly."
+  },
+  {
+    id: "halden",
+    name: "HALDEN",
+    nameColor: "cleaner",
+    role: "Wallace Internal Security — Nexus-9 Cleaner ⚠ TPK-CAPABLE",
+    desc: "Male-presenting, mid-thirties, charcoal suit, unhurried movements, pale grey eyes, dark hair short. A face you would not pick out of a crowd unless he wanted you to.",
+    stats: {STR:"A", AGI:"A", WIT:"A", EMP:"D"},
+    skills: "Firearms A, Close Combat A, Mobility A, Manipulation B, Insight A",
+    motive: "Eliminate Wren and any evidence of the cell's connection to Wallace. Kill any Blade Runners stupid enough to keep the file open.",
+    knows: "Everything Wallace knows. Names, families, service records, secrets. Authorised lethal force at his discretion.",
+    disposition: "Polite. Genuinely polite. Never raises his voice. Kills quickly. Stops when the work is done.",
+    gear: "Wallace blackweave armour (2). Suppressed heavy auto-pistol (3D6).",
+    activeIn: "2, 3",
+    classified: "<strong style='color:var(--red);'>RESTRAINT IS MANDATORY.</strong> Use him three times maximum: Volkov's clinic, a mid-Act-Two reminder (phone call or distant rooftop), the tower. If PCs engage him directly without overwhelming advantage, they WILL lose. <strong>The point of Halden is not the fight — it's the awareness that he is in the room.</strong><br><br>One-shot: kill him in Act Three. Campaign: let him walk. He remembers every face."
+  },
+  {
+    id: "wren",
+    name: "WREN",
+    nameColor: "replicant",
+    role: "Nexus-8 Combat Model — Directive 19 Survivor",
+    desc: "Female-presenting, tall, ash-blonde hair cut roughly to the jaw. Scar from corner of left mouth back along the jaw — from the 2028 warehouse. Eyes like wet concrete. Long oilcloth coat. Filter scarf she rarely raises.",
+    stats: {STR:"A", AGI:"A", WIT:"A", EMP:"B"},
+    skills: "Firearms A, Close Combat A, Mobility A, Stealth A, Observation B, Stamina A",
+    motive: "Finish the list. Kill the people who killed her sisters. Get the truth into the city's lungs before she goes. After that, no plan beyond <em>not be here.</em>",
+    knows: "Everything she lived. Handlers' names. Execution location. The 2027 target list. The fact that Cortez believed she was right.",
+    disposition: "Calm. Articulate when she chooses to speak. Will not engage PCs in combat in Act Two — she has nothing against them. Cornered without warning → defends surgically, leaves.",
+    gear: "Layered armour (2 under coat). Suppressed pistol (2D6+1). Combat blade (2D6).",
+    special: "Pre-Blackout Combat Programming — once per scene, an additional fast action.",
+    activeIn: "2, 3",
+    classified: "<strong>She is the scenario's true protagonist.</strong> Empathy is learned, not designed — but in ten years on the salt flats she has done the learning. She is morally clear-eyed in a way none of the humans in the scenario are.<br><br><strong style='color:var(--magenta);'>SHE ESCAPES. STRUCTURALLY. Built into the design.</strong> The terrace conversation is the climax, not the dice. Read her lines slowly. Let silence sit."
+  },
+  {
+    id: "sera",
+    name: "Sera Park",
+    nameColor: "amber",
+    role: "Human Apprentice — Helen Park's Daughter",
+    desc: "26, small-framed, dark hair short and uneven (cut herself), a tattoo of her mother's signature on the inside of her left wrist, eyes that don't blink as often as they should.",
+    stats: {STR:"B", AGI:"A", WIT:"B", EMP:"B"},
+    skills: "Firearms B, Close Combat B, Stealth A, Mobility B, Insight B, Manipulation C",
+    motive: "Finish her mother's work. Not disappoint Wren. Burn down the people who killed Helen.",
+    knows: "What Wren has told her. The names. The dates. The warehouse. Does NOT know Wren's plan for tonight — Wren did not tell her the part where one of them might not walk out.",
+    disposition: "Cold to PCs. Fights to disable. Captured by sympathetic PC, especially after personal jeopardy beat → talks quietly in fragments. Asks PCs whether they know what it is to have someone taken.",
+    gear: "Light armour (1). Suppressed pistol (2D6). Combat blade (1D6+1). One sound grenade.",
+    activeIn: "2, 3",
+    classified: "She was nine when her mother died. She has been Wren's apprentice for two years. She is a competent killer who became one too young. <strong>If captured and treated with care, she gives the team everything.</strong> If killed in the parking-structure ambush, the team has lost their easiest path to the full truth."
+  },
+  {
+    id: "hara",
+    name: "Det. Yuki Hara",
+    nameColor: "amber",
+    role: "LAPD Liaison — Greer's Monitor",
+    desc: "34, third-generation Japanese-American, athletic, plain navy with a leather jacket. Calm voice, careful eyes.",
+    stats: {STR:"B", AGI:"B", WIT:"A", EMP:"B"},
+    skills: "Firearms B, Insight A, Connect A, Manipulation B",
+    motive: "Do her job and protect her career. Assigned to 'support' the PCs and report back to Greer. Starting to suspect what's going on.",
+    knows: "Greer's behaviour is off. Has been archiving her reports separately. Has not crossed any lines yet.",
+    disposition: "Outwardly cooperative. By late Act Two: on the brink. PCs trust her → ally in Act Three. PCs alienate her → stays with Greer, PCs lose a card.",
+    activeIn: "1, 2, 3",
+    classified: "<strong>The PC ally pivot.</strong> If your table includes Talia or Iris, give Hara a personal connection to one of them — former academy classmate, ex-partner, the godmother of someone's child. The decision Greer asks her to make in Act Three can be a heartbreak beat. <strong>Pre-decide</strong> which PC she pivots toward based on the table chemistry."
+  },
+  {
+    id: "cortez",
+    name: "Deputy Mayor Helena Cortez",
+    nameColor: "amber",
+    role: "Architect of Directive 19 — Mayoral Frontrunner",
+    desc: "Mid-forties, black hair shoulder-length and immaculate, a dark green dress chosen to read maternal and serious in equal measure. A faint trembling in her left hand she has hidden for ten years.",
+    stats: {STR:"C", AGI:"C", WIT:"A", EMP:"B"},
+    skills: "Manipulation A, Insight A, Connect A",
+    motive: "Win the primary. Bury Directive 19. Live with what she did by continuing to believe she was right.",
+    knows: "Everything. She ran this operation. She is its author.",
+    disposition: "Cordial, exhausted, hard to hate face-to-face. Offers PCs a future if they help her tonight. Means it. Does not see herself as a villain.",
+    activeIn: "1 (offscreen), 2, 3",
+    classified: "<strong style='color:var(--magenta);'>Not a cartoon. The hardest character in the scenario to play well.</strong><br><br>She was thirty in 2027. She believed Directive 19 was a temporary measure to prevent worse violence and a worse future. She believes this still. The horror is not what she did — the horror is that, in her position, she would do it again.<br><br><strong>Give her one private grace before the session.</strong> A scholarship she funds anonymously. A pet she rescues. A music she loves. Whichever lands for your table. Real people who do real harm are also full people."
+  }
+];
+
+// ============================================================
+// CLUES
+// ============================================================
+const CLUES = [
+  // Essential — Act One
+  {id:1, type:"essential", title:"DIR-019 mark on Voss's mirror", loc:"Bradbury penthouse",
+    body:"In shaving cream on the bathroom mirror. A signature — the killer is not random.",
+    meta:"[BR: Observation] · Walking into the bathroom", state:0},
+  {id:2, type:"essential", title:"Pelican Holdings → Cortez", loc:"Voss's tablet, banking app",
+    body:"Three years of monthly $42,000 payments. Shell company → three layers → terminates at Office of the Deputy Mayor, 14th Floor.",
+    meta:"[BR: Tech] to bypass screen-lock · OR [BR: Insight] notices open app", state:0},
+  {id:3, type:"essential", title:"Lin Ai's list of nine", loc:"The Bowl noodle bar",
+    body:"Six dead 2026-2028 + Voss + Ostrow + one alive: Elias Pham at San Pedro Marina.",
+    meta:"Handout BR19-H01-A · Given on respectful conversation", state:0},
+  {id:6, type:"essential", title:"Dr Volkov — Chinatown cutter", loc:"Lin Ai's parting gift OR Voss's tablet",
+    body:"Black-market cutter. Lin Ai believes he treated 'the tall woman' six months ago.",
+    meta:"Conversation OR [BR: Tech]", state:0},
+  // Essential — Act Two
+  {id:7, type:"essential", title:"Halden's existence", loc:"Volkov's clinic",
+    body:"A second predator on the board. Wallace is involved. The smile is wrong.",
+    meta:"[BR: Insight] reads the fake credentials", state:0},
+  {id:8, type:"essential", title:"Pham's confession", loc:"Pham safehouse, after Wren leaves",
+    body:"Names: Cortez, Voss, Brent (dead), [fourth name water-damaged]. Confirms the cell.",
+    meta:"On the kitchen table — Wren left it there", state:0},
+  {id:9, type:"essential", title:"The Saltgrove warehouse", loc:"Pham's confession OR Aaron's files OR Sera",
+    body:"The execution site. Wren's memorial to her sisters. The ledger of payments (Handout H02-A).",
+    meta:"Multiple paths — at least one will land", state:0},
+  {id:11, type:"essential", title:"The fundraiser tonight", loc:"Greer's calendar / Pham / Lin Ai / Hara",
+    body:"Tonight 21:00. Sandoval Tower. 88th floor. Cortez.",
+    meta:"News, conversation, or terminal", state:0},
+
+  // Optional
+  {id:4, type:"optional", title:"Two killers — different prints", loc:"Bradbury penthouse",
+    body:"Boot print in the kitchen (military, women's 9) and a wet footprint in the bedroom (smaller). More than one person is doing this.",
+    meta:"[BR: Observation] across two rooms", state:0},
+  {id:5, type:"optional", title:"Ostrow's 2027 case files (Talia)", loc:"Morgue, Aaron's effects",
+    body:"Aaron had the unsolved Marisol Vance 2028 'mugging' file — full of inconsistencies, never closed. The hardest hook in the scenario: Talia learns Aaron was bought.",
+    meta:"Talia inherits as next of kin", state:0},
+  {id:10, type:"optional", title:"Sera's identity", loc:"Parking-structure ambush, captured Sera",
+    body:"She is Helen Park's daughter. Wren has trained her for two years. Sera was 9 when her mother died.",
+    meta:"[BR: Manipulation] / kindness with captured Sera", state:0},
+
+  // Special
+  {id:12, type:"special", title:"Personal jeopardy beat", loc:"GM-triggered, late Act Two",
+    body:"A contact close to one PC is killed. Pick the PC and contact before the session. Off-screen, discovered.",
+    meta:"3 stress dice next roll. Don't depict the body. Land it once.", state:0}
+];
+
+const FALLBACKS = [
+  {missed:"Pelican Holdings (Clue 2)", trigger:"Greer's irritated phone call mentions Pelican Holdings dismissively — 'Forensic Accounting cleared it, don't waste your time' — and the name lands on the table for the PCs to pick up."},
+  {missed:"Lin Ai (Clue 3)", trigger:"Marisol Yu at the morgue mentions her unprompted: <em>'You should talk to the lady who's been writing about this kind of thing for a decade.'</em>"},
+  {missed:"Volkov (Clue 6)", trigger:"Lin Ai gives Volkov's address as a parting gift even if the PCs left her on bad terms."},
+  {missed:"Salt-flats warehouse (Clue 9)", trigger:"Wren leaves Handout BR19-H02-A in a locker the PCs already have access to. Hara delivers it personally with a question on her face."},
+  {missed:"Fundraiser tonight (Clue 11)", trigger:"Hara mentions it in passing. Greer's open desktop calendar is visible in his office."},
+  {missed:"Anything in Act Two", trigger:"Wren slips a written message under a windscreen wiper: <em>'Sandoval. 21:00 — 88. Don't get in my way. — W'</em> (which is also Handout BR19-H02-B)."}
+];
+
+// ============================================================
+// HANDOUTS
+// ============================================================
+const HANDOUTS = [
+  {id:"h00a", num:"BR19-H00-A", title:"Voss Crime Scene Report", when:"Introduction · pre-game", style:"",
+    text:`LAPD INTERNAL — REP-DETECT
+INCIDENT REPORT 037-2037-11473
+PRIORITY: ALPHA — CAPTAIN'S EYES
+
+LOCATION:  Bradbury Tower, Penthouse 41-A
+TIMECODE:  03:14:22 — 21 March 2037
+WEATHER:   Rain (acidic index 4.2)
+
+DECEASED:
+  VOSS, LAZLO M. — male, 61, retired Captain LAPD
+  Cause: Asphyxiation by drowning
+  Time of death: 22:50 — 23:10 estimated
+  Defensive wounds: NONE
+
+CONCURRENT DECEASED:
+  EX-OFFICER KESHAUN PAYNE — male, 39
+  EX-OFFICER MARION VELASCO — female, 41
+  Both: cervical fracture, single application of force, professional
+
+CRIME SCENE INDICATORS:
+  - Inscription on master bathroom mirror: "DIR-019"
+  - Boot print, partial, kitchen tile — military tread, est. women's 9
+  - Building security: cameras wiped 21:30 to 03:00 — competent erasure
+  - Penthouse locks: undisturbed.  Subject admitted killer voluntarily.
+
+ASSIGNED:  Rep-Detect, full team
+NOTE:      Lt. Greer requesting 72-hr closure window.
+           Media containment requested by Mayor's Office liaison.`},
+  {id:"h01a", num:"BR19-H01-A", title:"Lin Ai's List of Nine", when:"Meeting Lin Ai · Act One", style:"h-handwritten",
+    text:`  the nine.
+  these are the ones I'm sure of.
+  six are dead. one disappeared but I count him.
+  two are still upright as of last week.
+
+  - Sen. Marcus YIM         — Sepulveda Pass, 2027.    "accident"
+  - Aurelius TYRELL         — Pasadena. 2027.          "home invasion"
+  - Marisol VANCE           — Westlake. 2028.          "mugging"
+  - Hashem LIN              — vanished. 2028.          no body
+  - Helen PARK              — Echo Park. 2028.         "overdose"
+  - Esfir VOLKOV            — Vernon. 2028.            "factory fire"
+  - Det. Aaron OSTROW       — bought, 2027.            lived, until now
+  - Capt. Lazlo VOSS        — paid, 2027-onward.       lived, until now
+  - Elias PHAM              — Tyrell sec director.
+                              2026. still alive,
+                              last I knew. off-grid.
+                              san pedro.
+
+  helen was my friend.  she was on her way to
+  meet me when she died.  i was nineteen
+  minutes late.  i have been late ever since.
+
+                                                       - L`},
+  {id:"h01b", num:"BR19-H01-B", title:"Voss Bank Statement Excerpt", when:"Forensic data dive · Act One", style:"h-bank",
+    text:`ACCOUNT:  Voss, L.M. — Pacific National 4471-X-002
+PERIOD:   01 Jan 2034 — 28 Feb 2037
+CURRENCY: USD (post-Blackout)
+
+. . . [redacted entries] . . .
+
+12 Feb 2037   CREDIT   $42,000.00    PELICAN HOLDINGS GROUP LLC   ★★★
+12 Jan 2037   CREDIT   $42,000.00    PELICAN HOLDINGS GROUP LLC   ★★★
+12 Dec 2036   CREDIT   $42,000.00    PELICAN HOLDINGS GROUP LLC   ★★★
+
+. . . [pattern repeats monthly back to 12 Apr 2027] . . .
+
+★★★  =  Forensic Accounting flag.  Shell company — three layers
+        deep, terminates at policy office, City Hall, 14th Floor.
+        Office of the Deputy Mayor (Hon. H. Cortez).`},
+  {id:"h02a", num:"BR19-H02-A", title:"Salt-Flats Facility Ledger", when:"Saltgrove Warehouse 7 · Act Two", style:"h-aged",
+    text:`  SALTGROVE LOGISTICS LLC                   page 7 of 9
+  YEAR:  2027 / 28                        (Pacific time)
+
+  date          item / service          authorised      pay (USD)
+  ---------------------------------------------------------------
+  04/12/2027   transport — north flats  [H.B.]         12,000
+  04/13/2027   secure storage — 7 days  [H.B.]          3,000
+  04/19/2027   removal — three units    [H.B.]         45,000  ✓
+               solvent disposal contract
+               site clean (Warehouse 7)
+  ---------------------------------------------------------------
+  05/02/2027   transport — Sepulveda    [H.B.]          1,500   ★
+  05/03/2027   transport — Pasadena     [H.B.]          1,500   ★
+  ---------------------------------------------------------------
+  (..continued page 8..)
+
+  ★ correlated to YIM / TYRELL kills
+  ✓ — three units = K., N., W.
+       N.B.   "W."   left site under own control
+                   04/19   23:47.   Pursuit unsuccessful.
+                   Contract status:  EXTERNAL.`},
+  {id:"h02b", num:"BR19-H02-B", title:"Wren's Note", when:"Pham safehouse · after Wren leaves", style:"h-handwritten",
+    text:`                                        SANDOVAL.
+                                        21:00 — 88.
+                                        Don't get in my way.
+
+                                                            — W`},
+  {id:"h03a", num:"BR19-H03-A", title:"The Broadcast", when:"Act Three · only if broadcast lands", style:"h-broadcast",
+    text:`              EMERGENCY MUNICIPAL OVERRIDE
+                  21:34   21 MARCH 2037
+              ─────────────────────────────
+
+   In 2027, a Los Angeles city official ordered
+   the murder of seven people including a
+   sitting senator, the heir of the Tyrell
+   estate, a journalist named Helen Park,
+   a bio-engineer named Hashem Lin, and
+   a union organiser named Esfir Volkov.
+
+   The operation was called DIRECTIVE 19.
+   The official is HELENA CORTEZ.
+   The weapons were three replicants
+   named KIRA, NINE, and WREN.
+   Two of them were murdered after the work.
+   One of them is speaking to you now.
+
+   These are the names. This is the truth.
+
+   Look it up tomorrow.  Look it up next year.
+   They will tell you it was a system error.
+   It was not.
+   It was a choice.
+
+   I will not be here in the morning.
+   But you saw this.
+
+                                  — W`}
+];
+
+// ============================================================
+// PRE-GENERATED CHARACTERS
+// ============================================================
+const PLAYERS = [
+  {
+    id:"iris", name:"Iris Kovac", archetype:"Senior Investigator", type:"human",
+    stats:{STR:"B (10)", AGI:"C (8)", WIT:"A (12)", EMP:"B (10)"},
+    skills:"Insight A, Manipulation B, Observation B, Connect B, Firearms C, Stealth C",
+    specialty:"Hunch — once per session, ask a single yes/no question about a scene; GM must answer truthfully.",
+    gear:"Service sidearm (LPD-issue, 2D6), departmental coat with reflective amber piping, badge, personal flask (vodka, real glass, pre-Blackout).",
+    keyMemory:"A partner named Marisol Vance, killed in 2027 in what was officially a Westlake mugging. Iris attended the scene. She has never been satisfied with the official report.",
+    hook:"Marisol Vance's name is on Lin Ai's list of nine in Act One. <strong>The player should be the one who pieces it together.</strong> Same name. Same partner. Let the realisation land in their own time."
+  },
+  {
+    id:"marc", name:"Marc Esposito", archetype:"Nexus-9 · Wallace Secondment", type:"replicant",
+    stats:{STR:"B (10)", AGI:"B (10)", WIT:"B (10)", EMP:"C (8)"},
+    skills:"Firearms B, Close Combat B, Mobility B, Observation B, Tech C, Driving C",
+    specialty:"Combat-Trained — re-roll a single failed Close Combat or Firearms roll per scene.",
+    gear:"Service sidearm, Wallace-issue blade (concealed in coat lining), folded photograph of his 'wife' (implanted memory).",
+    keyMemory:"Wedding day on a beach he believes was Big Sur, 2024. The memory feels real. <strong>It is.</strong> It belongs to Hashem Lin — Saoirse's missing father — harvested from his archived neural tissue in 2031.",
+    hook:"If Marc sees Saoirse's family photograph, the memory triggers — he recognises the man he's never met as the man in his own wedding photo. <strong>He is 'married' to her dead father's wife.</strong> He will not be told the truth in this scenario. The seed is planted for a follow-up."
+  },
+  {
+    id:"saoirse", name:"Saoirse Lin", archetype:"Forensic Specialist", type:"human",
+    stats:{STR:"C (8)", AGI:"B (10)", WIT:"A (12)", EMP:"B (10)"},
+    skills:"Observation A, Tech B, Medical Aid B, Insight C, Comprehend B, Firearms D",
+    specialty:"Forensics — once per scene, the GM tells the player one extra detail about a body or scene the others didn't catch.",
+    gear:"Field forensics kit (bio-scanner, particulate sampler), regulation sidearm (rarely drawn), small photograph of her father Hashem Lin.",
+    keyMemory:"Age fourteen. The LAPD officer at the door telling her mother that her father had 'left no forwarding address.' The exact phrasing. The closed door afterwards.",
+    hook:"Saoirse has spent twelve years quietly looking for what happened to her father. Lin Ai almost wrote the story with Helen Park before Helen died — Lin Ai has Hashem's name in her files. <strong>Saoirse is going to find out what happened to her father during this scenario.</strong> Whether she tells the table is her choice."
+  },
+  {
+    id:"dmitri", name:"Dmitri Vance", archetype:"Tactical · Ex-Military", type:"human",
+    stats:{STR:"A (12)", AGI:"B (10)", WIT:"C (8)", EMP:"C (8)"},
+    skills:"Firearms A, Close Combat B, Stamina B, Force B, Driving C, Stealth C",
+    specialty:"Hard Target — when an enemy targets Dmitri with a Firearms attack, the GM rolls one fewer stress die against him.",
+    gear:"Heavy service pistol (3D6, semi-auto), tactical vest (1-armor under coat), combat knife, folded contract from 2027 he never signed.",
+    keyMemory:"A 2027 meeting in a City Hall sub-basement office. A young aide — Helena Cortez — offering him 'special work' at three times Army salary. He walked out. They blacklisted him.",
+    hook:"Cortez will not recognise him on sight — too many faces — but if Dmitri reminds her of that 2027 meeting, <strong>her face changes</strong>. He is one of the few people alive who can place her in the cell's office. A powerful card for the player to play in Act Two or Three."
+  },
+  {
+    id:"talia", name:"Talia Ostrow", archetype:"Field Detective", type:"human",
+    stats:{STR:"C (8)", AGI:"B (10)", WIT:"B (10)", EMP:"A (12)"},
+    skills:"Insight A, Manipulation B, Connect A, Observation B, Firearms C, Medical Aid C",
+    specialty:"Family in Blue — once per session, name a contact in any precinct, division, or supporting agency.",
+    gear:"Service sidearm, sentimental notebook, her uncle Aaron Ostrow's gold pocket watch (still keeps time).",
+    keyMemory:"Sunday dinners at her uncle Aaron's house through her teens. He retired from LAPD homicide in 2029, took a judgeship, drank a lot. He died last night.",
+    hook:"Aaron Ostrow is the second body in Act One. <strong>Talia inherits his files</strong>, including a 2027 homicide file (Marisol Vance) that was never closed. Aaron was <em>bought</em>, not killed, by the cell in 2027 — Wren killed him in 2037 when she found out. <strong>Talia learns her beloved uncle was complicit.</strong> The hardest hook in the scenario. Let it bleed slowly."
+  },
+  {
+    id:"cole", name:"Cole Whitford", archetype:"Nexus-9 · Combat Model", type:"replicant",
+    stats:{STR:"A (12)", AGI:"A (12)", WIT:"C (8)", EMP:"D (6)"},
+    skills:"Firearms A, Close Combat A, Mobility B, Stamina B, Force B, Observation C",
+    specialty:"Designed for This — when retiring a replicant, Cole rolls one extra base die.",
+    gear:"Heavy service pistol (3D6), Wallace blade, no personal effects.",
+    keyMemory:"Activation, 2034. A clean white room. A voice that said <em>Welcome, Cole. You are needed.</em>",
+    hook:"For six weeks Cole has been having flashes — combat, salt wind, a woman's voice he doesn't recognise saying 'sister.' Wallace medical adjusted his dose. <strong>The flashes are fragments of one of Wren's executed sisters' memories</strong>, harvested 2028 and recycled into Cole's Nexus-9 template seven years later. Wallace doesn't waste material. If Cole meets Wren on the terrace, she may recognise something in him before he does."
+  }
+];
+
+// ============================================================
+// REFERENCE TABLES
+// ============================================================
+const REF_TABLES = [
+  {title:"Core Roll Mechanic",
+    cols:["Attribute / Skill", "Value", "Dice"],
+    rows:[
+      ["A", "12", "Roll 12 D6"],
+      ["B", "10", "Roll 10 D6"],
+      ["C", "8", "Roll 8 D6"],
+      ["D", "6", "Roll 6 D6"]
+    ],
+    note:"Total dice pool = Attribute dice + Skill dice. Count 6s = successes. One success = pass. Multiple successes = better result. Failed rolls may trigger [BR: Stress test]."},
+  {title:"Skill Quick Reference for Directive 19",
+    cols:["Skill", "Use Cases in This Scenario"],
+    rows:[
+      ["Manipulation", "Pressuring Lin Ai (hard) · Approaching Cortez (hard) · Talking down Sera"],
+      ["Insight", "Reading Halden's smile · Wren's three lines at Pham's · Cortez's deflection"],
+      ["Observation", "DIR-019 mark · Two boot prints · Saltgrove memorial details"],
+      ["Connect", "Talia's LAPD network · Iris's old contacts · Hara as a pivot"],
+      ["Tech", "Voss's tablet · Sera's broadcast terminal · Hacking Greer's calendar"],
+      ["Medical Aid", "Paralytic ID at morgue · Stabilising wounded PCs in Act Two/Three"],
+      ["Stamina / Force", "Halden's intimidation · Sera in close quarters · Climb to roof"],
+      ["Mobility / Stealth", "Pursuing Wren · Service corridors at Sandoval · Terrace approach"],
+      ["Firearms / Close Combat", "Sera ambush · Halden (DON'T) · The terrace opposed roll"],
+      ["Driving", "Pursuit from marina · Salt flats run · Tower approach"]
+    ],
+    note:""},
+  {title:"Stress Dice Triggers",
+    cols:["Trigger", "Stress Dice"],
+    rows:[
+      ["First time a PC sees Wren", "+2 on next roll"],
+      ["First time a PC realises Greer is dirty", "+1"],
+      ["Personal jeopardy beat (contact dies)", "+3 next scene"],
+      ["Halden engagement", "+2 every round"],
+      ["Replicant PC discovers a stolen memory beat", "+2"],
+      ["Terrace scene", "ZERO — conversation, not test"]
+    ],
+    note:"Stress accumulates — track it. Stress dice rolled with 1 add Stress Points. High Stress reduces dice pool."},
+  {title:"Voigt-Kampff Use",
+    cols:["Subject", "Result"],
+    rows:[
+      ["Wren (if she submits)", "She passes effortlessly. Ten years of practice."],
+      ["Halden", "Will not submit. Smile is wrong."],
+      ["Sera", "Human. Genuine emotional responses. Off the charts."],
+      ["Cortez", "Will not submit, but if forced — human, calm, manipulative."],
+      ["Marc / Cole (PCs)", "Standard Wallace Nexus-9 profile. Pass."],
+      ["Iris (PC)", "Pass. The ambiguity is in your prep notes, not in the V-K."]
+    ],
+    note:"In 2037, a senior Blade Runner trusts a real conversation over a machine."},
+  {title:"Combat Quick — When It Lands",
+    cols:["Action", "Roll"],
+    rows:[
+      ["Attack with pistol", "Firearms + Agility, range modifiers apply"],
+      ["Attack with blade", "Close Combat + Strength"],
+      ["Dodge / dive for cover", "Mobility + Agility, opposed"],
+      ["First Aid in scene", "Medical Aid + Wits, one success stabilises"],
+      ["Suppressing fire", "Firearms, stress on target rolls in zone"]
+    ],
+    note:"Damage typically 2D6-3D6 against armour. PCs heal slow (Medical Aid + rest). Halden is fast. Wren is faster. Don't push them into a direct fight unless the table has chosen it."},
+  {title:"Promotion Points and Humanity",
+    cols:["Action", "Effect"],
+    rows:[
+      ["Retire a replicant target", "+1 Promotion Point"],
+      ["Refuse an order from Greer", "−1 Promotion eligibility (long-term)"],
+      ["Let Wren walk on the terrace", "0 Promotion · +1 Humanity"],
+      ["Try to retire Wren on the terrace", "+1 Promotion (file as retired) · −1 Humanity"],
+      ["Help broadcast the truth", "0 Promotion · +2 Humanity · Internal Affairs problem"],
+      ["Lie in the report to protect Cortez", "+1 Promotion · −2 Humanity"]
+    ],
+    note:"For replicant PCs (Marc, Cole), Humanity loss is registered differently — they didn't start with the human baseline assumption. Their losses are about what they choose to become."}
+];
+
+
+// ============================================================
+// STATE & PERSISTENCE
+// ============================================================
+const STORAGE_KEY = "directive19_session_state_v1";
+let state = {
+  clues: {},        // clueId -> 0 (pending) | 1 (found) | 2 (missed)
+  handouts: {},     // handoutId -> bool (shown)
+  classified: {},   // npcId -> bool (revealed)
+  timerSeconds: 0,
+  timerRunning: false,
+  currentAct: 0     // 0 = intro, 1/2/3, 4 = epilogue
+};
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const saved = JSON.parse(raw);
+      state = Object.assign(state, saved);
+      // never auto-resume the timer running across sessions
+      state.timerRunning = false;
+    }
+  } catch (e) { console.warn("Could not load state", e); }
+}
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function navTo(screen) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const screenEl = document.getElementById('screen-' + screen);
+  const navEl = document.getElementById('nav-' + screen);
+  if (screenEl) screenEl.classList.add('active');
+  if (navEl) navEl.classList.add('active');
+  document.getElementById('main').scrollTop = 0;
+}
+
+function toggleCard(headEl) {
+  headEl.parentElement.classList.toggle('open');
+}
+
+// ============================================================
+// RENDER — ACTS
+// ============================================================
+let currentActView = 1;
+function showAct(num) {
+  currentActView = num;
+  document.querySelectorAll('.act-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('actTab-' + num).classList.add('active');
+  renderActContent(num);
+}
+
+function renderActContent(num) {
+  const act = ACTS[num];
+  const root = document.getElementById('act-content');
+  let html = `<div class="card open">
+    <div class="card-head"><div class="card-head-text">
+      <div class="card-title" style="color: var(--amber);">ACT ${['','ONE','TWO','THREE'][num]} — ${act.title}</div>
+      <div class="card-sub">${act.subtitle}</div>
+    </div></div>
+    <div class="card-body">
+      <div class="scene-section-title">Goal</div>
+      <div class="scene-section-body" style="margin-bottom:14px;">${act.goal}</div>
+    </div>
+  </div>`;
+
+  act.scenes.forEach((scene, i) => {
+    html += `<div class="scene-card${i===0?' open':''}">
+      <div class="scene-head" onclick="this.parentElement.classList.toggle('open')">
+        <div>
+          <div class="scene-title">${scene.title}</div>
+          <div class="scene-loc">${scene.loc}</div>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="scene-body">`;
+    if (scene.atmos && scene.atmos.length) {
+      html += `<div class="scene-section"><div class="scene-section-title">Atmosphere</div><div>`;
+      scene.atmos.forEach(a => html += `<span class="atmosphere-tag">${a}</span>`);
+      html += `</div></div>`;
+    }
+    if (scene.description) {
+      html += `<div class="scene-section"><div class="scene-section-title">Description</div><div class="scene-section-body">${scene.description}</div></div>`;
+    }
+    if (scene.details && scene.details.length) {
+      html += `<div class="scene-section"><div class="scene-section-title">Key Details / Secrets</div><div class="scene-section-body"><ul>`;
+      scene.details.forEach(d => html += `<li>${d}</li>`);
+      html += `</ul></div></div>`;
+    }
+    if (scene.mechanics && scene.mechanics.length) {
+      html += `<div class="scene-section"><div class="scene-section-title">Mechanics</div><div class="scene-section-body"><ul>`;
+      scene.mechanics.forEach(m => html += `<li>${m}</li>`);
+      html += `</ul></div></div>`;
+    }
+    html += `</div></div>`;
+  });
+
+  if (act.pacing) {
+    html += `<div class="card open" style="border-color: var(--amber);">
+      <div class="card-head"><div class="card-head-text">
+        <div class="card-title" style="color: var(--amber);">⚠ Pacing Note — Act ${['','One','Two','Three'][num]}</div>
+      </div></div>
+      <div class="card-body">${act.pacing}</div>
+    </div>`;
+  }
+
+  root.innerHTML = html;
+}
+
+// ============================================================
+// RENDER — NPCs
+// ============================================================
+function renderNPCs() {
+  const root = document.getElementById('npc-content');
+  let html = '';
+  NPCS.forEach(npc => {
+    const cls = npc.nameColor === 'replicant' ? 'replicant'
+              : npc.nameColor === 'cleaner' ? 'cleaner' : '';
+    const revealed = state.classified[npc.id];
+    html += `<div class="npc-card">
+      <div class="npc-name ${cls}">${npc.name}</div>
+      <div class="npc-role">${npc.role}</div>
+      <div class="npc-row"><div class="npc-label">Appearance</div><div class="npc-value">${npc.desc}</div></div>
+      <div class="npc-stat-row">
+        <div class="npc-stat-cell"><div class="npc-stat-label">STR</div><div class="npc-stat-value">${npc.stats.STR}</div></div>
+        <div class="npc-stat-cell"><div class="npc-stat-label">AGI</div><div class="npc-stat-value">${npc.stats.AGI}</div></div>
+        <div class="npc-stat-cell"><div class="npc-stat-label">WIT</div><div class="npc-stat-value">${npc.stats.WIT}</div></div>
+        <div class="npc-stat-cell"><div class="npc-stat-label">EMP</div><div class="npc-stat-value">${npc.stats.EMP}</div></div>
+      </div>
+      <div class="npc-row"><div class="npc-label">Skills</div><div class="npc-value">${npc.skills}</div></div>
+      <div class="npc-row"><div class="npc-label">Motivation</div><div class="npc-value">${npc.motive}</div></div>
+      <div class="npc-row"><div class="npc-label">Knows</div><div class="npc-value">${npc.knows}</div></div>
+      <div class="npc-row"><div class="npc-label">Disposition</div><div class="npc-value">${npc.disposition}</div></div>`;
+    if (npc.gear) html += `<div class="npc-row"><div class="npc-label">Gear</div><div class="npc-value">${npc.gear}</div></div>`;
+    if (npc.special) html += `<div class="npc-row"><div class="npc-label">Special</div><div class="npc-value">${npc.special}</div></div>`;
+    html += `<div class="npc-row"><div class="npc-label">Active In</div><div class="npc-value">Act ${npc.activeIn}</div></div>`;
+    if (npc.classified) {
+      html += `<button class="reveal-btn" onclick="toggleClassified('${npc.id}', this)">${revealed ? 'HIDE GM NOTES' : 'REVEAL GM NOTES'}</button>
+        <div class="classified ${revealed ? 'show' : ''}" id="classified-${npc.id}">
+          <div class="classified-label">GM EYES ONLY</div>${npc.classified}
+        </div>`;
+    }
+    html += `</div>`;
+  });
+  root.innerHTML = html;
+}
+
+function toggleClassified(id, btn) {
+  const box = document.getElementById('classified-' + id);
+  const isOpen = box.classList.toggle('show');
+  state.classified[id] = isOpen;
+  btn.textContent = isOpen ? 'HIDE GM NOTES' : 'REVEAL GM NOTES';
+  saveState();
+}
+
+// ============================================================
+// RENDER — CLUES
+// ============================================================
+function renderClues() {
+  const essRoot = document.getElementById('essential-clues');
+  const optRoot = document.getElementById('optional-clues');
+  const fbRoot = document.getElementById('fallback-list');
+
+  const renderClue = (c) => {
+    const s = state.clues[c.id] || 0;
+    const cls = s === 1 ? 'found' : s === 2 ? 'missed' : '';
+    return `<div class="clue-item ${cls}" onclick="cycleClue(${c.id})">
+      <div class="clue-num">#${c.id}</div>
+      <div class="clue-content">
+        <div class="clue-title">${c.title} ${s===1?'✓':s===2?'✗':''}</div>
+        <div class="clue-body">${c.body}</div>
+        <div class="clue-meta">${c.loc} · ${c.meta}</div>
+      </div>
+    </div>`;
+  };
+
+  essRoot.innerHTML = CLUES.filter(c => c.type === 'essential').map(renderClue).join('');
+  optRoot.innerHTML = CLUES.filter(c => c.type !== 'essential').map(renderClue).join('');
+
+  let fbHtml = '';
+  FALLBACKS.forEach(f => {
+    fbHtml += `<div class="card open"><div class="card-head"><div class="card-head-text">
+      <div class="card-title" style="font-size:14px;">If missed: ${f.missed}</div>
+    </div></div><div class="card-body" style="padding-top:8px;">${f.trigger}</div></div>`;
+  });
+  fbRoot.innerHTML = fbHtml;
+
+  // Progress
+  const essTotal = CLUES.filter(c => c.type === 'essential').length;
+  const essFound = CLUES.filter(c => c.type === 'essential' && state.clues[c.id] === 1).length;
+  document.getElementById('essential-count').textContent = essFound + '/' + essTotal;
+  document.getElementById('essential-bar').style.width = (essFound/essTotal * 100) + '%';
+  document.getElementById('badge-clues').textContent = essTotal - essFound;
+}
+
+function cycleClue(id) {
+  const cur = state.clues[id] || 0;
+  state.clues[id] = (cur + 1) % 3;
+  saveState();
+  renderClues();
+}
+
+// ============================================================
+// RENDER — HANDOUTS
+// ============================================================
+function renderHandouts() {
+  const root = document.getElementById('handout-list');
+  let html = '';
+  HANDOUTS.forEach(h => {
+    const shown = state.handouts[h.id];
+    html += `<div class="handout-tile ${shown ? 'shown' : ''}" onclick="openHandout('${h.id}')">
+      <div class="handout-id">${h.num}${shown ? ' · SHOWN' : ''}</div>
+      <div class="handout-title">${h.title}</div>
+      <div class="handout-when">${h.when}</div>
+    </div>`;
+  });
+  root.innerHTML = html;
+}
+
+function openHandout(id) {
+  const h = HANDOUTS.find(x => x.id === id);
+  if (!h) return;
+  const content = document.getElementById('modal-content');
+  content.className = 'modal-content ' + (h.style || '');
+  content.textContent = h.text;
+  document.getElementById('modal').classList.add('show');
+  state.handouts[id] = true;
+  saveState();
+  renderHandouts();
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('show');
+}
+
+// ============================================================
+// RENDER — PLAYERS
+// ============================================================
+function renderPlayers() {
+  const root = document.getElementById('pc-content');
+  let html = '';
+  PLAYERS.forEach(p => {
+    const cls = p.type === 'replicant' ? 'replicant' : 'human';
+    const typeLabel = p.type === 'replicant' ? 'NEXUS-9 REPLICANT' : 'HUMAN';
+    html += `<div class="pc-card ${cls}">
+      <div class="pc-name">${p.name}</div>
+      <div class="pc-archetype ${cls}">${typeLabel} · ${p.archetype}</div>
+      <div class="pc-stats">
+        <div class="pc-stat-cell"><div class="pc-stat-label">STR</div><div class="pc-stat-value">${p.stats.STR}</div></div>
+        <div class="pc-stat-cell"><div class="pc-stat-label">AGI</div><div class="pc-stat-value">${p.stats.AGI}</div></div>
+        <div class="pc-stat-cell"><div class="pc-stat-label">WIT</div><div class="pc-stat-value">${p.stats.WIT}</div></div>
+        <div class="pc-stat-cell"><div class="pc-stat-label">EMP</div><div class="pc-stat-value">${p.stats.EMP}</div></div>
+      </div>
+      <div class="pc-block">
+        <div class="pc-block-label">Key Skills</div>
+        <div class="pc-block-content">${p.skills}</div>
+      </div>
+      <div class="pc-block">
+        <div class="pc-block-label">Specialty</div>
+        <div class="pc-block-content">${p.specialty}</div>
+      </div>
+      <div class="pc-block">
+        <div class="pc-block-label">Gear</div>
+        <div class="pc-block-content">${p.gear}</div>
+      </div>
+      <div class="pc-block">
+        <div class="pc-block-label">Key Memory</div>
+        <div class="pc-block-content">${p.keyMemory}</div>
+      </div>
+      <div class="pc-hook">
+        <div class="pc-hook-label">⚠ Personal Hook into Directive 19</div>
+        <div class="pc-hook-content">${p.hook}</div>
+      </div>
+    </div>`;
+  });
+  root.innerHTML = html;
+}
+
+// ============================================================
+// RENDER — REFERENCE
+// ============================================================
+function renderRef() {
+  const root = document.getElementById('ref-content');
+  let html = '';
+  REF_TABLES.forEach(t => {
+    html += `<div class="ref-table">
+      <div class="ref-table-title">${t.title}</div>
+      <table><tr>`;
+    t.cols.forEach(c => html += `<th>${c}</th>`);
+    html += `</tr>`;
+    t.rows.forEach(row => {
+      html += `<tr>`;
+      row.forEach((cell, i) => {
+        const cls = (i===0) ? ' class="skill-name"' : '';
+        html += `<td${cls}>${cell}</td>`;
+      });
+      html += `</tr>`;
+    });
+    html += `</table>`;
+    if (t.note) html += `<p style="margin-top:10px; font-size:12px; color: var(--text-muted); font-style: italic;">${t.note}</p>`;
+    html += `</div>`;
+  });
+  root.innerHTML = html;
+}
+
+// ============================================================
+// TIMER
+// ============================================================
+let timerInterval = null;
+
+function toggleTimer() {
+  state.timerRunning = !state.timerRunning;
+  document.getElementById('timer-toggle').textContent = state.timerRunning ? 'PAUSE' : 'START';
+  if (state.timerRunning) {
+    timerInterval = setInterval(tickTimer, 1000);
+  } else {
+    clearInterval(timerInterval);
+    saveState();
+  }
+}
+
+function tickTimer() {
+  state.timerSeconds++;
+  updateTimerDisplay();
+  checkActBoundary();
+  if (state.timerSeconds % 10 === 0) saveState();
+}
+
+function resetTimer() {
+  if (!confirm('Reset the session timer to 00:00?')) return;
+  clearInterval(timerInterval);
+  state.timerSeconds = 0;
+  state.timerRunning = false;
+  state.currentAct = 0;
+  document.getElementById('timer-toggle').textContent = 'START';
+  updateTimerDisplay();
+  updateProgress();
+  document.getElementById('alert-bar').innerHTML = '';
+  saveState();
+}
+
+function updateTimerDisplay() {
+  const s = state.timerSeconds;
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+  const display = (h>0 ? h+':' : '') + String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+  const el = document.getElementById('timer-main');
+  el.textContent = display;
+  // colour
+  el.className = '';
+  if (s >= 11700) el.className = 'danger';      // 3:15+
+  else if (s >= 9900) el.className = 'warn';    // 2:45+
+}
+
+function checkActBoundary() {
+  const s = state.timerSeconds;
+  let newAct = state.currentAct;
+  let alertMsg = null;
+  let alertClass = '';
+  if (s === 900 && state.currentAct < 1) { newAct = 1; alertMsg = "⚠ Act One begins. Pure investigation. No combat."; alertClass = ''; }
+  else if (s === 4200 && state.currentAct < 1.5) { newAct = 1.5; alertMsg = "⚠ Act One ending — Volkov should be phoning soon. Cue the cliffhanger."; alertClass = ''; }
+  else if (s === 4500 && state.currentAct < 2) { newAct = 2; alertMsg = "⚠ Act Two — The Trail. Halden waits at Volkov's clinic. Action lands now."; alertClass = ''; }
+  else if (s === 8400 && state.currentAct < 2.5) { newAct = 2.5; alertMsg = "⚠ 2:20 — If trail has stalled, Wren slips the SANDOVAL note (Handout BR19-H02-B)."; alertClass = ''; }
+  else if (s === 9900 && state.currentAct < 3) { newAct = 3; alertMsg = "🔴 2:45 HARD CHECKPOINT — Team must be heading to Sandoval Tower NOW."; alertClass = 'danger'; }
+  else if (s === 11700 && state.currentAct < 3.5) { newAct = 3.5; alertMsg = "🔴 3:15 — Terrace scene must have run. If not, drop everything else and run it now."; alertClass = 'danger'; }
+  else if (s === 12600 && state.currentAct < 4) { newAct = 4; alertMsg = "⚠ 3:30 — Wrap. Read the closing image. Let the table sit."; alertClass = ''; }
+
+  if (alertMsg) {
+    showAlert(alertMsg, alertClass);
+    state.currentAct = newAct;
+    updateProgress();
+    saveState();
+  }
+}
+
+function showAlert(msg, cls) {
+  const bar = document.getElementById('alert-bar');
+  const div = document.createElement('div');
+  div.className = 'alert ' + cls;
+  div.innerHTML = msg;
+  bar.appendChild(div);
+  setTimeout(() => { div.style.opacity = '0.4'; }, 30000);
+  // Optional audio cue would go here
+}
+
+function updateProgress() {
+  const segs = ['intro','act1','act2','act3','end'];
+  segs.forEach(s => {
+    const el = document.getElementById('prog-' + s);
+    if (el) { el.classList.remove('active','done'); }
+  });
+  const idx = Math.min(4, Math.floor(state.currentAct));
+  for (let i=0; i<idx; i++) {
+    document.getElementById('prog-' + segs[i]).classList.add('done');
+  }
+  document.getElementById('prog-' + segs[idx]).classList.add('active');
+
+  // Update timer-act label
+  const actLabel = ['Intro','Act I — Case','Act II — Trail','Act III — Tower','Epilogue'][idx];
+  document.getElementById('timer-act').textContent = actLabel;
+}
+
+// ============================================================
+// KEYBOARD
+// ============================================================
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === 'Escape') closeModal();
+  if (e.key === ' ' && e.ctrlKey) { e.preventDefault(); toggleTimer(); }
+});
+
+// ============================================================
+// INIT
+// ============================================================
+loadState();
+renderActContent(1);
+renderNPCs();
+renderClues();
+renderHandouts();
+renderPlayers();
+renderRef();
+updateTimerDisplay();
+updateProgress();
+if (state.timerRunning) {
+  // we forced false on load — keep it paused
+  document.getElementById('timer-toggle').textContent = 'START';
+}
+
+</script>
+</body>
+</html>

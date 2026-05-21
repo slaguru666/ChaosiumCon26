@@ -16,6 +16,7 @@ scenario-library/
 ├── brp/                   # Generic BRP scenarios
 ├── ringworld/             # Ringworld RPG scenarios
 ├── stormbringer/          # Stormbringer / Elric scenarios
+├── blade-runner-rpg/      # Blade Runner RPG (Free League) — LA 2037 default
 └── other-games/           # Any other system
 ```
 
@@ -26,6 +27,7 @@ scenario-library/
 | Title | System | Era / Setting | First Run | Status |
 |-------|--------|---------------|-----------|--------|
 | [Power Failure](other-games/sla-power-failure.md) | SLA Industries | Mort, Downtown District 2 | not yet run | ready |
+| [Directive 19](blade-runner-rpg/directive-19.md) | Blade Runner RPG | Los Angeles, 2037 | not yet run | ready |
 
 ---
 

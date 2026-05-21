@@ -38,6 +38,7 @@ scenario-library/
 ├── brp/
 ├── ringworld/
 ├── stormbringer/
+├── blade-runner-rpg/
 └── other-games/
 ```
 
