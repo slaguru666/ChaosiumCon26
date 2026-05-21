@@ -11,34 +11,52 @@
    Single-file, offline, no external dependencies
    ============================================================ */
 :root {
-  --bg:         #08080f;
-  --surface:    #14141f;
-  --surface-hi: #1c1c2a;
-  --surface-top:#252539;
-  --border:     #2a2a40;
-  --border-hi:  #4a4a70;
+  /* Blade Runner 2037 — sodium-amber dominant, warm dark base */
+  --bg:         #0a0805;
+  --bg-2:       #0d0a06;
+  --surface:    #15110a;
+  --surface-hi: #221b10;
+  --surface-top:#2d2415;
+  --border:     #3a2e1a;
+  --border-hi:  #6a5530;
 
-  --text:       #f0f0fa;
-  --text-sub:   #b8b8d0;
-  --text-muted: #707090;
+  --text:       #f4ebd6;
+  --text-sub:   #c8b89a;
+  --text-muted: #807060;
 
-  --amber:  #ffb84a;
-  --cyan:   #4adfff;
-  --red:    #ff4a5a;
-  --green:  #4aee88;
-  --magenta:#dd4ad8;
-  --rain:   #6a96ff;
+  /* Sodium street lamp / Wallace HQ amber — the dominant accent */
+  --amber:      #ff9818;
+  --amber-soft: #ffb454;
+  --amber-deep: #c87510;
 
-  --done-bg:    rgba(74,238,136,0.12);
+  /* 2049 holographic cool counterpoint */
+  --cyan:       #5ad0e8;
+
+  /* Replicant identity beats — Vangelis pink-magenta */
+  --magenta:    #ff5fbc;
+
+  --red:        #ff4a5a;
+  --green:      #4aee88;
+
+  /* Rain / spinner traffic — muted blue */
+  --rain:       #5a8acc;
+
+  --done-bg:    rgba(74,238,136,0.10);
   --done-color: #4aee88;
-  --shown-bg:   rgba(74,223,255,0.10);
-  --shown-color:#4adfff;
-  --missed-bg:  rgba(255,74,90,0.12);
-  --replicant-bg:rgba(221,74,216,0.10);
-  --replicant-color: #dd4ad8;
+  --shown-bg:   rgba(90,208,232,0.10);
+  --shown-color:#5ad0e8;
+  --missed-bg:  rgba(255,74,90,0.10);
+  --replicant-bg:rgba(255,95,188,0.10);
+  --replicant-color: #ff5fbc;
+
+  /* Neon glow recipes */
+  --glow-amber: 0 0 6px rgba(255,152,24,0.55), 0 0 18px rgba(255,152,24,0.28);
+  --glow-amber-strong: 0 0 8px var(--amber), 0 0 22px rgba(255,152,24,0.6), 0 0 40px rgba(255,152,24,0.3);
+  --glow-magenta: 0 0 6px rgba(255,95,188,0.55), 0 0 14px rgba(255,95,188,0.25);
+  --glow-cyan: 0 0 6px rgba(90,208,232,0.5), 0 0 14px rgba(90,208,232,0.22);
 
   --font: "Courier New", Courier, monospace;
-  --r: 8px;
+  --r: 0px; /* Blade Runner UI is angular — corners come from clip-path */
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -54,11 +72,29 @@ html, body {
   overflow: hidden;
 }
 
-/* Subtle rain noise on background */
+/* Atmosphere: warm sodium street-lamp glow above, cool rain below */
 body::before {
   content:"";
   position:fixed; inset:0; pointer-events:none; z-index:0;
-  background: radial-gradient(ellipse at top, rgba(74,150,255,0.04), transparent 60%);
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,152,24,0.07), transparent 65%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(90,138,204,0.04), transparent 70%),
+    linear-gradient(180deg, rgba(255,152,24,0.015), transparent 30%, rgba(0,0,0,0.25));
+}
+
+/* CRT scanlines — overlaid on everything, very subtle */
+body::after {
+  content:"";
+  position:fixed; inset:0; pointer-events:none; z-index:1000;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0,0,0,0) 0px,
+    rgba(0,0,0,0) 2px,
+    rgba(0,0,0,0.08) 3px,
+    rgba(0,0,0,0) 4px
+  );
+  mix-blend-mode: multiply;
+  opacity: 0.7;
 }
 
 /* ============================================================
@@ -108,47 +144,74 @@ body::before {
   padding: 10px 20px;
   gap: 16px;
 }
-#hdr-left { display: flex; flex-direction: column; gap: 2px; }
-#hdr-event { font-size: 11px; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; }
-#hdr-title { font-size: 18px; color: var(--amber); font-weight: bold; letter-spacing: 1.5px; }
+#hdr-left { display: flex; flex-direction: column; gap: 4px; }
+#hdr-event {
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+#hdr-title {
+  font-size: 22px;
+  color: var(--amber);
+  font-weight: bold;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  text-shadow: var(--glow-amber-strong);
+  animation: neonFlicker 6s infinite;
+}
+@keyframes neonFlicker {
+  0%, 18%, 22%, 25%, 53%, 57%, 100% { text-shadow: var(--glow-amber-strong); opacity: 1; }
+  20%, 24%, 55% { text-shadow: 0 0 2px var(--amber); opacity: 0.85; }
+}
 #hdr-right { display: flex; align-items: center; gap: 16px; }
 
 #timer-block { text-align: right; }
-#timer-main { font-size: 28px; font-weight: bold; color: var(--amber); letter-spacing: 2px; line-height: 1; font-variant-numeric: tabular-nums; }
-#timer-act { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
-#timer-main.warn { color: var(--amber); animation: pulse 1s infinite; }
-#timer-main.danger { color: var(--red); animation: pulse 0.5s infinite; }
+#timer-main {
+  font-size: 30px;
+  font-weight: bold;
+  color: var(--amber);
+  letter-spacing: 3px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  text-shadow: var(--glow-amber);
+}
+#timer-act { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-top: 4px; }
+#timer-main.warn { color: var(--amber); animation: pulse 1s infinite; text-shadow: 0 0 10px var(--amber), 0 0 25px rgba(255,152,24,0.6); }
+#timer-main.danger { color: var(--red); animation: pulse 0.5s infinite; text-shadow: 0 0 10px var(--red), 0 0 25px rgba(255,74,90,0.6); }
 @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.55;} }
 
 .hdr-btn {
   background: var(--surface-hi);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
+  border: 1px solid var(--border-hi);
+  border-radius: 0;
   color: var(--text);
   font-family: var(--font);
-  font-size: 13px;
+  font-size: 12px;
   padding: 10px 18px;
   cursor: pointer;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
   min-height: 44px;
   transition: all .15s;
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  position: relative;
 }
-.hdr-btn:hover { background: var(--surface-top); border-color: var(--border-hi); }
-.hdr-btn.primary { background: var(--amber); color: #1a1408; border-color: var(--amber); font-weight: bold; }
+.hdr-btn:hover { background: var(--surface-top); color: var(--amber); text-shadow: var(--glow-amber); }
+.hdr-btn.primary { background: var(--amber); color: #1a0f04; border-color: var(--amber); font-weight: bold; box-shadow: var(--glow-amber); }
 .hdr-btn.danger { color: var(--red); border-color: var(--red); background: transparent; }
-.hdr-btn.danger:hover { background: rgba(255,74,90,0.10); }
+.hdr-btn.danger:hover { background: rgba(255,74,90,0.10); color: var(--red); text-shadow: 0 0 6px var(--red); }
 
 /* ============================================================
    PROGRESS BAR
    ============================================================ */
 #progress {
   grid-area: progress;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, var(--surface), var(--bg));
+  border-bottom: 1px solid var(--border-hi);
   display: flex;
   align-items: stretch;
-  height: 32px;
+  height: 36px;
 }
 .act-bar {
   flex: 1;
@@ -156,16 +219,30 @@ body::before {
   align-items: center;
   justify-content: center;
   font-size: 11px;
-  letter-spacing: 1.5px;
+  letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--text-muted);
   border-right: 1px solid var(--border);
   position: relative;
+  transition: all .2s;
 }
 .act-bar:last-child { border-right: none; }
-.act-bar.active { color: var(--amber); background: rgba(255,184,74,0.06); }
-.act-bar.done   { color: var(--text-sub); background: rgba(74,238,136,0.04); }
-.act-bar .act-time { font-size:10px; margin-left:8px; color: var(--text-muted); }
+.act-bar.active {
+  color: var(--amber);
+  background: linear-gradient(180deg, rgba(255,152,24,0.16), rgba(255,152,24,0.04));
+  text-shadow: var(--glow-amber);
+}
+.act-bar.active::after {
+  content:"";
+  position:absolute; bottom:0; left:0; right:0; height:2px;
+  background: var(--amber);
+  box-shadow: var(--glow-amber-strong);
+}
+.act-bar.done {
+  color: var(--text-sub);
+  background: rgba(74,238,136,0.03);
+}
+.act-bar .act-time { font-size:10px; margin-left:8px; color: inherit; opacity: 0.6; }
 
 /* ============================================================
    SIDEBAR
@@ -188,12 +265,20 @@ body::before {
   border-left: 3px solid transparent;
   color: var(--text-sub);
   transition: all .12s;
-  font-size: 14px;
+  font-size: 13px;
   min-height: 50px;
   user-select:none;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
 }
 .nav-item:hover { background: var(--surface-hi); color: var(--text); }
-.nav-item.active { background: var(--surface-hi); color: var(--amber); border-left-color: var(--amber); }
+.nav-item.active {
+  background: var(--surface-hi);
+  color: var(--amber);
+  border-left-color: var(--amber);
+  text-shadow: var(--glow-amber);
+  box-shadow: inset 4px 0 12px -4px rgba(255,152,24,0.3);
+}
 .nav-icon { font-size: 18px; width:22px; text-align:center;}
 .nav-badge {
   background: var(--amber); color: #1a1408;
@@ -236,20 +321,29 @@ body::before {
 .screen.active { display:block; }
 
 .section-title {
-  font-size: 20px;
+  font-size: 22px;
   color: var(--amber);
-  letter-spacing: 2px;
+  letter-spacing: 4px;
   text-transform: uppercase;
   margin-bottom: 14px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-hi);
+  text-shadow: var(--glow-amber);
+  position: relative;
+}
+.section-title::before {
+  content: "▸ ";
+  color: var(--amber);
+  opacity: 0.7;
 }
 .section-head {
-  font-size: 13px;
-  color: var(--text-sub);
-  letter-spacing: 1.5px;
+  font-size: 12px;
+  color: var(--amber-soft);
+  letter-spacing: 2.5px;
   text-transform: uppercase;
   margin: 18px 0 10px;
+  padding-left: 8px;
+  border-left: 2px solid var(--amber);
 }
 
 /* ============================================================
@@ -315,23 +409,30 @@ body::before {
 .dash-tile {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--r);
+  border-radius: 0;
   padding: 18px 12px;
   text-align: center;
   cursor: pointer;
   transition: all .15s;
-  min-height: 90px;
+  min-height: 96px;
   display:flex; flex-direction:column; align-items:center; justify-content:center;
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  position: relative;
 }
-.dash-tile:hover { background: var(--surface-hi); border-color: var(--border-hi); transform: translateY(-1px); }
-.dash-tile-icon { font-size: 26px; margin-bottom: 6px; }
-.dash-tile-label { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-sub); }
+.dash-tile:hover {
+  background: var(--surface-hi);
+  border-color: var(--amber);
+  transform: translateY(-1px);
+  box-shadow: var(--glow-amber);
+}
+.dash-tile-icon { font-size: 26px; margin-bottom: 6px; filter: drop-shadow(0 0 4px currentColor); }
+.dash-tile-label { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-sub); }
 .dash-tile.amber { color: var(--amber); }
-.dash-tile.amber .dash-tile-label { color: var(--amber); }
+.dash-tile.amber .dash-tile-label { color: var(--amber); text-shadow: 0 0 6px rgba(255,152,24,0.4); }
 .dash-tile.cyan { color: var(--cyan); }
-.dash-tile.cyan .dash-tile-label { color: var(--cyan); }
+.dash-tile.cyan .dash-tile-label { color: var(--cyan); text-shadow: 0 0 6px rgba(90,208,232,0.4); }
 .dash-tile.magenta { color: var(--magenta); }
-.dash-tile.magenta .dash-tile-label { color: var(--magenta); }
+.dash-tile.magenta .dash-tile-label { color: var(--magenta); text-shadow: 0 0 6px rgba(255,95,188,0.4); }
 
 /* ============================================================
    STATUS PANEL (checkpoints)
@@ -366,25 +467,28 @@ body::before {
 .npc-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--r);
+  border-radius: 0;
   padding: 16px 18px;
   margin-bottom: 14px;
+  clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
 }
 .npc-name {
-  font-size: 18px;
+  font-size: 19px;
   color: var(--amber);
   font-weight: bold;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
   margin-bottom: 4px;
+  text-transform: uppercase;
+  text-shadow: var(--glow-amber);
 }
-.npc-name.replicant { color: var(--magenta); }
-.npc-name.cleaner { color: var(--red); }
+.npc-name.replicant { color: var(--magenta); text-shadow: var(--glow-magenta); }
+.npc-name.cleaner { color: var(--red); text-shadow: 0 0 6px rgba(255,74,90,0.55), 0 0 14px rgba(255,74,90,0.25); }
 .npc-role {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 1.5px;
-  margin-bottom: 12px;
+  letter-spacing: 2px;
+  margin-bottom: 14px;
 }
 .npc-row {
   display: flex; gap: 12px; align-items: baseline;
@@ -575,27 +679,36 @@ body::before {
 .pc-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--r);
+  border-radius: 0;
   padding: 16px 18px;
   margin-bottom: 14px;
+  position: relative;
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
 }
-.pc-card.replicant { border-left: 4px solid var(--magenta); }
-.pc-card.human { border-left: 4px solid var(--cyan); }
+.pc-card.replicant {
+  border-left: 4px solid var(--magenta);
+  box-shadow: inset 4px 0 16px -8px rgba(255,95,188,0.4);
+}
+.pc-card.human {
+  border-left: 4px solid var(--cyan);
+  box-shadow: inset 4px 0 16px -8px rgba(90,208,232,0.3);
+}
 .pc-name {
-  font-size: 17px;
+  font-size: 18px;
   color: var(--text);
   font-weight: bold;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 .pc-archetype {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-sub);
   text-transform: uppercase;
-  letter-spacing: 1.5px;
+  letter-spacing: 2px;
   margin-bottom: 10px;
 }
-.pc-archetype.replicant { color: var(--magenta); }
-.pc-archetype.human { color: var(--cyan); }
+.pc-archetype.replicant { color: var(--magenta); text-shadow: 0 0 4px rgba(255,95,188,0.4); }
+.pc-archetype.human { color: var(--cyan); text-shadow: 0 0 4px rgba(90,208,232,0.4); }
 .pc-stats {
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
   background: var(--surface-hi); padding: 8px; border-radius: 4px;
@@ -630,8 +743,83 @@ body::before {
 .ref-table .stress-tag { color: var(--amber); font-weight: bold; }
 
 /* ============================================================
-   ACT VIEW
+   STORY SCREEN — prose read-through
    ============================================================ */
+.story-chapter {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  margin-bottom: 18px;
+  padding: 22px 26px 26px;
+  clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+  position: relative;
+}
+.story-chapter::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 60px; height: 2px;
+  background: var(--amber);
+  box-shadow: var(--glow-amber);
+}
+.story-chapter-num {
+  font-size: 10px;
+  letter-spacing: 4px;
+  color: var(--amber);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  text-shadow: 0 0 4px rgba(255,152,24,0.4);
+}
+.story-chapter-title {
+  font-size: 22px;
+  color: var(--text);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+  font-weight: bold;
+}
+.story-chapter-title .story-accent {
+  color: var(--amber);
+  text-shadow: var(--glow-amber);
+}
+.story-body {
+  font-size: 14.5px;
+  line-height: 1.85;
+  color: var(--text);
+  max-width: 720px;
+}
+.story-body p {
+  margin-bottom: 14px;
+  text-align: justify;
+}
+.story-body p:first-child::first-letter {
+  font-size: 38px;
+  float: left;
+  line-height: 1;
+  padding: 4px 8px 0 0;
+  color: var(--amber);
+  font-weight: bold;
+  text-shadow: var(--glow-amber);
+}
+.story-body em { color: var(--amber-soft); font-style: italic; }
+.story-body strong { color: var(--text); font-weight: bold; }
+.story-body .replicant-name { color: var(--magenta); font-weight: bold; text-shadow: 0 0 4px rgba(255,95,188,0.35); }
+.story-body .pulled-quote {
+  display: block;
+  margin: 14px 0;
+  padding: 12px 18px;
+  border-left: 2px solid var(--amber);
+  background: linear-gradient(90deg, rgba(255,152,24,0.06), transparent);
+  font-style: italic;
+  color: var(--amber-soft);
+}
+.story-body .closing-line {
+  display: block;
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--border-hi);
+  font-style: italic;
+  color: var(--text-sub);
+}
 .act-tabs { display:flex; gap: 4px; margin-bottom: 18px; }
 .act-tab {
   flex: 1;
@@ -742,6 +930,7 @@ body::before {
 <!-- SIDEBAR -->
 <nav id="sidebar">
   <div class="nav-item active" id="nav-home"     onclick="navTo('home')">    <span class="nav-icon">⌂</span><span class="nav-label">Home</span></div>
+  <div class="nav-item"        id="nav-story"    onclick="navTo('story')">   <span class="nav-icon">📖</span><span class="nav-label">Story</span></div>
   <div class="nav-item"        id="nav-acts"     onclick="navTo('acts')">    <span class="nav-icon">🎭</span><span class="nav-label">Acts</span></div>
   <div class="nav-item"        id="nav-npcs"     onclick="navTo('npcs')">    <span class="nav-icon">👤</span><span class="nav-label">NPCs</span></div>
   <div class="nav-item"        id="nav-clues"    onclick="navTo('clues')">   <span class="nav-icon">🔍</span><span class="nav-label">Clues</span><span class="nav-badge" id="badge-clues">12</span></div>
@@ -762,12 +951,12 @@ body::before {
   <div class="screen active" id="screen-home">
 
     <div class="grid-2" style="margin-bottom:16px;">
+      <div class="dash-tile amber" onclick="navTo('story')"><div class="dash-tile-icon">📖</div><div class="dash-tile-label">The Story</div></div>
       <div class="dash-tile amber" onclick="navTo('acts')"><div class="dash-tile-icon">🎭</div><div class="dash-tile-label">Acts</div></div>
       <div class="dash-tile amber" onclick="navTo('npcs')"><div class="dash-tile-icon">👤</div><div class="dash-tile-label">NPCs</div></div>
       <div class="dash-tile cyan" onclick="navTo('clues')"><div class="dash-tile-icon">🔍</div><div class="dash-tile-label">Clues</div></div>
       <div class="dash-tile cyan" onclick="navTo('handouts')"><div class="dash-tile-icon">📄</div><div class="dash-tile-label">Handouts</div></div>
       <div class="dash-tile magenta" onclick="navTo('players')"><div class="dash-tile-icon">♟</div><div class="dash-tile-label">Players</div></div>
-      <div class="dash-tile" onclick="navTo('ref')"><div class="dash-tile-icon">📋</div><div class="dash-tile-label">BR Reference</div></div>
     </div>
 
     <!-- Session Checkpoints -->
@@ -864,6 +1053,17 @@ body::before {
       </div>
     </div>
 
+  </div>
+
+  <!-- ============================================================
+       STORY SCREEN
+       ============================================================ -->
+  <div class="screen" id="screen-story">
+    <div class="section-title">The Story</div>
+    <p style="font-size:13px; color: var(--text-muted); margin-bottom: 18px; font-style: italic; letter-spacing: 0.5px;">
+      A read-through of the whole evening, beginning to end, told as a story. Read this on prep day. The mechanics, NPCs and clues are in the other tabs — this is the shape underneath them.
+    </p>
+    <div id="story-content"></div>
   </div>
 
   <!-- ============================================================
@@ -1178,6 +1378,99 @@ const ACTS = {
     pacing: "Thirty minutes maximum. If unresolved at 3:15: skip remaining tracks, go directly to terrace scene with best-positioned PC. Let Wren leave. End on closing image."
   }
 };
+
+// ============================================================
+// THE STORY — full narrative read-through
+// ============================================================
+const STORY = [
+  {
+    num: "Chapter One",
+    title: "The <span class='story-accent'>Past</span>",
+    body: `<p>In 2027, the city was still waking up from the Blackout — three years of fire-damage in the digital record, three years of nervous government, three years of the Wallace Corporation lobbying to be allowed to manufacture replicants again. Between the Blackout and the monopoly, a small cell of four people in a sub-basement office in City Hall decided that the legal path to that future was too slow.</p>
+
+<p>They drew up a list of nine names — people who would have to die for Wallace to win his licence. Then they captured three Nexus-8 combat replicants who had gone underground in the salt flats north of the basin, blackmailed them with their own faces and old Tyrell fingerprint files, and turned them into a weapon. The operation was filed as <em>Directive 19.</em> Nobody outside the room ever heard the name spoken aloud.</p>
+
+<p>For eighteen months the three replicants — <span class='replicant-name'>Kira</span>, <span class='replicant-name'>Nine</span>, and <span class='replicant-name'>Wren</span> — killed people who would not be missed in the way that mattered to anyone in power. A senator who opposed Prohibition's repeal. Eldon Tyrell's grand-nephew, the last family member who could have blocked the salvage rights. A journalist named Helen Park who was almost finished writing the wrong piece. A bio-engineer named Hashem Lin who had been quietly archiving the wrong evidence. A union organiser. A Mayor's Chief of Staff who was building a corruption case. Seven names, by the end. Seven names that the city's official record now describes variously as a car accident, a home invasion, a mugging, an overdose, a fire, a missing person, and the death of a chief of staff that was filed and forgotten.</p>
+
+<p>When the work was done, the cell took the three replicants to a corrugated-steel warehouse on the salt flats above the smog ceiling — the only place around LA where the sky was still genuinely visible — and shot two of them in the back of the head. The bodies were dissolved in industrial solvent. The third killed her handler with the chair he had told her to sit in and walked out into the desert wind.</p>
+
+<p>She spent ten years on the flats. She watched her sisters' faces in three salt-encrusted photographs she carried with her. She made a list of her own.</p>
+
+<p class='pulled-quote'>Three weeks ago, <span class='replicant-name'>Wren</span> came back into the basin.</p>`
+  },
+  {
+    num: "Chapter Two",
+    title: "The <span class='story-accent'>Players Arrive</span>",
+    body: `<p>The PCs are LAPD Blade Runners — Rep-Detect, the unit that hunts the replicants the law has not yet caught up with. Three of them are human. Two are Nexus-9 replicants on Wallace secondment, supplied by the Corporation to do work the Corporation prefers to keep close. One is a senior detective whose own paperwork is older than the Voigt-Kampff machine she carries.</p>
+
+<p>They are called out at 3:14 in the morning to a penthouse in the Bradbury Tower. It has been raining for eleven days; the storm drains around the building are running orange with rust. A retired Captain — Lazlo Voss, formerly LAPD, currently chief of private security for the Cortez mayoral campaign — has been drowned in his own bathtub. He is fully dressed. There are no defensive wounds. He let his killer into the bathroom. There are two dead bodyguards in the corridor, necks broken with a single application of force. On the bathroom mirror, in shaving cream, four characters: <strong>DIR-019</strong>.</p>
+
+<p>Across town, at almost exactly the same hour, a retired judge — Aaron Ostrow — has been killed with the same mark, tattooed onto his chest by a med-tool from his own kit while he was paralysed but conscious. He saw who killed him.</p>
+
+<p>The PCs' commanding officer, Lieutenant Marcus Greer, arrives three minutes after they do. He spends the next hour on his phone, talking to someone he will not name. He has used the phrase <em>"seventy-two hours"</em> twice by the time anyone speaks to him directly. He wants the case wrapped clean by morning. He is a man who has been waiting for a knock on the door for a decade, and tonight is the night.</p>
+
+<p>For the first hour the team works the scene. They lift a partial bootprint from the kitchen tile — military tread, women's size 9. They find a tablet on the bedside table, open to a banking app showing three years of monthly payments from a shell company that traces, three layers deep, through a Pelican Holdings to a policy office on the 14th floor of City Hall: <strong>the Office of the Deputy Mayor.</strong></p>
+
+<p>They go to the morgue. They go to a noodle bar on Fairfax where an exhausted journalist named Lin Ai eats alone at 1am every night and has been writing for ten years about disappearances no one has believed. She hands them a list of nine names. Six are dead. Two — Voss and Ostrow — were alive last week. One — Elias Pham — is still off-grid in San Pedro. She knew Helen Park. She was nineteen minutes late to the meeting Helen was walking to when Helen died. She has been late ever since.</p>
+
+<p class='pulled-quote'>By the end of the first hour, the team has a list of names and a shell company that points at a Deputy Mayor. They have not yet drawn a weapon.</p>
+
+<p>Then a back-alley cutter in Chinatown phones. A man with a Russian accent says: <em>"I have something you need. I'm at the clinic. Come now, no comms, no badges — when you get —"</em> The line drops.</p>`
+  },
+  {
+    num: "Chapter Three",
+    title: "The <span class='story-accent'>Hunt</span>",
+    body: `<p>The cutter is dead when they arrive. His throat is opened — fast, brutal, professional, but <em>wrong</em>. It is not the signature of whoever marked Voss's mirror or Ostrow's chest. There is a man in a charcoal suit at the front desk, turning a pen between his fingers. He looks up when the PCs enter and smiles. His credentials look federal. They aren't. His name is <strong>Halden</strong> and he is a Nexus-9 cleaner sent by Wallace Internal Security to take care of the unravelling. He calls each of the PCs by name. He tells them, by name, where each of them lives. He thanks them for their service and walks out into the rain.</p>
+
+<p>They have just met the apex predator on the board. From this moment forward they will be aware that he is in the room, whichever room they are in.</p>
+
+<p>The salt-flats trail begins to open. Pham's address — the marina, the last living name on Lin Ai's list — leads them to a retrofitted boathouse on a derelict wharf. Pham is dead at his kitchen table, killed cleanly, with his own confession in his own hand on the table in front of him. He has named the architects: <strong>Helena Cortez</strong>, the Deputy Mayor and mayoral frontrunner, who was a thirty-year-old aide in 2027 and is now a frontrunner for the primary in nine days. Voss. A Tyrell lawyer named Hadley Brent already dead in 2031. A fourth name water-damaged out.</p>
+
+<p>And standing behind Pham's chair, holding it steady, is a tall woman in an oilcloth coat with a scar running from the corner of her mouth back along her jaw. <span class='replicant-name'>Wren</span>. She speaks three lines. She does not draw her weapon. <em>"You're not on the list. Don't make me put you there. He paid for the others."</em> She goes out of a third-storey window over open water and is gone before the first Blade Runner reaches the sill.</p>
+
+<p>Somewhere in this hour, a younger killer in dark hair and a sound grenade ambushes one half of the team in a parking structure or a rooftop. She fights to disable, not kill. She is <strong>Sera Park</strong>, the daughter of the journalist Helen Park, who Wren has trained for two years. She was nine when her mother died. She is twenty-six and a competent killer. Whether the PCs capture her, kill her, or talk her down is the night's first real choice.</p>
+
+<p>And somewhere else in this hour, someone close to one of the Blade Runners has been killed. The team finds the body. Halden has been busy. The PC files the discovery away as a stone they cannot yet put down.</p>
+
+<p>By the time they reach the Saltgrove warehouse on the north salt flats, where the smog breaks and the sky is bone-white and the wind is loud through the corrugated steel, they have the shape of it. Three photographs nailed to a beam — two of Wren's sisters, one of Wren herself — with three names written in her own hand: <span class='replicant-name'>KIRA</span>, <span class='replicant-name'>NINE</span>, and her own. An acid-burn discolouration on the concrete floor where the work was done. A ledger of payments from Pelican Holdings to a Saltgrove Logistics shell company, dates that line up with the seven killings of 2027. And a final note, three lines on a card, left for them deliberately:</p>
+
+<p class='pulled-quote'>SANDOVAL. 21:00 — 88. Don't get in my way. <span class='replicant-name'>— W</span></p>`
+  },
+  {
+    num: "Chapter Four",
+    title: "The <span class='story-accent'>Tower</span>",
+    body: `<p>The Sandoval Tower fundraiser begins at 21:00. Cortez is scheduled to speak at 21:30. The 88th floor is a converted observation level — domed glass, white-clothed tables, three hundred guests in formal black, four hundred metres above the wet street. Above the smog line, the sky is the closest thing to clean air this city has.</p>
+
+<p>Three converging tracks descend through the building. <span class='replicant-name'>Wren</span> is moving down through the service corridors toward Cortez's green room, carrying a suppressed pistol and the names of her sisters. Above her, on the industrial roof two floors up, <strong>Sera</strong> has hacked into the building's emergency broadcast relay and is preparing a four-minute file that will push the truth of Directive 19 onto every comm in the basin as an emergency override. Below them, somewhere in the building, <strong>Halden</strong> is hunting all of them, polite and unhurried, in the same charcoal suit, with the same patient smile.</p>
+
+<p>The team will split. Six Blade Runners across three tracks. They cannot stop all three. Whichever direction they jump, two things will be gone by morning. The third thing is what happens on the terrace.</p>
+
+<p>At the climax, one PC will end up alone on a six-foot stone shelf at the south face of the dome — twenty stories above the lights, in the lee of the building where the wind drops for a moment and the rain comes straight down. Wren will be there. She will be wounded. She will be calm.</p>
+
+<p>She will say her sisters' names. <em>"I had sisters. Their names were Kira and Nine. We were ordered to kill seven people, and we did, and then they took us to a warehouse and put my sisters' heads on the concrete and shot them. I ran. I have been running for ten years."</em></p>
+
+<p>She will say something the PC did not want to hear about themselves — about a partner who died in 2027, about a father who never came home, about a face in their wedding photograph, about a half-remembered voice they hear when they don't sleep. The line will land. The conversation will run for ninety seconds.</p>
+
+<p>And then she will tell them she is going. They can stop her, or they can let her go. If they try to stop her, the dice will run once. If the PC wins, she falls from the terrace into rain and the body is never recovered. If the PC loses, she disarms them, looks at them for one long second, and steps off the edge backwards.</p>
+
+<p class='pulled-quote'>Either way, she is gone. The decision is structural. What it cost the PC is not.</p>`
+  },
+  {
+    num: "Coda",
+    title: "The <span class='story-accent'>Closing Image</span>",
+    body: `<p>The rain has not stopped. The plaza below the Sandoval Tower is wet and emptying. Sirens come and sirens go. By morning, the city will have a story it can tell itself — about Cortez's victory or Cortez's funeral, about a replicant who flew out a window or a Blade Runner who almost retired one, about whether the seven names from 2027 stay forgotten or whether the broadcast lands in the city's lungs and stays there.</p>
+
+<p>Lt. Greer will arrive on the plaza as the team comes down. He will not meet their eyes. He will tell them they did good work tonight. He will mean it the way a man means a sentence he has been rehearsing for ten years. Whatever they decide to write in the report tomorrow, he will sign it. He has signed worse.</p>
+
+<p>If the broadcast landed, the city will be different in the morning. The federal apparatus will arrive at noon. Cortez's campaign will collapse within forty-eight hours. Two LAPD officers will be arrested as scapegoats. Wallace's stock will dip and recover within a week. Halden will disappear from every record there is.</p>
+
+<p>If the broadcast was stopped, Cortez will win the primary by twelve points. Greer will be promoted. The case will be filed open, unresolved. The PCs will receive Promotion Points that taste, when they touch their tongues to them, of nothing in particular. The PC who held the terrace conversation will not sleep for three months.</p>
+
+<p>Either way: somewhere north of the basin, where the rain runs out and the salt begins, a woman in an oilcloth coat is walking. The wind moves her hair. The wind moves the salt on the flats. She does not stop walking. She does not look back.</p>
+
+<p class='closing-line'>None of the Blade Runners knows her name yet. They will. The next time someone in this city tries to bury something this big — they will.</p>`
+  }
+];
 
 // ============================================================
 // NPCs
@@ -1907,6 +2200,22 @@ function renderPlayers() {
 }
 
 // ============================================================
+// RENDER — STORY
+// ============================================================
+function renderStory() {
+  const root = document.getElementById('story-content');
+  let html = '';
+  STORY.forEach(ch => {
+    html += `<div class="story-chapter">
+      <div class="story-chapter-num">${ch.num}</div>
+      <div class="story-chapter-title">${ch.title}</div>
+      <div class="story-body">${ch.body}</div>
+    </div>`;
+  });
+  root.innerHTML = html;
+}
+
+// ============================================================
 // RENDER — REFERENCE
 // ============================================================
 function renderRef() {
@@ -2044,6 +2353,7 @@ document.addEventListener('keydown', (e) => {
 // INIT
 // ============================================================
 loadState();
+renderStory();
 renderActContent(1);
 renderNPCs();
 renderClues();
