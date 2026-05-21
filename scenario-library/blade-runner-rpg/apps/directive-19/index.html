@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Directive 19 | Blade Runner RPG | GM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
    DIRECTIVE 19 — GM COMPANION
@@ -55,9 +58,18 @@
   --glow-magenta: 0 0 6px rgba(255,95,188,0.55), 0 0 14px rgba(255,95,188,0.25);
   --glow-cyan: 0 0 6px rgba(90,208,232,0.5), 0 0 14px rgba(90,208,232,0.22);
 
-  --font: "Courier New", Courier, monospace;
+  /* Typography stack — Blade Runner 2049 visual language */
+  --font-display: "Orbitron", "Helvetica Neue", Arial, sans-serif;    /* titles, timer, headers */
+  --font-ui:      "Rajdhani", "Helvetica Neue", Arial, sans-serif;    /* nav, cards, body chrome */
+  --font-mono:    "Share Tech Mono", "Courier New", monospace;        /* handouts, data readouts */
+  --font-jp:      "Noto Sans JP", sans-serif;                         /* kanji/katakana decoration */
+  --font: var(--font-ui);                                              /* default body */
+
   --r: 0px; /* Blade Runner UI is angular — corners come from clip-path */
 }
+
+/* Body text uses Rajdhani for legibility at small sizes */
+body { font-family: var(--font-ui); font-weight: 400; }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -195,19 +207,46 @@ html::before {
 }
 #hdr-left { display: flex; flex-direction: column; gap: 4px; }
 #hdr-event {
+  font-family: var(--font-mono);
   font-size: 10px;
   color: var(--text-muted);
   letter-spacing: 3px;
   text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#hdr-event .jp {
+  font-family: var(--font-jp);
+  font-weight: 500;
+  color: var(--amber-deep);
+  letter-spacing: 1px;
+  font-size: 11px;
+  opacity: 0.85;
 }
 #hdr-title {
-  font-size: 22px;
+  font-family: var(--font-display);
+  font-size: 26px;
   color: var(--amber);
-  font-weight: bold;
-  letter-spacing: 5px;
+  font-weight: 900;
+  letter-spacing: 8px;
   text-transform: uppercase;
   text-shadow: var(--glow-amber-strong);
   animation: neonFlicker 6s infinite;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+#hdr-title .jp-mark {
+  font-family: var(--font-jp);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--amber-deep);
+  letter-spacing: 2px;
+  text-shadow: 0 0 4px rgba(200,117,16,0.45);
+  border: 1px solid var(--amber-deep);
+  padding: 2px 6px;
+  opacity: 0.8;
 }
 @keyframes neonFlicker {
   0%, 18%, 22%, 25%, 53%, 57%, 100% { text-shadow: var(--glow-amber-strong); opacity: 1; }
@@ -217,15 +256,23 @@ html::before {
 
 #timer-block { text-align: right; }
 #timer-main {
-  font-size: 30px;
-  font-weight: bold;
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
   color: var(--amber);
-  letter-spacing: 3px;
+  letter-spacing: 4px;
   line-height: 1;
   font-variant-numeric: tabular-nums;
   text-shadow: var(--glow-amber);
 }
-#timer-act { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-top: 4px; }
+#timer-act {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-top: 4px;
+}
 #timer-main.warn { color: var(--amber); animation: pulse 1s infinite; text-shadow: 0 0 10px var(--amber), 0 0 25px rgba(255,152,24,0.6); }
 #timer-main.danger { color: var(--red); animation: pulse 0.5s infinite; text-shadow: 0 0 10px var(--red), 0 0 25px rgba(255,74,90,0.6); }
 @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.55;} }
@@ -235,7 +282,8 @@ html::before {
   border: 1px solid var(--border-hi);
   border-radius: 0;
   color: var(--text);
-  font-family: var(--font);
+  font-family: var(--font-ui);
+  font-weight: 600;
   font-size: 12px;
   padding: 10px 18px;
   cursor: pointer;
@@ -247,7 +295,7 @@ html::before {
   position: relative;
 }
 .hdr-btn:hover { background: var(--surface-top); color: var(--amber); text-shadow: var(--glow-amber); }
-.hdr-btn.primary { background: var(--amber); color: #1a0f04; border-color: var(--amber); font-weight: bold; box-shadow: var(--glow-amber); }
+.hdr-btn.primary { background: var(--amber); color: #1a0f04; border-color: var(--amber); font-weight: 700; box-shadow: var(--glow-amber); }
 .hdr-btn.danger { color: var(--red); border-color: var(--red); background: transparent; }
 .hdr-btn.danger:hover { background: rgba(255,74,90,0.10); color: var(--red); text-shadow: 0 0 6px var(--red); }
 
@@ -267,8 +315,10 @@ html::before {
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: var(--font-display);
   font-size: 11px;
-  letter-spacing: 2px;
+  font-weight: 500;
+  letter-spacing: 3px;
   text-transform: uppercase;
   color: var(--text-muted);
   border-right: 1px solid var(--border);
@@ -291,7 +341,7 @@ html::before {
   color: var(--text-sub);
   background: rgba(74,238,136,0.03);
 }
-.act-bar .act-time { font-size:10px; margin-left:8px; color: inherit; opacity: 0.6; }
+.act-bar .act-time { font-family: var(--font-mono); font-size:10px; margin-left:10px; color: inherit; opacity: 0.6; letter-spacing: 1px; }
 
 /* ============================================================
    SIDEBAR
@@ -314,11 +364,13 @@ html::before {
   border-left: 3px solid transparent;
   color: var(--text-sub);
   transition: all .12s;
-  font-size: 13px;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 14px;
   min-height: 50px;
   user-select:none;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
+  letter-spacing: 2.5px;
 }
 .nav-item:hover { background: var(--surface-hi); color: var(--text); }
 .nav-item.active {
@@ -370,28 +422,45 @@ html::before {
 .screen.active { display:block; }
 
 .section-title {
+  font-family: var(--font-display);
   font-size: 22px;
+  font-weight: 700;
   color: var(--amber);
-  letter-spacing: 4px;
+  letter-spacing: 5px;
   text-transform: uppercase;
   margin-bottom: 14px;
   padding-bottom: 10px;
   border-bottom: 1px solid var(--border-hi);
   text-shadow: var(--glow-amber);
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 .section-title::before {
-  content: "▸ ";
+  content: "▸";
   color: var(--amber);
+  opacity: 0.7;
+  font-size: 18px;
+}
+.section-title .jp {
+  font-family: var(--font-jp);
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--amber-deep);
+  letter-spacing: 1px;
+  margin-left: auto;
   opacity: 0.7;
 }
 .section-head {
+  font-family: var(--font-ui);
+  font-weight: 600;
   font-size: 12px;
   color: var(--amber-soft);
-  letter-spacing: 2.5px;
+  letter-spacing: 3px;
   text-transform: uppercase;
   margin: 18px 0 10px;
-  padding-left: 8px;
+  padding-left: 10px;
   border-left: 2px solid var(--amber);
 }
 
@@ -417,8 +486,15 @@ html::before {
 }
 .card-head:hover { background: var(--surface-hi); }
 .card-head-text { flex: 1; }
-.card-title { font-size: 16px; color: var(--text); font-weight: bold; }
-.card-sub { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+.card-title {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--text);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+.card-sub { font-family: var(--font-ui); font-size: 12px; color: var(--text-muted); margin-top: 3px; letter-spacing: 0.5px; }
 .card-body {
   padding: 0 18px 18px;
   display: none;
@@ -475,7 +551,14 @@ html::before {
   box-shadow: var(--glow-amber);
 }
 .dash-tile-icon { font-size: 26px; margin-bottom: 6px; filter: drop-shadow(0 0 4px currentColor); }
-.dash-tile-label { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-sub); }
+.dash-tile-label {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--text-sub);
+}
 .dash-tile.amber { color: var(--amber); }
 .dash-tile.amber .dash-tile-label { color: var(--amber); text-shadow: 0 0 6px rgba(255,152,24,0.4); }
 .dash-tile.cyan { color: var(--cyan); }
@@ -493,17 +576,18 @@ html::before {
   padding: 16px 18px;
   margin-bottom: 14px;
 }
-.status-panel-title { font-size:13px; text-transform:uppercase; letter-spacing:1.5px; color: var(--text-sub); margin-bottom:12px; }
+.status-panel-title { font-family: var(--font-display); font-weight: 500; font-size:13px; text-transform:uppercase; letter-spacing:3px; color: var(--amber); margin-bottom:12px; text-shadow: 0 0 4px rgba(255,152,24,0.3); }
 .status-row {
   display:flex; justify-content:space-between; align-items:center;
   padding:8px 0; border-bottom: 1px dashed var(--border);
-  font-size:13px;
+  font-size:13.5px;
 }
 .status-row:last-child { border-bottom: none; }
 .status-row-label { color: var(--text); }
 .tag {
-  font-size: 10px; padding: 2px 7px; border-radius: 3px;
-  letter-spacing:1px; text-transform: uppercase;
+  font-family: var(--font-mono);
+  font-size: 10px; padding: 3px 8px; border-radius: 0;
+  letter-spacing:2px; text-transform: uppercase;
 }
 .tag-cyan { background: rgba(74,223,255,0.14); color: var(--cyan); }
 .tag-amber{ background: rgba(255,184,74,0.14); color: var(--amber); }
@@ -522,10 +606,11 @@ html::before {
   clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
 }
 .npc-name {
-  font-size: 19px;
+  font-family: var(--font-display);
+  font-size: 20px;
   color: var(--amber);
-  font-weight: bold;
-  letter-spacing: 2px;
+  font-weight: 700;
+  letter-spacing: 3px;
   margin-bottom: 4px;
   text-transform: uppercase;
   text-shadow: var(--glow-amber);
@@ -533,6 +618,7 @@ html::before {
 .npc-name.replicant { color: var(--magenta); text-shadow: var(--glow-magenta); }
 .npc-name.cleaner { color: var(--red); text-shadow: 0 0 6px rgba(255,74,90,0.55), 0 0 14px rgba(255,74,90,0.25); }
 .npc-role {
+  font-family: var(--font-mono);
   font-size: 11px;
   color: var(--text-muted);
   text-transform: uppercase;
@@ -541,11 +627,11 @@ html::before {
 }
 .npc-row {
   display: flex; gap: 12px; align-items: baseline;
-  font-size: 13px; padding: 6px 0;
+  font-size: 13.5px; padding: 6px 0;
   border-bottom: 1px dashed var(--border);
 }
 .npc-row:last-child { border-bottom: none; }
-.npc-label { color: var(--text-sub); min-width: 130px; font-size:12px; text-transform:uppercase; letter-spacing:1px; }
+.npc-label { font-family: var(--font-mono); color: var(--text-sub); min-width: 130px; font-size:11px; text-transform:uppercase; letter-spacing:1.5px; }
 .npc-value { color: var(--text); flex: 1; }
 .npc-stat-row {
   display: grid;
@@ -554,11 +640,12 @@ html::before {
   margin: 12px 0;
   background: var(--surface-hi);
   padding: 10px;
-  border-radius: 4px;
+  border-radius: 0;
+  border: 1px solid var(--border);
 }
 .npc-stat-cell { text-align:center; }
-.npc-stat-label { font-size:10px; text-transform:uppercase; color: var(--text-muted); letter-spacing:1px; }
-.npc-stat-value { font-size:18px; color: var(--amber); font-weight: bold; }
+.npc-stat-label { font-family: var(--font-mono); font-size:10px; text-transform:uppercase; color: var(--text-muted); letter-spacing:2px; }
+.npc-stat-value { font-family: var(--font-display); font-size:20px; color: var(--amber); font-weight: 700; text-shadow: 0 0 4px rgba(255,152,24,0.4); }
 
 .reveal-btn {
   background: var(--surface-hi);
@@ -602,7 +689,7 @@ html::before {
 .clue-item {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--r);
+  border-radius: 0;
   padding: 12px 14px;
   margin-bottom: 8px;
   display: flex;
@@ -610,25 +697,27 @@ html::before {
   align-items: flex-start;
   cursor: pointer;
   transition: all .12s;
-  font-size: 13px;
+  font-size: 13.5px;
 }
 .clue-item:hover { background: var(--surface-hi); }
 .clue-item.found { background: var(--done-bg); border-color: var(--done-color); }
 .clue-item.missed { background: var(--missed-bg); border-color: var(--red); opacity: 0.7; }
 .clue-num {
   background: var(--surface-hi);
-  border-radius: 4px;
-  padding: 3px 8px;
-  font-size: 11px;
-  font-weight: bold;
-  color: var(--text-sub);
-  flex-shrink:0; min-width:30px; text-align:center;
+  border: 1px solid var(--border-hi);
+  font-family: var(--font-display);
+  padding: 4px 9px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--amber);
+  flex-shrink:0; min-width:36px; text-align:center;
+  letter-spacing: 1px;
 }
-.clue-item.found .clue-num { background: var(--done-color); color: #06180c; }
+.clue-item.found .clue-num { background: var(--done-color); color: #06180c; border-color: var(--done-color); }
 .clue-content { flex:1; }
-.clue-title { color: var(--text); font-weight: bold; font-size:14px; margin-bottom:3px; }
-.clue-body { font-size: 12px; color: var(--text-sub); line-height: 1.5; }
-.clue-meta { font-size: 11px; color: var(--text-muted); margin-top: 4px; letter-spacing:0.5px; }
+.clue-title { font-family: var(--font-ui); color: var(--text); font-weight: 600; font-size:14.5px; margin-bottom:4px; letter-spacing: 0.5px; }
+.clue-body { font-size: 13px; color: var(--text-sub); line-height: 1.55; }
+.clue-meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); margin-top: 5px; letter-spacing:0.5px; }
 
 .clue-progress {
   background: var(--surface);
@@ -652,19 +741,20 @@ html::before {
 .handout-tile {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--r);
+  border-radius: 0;
   padding: 16px;
   cursor: pointer;
   transition: all .15s;
-  min-height: 110px;
+  min-height: 120px;
   display:flex; flex-direction:column; gap:6px;
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
 }
-.handout-tile:hover { background: var(--surface-hi); border-color: var(--amber); }
+.handout-tile:hover { background: var(--surface-hi); border-color: var(--amber); box-shadow: var(--glow-amber); }
 .handout-tile.shown { border-color: var(--cyan); background: var(--shown-bg); }
-.handout-id { font-size:10px; color: var(--text-muted); letter-spacing: 1.5px; text-transform:uppercase; }
-.handout-title { font-size:14px; color: var(--text); font-weight: bold; }
-.handout-when { font-size:11px; color: var(--text-sub); margin-top: auto; font-style: italic; }
-.handout-tile.shown .handout-id { color: var(--cyan); }
+.handout-id { font-family: var(--font-display); font-weight: 500; font-size:11px; color: var(--amber); letter-spacing: 2.5px; text-transform:uppercase; text-shadow: 0 0 3px rgba(255,152,24,0.35); }
+.handout-title { font-family: var(--font-ui); font-weight: 600; font-size:14.5px; color: var(--text); letter-spacing: 0.5px; }
+.handout-when { font-family: var(--font-mono); font-size:11px; color: var(--text-sub); margin-top: auto; }
+.handout-tile.shown .handout-id { color: var(--cyan); text-shadow: 0 0 3px rgba(90,208,232,0.35); }
 
 .modal {
   display: none;
@@ -686,13 +776,13 @@ html::before {
 .modal-content {
   background: #f5f0e0;
   color: #1a1408;
-  border-radius: 6px;
+  border-radius: 0;
   padding: 36px 44px;
   max-width: 720px;
   width: 100%;
   margin-top: 20px;
   white-space: pre-wrap;
-  font-family: "Courier New", monospace;
+  font-family: "Share Tech Mono", "Courier New", monospace;
   font-size: 15px;
   line-height: 1.6;
   box-shadow: 0 8px 40px rgba(0,0,0,0.6);
@@ -711,15 +801,18 @@ html::before {
 .modal-content.h-bank {
   background: #f0f0f0;
   color: #0d0d18;
+  font-family: "Share Tech Mono", "Courier New", monospace;
   font-size: 14px;
 }
 .modal-content.h-broadcast {
   background: #0a0a14;
   color: #ffb84a;
+  font-family: "Share Tech Mono", "Courier New", monospace;
   font-size: 18px;
   text-align: center;
   border: 2px solid #ffb84a;
   letter-spacing: 1px;
+  box-shadow: 0 0 60px rgba(255,184,74,0.3) inset, 0 8px 60px rgba(255,184,74,0.2);
 }
 
 /* ============================================================
@@ -743,13 +836,15 @@ html::before {
   box-shadow: inset 4px 0 16px -8px rgba(90,208,232,0.3);
 }
 .pc-name {
-  font-size: 18px;
+  font-family: var(--font-display);
+  font-size: 19px;
   color: var(--text);
-  font-weight: bold;
-  letter-spacing: 2px;
+  font-weight: 700;
+  letter-spacing: 3px;
   text-transform: uppercase;
 }
 .pc-archetype {
+  font-family: var(--font-mono);
   font-size: 11px;
   color: var(--text-sub);
   text-transform: uppercase;
@@ -760,18 +855,19 @@ html::before {
 .pc-archetype.human { color: var(--cyan); text-shadow: 0 0 4px rgba(90,208,232,0.4); }
 .pc-stats {
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
-  background: var(--surface-hi); padding: 8px; border-radius: 4px;
+  background: var(--surface-hi); padding: 8px;
+  border: 1px solid var(--border);
   margin: 10px 0;
 }
 .pc-stat-cell { text-align:center; }
-.pc-stat-label { font-size:10px; text-transform:uppercase; color: var(--text-muted); letter-spacing:1px; }
-.pc-stat-value { font-size:16px; color: var(--amber); font-weight: bold; }
-.pc-block { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); font-size: 13px; }
-.pc-block-label { font-size: 10px; text-transform:uppercase; color: var(--text-muted); letter-spacing:1.5px; margin-bottom: 3px; }
+.pc-stat-label { font-family: var(--font-mono); font-size:10px; text-transform:uppercase; color: var(--text-muted); letter-spacing:2px; }
+.pc-stat-value { font-family: var(--font-display); font-size:17px; color: var(--amber); font-weight: 700; text-shadow: 0 0 4px rgba(255,152,24,0.4); }
+.pc-block { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); font-size: 13.5px; }
+.pc-block-label { font-family: var(--font-mono); font-size: 10px; text-transform:uppercase; color: var(--text-muted); letter-spacing:2px; margin-bottom: 4px; }
 .pc-block-content { color: var(--text); line-height: 1.5; }
-.pc-hook { background: var(--surface-hi); padding: 10px 12px; border-radius: 4px; margin-top: 10px; border-left: 3px solid var(--amber); }
-.pc-hook-label { font-size:10px; text-transform: uppercase; color: var(--amber); letter-spacing: 1.5px; margin-bottom: 4px; font-weight: bold; }
-.pc-hook-content { font-size: 13px; color: var(--text); line-height: 1.5; }
+.pc-hook { background: var(--surface-hi); padding: 12px 14px; margin-top: 10px; border-left: 3px solid var(--amber); }
+.pc-hook-label { font-family: var(--font-ui); font-weight: 700; font-size:11px; text-transform: uppercase; color: var(--amber); letter-spacing: 2.5px; margin-bottom: 6px; text-shadow: 0 0 4px rgba(255,152,24,0.35); }
+.pc-hook-content { font-size: 13.5px; color: var(--text); line-height: 1.55; }
 
 /* ============================================================
    REFERENCE PANEL
@@ -779,17 +875,17 @@ html::before {
 .ref-table {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--r);
+  border-radius: 0;
   padding: 14px 18px;
   margin-bottom: 14px;
 }
-.ref-table-title { font-size:13px; text-transform:uppercase; letter-spacing:1.5px; color: var(--amber); margin-bottom: 10px; }
+.ref-table-title { font-family: var(--font-display); font-weight: 500; font-size:13px; text-transform:uppercase; letter-spacing:3px; color: var(--amber); margin-bottom: 12px; text-shadow: 0 0 4px rgba(255,152,24,0.35); border-bottom: 1px solid var(--border); padding-bottom: 8px; }
 .ref-table table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.ref-table th { text-align:left; padding: 6px 8px; color: var(--text-muted); font-size:11px; text-transform:uppercase; letter-spacing:1px; border-bottom: 1px solid var(--border); }
-.ref-table td { padding: 6px 8px; color: var(--text); border-bottom: 1px dashed var(--border); }
+.ref-table th { font-family: var(--font-mono); text-align:left; padding: 7px 8px; color: var(--text-muted); font-size:10px; text-transform:uppercase; letter-spacing:2px; border-bottom: 1px solid var(--border); }
+.ref-table td { padding: 7px 8px; color: var(--text); border-bottom: 1px dashed var(--border); font-family: var(--font-ui); }
 .ref-table tr:last-child td { border-bottom: none; }
-.ref-table .skill-name { color: var(--cyan); font-weight: bold; }
-.ref-table .stress-tag { color: var(--amber); font-weight: bold; }
+.ref-table .skill-name { color: var(--cyan); font-weight: 600; text-shadow: 0 0 4px rgba(90,208,232,0.3); }
+.ref-table .stress-tag { color: var(--amber); font-weight: 700; }
 
 /* ============================================================
    STORY SCREEN — prose read-through
@@ -811,28 +907,32 @@ html::before {
   box-shadow: var(--glow-amber);
 }
 .story-chapter-num {
-  font-size: 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
   letter-spacing: 4px;
   color: var(--amber);
   text-transform: uppercase;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   text-shadow: 0 0 4px rgba(255,152,24,0.4);
 }
 .story-chapter-title {
-  font-size: 22px;
+  font-family: var(--font-display);
+  font-size: 24px;
   color: var(--text);
-  letter-spacing: 3px;
+  letter-spacing: 4px;
   text-transform: uppercase;
   margin-bottom: 18px;
-  font-weight: bold;
+  font-weight: 700;
 }
 .story-chapter-title .story-accent {
   color: var(--amber);
   text-shadow: var(--glow-amber);
 }
 .story-body {
-  font-size: 14.5px;
-  line-height: 1.85;
+  font-family: var(--font-ui);
+  font-size: 15.5px;
+  font-weight: 400;
+  line-height: 1.75;
   color: var(--text);
   max-width: 720px;
 }
@@ -874,19 +974,21 @@ html::before {
   flex: 1;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--r);
+  border-radius: 0;
   padding: 14px 10px;
   text-align: center;
   cursor: pointer;
   transition: all .12s;
+  font-family: var(--font-display);
+  font-weight: 500;
   font-size: 12px;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
+  letter-spacing: 3px;
   color: var(--text-sub);
 }
 .act-tab:hover { background: var(--surface-hi); }
-.act-tab.active { background: var(--surface-hi); color: var(--amber); border-color: var(--amber); }
-.act-tab .act-tab-time { display:block; font-size: 10px; color: var(--text-muted); margin-top:4px; }
+.act-tab.active { background: var(--surface-hi); color: var(--amber); border-color: var(--amber); text-shadow: var(--glow-amber); box-shadow: inset 0 -3px 0 0 var(--amber); }
+.act-tab .act-tab-time { font-family: var(--font-mono); display:block; font-size: 10px; color: var(--text-muted); margin-top:5px; letter-spacing: 1.5px; font-weight: normal; }
 .act-tab.active .act-tab-time { color: var(--amber); opacity: 0.7; }
 
 .scene-card {
@@ -906,13 +1008,21 @@ html::before {
   align-items: center;
 }
 .scene-head:hover { background: var(--surface-hi); }
-.scene-title { font-size:15px; color: var(--cyan); font-weight: bold; letter-spacing:0.5px; }
-.scene-loc { font-size:11px; color: var(--text-muted); text-transform:uppercase; letter-spacing:1.5px; margin-top:3px; }
-.scene-body { padding: 16px 20px; display: none; font-size: 14px; line-height: 1.6; }
+.scene-title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--cyan);
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  text-shadow: 0 0 6px rgba(90,208,232,0.35);
+}
+.scene-loc { font-family: var(--font-mono); font-size:11px; color: var(--text-muted); text-transform:uppercase; letter-spacing:2px; margin-top:4px; }
+.scene-body { padding: 16px 20px; display: none; font-size: 14.5px; line-height: 1.65; }
 .scene-card.open .scene-body { display: block; }
 .scene-card.open .chevron { transform: rotate(180deg); }
 .scene-section { margin-top: 14px; }
-.scene-section-title { font-size:11px; color: var(--text-sub); text-transform:uppercase; letter-spacing:1.5px; margin-bottom: 6px; }
+.scene-section-title { font-family: var(--font-mono); font-size:11px; color: var(--amber-soft); text-transform:uppercase; letter-spacing:2px; margin-bottom: 6px; }
 .scene-section-body { color: var(--text); }
 .scene-section-body p { margin-bottom: 8px; }
 .scene-section-body ul { list-style:none; padding-left: 0; }
@@ -954,8 +1064,8 @@ html::before {
 <!-- HEADER -->
 <div id="header">
   <div id="hdr-left">
-    <div id="hdr-event">Blade Runner RPG · LA 2037</div>
-    <div id="hdr-title">DIRECTIVE 19</div>
+    <div id="hdr-event"><span>Blade Runner RPG</span><span class="jp">ロサンゼルス・2037</span></div>
+    <div id="hdr-title"><span>DIRECTIVE 19</span><span class="jp-mark">指令 第19号</span></div>
   </div>
   <div id="hdr-right">
     <div id="timer-block">
@@ -1108,7 +1218,7 @@ html::before {
        STORY SCREEN
        ============================================================ -->
   <div class="screen" id="screen-story">
-    <div class="section-title">The Story</div>
+    <div class="section-title"><span>The Story</span><span class="jp">物語</span></div>
     <p style="font-size:13px; color: var(--text-muted); margin-bottom: 18px; font-style: italic; letter-spacing: 0.5px;">
       A read-through of the whole evening, beginning to end, told as a story. Read this on prep day. The mechanics, NPCs and clues are in the other tabs — this is the shape underneath them.
     </p>
@@ -1120,9 +1230,9 @@ html::before {
        ============================================================ -->
   <div class="screen" id="screen-acts">
     <div class="act-tabs">
-      <div class="act-tab active" id="actTab-1" onclick="showAct(1)">Act I<span class="act-tab-time">The Case · 60m</span></div>
-      <div class="act-tab" id="actTab-2" onclick="showAct(2)">Act II<span class="act-tab-time">The Trail · 90m</span></div>
-      <div class="act-tab" id="actTab-3" onclick="showAct(3)">Act III<span class="act-tab-time">The Tower · 30m</span></div>
+      <div class="act-tab active" id="actTab-1" onclick="showAct(1)">Act I · 第一幕<span class="act-tab-time">The Case · 60m</span></div>
+      <div class="act-tab" id="actTab-2" onclick="showAct(2)">Act II · 第二幕<span class="act-tab-time">The Trail · 90m</span></div>
+      <div class="act-tab" id="actTab-3" onclick="showAct(3)">Act III · 第三幕<span class="act-tab-time">The Tower · 30m</span></div>
     </div>
     <div id="act-content"></div>
   </div>
@@ -1131,7 +1241,7 @@ html::before {
        NPCs SCREEN
        ============================================================ -->
   <div class="screen" id="screen-npcs">
-    <div class="section-title">Non-Player Characters</div>
+    <div class="section-title"><span>Non-Player Characters</span><span class="jp">人物</span></div>
     <div id="npc-content"></div>
   </div>
 
@@ -1139,7 +1249,7 @@ html::before {
        CLUES SCREEN
        ============================================================ -->
   <div class="screen" id="screen-clues">
-    <div class="section-title">Clue Tracker</div>
+    <div class="section-title"><span>Clue Tracker</span><span class="jp">手掛り</span></div>
     <div class="clue-progress">
       <div class="clue-progress-row"><span style="color:var(--text-sub);">Essential clues found</span><span id="essential-count" style="color:var(--green); font-weight:bold;">0/8</span></div>
       <div class="clue-bar"><div class="clue-bar-fill" id="essential-bar" style="width:0%;"></div></div>
@@ -1157,7 +1267,7 @@ html::before {
        HANDOUTS SCREEN
        ============================================================ -->
   <div class="screen" id="screen-handouts">
-    <div class="section-title">Player Handouts</div>
+    <div class="section-title"><span>Player Handouts</span><span class="jp">資料</span></div>
     <p style="font-size:12px; color:var(--text-muted); margin-bottom:14px;">Tap a tile to display the handout full-screen. Show the tablet to players, or hide it before they enter the room.</p>
     <div class="handout-list" id="handout-list"></div>
   </div>
@@ -1166,7 +1276,7 @@ html::before {
        PLAYERS SCREEN
        ============================================================ -->
   <div class="screen" id="screen-players">
-    <div class="section-title">Pre-Generated Characters</div>
+    <div class="section-title"><span>Pre-Generated Characters</span><span class="jp">捜査官</span></div>
     <p style="font-size:12px; color:var(--text-muted); margin-bottom:14px;">Six Blade Runners. Three human, two Nexus-9 replicant Blade Runners on Wallace secondment, and one veteran (Iris) whose status is — by design — quietly ambiguous to the others.</p>
     <div id="pc-content"></div>
   </div>
@@ -1175,7 +1285,7 @@ html::before {
        REFERENCE SCREEN
        ============================================================ -->
   <div class="screen" id="screen-ref">
-    <div class="section-title">Blade Runner RPG — Quick Reference</div>
+    <div class="section-title"><span>Blade Runner RPG — Quick Reference</span><span class="jp">参照</span></div>
     <div id="ref-content"></div>
   </div>
 
@@ -1433,7 +1543,7 @@ const ACTS = {
 // ============================================================
 const STORY = [
   {
-    num: "Chapter One",
+    num: "Chapter One · 第一章",
     title: "The <span class='story-accent'>Past</span>",
     body: `<p>In 2027, the city was still waking up from the Blackout — three years of fire-damage in the digital record, three years of nervous government, three years of the Wallace Corporation lobbying to be allowed to manufacture replicants again. Between the Blackout and the monopoly, a small cell of four people in a sub-basement office in City Hall decided that the legal path to that future was too slow.</p>
 
@@ -1448,7 +1558,7 @@ const STORY = [
 <p class='pulled-quote'>Three weeks ago, <span class='replicant-name'>Wren</span> came back into the basin.</p>`
   },
   {
-    num: "Chapter Two",
+    num: "Chapter Two · 第二章",
     title: "The <span class='story-accent'>Players Arrive</span>",
     body: `<p>The PCs are LAPD Blade Runners — Rep-Detect, the unit that hunts the replicants the law has not yet caught up with. Three of them are human. Two are Nexus-9 replicants on Wallace secondment, supplied by the Corporation to do work the Corporation prefers to keep close. One is a senior detective whose own paperwork is older than the Voigt-Kampff machine she carries.</p>
 
@@ -1467,7 +1577,7 @@ const STORY = [
 <p>Then a back-alley cutter in Chinatown phones. A man with a Russian accent says: <em>"I have something you need. I'm at the clinic. Come now, no comms, no badges — when you get —"</em> The line drops.</p>`
   },
   {
-    num: "Chapter Three",
+    num: "Chapter Three · 第三章",
     title: "The <span class='story-accent'>Hunt</span>",
     body: `<p>The cutter is dead when they arrive. His throat is opened — fast, brutal, professional, but <em>wrong</em>. It is not the signature of whoever marked Voss's mirror or Ostrow's chest. There is a man in a charcoal suit at the front desk, turning a pen between his fingers. He looks up when the PCs enter and smiles. His credentials look federal. They aren't. His name is <strong>Halden</strong> and he is a Nexus-9 cleaner sent by Wallace Internal Security to take care of the unravelling. He calls each of the PCs by name. He tells them, by name, where each of them lives. He thanks them for their service and walks out into the rain.</p>
 
@@ -1486,7 +1596,7 @@ const STORY = [
 <p class='pulled-quote'>SANDOVAL. 21:00 — 88. Don't get in my way. <span class='replicant-name'>— W</span></p>`
   },
   {
-    num: "Chapter Four",
+    num: "Chapter Four · 第四章",
     title: "The <span class='story-accent'>Tower</span>",
     body: `<p>The Sandoval Tower fundraiser begins at 21:00. Cortez is scheduled to speak at 21:30. The 88th floor is a converted observation level — domed glass, white-clothed tables, three hundred guests in formal black, four hundred metres above the wet street. Above the smog line, the sky is the closest thing to clean air this city has.</p>
 
@@ -1505,7 +1615,7 @@ const STORY = [
 <p class='pulled-quote'>Either way, she is gone. The decision is structural. What it cost the PC is not.</p>`
   },
   {
-    num: "Coda",
+    num: "Coda · 終章",
     title: "The <span class='story-accent'>Closing Image</span>",
     body: `<p>The rain has not stopped. The plaza below the Sandoval Tower is wet and emptying. Sirens come and sirens go. By morning, the city will have a story it can tell itself — about Cortez's victory or Cortez's funeral, about a replicant who flew out a window or a Blade Runner who almost retired one, about whether the seven names from 2027 stay forgotten or whether the broadcast lands in the city's lungs and stays there.</p>
 
