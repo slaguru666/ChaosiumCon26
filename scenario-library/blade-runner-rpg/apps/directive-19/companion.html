@@ -604,6 +604,38 @@ html::before{
 .fallback-card{background:var(--surface-hi);border:1px solid var(--border);padding:10px 14px;margin-bottom:8px;font-size:13px;color:var(--text-sub);line-height:1.5}
 .fallback-label{font-family:var(--fm);font-size:10px;color:var(--amber);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
 
+/* ── VOSS VICTIM PROFILE ─────────────────── */
+.victim-banner{background:linear-gradient(135deg,var(--bg2) 0%,#1a0f0a 100%);border:1px solid var(--border-hi);border-left:5px solid var(--red);margin-bottom:24px;overflow:hidden;position:relative}
+.victim-banner::before{content:"VICTIM — BODY #1";position:absolute;top:14px;right:18px;font-family:var(--fm);font-size:10px;letter-spacing:3px;color:var(--red);text-transform:uppercase;opacity:.8}
+.victim-header{padding:18px 22px 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:20px}
+.victim-badge-block{background:rgba(255,74,90,.06);border:1px solid rgba(255,74,90,.2);padding:14px 18px;text-align:center;flex-shrink:0}
+.victim-badge-icon{font-size:28px;margin-bottom:4px;opacity:.7}
+.victim-badge-num{font-family:var(--fd);font-size:18px;font-weight:700;color:var(--red);letter-spacing:2px}
+.victim-badge-label{font-family:var(--fm);font-size:10px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-top:2px}
+.victim-title-block{flex:1}
+.victim-name{font-family:var(--fd);font-size:20px;font-weight:700;color:var(--amber);letter-spacing:3px;text-transform:uppercase;text-shadow:var(--ga2);margin-bottom:4px}
+.victim-sub{font-family:var(--fm);font-size:11px;color:var(--red);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.victim-overview{font-size:13.5px;color:var(--text-sub);line-height:1.65;max-width:680px}
+.victim-tabs{display:flex;border-bottom:1px solid var(--border)}
+.vtab{flex:1;padding:9px 6px;text-align:center;cursor:pointer;font-family:var(--fm);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid transparent;transition:all .12s}
+.vtab:hover{color:var(--text-sub)}
+.vtab.active{color:var(--red);border-bottom-color:var(--red)}
+.victim-panel{display:none;padding:16px 20px}
+.victim-panel.active{display:block;animation:fadeIn .2s ease}
+.timeline-item{display:flex;gap:16px;padding:10px 0;border-bottom:1px dashed var(--border)}
+.timeline-item:last-child{border-bottom:none}
+.timeline-year{font-family:var(--fd);font-size:11px;font-weight:700;color:var(--amber);min-width:75px;flex-shrink:0;letter-spacing:1px;padding-top:1px}
+.timeline-event{font-size:13.5px;color:var(--text);line-height:1.55}
+.voss-clue-item{background:var(--surface-hi);border:1px solid var(--border);padding:12px 16px;margin-bottom:8px;cursor:pointer;transition:all .15s}
+.voss-clue-item:hover{border-color:var(--amber-dim);background:var(--surface-top)}
+.voss-clue-label{font-family:var(--fu);font-weight:600;font-size:14px;color:var(--amber);margin-bottom:4px;display:flex;align-items:center;justify-content:space-between}
+.voss-clue-detail{font-size:13px;color:var(--text-sub);line-height:1.55;display:none;margin-top:6px;padding-top:6px;border-top:1px dashed var(--border)}
+.voss-clue-item.open .voss-clue-detail{display:block}
+.voss-clue-item.open .voss-chev{transform:rotate(180deg)}
+.voss-chev{color:var(--text-muted);transition:transform .2s;font-size:12px}
+.victim-dossier-btn{display:inline-flex;align-items:center;gap:8px;background:rgba(255,74,90,.08);border:1px solid rgba(255,74,90,.3);color:var(--red);font-family:var(--fm);font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:9px 16px;cursor:pointer;transition:all .15s;margin-top:12px}
+.victim-dossier-btn:hover{background:rgba(255,74,90,.15);box-shadow:var(--gr)}
+
 /* ── SCROLLBAR ───────────────────────────── */
 ::-webkit-scrollbar{width:6px;height:6px}
 ::-webkit-scrollbar-track{background:var(--bg2)}
@@ -733,7 +765,11 @@ html::before{
 <!-- NPCs SECTION -->
 <div class="section" id="section-npcs">
   <div class="section-header"><div class="section-title">Non-Player Characters</div><span class="section-jp">人物</span></div>
-  <div class="container"><div class="npc-grid" id="npc-grid"></div></div>
+  <div class="container">
+    <!-- Voss Victim Profile -->
+    <div id="voss-profile"></div>
+    <div class="npc-grid" id="npc-grid"></div>
+  </div>
 </div>
 
 <!-- LOCATIONS SECTION -->
@@ -887,7 +923,8 @@ const ACTS = {
           "One muddy boot-print on the kitchen tile — military tread, women's size 9. Wren's.",
           "A second, smaller wet footprint in the bedroom. Sera's — two killers operating separately.",
           "Voss's tablet on the bedside table. Unlocked. Open to a banking app (Clue 2: Pelican Holdings).",
-          "Three deadbolts and a panic room. Untouched. He admitted the killer voluntarily."
+          "Three deadbolts and a panic room. Untouched. He admitted the killer voluntarily.",
+          '<span style="font-family:var(--fm);font-size:11px;cursor:pointer;color:var(--red);letter-spacing:1px;border:1px solid rgba(255,74,90,.3);padding:3px 10px;background:rgba(255,74,90,.06)" onclick="nav(\'npcs\')">▸ VIEW VOSS VICTIM PROFILE</span> &nbsp; <span style="font-family:var(--fm);font-size:11px;cursor:pointer;color:var(--amber-soft);letter-spacing:1px;border:1px solid var(--border-hi);padding:3px 10px;background:var(--surface-hi)" onclick="openHandout(\'h00b\')">📄 PULL PERSONNEL FILE BR19-H00-B</span>'
         ],
         mechanics:["[BR: Observation] — spots the second boot print in the bedroom","[BR: Tech] — bypasses the tablet screen-lock","[BR: Insight] — realises he knew his killer"]},
       {title:"City Morgue · Sub-Basement Two",loc:"Forensic work",imgKey:"loc_morgue",
@@ -1082,6 +1119,46 @@ const PCS = [
 ];
 
 // ── NPC DATA ────────────────────────────────────────────────────
+// ── VOSS — VICTIM PROFILE ────────────────────────────────────────
+const VOSS = {
+  name: "Captain Lazlo Voss",
+  subtitle: "Victim · Body #1 · The Thread That Unravels Everything",
+  badge: "3847",
+  rank: "Captain, Special Operations (Retired)",
+  service: "1991 — October 2027 · 36 years",
+  retirement: "Voluntary, medical grounds cited. Medical records sealed.",
+  overview: `Lazlo Voss was found drowned in his own bathtub at 3:14am on 21 March 2037. He was 61. He was fully dressed in a navy suit. There were no defensive wounds. He had three deadbolts and a panic room — both undisturbed. He let his killer into the bathroom. He knew who was coming.
+
+The PCs are assigned to retire the replicant who killed him. By the time they understand who Voss was, they will have to decide whether the replicant was wrong.`,
+
+  timeline: [
+    {year:"1991–2027", event:"36-year LAPD career. Patrol → Homicide → Major Crimes → Counter-Replicant Task Force → Captain, Special Operations."},
+    {year:"April 2027", event:"Directive 19 begins. Voss is the operational logistics handler — sourcing personnel, managing the salt-flats facility, handling the replicant conscription. Payments from Pelican Holdings begin: $42,000/month."},
+    {year:"2027", event:"Receives a Director's Commendation authorised directly by the Deputy Mayor's Office — outside normal chain of command. File above top secret."},
+    {year:"Oct 2027", event:"Voluntary retirement. Medical grounds cited — records sealed. Two of his subordinates (Payne and Velasco) retire within the same month."},
+    {year:"19 Apr 2028", event:"The warehouse. Kira and Nine are executed. Wren escapes. Voss is present. He does nothing to stop it. He helps clean it up."},
+    {year:"2028–2031", event:"Voss Security Consulting LLC. Clients undisclosed. The monthly payments continue."},
+    {year:"2031", event:"Hired as Chief of Security for the Cortez mayoral campaign. Both ex-colleagues (now on his payroll) join him as personal security."},
+    {year:"Mar 2037", event:"Wren returns to the basin. Voss is her second target (after Aaron Ostrow). She calls first — he picks up. He lets her in."},
+    {year:"21 Mar 2037", event:"Found dead. DIR-019 in shaving cream on the bathroom mirror. The case that begins this scenario."},
+  ],
+
+  clues: [
+    {label:"Payments begin April 2027", detail:"Same month as Senator Yim's accident on the Sepulveda Pass — the first Directive 19 killing. $42,000/month for ten years. ~$5 million total. Three-layer shell terminating at City Hall."},
+    {label:"The 2027 Director's Commendation", detail:"Authorised directly by the Deputy Mayor's Office, outside normal chain of command. Classification: Above Top Secret. What does a Captain get commended for that requires Deputy Mayor sign-off?"},
+    {label:"The retirement timing", detail:"October 2027 — within weeks of the last Directive 19 killing. Medical grounds cited. Records sealed. Both of his named subordinates retire within the same window and are on his payroll within three weeks."},
+    {label:"Payne and Velasco", detail:"Both ex-LAPD under Voss in the 2027 classified operation. Both dead in his corridor. They served with him then — and died with him now. Wren killed all three."},
+    {label:"He let her in", detail:"Three deadbolts. A panic room. No defensive wounds. He was fully dressed at 11pm — he was awake, waiting. He knew who was coming and chose not to run. This is the question the PCs should ask: why?"},
+    {label:"The phone call", detail:"Phone records (if pulled) show an incoming call to Voss's private line at 22:34 — forty minutes before time of death. Duration: 3 minutes 12 seconds. The caller is not in his contacts. The number traces to a burner bought with cash in Barstow, 2035."},
+  ],
+
+  gmNote: `Voss is the most morally complex corpse in the scenario. He was complicit — willingly, for money, for ten years. He knew what happened to Kira and Nine. He helped cover it up. He has lived comfortably on $42,000 a month of blood money ever since.
+
+But he also picked up the phone when Wren called. He let her in. He did not run. He did not use the panic room. He did not call anyone.
+
+Whether that was guilt, resignation, or simply a professional accepting the invoice is a question the PCs can ask about the body. The scenario does not answer it. Neither should you.`
+};
+
 const NPCS = [
   {id:"greer",name:"Lt. Marcus Greer",role:"LAPD Rep-Detect · Compromised Lieutenant",type:"human",imgKey:"greer",
     threat:"Political → Lethal (Act 3)",threatCls:"tb-mid",health:4,resolve:3,
@@ -1296,6 +1373,77 @@ PERIOD:   01 Jan 2034 — 28 Feb 2037
                               Don't get in my way.
 
                                                    — W`},
+  {id:"h00b",num:"BR19-H00-B",title:"Voss Personnel File",when:"Act I · Pulling Voss's LAPD record",style:"bank",text:`LAPD PERSONNEL FILE — RESTRICTED ACCESS
+GENERATED: 21 MARCH 2037 · 04:17
+────────────────────────────────────────────
+
+VOSS, LAZLO MARTIN
+Badge:          3847
+Rank at retire: Captain, Special Operations
+Service:        1991 — Oct 2027  (36 years)
+Retirement:     Voluntary. Medical grounds cited.
+                *** NOTE: Medical records SEALED ***
+
+CAREER SUMMARY:
+  1991-1999  Patrol, Southwest Division
+  1999-2006  Homicide Detective, Parker Center
+  2006-2014  Sergeant, Major Crimes
+  2014-2022  Lieutenant, Counter-Replicant Task Force
+  2022-2027  Captain, Special Operations (Classified)
+
+  *** 2027 assignment details REDACTED ***
+  *** Clearance Level 7 required ***
+
+COMMENDATIONS:
+  2009  Medal of Valor — Westside Shooter Incident
+  2019  Chief's Commendation — Counter-RF Op.
+  2027  Director's Commendation — [REDACTED]
+        Classification: ABOVE TOP SECRET
+        Authorised by: Deputy Mayor's Office
+
+POST-SERVICE:
+  Oct 2027  Founded: Voss Security Consulting LLC
+            Clients: [REDACTED]
+  Apr 2031  Chief of Security, Cortez for LA campaign
+            Salary: $80,000 p.a. (declared)
+
+FINANCIAL ANOMALIES FLAGGED:
+  Recurring deposits, Pelican Holdings Group LLC
+  Amount:  $42,000.00 / month
+  Period:  April 2027 — February 2037 (10 years)
+  Total:   ~$5,040,000
+  Origin:  Three-layer shell — traces to City Hall
+
+KNOWN ASSOCIATES (2027 cohort):
+  Ex-Off. Keshaun Payne     — died with Voss
+  Ex-Off. Marion Velasco    — died with Voss
+  Both retired Oct 2027, both on Voss's payroll
+  within 3 weeks of discharge.
+
+PRIOR DISCIPLINARY:
+  2024  Internal Affairs inquiry — use of force
+        Finding: UNFOUNDED · File sealed
+
+────────────────────────────────────────────
+EXAMINER NOTES  (Forensic Accounting):
+
+  The Pelican Holdings payments begin the same
+  month as Senator Yim's 'accident' on the
+  Sepulveda Pass.  Pattern consistent with
+  long-term silence payment.
+
+  The 2027 Director's Commendation authorised
+  directly by the Deputy Mayor's Office —
+  outside normal chain of command.
+
+  The two bodyguards found at scene were both
+  cleared and hired within 3 weeks of their
+  discharge from the same 2027 classified op.
+
+  He let his killer into the bathroom.
+  He knew who was coming.
+────────────────────────────────────────────`},
+
   {id:"h03a",num:"BR19-H03-A",title:"The Broadcast",when:"Act III · if broadcast lands",style:"broadcast",text:`    EMERGENCY MUNICIPAL OVERRIDE
         21:34   21 MARCH 2037
     ─────────────────────────────
@@ -1502,6 +1650,60 @@ function showCharTab(ci,tab,el){
   card.querySelectorAll('.char-panel').forEach(p=>p.classList.remove('active'));
   el.classList.add('active');
   const panel=document.getElementById(`cp-${ci}-${tab}`);
+  if(panel) panel.classList.add('active');
+}
+
+// ── RENDER VOSS VICTIM PROFILE ───────────────────────────────────
+function renderVoss(){
+  const v=VOSS;
+  const root=document.getElementById('voss-profile');
+  if(!root) return;
+  root.innerHTML=`
+    <div class="victim-banner">
+      <div class="victim-header">
+        <div class="victim-badge-block">
+          <div class="victim-badge-icon">☠</div>
+          <div class="victim-badge-num">#3847</div>
+          <div class="victim-badge-label">Badge</div>
+        </div>
+        <div class="victim-title-block">
+          <div class="victim-name">${v.name}</div>
+          <div class="victim-sub">${v.subtitle}</div>
+          <div class="victim-overview">${v.overview.replace(/\n\n/g,'</p><p>').replace(/^/,'<p>').replace(/$/,'</p>')}</div>
+          <button class="victim-dossier-btn" onclick="openHandout('h00b')">📄 OPEN PERSONNEL FILE · BR19-H00-B</button>
+        </div>
+      </div>
+      <div class="victim-tabs">
+        <div class="vtab active" onclick="showVossTab('timeline',this)">Timeline</div>
+        <div class="vtab" onclick="showVossTab('clues',this)">Embedded Clues</div>
+        <div class="vtab" onclick="showVossTab('gmnote',this)">GM Note</div>
+      </div>
+      <div class="victim-panel active" id="vp-timeline">
+        ${v.timeline.map(t=>`<div class="timeline-item">
+          <div class="timeline-year">${t.year}</div>
+          <div class="timeline-event">${t.event}</div>
+        </div>`).join('')}
+      </div>
+      <div class="victim-panel" id="vp-clues">
+        <p style="font-family:var(--fm);font-size:11px;color:var(--text-muted);margin-bottom:12px;letter-spacing:.5px">These clues are embedded in the crime scene and Voss's records. Tap each to expand.</p>
+        ${v.clues.map((c,i)=>`<div class="voss-clue-item" onclick="this.classList.toggle('open')">
+          <div class="voss-clue-label">▸ ${c.label}<span class="voss-chev">▼</span></div>
+          <div class="voss-clue-detail">${c.detail}</div>
+        </div>`).join('')}
+      </div>
+      <div class="victim-panel" id="vp-gmnote">
+        <div class="gm-box" style="margin:0">
+          <div class="gm-label">GM Note — The Moral Weight of Voss</div>
+          ${v.gmNote.replace(/\n\n/g,'</p><p>').replace(/^/,'<p>').replace(/$/,'</p>')}
+        </div>
+      </div>
+    </div>`;
+}
+function showVossTab(tab,el){
+  el.closest('.victim-banner').querySelectorAll('.vtab').forEach(t=>t.classList.remove('active'));
+  el.closest('.victim-banner').querySelectorAll('.victim-panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  const panel=document.getElementById('vp-'+tab);
   if(panel) panel.classList.add('active');
 }
 
@@ -1753,6 +1955,7 @@ if(heroBg&&IMGS.loc_la) heroBg.style.backgroundImage=`url(${IMGS.loc_la})`;
 renderStory();
 showAct(1);
 renderChars();
+renderVoss();
 renderNPCs();
 renderLocs();
 renderClues();
