@@ -556,6 +556,303 @@ view, scale bar showing 1 mile increments, north arrow,
 
 ---
 
+## BLUEPRINT MAPS · EVIDENCE EXHIBIT VARIANTS *(in-fiction case files)*
+
+These are the same twelve locations as the blueprint scenery maps above, but re-dressed as **LAPD case-file exhibits** — the document a Blade Runner would actually pull from the evidence box. The blueprint still sits in the middle of the page, but the surrounding chrome turns it into something the PCs are reading, not just a player aid.
+
+**Use these when:** you want to display a location on the tablet *as if the PCs themselves had pulled it from a precinct terminal* — during forensic-dive scenes, the morgue file handoff to Talia, the moment a player asks to see the floor plan of a building they're about to enter.
+
+**Use the plain blueprint variant when:** you want a clean orientation aid without the in-fiction dressing distracting from quick scene navigation.
+
+### Shared evidence-exhibit style suffix *(append to each prompt below)*
+
+```
+LAPD case-file evidence exhibit style, weathered tan-paper folder background
+with the blueprint reproduced at center on Prussian-blue ground with white
+and pale cyan technical lines, four small annotated polaroid photographs
+paper-clipped at the corners showing crime-scene fragments in muted colour,
+each polaroid with a strip of masking tape beneath bearing a handwritten
+caption in red ink, two black redaction blocks across portions of the
+adjacent text margins, a chain-of-custody box at the bottom with printed
+columns DATE / OFFICER / BADGE / TRANSFER and four ruled rows with three
+signatures filled in by hand, LAPD REP-DETECT shield watermark faint behind
+everything, CASE 037-2037-11473 DIR-019 EVIDENCE EXHIBIT stamp in faded red
+at top right with a hand-inked exhibit number circled, a paperclip and a
+tea-ring stain on the paper, a small typed evidence tag wired to the corner
+reading EXHIBIT NO and a hand-filled exhibit number, slightly desaturated
+top-down orthographic plan view at center, technical schematic readable
+not artistic
+--ar 3:2 --style raw --v 7 --stylize 150
+```
+
+---
+
+### BR19-EX-01 — EXHIBIT A · Voss Penthouse · Bradbury 41
+```
+LAPD case-file evidence exhibit page, top-down architectural floor plan of a
+restored 1920s art-deco penthouse on the 41st floor of the Bradbury Tower at
+center, 6 rooms: entry corridor with two body markers BODY 1 and BODY 2, open-
+plan living room with copper-veined marble floor, kitchen with red-circled
+bootprint annotation on a tile, master bedroom, master bathroom with labeled
+bathtub and mirror marked DIR-019, panic room marked DEADBOLTED, glass curtain
+wall on three exterior sides, dimensions in feet, north arrow at top left,
+
+corner polaroid 1 captioned BATHROOM MIRROR DIR-019 showing the shaving-cream
+inscription, corner polaroid 2 captioned KITCHEN TILE bootprint detail, corner
+polaroid 3 captioned VOSS IN BATHTUB navy suit, corner polaroid 4 captioned
+PANIC ROOM DOOR undisturbed, redaction blocks across margin text where Voss's
+security clearances and 2027-2028 service record entries would appear,
+exhibit tag EXHIBIT A handwritten,
+
+[shared evidence-exhibit style suffix]
+```
+
+### BR19-EX-02 — EXHIBIT B · City Morgue · Sub-Basement Two
+```
+LAPD case-file evidence exhibit page, top-down architectural floor plan of an
+LAPD city morgue sub-basement two at center, long rectangular cold storage
+room with two rows of stainless-steel slab drawers numbered 1 through 20 along
+both side walls, central aisle, wheeled forensic cart with Voigt-Kampff
+briefcase unit indicated in the aisle, clerk desk at the far end with chair
+and CRT terminal icon, double swing doors at entry, slabs 3 and 7 highlighted
+with red-ink VOSS and OSTROW annotations, north arrow,
+
+corner polaroid 1 captioned SLAB 3 VOSS L.M. with sheet drawn back, corner
+polaroid 2 captioned SLAB 7 OSTROW A. chest tattoo DIR-019 visible, corner
+polaroid 3 captioned PARALYTIC AMPOULE WALLACE-GRADE close-up, corner polaroid
+4 captioned EFFECTS BAG OSTROW with pocket watch and case files, redaction
+blocks across margin text where the coroner's full chemistry report and
+Ostrow next-of-kin contact details would appear, exhibit tag EXHIBIT B
+handwritten,
+
+[shared evidence-exhibit style suffix]
+```
+
+### BR19-EX-03 — EXHIBIT C · The Bowl · Lin Ai's Noodle Bar
+```
+LAPD case-file evidence exhibit page, top-down architectural floor plan of a
+small noodle bar interior on Fairfax Avenue beneath a pedestrian overpass at
+center, three small square tables with chairs along one wall, counter with
+stool seating opposite, small kitchen area at the rear, single restroom at
+back, street door at front with overpass column footprint outside, the
+corner table where the subject sits highlighted with red-ink annotation
+SUBJECT LIN AI HABITUAL 0100 HRS, no windows except front,
+
+corner polaroid 1 captioned SURVEILLANCE STILL 0107 HRS Lin Ai at table,
+corner polaroid 2 captioned NOTEBOOK ANALOGUE PAPER seized fragment,
+corner polaroid 3 captioned EXTERIOR FAIRFAX AVE under the overpass at night,
+corner polaroid 4 captioned PERSIAN QUARTER GRAFFITO DIR-019 chalk on a wall,
+redaction blocks across margin text where Lin Ai's publishing affiliations
+and Source-Protection notes would appear, exhibit tag EXHIBIT C handwritten,
+
+[shared evidence-exhibit style suffix]
+```
+
+### BR19-EX-04 — EXHIBIT D · Dr Volkov's Clinic · Chinatown
+```
+LAPD case-file evidence exhibit page, top-down architectural floor plan of a
+black-market cutter clinic ground floor under a noodle restaurant in Chinatown
+at center, heavy steel reinforced front door at left, front room with reception
+desk and two chairs, inner doorway to procedure room with table at center and
+autoclave in corner, supply cabinets along one wall, back room with refrigeration
+and storage, rear exit to alley, red-ink body marker BODY VOLKOV on the
+procedure table, red-ink annotation HALDEN STOOD HERE at the reception desk,
+
+corner polaroid 1 captioned PROCEDURE TABLE BODY VOLKOV neck wound visible,
+corner polaroid 2 captioned RECEPTION DESK fountain pen left turning, corner
+polaroid 3 captioned AUTOCLAVE STILL HUMMING with humidity haze, corner
+polaroid 4 captioned FAKE FEDERAL CREDENTIAL examined under lamp, redaction
+blocks across margin text where Wallace Internal Security cross-reference
+queries and the federal-credential database lookup result would appear,
+exhibit tag EXHIBIT D handwritten,
+
+[shared evidence-exhibit style suffix]
+```
+
+### BR19-EX-05 — EXHIBIT E · Pham's Marina Safehouse · San Pedro
+```
+LAPD case-file evidence exhibit page, top-down architectural floor plan of a
+retrofitted three-storey boathouse on a derelict marina at center, ground
+floor boat slip open to bay with water hatching, storage and workbench, first
+floor kitchen with table and chairs and body marker BODY PHAM on table, sofa
+and bunk opposite, second floor workshop with reloading bench and a small
+window labeled THIRD STOREY OVER WATER with red-ink annotation WREN EXIT
+22:14 HRS PURSUIT FAILED, exterior gangway and dock footprint outside,
+
+corner polaroid 1 captioned BODY PHAM E. at kitchen table head down, corner
+polaroid 2 captioned CONFESSION DOCUMENT handwritten cell members named,
+corner polaroid 3 captioned MARINA SLIP WET BOOTPRINT military tread size 9,
+corner polaroid 4 captioned WREN NOTE BR19-H02-B card handwritten SANDOVAL
+21:00 88, redaction blocks across margin text where the federal trace of
+Pham's identity since 2026 and the marina ownership chain would appear,
+exhibit tag EXHIBIT E handwritten,
+
+[shared evidence-exhibit style suffix]
+```
+
+### BR19-EX-06 — EXHIBIT F · Saltgrove Warehouse 7 · North Salt Flats
+```
+LAPD case-file evidence exhibit page, top-down architectural floor plan of an
+abandoned corrugated-steel warehouse on the salt flats at center, large
+rectangular interior 80 by 120 feet, support columns in two rows, central
+work area with wooden roof beam indicated above, three small annotated
+rectangles labeled PHOTOGRAPHS KIRA NINE WREN nailed to the beam, back room
+labeled ACID-BURN FLOOR DISCOLOURATION in red ink, tarp on the floor with
+annotation LEDGER UNDER TARP, two sliding industrial cargo doors at opposite
+ends, single side door, exterior salt-flat terrain outside,
+
+corner polaroid 1 captioned MEMORIAL BEAM three salt-encrusted photographs
+nailed, corner polaroid 2 captioned ACID-BURN PATTERN concrete floor close-up,
+corner polaroid 3 captioned LEDGER PAGE BR19-H02-A SALTGROVE LOGISTICS, corner
+polaroid 4 captioned APPROACH ROAD MILE 22 northbound establishing shot,
+redaction blocks across margin text where Saltgrove Logistics LLC corporate
+filings and the 2027-2028 facility owner-of-record entries would appear,
+exhibit tag EXHIBIT F handwritten,
+
+[shared evidence-exhibit style suffix]
+```
+
+### BR19-EX-07 — EXHIBIT G · Parking Structure · Sera Engagement
+```
+LAPD case-file evidence exhibit page, top-down architectural floor plan of
+one level of a multi-storey downtown LA parking structure third level at
+center, rectangular layout with concrete support columns in regular grid,
+ramp up and ramp down at opposite corners, parking bays marked, central
+aisle, large oil stain rendered as a continent shape with red-ink note,
+pedestrian elevator core and stairwell, single fluorescent strip with
+red-ink annotation FLICKERS, red-ink ambush vector arrow from one column
+toward central aisle labeled SERA P. ENGAGEMENT,
+
+corner polaroid 1 captioned SOUND GRENADE RESIDUE NEXUS-MILSPEC, corner
+polaroid 2 captioned SUBJECT SERA P. surveillance still profile, corner
+polaroid 3 captioned WALL DAMAGE NINE-MIL ROUND tight grouping, corner
+polaroid 4 captioned BLOOD TRACE TYPE-O B-NEGATIVE small spatter on column,
+redaction blocks across margin text where Sera Park's 2028-2037 movement
+history and known-associates roster would appear, exhibit tag EXHIBIT G
+handwritten,
+
+[shared evidence-exhibit style suffix]
+```
+
+### BR19-EX-08 — EXHIBIT H · Sandoval Tower 88th Floor Fundraiser
+```
+LAPD case-file evidence exhibit page, top-down architectural floor plan of the
+88th floor observation level of the Sandoval Tower at center, large circular
+domed reception hall with three hundred guest positions as small dots around
+white-clothed table footprints, podium at the rear, back-of-house green room
+labeled CORTEZ accessed by service corridor, four service corridors marked
+entering from perimeter, elevator core at center, terrace doors marked
+SOUTH-FACE TERRACE at exterior, kitchens and bar areas indicated, red-ink
+annotations WREN APPROACH via service corridor and BLADE RUNNER ENTRY via
+elevator core,
+
+corner polaroid 1 captioned VENUE PRESS PHOTO Cortez at podium 2034 prior
+fundraiser, corner polaroid 2 captioned GREEN ROOM ACCESS BADGE staff-issue,
+corner polaroid 3 captioned SERVICE CORRIDOR EAST exterior door pried open,
+corner polaroid 4 captioned GUEST MANIFEST PAGE 1 of 12 partial Wallace
+Corp executives circled, redaction blocks across margin text where the full
+guest manifest and Cortez security-detail roster would appear, exhibit tag
+EXHIBIT H handwritten,
+
+[shared evidence-exhibit style suffix]
+```
+
+### BR19-EX-09 — EXHIBIT I · Sandoval Tower Roof · Broadcast Relay
+```
+LAPD case-file evidence exhibit page, top-down architectural floor plan of the
+flat industrial roof above the Sandoval Tower observation dome at center, HVAC
+bank along one edge, vent stack, service ladder coming up from the 90th-floor
+maintenance level as hatched square, small terminal cabinet near the parapet
+with red-ink annotation BROADCAST RELAY HACKED BY SERA, dome of 88th floor as
+circular footprint at the center, parapet edges with railing, sheer drop
+beyond annotated 88 STOREYS DOWN, hard wind direction arrows,
+
+corner polaroid 1 captioned RELAY TERMINAL hardline jack and laptop cable,
+corner polaroid 2 captioned BROADCAST FILE FRAGMENT recovered audio 4:11 length,
+corner polaroid 3 captioned LADDER ACCESS POINT pry marks on hatch, corner
+polaroid 4 captioned HVAC BANK WIRING TAP unauthorised, redaction blocks
+across margin text where the broadcast file transcript and EMERGENCY OVERRIDE
+trace data would appear, exhibit tag EXHIBIT I handwritten,
+
+[shared evidence-exhibit style suffix]
+```
+
+### BR19-EX-10 — EXHIBIT J · The Terrace · 88th-Floor South Face
+```
+LAPD case-file evidence exhibit page, top-down architectural floor plan of the
+south-face terrace on the 88th floor of the Sandoval Tower at center, curved
+six-foot-wide stone shelf running around the exterior of the glass dome,
+parapet wall on outer edge, dome glass on inner edge with three sets of doors
+marked, exterior drop beyond parapet annotated 88 STOREYS DOWN, central section
+highlighted with two figure markers SUBJECT W and OFC and faint dashed oval
+labeled WHERE THE WIND DROPS, scale bar, north arrow showing south orientation,
+rest of dome shown truncated for focus,
+
+corner polaroid 1 captioned TERRACE STONE WET handhold abrasion at parapet,
+corner polaroid 2 captioned BLADE FRAGMENT recovered surgical-grade, corner
+polaroid 3 captioned OILCLOTH FIBRE recovered parapet abrasion, corner polaroid
+4 captioned BODY NOT RECOVERED 88-storey drop notation, redaction blocks
+across margin text where the responding officer's full statement and the
+post-incident Internal Affairs interview transcript would appear, exhibit tag
+EXHIBIT J handwritten with EXHIBIT FINAL added beneath,
+
+[shared evidence-exhibit style suffix]
+```
+
+### BR19-EX-11 — EXHIBIT K · Salt Flats Regional Operational Map
+```
+LAPD case-file evidence exhibit page, top-down regional map of the salt flats
+north of the Los Angeles basin and the Saltgrove Industrial Estate at center,
+small grid of nine warehouses labeled 1 through 9 with WAREHOUSE 7 highlighted
+in red ink, access road from basin marked with mileage 22 MILES NORTH OF
+DOWNTOWN, smog ceiling boundary indicated as dashed line approximately five
+miles south of the estate, desert hardpack indicated, no other landmarks for
+ten miles, inset compass and scale, LA basin as faint orange-shaded zone at
+bottom of frame,
+
+corner polaroid 1 captioned ESTATE ENTRANCE chain link gate rusted, corner
+polaroid 2 captioned WAREHOUSE 7 EXTERIOR corrugated steel, corner polaroid
+3 captioned APPROACH ROAD MILE 14 single vehicle tracks, corner polaroid 4
+captioned SATELLITE OVERHEAD 2027 same site pre-decommission, redaction
+blocks across margin text where the Saltgrove Logistics LLC corporate trace
+and the 2028 federal site survey would appear, exhibit tag EXHIBIT K handwritten,
+
+[shared evidence-exhibit style suffix]
+```
+
+### BR19-EX-12 — EXHIBIT L · Central LA Operational Overview
+```
+LAPD case-file evidence exhibit page, top-down stylised hand-drawn precinct
+map of central Los Angeles 2037 at center, key locations annotated in red ink
+and circled BRADBURY TOWER 41 in Old Bank District, CITY MORGUE in Sub-District
+2, LIN AI NOODLE BAR on Fairfax in Persian Quarter, VOLKOV CLINIC in
+Chinatown, SAN PEDRO MARINA at southern edge, SANDOVAL TOWER downtown, LAPD
+CENTRAL PRECINCT, dashed connecting lines showing routes, freeway and
+arterial road skeleton, scale bar showing 1 mile increments, north arrow,
+
+corner polaroid 1 captioned BRADBURY TOWER NIGHT exterior, corner polaroid 2
+captioned SANDOVAL TOWER fundraiser entry, corner polaroid 3 captioned
+VOLKOV CLINIC CHINATOWN street view, corner polaroid 4 captioned LAPD
+PRECINCT FLEET liveried unit, redaction blocks across margin text where
+the Mayor's-Office liaison contact list and the federal joint-task-force
+roster would appear, exhibit tag EXHIBIT L handwritten with CASE MASTER
+added beneath,
+
+[shared evidence-exhibit style suffix]
+```
+
+---
+
+### Notes on the Evidence Exhibit Variants
+
+- **The Midjourney challenge:** Midjourney struggles with text rendering and very small captions. Expect to iterate. The handwritten polaroid captions will often come out unreadable on first generation — this is fine; they read as "annotated polaroid" at a glance, which is the goal. If a player zooms in, generate that specific exhibit at higher resolution with `--upscale` and re-roll until the captions are crisp.
+- **Redaction blocks:** to ensure they read as redactions and not random black bars, the prompt names them in context ("redaction blocks across margin text where [X] would appear"). Midjourney handles this well in v7 when grounded in adjacent text. If they come out missing, add `--no clean margins` to force the variation.
+- **Polaroid placement:** I've described "four small annotated polaroid photographs paper-clipped at the corners" — Midjourney will sometimes interpret this as four polaroids stacked rather than one per corner. If that happens, try replacing with "one polaroid paper-clipped at each of the four corners" or use `--chaos 5` to encourage broader compositional variation.
+- **Tag the exhibit letter:** The handwritten exhibit tag (EXHIBIT A through L) is the single most useful element for table use — it gives the GM a one-letter shortcut to call out (*"pull Exhibit F on the tablet"*) without breaking the in-fiction immersion.
+- **When to use which variant:** the plain blueprint maps work for quick scene navigation during play. The evidence exhibits work best when a PC explicitly investigates — opening a file, pulling a report, reviewing what the precinct has on a location. *Iris's [BR: Connect] roll to pull the Voss file* should produce **EXHIBIT A**, not the plain map.
+
+---
+
 ## Usage Notes for the GM
 
 - **Print or display on the tablet** — these maps are designed to work both ways.
