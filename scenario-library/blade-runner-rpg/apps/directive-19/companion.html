@@ -327,7 +327,37 @@ html::before{
   padding:12px 16px;font-style:italic;font-size:13px;
   color:var(--text-sub);line-height:1.7;margin:10px 0;
 }
-.pacing-box{
+.lead-trail {
+  display:flex;gap:12px;align-items:flex-start;
+  background:linear-gradient(90deg,rgba(255,154,24,.07),transparent);
+  border-left:3px solid var(--amber-dim);
+  padding:10px 16px;margin-bottom:6px;
+  position:relative;
+}
+.lead-trail::before {
+  content:"▸";
+  font-size:14px;color:var(--amber);flex-shrink:0;margin-top:1px;
+}
+.lead-trail-inner { flex:1; }
+.lead-why {
+  font-family:var(--fu);font-weight:600;font-size:13.5px;
+  color:var(--text);line-height:1.5;margin-bottom:4px;
+}
+.lead-clue {
+  font-family:var(--fm);font-size:11px;color:var(--amber-soft);
+  letter-spacing:.3px;line-height:1.55;
+}
+.lead-clue::before { content:"LEAD: "; color:var(--amber);font-weight:bold; }
+.lead-none {
+  display:flex;gap:10px;align-items:center;
+  background:rgba(128,104,80,.06);
+  border-left:3px solid var(--border-hi);
+  padding:8px 16px;margin-bottom:6px;
+  font-family:var(--fm);font-size:11px;color:var(--text-muted);letter-spacing:.5px;
+}
+.lead-none::before { content:"→"; color:var(--text-muted); }
+
+
   background:rgba(255,154,24,.06);border:1px solid var(--amber-dim);
   padding:12px 16px;margin-top:14px;
 }
@@ -915,6 +945,8 @@ const ACTS = {
     goal:"The PCs work the crime scene. They follow forensic and financial leads. A journalist hands them a list of nine names. By the end, they have a shell company pointing at a Deputy Mayor, a second body across town, and a phone call from a cutter in Chinatown whose line cuts out.",
     scenes:[
       {title:"Voss Penthouse · Bradbury Tower 41",loc:"Crime scene · 03:14",imgKey:"loc_penthouse_map",
+        why:"Duty call — Greer routes the 03:14 alert to Rep-Detect. This is mandatory.",
+        lead:null,
         atmos:["Rain on the glass","Copper-veined marble","Humidity scrubber failed","Two dead bodyguards","No music, no movement"],
         details:[
           "Two bodyguards dead in the entry corridor — necks broken, professional. Both ex-LAPD, served under Voss in 2027.",
@@ -928,6 +960,8 @@ const ACTS = {
         ],
         mechanics:["[BR: Observation] — spots the second boot print in the bedroom","[BR: Tech] — bypasses the tablet screen-lock","[BR: Insight] — realises he knew his killer"]},
       {title:"City Morgue · Sub-Basement Two",loc:"Forensic work",imgKey:"loc_morgue",
+        why:"A second body — Judge Aaron Ostrow — killed the same night, same mark. Greer doesn't mention it. The team finds out through the precinct network or Talia's family call.",
+        lead:"Clue #1 (DIR-019) raises the question: was Voss a one-off? Pulling the night's incident log reveals Ostrow died within twenty minutes of Voss, two miles away.",
         atmos:["Bleach and decay suppressant","Flat fluorescent","Marisol Yu's chatter — three coffees deep"],
         details:[
           "Both bodies bear the DIR-019 mark. Ostrow's <em>tattooed onto his chest with a med-tool while he was paralysed but conscious.</em> He saw who killed him.",
@@ -937,6 +971,8 @@ const ACTS = {
         ],
         mechanics:["[BR: Medical Aid] — identifies the Wallace-grade paralytic","Talia inherits Aaron's files — open them to find the 2027 Marisol Vance case"]},
       {title:"Lin Ai's Noodle Bar · Fairfax",loc:"Conversation · The Bowl",imgKey:"loc_noodle",
+        why:"Lin Ai is the only person outside the cell who has been building this case for ten years. The PCs reach her via two possible routes.",
+        lead:"Route A: Marisol Yu at the morgue mentions 'the journalist who's been writing about this for years.' Route B: PCs spot DIR-019 graffiti on the wall of a Fairfax building and find Lin Ai photographing it.",
         atmos:["Steam and fluorescent buzz","Pickled garlic and rice vinegar","Three tables, one occupied — she always sits at the back corner"],
         details:[
           "Lin Ai has been writing about the 2027 disappearances for a decade. She is considered a crank. She is the most informed person in the scenario.",
@@ -947,6 +983,8 @@ const ACTS = {
         ],
         mechanics:["[BR: Manipulation] Hard — fails worsen her cooperation","[BR: Insight] — reads how frightened she has been for how long"]},
       {title:"End of Act One — Volkov Phones",loc:"Wherever the PCs are · ~1:15",imgKey:"loc_clinic",
+        why:"Lin Ai gives Volkov's address as a parting gift. Then his phone rings first — he found them before they found him.",
+        lead:"Lin Ai: 'There's a cutter in Chinatown who patched up a tall woman with a jaw scar about six months ago. His name is Volkov.' His call comes through within minutes.",
         atmos:["Cut to black after the call drops"],
         details:[
           'A man\'s voice, accented Russian: <em>"I have something you need. I\'m at the clinic. Come now, no comms, no badges — when you get —"</em> The line drops.',
@@ -962,6 +1000,8 @@ const ACTS = {
     goal:"Halden introduces himself at Volkov's dead clinic. Wren walks past the PCs at Pham's marina. Sera ambushes them. The salt-flats warehouse reveals the truth. A contact dies. By the end, the team knows the fundraiser tonight is where it ends.",
     scenes:[
       {title:"Dr Volkov's Clinic · Chinatown",loc:"Halden's Introduction · Act Two opener",imgKey:"loc_clinic",
+        why:"Volkov phoned at the end of Act One. His line cut mid-sentence. The PCs go because he called them — and because whatever he wanted to tell them, someone got there first.",
+        lead:"Volkov's call: 'I have something you need. I'm at the clinic. Come now — when you get—' [line drops]. The address is already in the team's possession from Lin Ai.",
         atmos:["Antiseptic and engine oil","Autoclave still humming","Blood still wet","A pen on the desk"],
         details:[
           "Volkov dead in the back room. Throat opened. <strong>NOT Wren's signature</strong> — fast, brutal, different killer.",
@@ -972,6 +1012,8 @@ const ACTS = {
         ],
         mechanics:["[BR: Insight] Hard — recognises the credentials as fake","[BR: V-K] — he won't submit. The smile is wrong. That's all the PCs get.","<strong>USE HALDEN MAX 3 TIMES TOTAL. This is #1.</strong>"]},
       {title:"Elias Pham's Safehouse · San Pedro Marina",loc:"Wren walks past",imgKey:"loc_marina",
+        why:"Elias Pham is the only name on Lin Ai's list of nine who is still alive. He is the team's only living thread to whatever Directive 19 was.",
+        lead:"Clue #3 — Lin Ai's list of nine. Pham is the last entry: 'Tyrell security director. Still alive, last I knew. Off-grid. San Pedro.' Confirmed by Pham's address in the Voss tablet if the team found it.",
         atmos:["Wet wood and rust","Small boats on pylons","The lights inside are not on — they should be"],
         details:[
           "Pham dead at his kitchen table. <strong>Wren is standing behind him, holding the chair. She has waited for them.</strong>",
@@ -982,6 +1024,8 @@ const ACTS = {
         ],
         mechanics:["[BR: Mobility] — racing to the window. Even success: she's gone.","[BR: Insight] on her three lines — she means them. Not threatening. Stating.","No combat. She does not engage."]},
       {title:"Saltgrove Warehouse 7 · North Salt Flats",loc:"The truth · above the smog ceiling",imgKey:"loc_warehouse",
+        why:"Multiple paths converge here. This is where it happened — the executions, the cover-up, everything the cell has spent ten years burying.",
+        lead:"Path A: Pham's confession mentions 'a facility north of the basin — Saltgrove.' Path B: Aaron Ostrow's case files (Talia's inheritance) reference a Saltgrove Logistics LLC invoice. Path C: Sera, if captured and treated with care, gives the address directly.",
         atmos:["No rain — bone-white sky","Hard wind through corrugated steel","Salt cracks under boots","Silence for two miles"],
         details:[
           "<strong>Wren's memorial:</strong> Three salt-encrusted photographs nailed to a roof beam — Kira, Nine, and herself. Names written in her own hand.",
@@ -991,6 +1035,8 @@ const ACTS = {
         ],
         mechanics:["[BR: Observation] — she left this deliberately","[BR: Comprehend] — correlates ledger dates with Lin Ai's list of nine","This is the emotional core of Act Two. Give it thirty seconds of silence."]},
       {title:"Sera's Ambush · Parking Structure",loc:"Combat scene",imgKey:"loc_parking",
+        why:"The PCs don't choose to go here — Sera comes to them. She has been watching the team since the marina and picks her moment when they split.",
+        lead:"No clue triggers this. Sera acts on her own initiative. The GM picks the moment — typically as the team transits between the marina and the salt flats, or on their return to the city.",
         atmos:["Concrete and fluorescent","Wet floor reflections","One tube flickering","Sound grenade to open"],
         details:[
           "Sera opens with a sound grenade. Disorientation. She fights to disable, not kill.",
@@ -1001,6 +1047,8 @@ const ACTS = {
         ],
         mechanics:["[BR: Stress test] — sound grenade: fail loses first action","[BR: Firearms / Close Combat] opposed — Sera at Agility A, Firearms B","[BR: Insight] on captured Sera — she is not lying. She is broken."]},
       {title:"Personal Jeopardy Beat",loc:"GM-triggered · late Act Two · off-screen",imgKey:null,
+        why:"Halden has been working while the PCs have been working. He has identified which contact is most useful to remove — and most painful to lose.",
+        lead:"Not a destination the PCs travel to. The discovery finds them — a call from a neighbour, a missed check-in, a body in a flat the PC knows well. The GM triggers this once, late Act Two, for maximum landing.",
         atmos:["A contact close to one PC has been killed","Discovered, not witnessed","One scene — then move on"],
         details:[
           "<strong>Iris:</strong> Marisol Vance's widow — Iris's dead partner's family — found in her apartment.",
@@ -1019,6 +1067,8 @@ const ACTS = {
     goal:"Three converging tracks. The team splits. Wren escapes — this is structural, built into the design. The terrace scene is the heart of the scenario. The dice decide what Wren costs the PC, not whether she survives.",
     scenes:[
       {title:"Sandoval Tower · 88th Floor Fundraiser",loc:"Three hundred guests · 21:00",imgKey:"loc_fundraiser",
+        why:"Wren told them exactly where and when. Cortez is there. Tonight is the only night this ends.",
+        lead:"Handout H02-B — Wren's three-line note: SANDOVAL. 21:00 — 88. Don't get in my way. The fundraiser is public knowledge — it's on the news, in Greer's calendar, mentioned in passing by Hara.",
         atmos:["Champagne and ozone","Expensive carpet absorbing footsteps","City as low amber smear far below","Three converging tracks below the surface"],
         details:[
           "<strong>Wren</strong> is descending toward Cortez through the service corridors.",
@@ -1029,6 +1079,8 @@ const ACTS = {
         ],
         mechanics:["[BR: Stealth] — move through the fundraiser unseen","[BR: Manipulation] — approach Cortez directly (she's gracious, deflecting)","Six PCs split naturally across three tracks. Let it happen."]},
       {title:"Sandoval Tower · Roof / Broadcast Relay",loc:"Track A — Sera's broadcast",imgKey:"loc_roof",
+        why:"The team learns about the broadcast from Sera — either by capturing her in the parking structure, or by recognising the building's emergency relay has been hijacked when they enter.",
+        lead:"If Sera was captured and talked: she tells them about the broadcast plan. If not: a tech-savvy PC (Saoirse or Marc) notices the emergency broadcast system has been accessed on the tower's building management terminal in the lobby.",
         atmos:["Hard horizontal rain at altitude","No shelter","Distant spinner traffic streaking past","One laptop — one hardline jack"],
         details:[
           "Sera can be stopped by combat (she fights back) or by a [BR: Tech] Hard roll to bypass the terminal.",
@@ -1038,6 +1090,8 @@ const ACTS = {
         ],
         mechanics:["[BR: Tech] Hard — bypass her terminal lock before upload completes","[BR: Manipulation] Hard — invoked Helen Park's name correctly adds +1 die"]},
       {title:"★ The Terrace · 88th Floor South Face",loc:"THE CLIMAX — Run this slowly",imgKey:"loc_terrace",
+        why:"Wren moves to the terrace after her business inside is done — or is pushed there. One PC follows. It is the only way this ends.",
+        lead:"Wren is cornered on the south face, or she chooses the terrace deliberately — a place where the wind drops and the rain falls straight. The PC who is in the best position, or who has the strongest personal hook, ends up alone with her. Let it happen naturally.",
         atmos:["Wet stone underfoot","Wind drops in the lee of the dome","Vertical rain","City a low orange smear below","Twenty stories of nothing at the parapet"],
         details:[
           "One PC alone with Wren. She is wounded. She is calm. This is the heart of the scenario.",
@@ -1563,6 +1617,14 @@ function showAct(n){
       ${act.goal}
     </div>`;
   act.scenes.forEach((sc,i)=>{
+    if(sc.why){
+      h+=`<div class="lead-trail">
+        <div class="lead-trail-inner">
+          <div class="lead-why">${sc.why}</div>
+          ${sc.lead?`<div class="lead-clue">${sc.lead}</div>`:''}
+        </div>
+      </div>`;
+    }
     h+=`<div class="scene-card${i===0?' open':''}">
       <div class="scene-head" onclick="this.parentElement.classList.toggle('open')">
         <div class="scene-title-wrap">
