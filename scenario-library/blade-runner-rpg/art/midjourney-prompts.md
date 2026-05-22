@@ -853,7 +853,331 @@ added beneath,
 
 ---
 
-## Usage Notes for the GM
+## FOUNDRY VTT BATTLEMAPS *(top-down playable maps for the virtual tabletop)*
+
+These are the maps the PCs will actually move tokens on. Different format and intent from the blueprint plans above — the blueprints are *documents the GM hands the players*, these are *the physical space the scene happens in.*
+
+### Format spec
+
+- **Grid:** Foundry VTT default of **100 pixels per grid square** (1 square = 5 feet = one Medium token).
+- **Image dimensions:** must be a clean multiple of 100 in both directions, no partial squares at the edges. Standard sizes used below: 2400×1800 (24×18 grid), 2800×2000 (28×20), 3200×1800 (32×18), 3600×2000 (36×20).
+- **Aspect ratio:** 4:3 (24×18, 32×24) for box rooms, 16:9 (32×18) for wider scenes, 7:5 (28×20) for the warehouse. Width should be a multiple of 16 and height a multiple of 9 where 16:9 is used.
+- **Output format:** ask Midjourney to render at maximum dimensions, then post-crop and resize in any image editor (Photoshop, Affinity, Photopea) to the exact target dimensions. **A clean crop to the spec size matters more than the original Midjourney resolution.**
+- **No baked-in grid lines** — Foundry draws its own. The prompts below ask for no grid overlay.
+- **No baked-in labels or text** — names get added in Foundry as scene notes.
+- **No lighting baked-in for indoor scenes** — Foundry's dynamic lighting layer handles candle, lamp, and torch effects. Render ambient base lighting only.
+
+### Style direction
+
+Top-down orthographic floor plan view, **painted rather than illustrated**. Photorealistic-adjacent texture rendering with neon noir colour grading. Wet floor reflections, sodium amber and cyan rim lighting on architectural details, magenta accent where replicants have been present. **Blade Runner aesthetic translated into a playable surface** — high-contrast lighting baked into the floor and walls themselves, deep shadow in the corners, atmospheric haze. Asphalt-grime detail, rain-slick puddles, scattered debris where relevant. Cinematic colour grade.
+
+### Shared style suffix *(append to every Foundry battlemap prompt below)*
+
+```
+top-down orthographic battlemap view direct overhead perspective no camera
+tilt, photorealistic painted floor plan style for virtual tabletop play,
+Blade Runner Los Angeles 2037 aesthetic, sodium amber neon noir colour
+grading with cyan and magenta accent lights, high contrast deep shadows in
+corners, atmospheric haze rendered in the air, wet reflective surfaces
+where appropriate, asphalt and concrete texture detail, scattered urban
+debris where appropriate, painterly cinematic finish, no grid lines, no
+labels, no text, no characters or tokens, no UI elements, clean ambient
+base lighting only no dramatic spot lights, edges of the map flush to the
+frame no border or frame, slightly desaturated, gritty cyberpunk noir
+--style raw --v 7 --stylize 250
+```
+
+### Map index
+
+| ID | Location | Grid | Aspect | Pixels | Notes |
+|----|----------|------|--------|--------|-------|
+| BR19-VTT-01 | Voss Penthouse (Bradbury 41) | 32×24 | 4:3 | 3200×2400 | High-leverage Act I scene |
+| BR19-VTT-02 | Dr Volkov's Clinic, Chinatown | 24×18 | 4:3 | 2400×1800 | Halden's introduction |
+| BR19-VTT-03 | Pham's Marina Safehouse | 28×20 | 7:5 | 2800×2000 | Wren walks past PCs |
+| BR19-VTT-04 | Saltgrove Warehouse 7 | 36×20 | 9:5 | 3600×2000 | Memorial / ledger find |
+| BR19-VTT-05 | Parking Structure — Sera Ambush | 32×18 | 16:9 | 3200×1800 | Combat scene |
+| BR19-VTT-06 | Sandoval Tower 88th Floor | 36×24 | 3:2 | 3600×2400 | Fundraiser interior |
+| BR19-VTT-07 | Sandoval Tower Roof | 24×18 | 4:3 | 2400×1800 | Sera's broadcast point |
+| BR19-VTT-08 | The Terrace (88th South Face) | 32×16 | 2:1 | 3200×1600 | The climax stage |
+| BR19-VTT-09 | Lin Ai's Noodle Bar | 16×12 | 4:3 | 1600×1200 | Small conversation room |
+| BR19-VTT-10 | City Morgue Sub-Basement | 28×16 | 7:4 | 2800×1600 | Long corridor of slabs |
+
+---
+
+### BR19-VTT-01 — Voss Penthouse · Bradbury Tower Floor 41
+*Grid: 32×24 (3200×2400px) · 4:3 · Act One opening crime scene*
+
+```
+Top-down overhead battlemap of a restored 1920s art-deco penthouse interior on
+the 41st floor of the Bradbury Tower Los Angeles 2037, six connected rooms
+filling the frame edge to edge, entry corridor at the bottom with two dead
+bodyguards in dark suits face down on dark hardwood the only colour the small
+puddle of blood beneath each one, large open-plan living room with copper-veined
+black marble floor reflecting amber light from unseen lamps and cyan light from
+the floor-to-ceiling glass walls on three sides showing the rainy LA cityscape
+far below, modern kitchen on one side with white tile and a single muddy boot
+print on one tile picked out in slightly warmer light, master bedroom with a
+dark grey rug and a wet footprint on the marble, master bathroom with classic
+clawfoot bathtub and a figure in a dark navy suit submerged fully clothed face
+visible just below the waterline, fogged mirror with shaving cream letters
+reading DIR019, panic room door visible at the rear deadbolted and untouched,
+no characters or tokens placed,
+
+[shared Foundry battlemap style suffix]
+
+--ar 4:3 --no grid lines, no labels, no text overlays, no top-down isometric,
+no UI, no border, no characters, no tokens
+```
+
+### BR19-VTT-02 — Dr Volkov's Clinic · Chinatown
+*Grid: 24×18 (2400×1800px) · 4:3 · Act Two opener · Halden's introduction*
+
+```
+Top-down overhead battlemap of a black-market cutter clinic ground floor beneath
+a noodle restaurant in Chinatown Los Angeles 2037, three connected rooms, heavy
+steel reinforced front door at the left side of the frame, front reception room
+with a desk and two metal chairs and a single fountain pen lying on the desk
+surface, doorway with curtain to inner procedure room with a metal procedure
+table at its centre and a body lying on the table with throat opened bleeding
+onto the floor below, an autoclave still steaming in the corner, supply cabinets
+along one wall with surgical kit visible, back storage room with refrigeration
+unit and a scalpel point-first on the tile floor, rear exit door to alley at
+the right side of the frame, fluorescent strip lighting overhead one tube
+flickering slightly visible as uneven illumination, antiseptic-pale palette with
+one cyan accent from a buzzing overhead tube and one warm amber accent from a
+floor lamp at reception, wet blood on the tile rendered as dark reflective
+puddles, no characters or tokens placed,
+
+[shared Foundry battlemap style suffix]
+
+--ar 4:3 --no grid lines, no labels, no text, no characters, no tokens
+```
+
+### BR19-VTT-03 — Elias Pham's Safehouse · San Pedro Marina
+*Grid: 28×20 (2800×2000px) · 7:5 · Wren walks past PCs*
+
+```
+Top-down overhead battlemap of a retrofitted three-storey boathouse interior on
+a derelict marina at San Pedro Los Angeles 2037, plan view showing the entire
+first floor where the action takes place, weathered wooden plank floor with two-
+by-four bare construction visible, kitchen area centre with a small table and
+two chairs and a man slumped forward at the table dead with a handwritten
+confession document on the table in front of him, sofa and bunk against the
+opposite wall, ladder up to a second-floor workshop visible at one corner, a
+trap door down to the ground-floor boat slip at the other corner with dark
+water hatching visible below, a single small open window at the rear of the
+frame opening onto the bay with marina water below indicated, salt-stained
+glass on the exterior windows, sodium amber spill from a single marina lamp
+outside one window with cool blue from the moonlight on bay water through the
+back window, scattered fishing gear, sea damp atmosphere, no characters or
+tokens placed,
+
+[shared Foundry battlemap style suffix]
+
+--ar 7:5 --no grid lines, no labels, no text, no characters, no tokens
+```
+
+### BR19-VTT-04 — Saltgrove Industrial Estate · Warehouse 7
+*Grid: 36×20 (3600×2000px) · 9:5 · Memorial site*
+
+```
+Top-down overhead battlemap of an abandoned corrugated-steel warehouse interior
+on the salt flats north of Los Angeles 2037, large rectangular space 180 feet
+by 100 feet, dusty concrete floor with cracks and the white residue of
+windblown salt at the edges, two rows of vertical steel support columns running
+the length, central area with a single wooden roof beam visible above casting
+a shadow with three small photograph rectangles nailed to it visible in plan
+view directly below as small rectangles on the floor, back-room area at the
+rear right with a large dark patch of acid-burn discolouration on the concrete
+the shape of a long oval, a blue tarp on the floor at the centre with a ledger
+page partially visible, two large sliding industrial cargo doors at the
+opposite ends of the warehouse marked by the change in floor texture where
+they would open, single side door, hard daylight rendered as a single column
+of bright white light through a broken roof panel visible as a bright patch
+on the floor centre, otherwise interior in deep shadow, salt-cracked atmosphere
+no rain at this elevation, sparse, no characters or tokens placed,
+
+[shared Foundry battlemap style suffix]
+
+--ar 9:5 --no grid lines, no labels, no text, no characters, no tokens
+```
+
+### BR19-VTT-05 — Parking Structure · Sera's Ambush
+*Grid: 32×18 (3200×1800px) · 16:9 · Combat scene*
+
+```
+Top-down overhead battlemap of one level of a multi-storey downtown Los Angeles
+parking structure 2037, third level, rectangular layout with concrete support
+columns in a regular grid, wet concrete floor with reflective puddles catching
+ambient amber light, parked cars visible from above as rectangles of various
+makes and colours along the perimeter parking bays leaving the central aisle
+clear, one large oil stain rendered as a continent-shaped dark patch on the
+floor, a single ramp up at one corner and ramp down at the opposite corner,
+pedestrian elevator core and stairwell as a small enclosed structure on one
+edge, a single fluorescent strip running down the central aisle ceiling rendered
+as uneven illumination one tube clearly dimmer, scattered urban debris and
+litter, oil slicks, a discarded soda cup, no rain at this level since enclosed
+but humidity haze, sodium amber and cyan rim lighting on the column edges,
+deep shadow in the corners between cars, no characters or tokens placed,
+
+[shared Foundry battlemap style suffix]
+
+--ar 16:9 --no grid lines, no labels, no text, no characters, no tokens
+```
+
+### BR19-VTT-06 — Sandoval Tower · 88th Floor Fundraiser
+*Grid: 36×24 (3600×2400px) · 3:2 · Act Three social-stealth scene*
+
+```
+Top-down overhead battlemap of the 88th floor observation level interior of
+the Sandoval Tower Los Angeles 2037, large circular domed reception hall
+rendered in plan view as a circle inscribed in the frame, polished black marble
+floor reflecting warm amber chandelier light from above, twenty round white-
+clothed dining tables arranged in concentric circles around the perimeter each
+with eight chairs, a central open dance and reception area, a raised podium at
+the rear with warm presentation lighting, a back-of-house green room labeled
+nothing just a smaller rectangular room accessed by a service corridor at the
+rear, four service corridors entering from the perimeter shown as narrow
+hallways, a central elevator core as a square enclosure, exterior glass curtain
+wall around the entire perimeter with terrace shelf visible just outside,
+champagne flutes on every table as tiny gold dots, the LA night skyline implied
+in the glass walls as deep cool blue with distant amber and magenta spinner
+traffic streaks, kitchens and bar areas at the rear indicated as utility rooms,
+gilded calm, no characters or tokens placed,
+
+[shared Foundry battlemap style suffix]
+
+--ar 3:2 --no grid lines, no labels, no text, no characters, no tokens
+```
+
+### BR19-VTT-07 — Sandoval Tower · Roof / Broadcast Relay
+*Grid: 24×18 (2400×1800px) · 4:3 · Sera's broadcast point*
+
+```
+Top-down overhead battlemap of the flat industrial roof above the Sandoval
+Tower observation dome Los Angeles 2037, large rectangular flat roof surface
+of weathered metal and concrete, HVAC ductwork bank running along one edge
+rendered as boxy industrial shapes, vent stacks visible as small circles, a
+service ladder hatch as a small square opening at one corner, a small terminal
+cabinet near the parapet edge with cables running into the HVAC bank, an open
+laptop on the floor next to the cabinet with a hardline jack visible, the dome
+of the 88th floor visible as a slight circular bulge at the centre of the
+frame, parapet walls with safety railing around all four edges, hard horizontal
+rain streaks visible as faint diagonal lines across the surface, distant
+spinner traffic light streaks faintly visible on the wet metal reflecting
+amber and cyan, exposed elevation atmosphere with cold high-altitude wash, no
+characters or tokens placed,
+
+[shared Foundry battlemap style suffix]
+
+--ar 4:3 --no grid lines, no labels, no text, no characters, no tokens
+```
+
+### BR19-VTT-08 — The Terrace · 88th-Floor South Face
+*Grid: 32×16 (3200×1600px) · 2:1 · The climax stage*
+
+```
+Top-down overhead battlemap of the south-face terrace on the 88th floor of the
+Sandoval Tower Los Angeles 2037, long narrow curved stone terrace shelf six
+feet wide and approximately 160 feet long running along the south face of the
+glass dome, the dome's exterior glass curtain wall on one long edge with three
+sets of double doors equally spaced, parapet wall along the opposite long edge
+beyond which is the void of empty air with the city far below visible as a low
+orange smear of sodium lighting through atmospheric haze, wet stone surface
+with reflective puddles catching ambient amber and a faint magenta light from
+distant spinner traffic streaks visible at the far edges of the frame, vertical
+rain streaks across the entire surface rendered as faint thin lines, no
+furniture, no signage, deep shadow at the dome glass and lighter ambient at
+the parapet edge from the city glow below, the central section of the terrace
+indicated by a slightly brighter ambient circle where the wind would drop in
+the lee of the dome, no characters or tokens placed,
+
+[shared Foundry battlemap style suffix]
+
+--ar 2:1 --no grid lines, no labels, no text, no characters, no tokens
+```
+
+### BR19-VTT-09 — Lin Ai's Noodle Bar · The Bowl
+*Grid: 16×12 (1600×1200px) · 4:3 · Conversation scene · small footprint*
+
+```
+Top-down overhead battlemap of a small three-table noodle bar interior beneath
+a pedestrian overpass on Fairfax Avenue Los Angeles 2037, narrow rectangular
+room with worn linoleum floor, three small square dining tables with two
+chairs each arranged along the left wall, a long counter with five stools
+along the opposite right wall, a small kitchen area visible at the rear with
+a stove and steamer with curls of steam rendered as soft haze, a single
+restroom door at the back, the front entrance to the street at the right
+edge of the frame with the overpass column visible just outside as a circular
+shadow, neon reflection on the wet pavement just outside the door rendered as
+amber and cyan glow on the threshold, harsh fluorescent overhead light, the
+table at the back corner subtly highlighted with slightly warmer light as the
+habitual seat, intimate atmosphere, no characters or tokens placed,
+
+[shared Foundry battlemap style suffix]
+
+--ar 4:3 --no grid lines, no labels, no text, no characters, no tokens
+```
+
+### BR19-VTT-10 — City Morgue · Sub-Basement Two
+*Grid: 28×16 (2800×1600px) · 7:4 · Forensic scene*
+
+```
+Top-down overhead battlemap of an LAPD city morgue interior sub-basement two
+Los Angeles 2037, long rectangular cold storage room, polished concrete floor
+flat fluorescent light from overhead strips, two rows of stainless-steel slab
+drawers along the side walls numbered with small plates, two slabs pulled out
+into the central aisle each with a draped white sheet over a body shape, a
+wheeled forensic cart in the central aisle with a Voigt-Kampff briefcase unit
+open on it, a clerk's desk at the far end with a CRT terminal and a swivel
+chair, double swing doors at the entry visible at the near end of the frame,
+exit corridor visible beyond the desk, cool clinical cyan-white palette with
+one warm amber spill from the corridor visible at the rear, antiseptic
+atmosphere, no characters or tokens placed,
+
+[shared Foundry battlemap style suffix]
+
+--ar 7:4 --no grid lines, no labels, no text, no characters, no tokens
+```
+
+---
+
+### Foundry VTT Setup Notes
+
+**Per-scene configuration in Foundry:**
+
+1. **Upload the rendered map** to your `worlds/your-world/assets/maps/` folder.
+2. **Create a Scene** in Foundry. Set the Background Image to your map file.
+3. **Scene Dimensions:** Foundry will auto-detect from the image. Verify they match the grid count exactly (32×24 grid = 3200×2400px).
+4. **Grid:** Square, 100 pixels, no offset. If your output is post-cropped slightly off, use the Grid Scaler module or adjust offset by hand.
+5. **Walls layer:** Place walls along all internal partitions, doors as door-segments, windows as windows. This enables dynamic lighting and token vision.
+6. **Lights layer:** Add point lights for each lamp / fluorescent / window visible in the map. Recommended for atmosphere:
+   - Voss penthouse: cool blue ambient through glass walls, warm amber from interior fixtures
+   - Volkov's clinic: a single cyan-flickering fluorescent above the procedure room
+   - Saltgrove warehouse: one hard white shaft through the broken roof
+   - Sandoval terrace: ambient amber from the city below, occasional magenta spinner pass
+7. **Sound layer:** add an ambient track per scene. Recommended:
+   - Voss penthouse and Bradbury exteriors: rain on glass
+   - Volkov's clinic: autoclave hum + flickering fluorescent buzz
+   - Saltgrove warehouse: wind through corrugated steel, hard silence
+   - Sandoval fundraiser: string quartet polite chatter
+   - The terrace: heavy rain, wind, distant spinner pass
+8. **Notes layer:** Place note pins on key features (the DIR-019 mirror, the kitchen bootprint, the body, the memorial beam) with one-line GM reminders.
+
+**Token placement:**
+- All grid squares assumed to be 5 feet
+- A standard Medium token (200–400px square) fits one square
+- For the Sandoval fundraiser, expect 6 PC tokens + Cortez + Wren + Halden + Sera + 6–8 named guest tokens at most — don't try to render 300 guest tokens, the painted dots on the map represent the crowd
+
+**Lighting tip — replicant magenta:**
+Add a faint magenta point light (radius 2 squares, dim) on a tile briefly when Wren passes through it. The players will feel her without seeing her. Same for Halden in the clinic scene (charcoal grey ambient with a single warm pen-light spot at the desk).
+
+**Iteration guide:**
+- Midjourney's top-down accuracy varies. Some prompts will need re-rolling 5–10 times to land orthographic projection.
+- If a render comes back at a slight tilt (3/4 isometric), use `--style raw` + add `architectural plan view, no perspective, no foreshortening, pure overhead orthographic projection` at the end.
+- For ambush / combat scenes, prioritise readability over atmosphere. The parking structure especially: players need to see cover positions clearly.
+
+
 
 - **Print or display on the tablet** — these maps are designed to work both ways.
 - **The blueprint maps are deliberately not playable battle grids** — they are scenery/orientation aids. Use the Acts screen of the GM app for the actual scene management.
