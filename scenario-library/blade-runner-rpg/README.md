@@ -26,7 +26,7 @@ GM HTML apps live under `apps/[scenario-name]/index.html`. They are single-file,
 
 ## Art
 
-Scenario-specific artwork lives in `art/[scenario-name]/`. Style guide for Blade Runner RPG scenarios: **Moebius / Syd Mead influence, ink linework with colour wash, 1980s European sci-fi comics aesthetic.** Not photorealistic. Heavy chiaroscuro with neon accent lighting.
+Scenario-specific artwork lives in `art/[scenario-name]/`. Midjourney generation prompts live at [`art/midjourney-prompts.md`](art/midjourney-prompts.md). Style guide for Blade Runner RPG scenarios: **Moebius / Syd Mead influence, ink linework with colour wash, 1980s European sci-fi comics aesthetic.** Not photorealistic. Heavy chiaroscuro with neon accent lighting. Blueprint scenery maps use a separate **LAPD evidence-archive blueprint** style — white and pale cyan technical lines on Prussian-blue ground, with case-file stamping.
 
 ---
 
