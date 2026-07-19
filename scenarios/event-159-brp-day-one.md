@@ -44,7 +44,7 @@ On Thursday, 14 May 2026 — three days before the events of this scenario — a
 
 The breach on Thursday was contained to four laboratory workers. By Friday afternoon, three of them were dead. By Saturday evening, two had reanimated in a sealed section of the facility. By 7:14 AM on Sunday, a third had reached a service corridor that connected to the public drainage network. Within forty minutes, three members of the public in the Elephant & Castle area were showing early symptoms. Metropolitan Police officers responding to "confused and aggressive persons" had no PPE and no information. Two officers were bitten.
 
-The government has known since approximately 8:30 AM. COBR convened at 9:00 AM. The NHS Emergency Alert was not issued until 10:47 AM — a delay of nearly two hours — because a containment-first assessment concluded that alerting the public would cause a stampede that would spread the infected across London faster than controlled evacuation could manage. That assessment was wrong, or at least too slow. By the time the alert fires, the infection is already moving along the South Bank.
+The government has known since approximately 8:30 AM. COBR convened at 9:00 AM. The NHS Emergency Alert was not issued until 10:47 AM — a delay of well over two hours — because a containment-first assessment concluded that alerting the public would cause a stampede that would spread the infected across London faster than controlled evacuation could manage. That assessment was wrong, or at least too slow. By the time the alert fires, the infection is already moving along the South Bank.
 
 The military cordon being established "north of the river" that Callum's radio will pick up fragments of is not a rescue cordon. It is a containment cordon. The working assumption inside COBR, based on the rate of spread from Elephant & Castle, is that South London below the Thames cannot be held. The cordon is along the north bank. The government is not coming south of the river. They are closing the door.
 
@@ -70,7 +70,7 @@ The scenario ends when the players reach Tower Bridge or the moored RIB at Banks
 | ID | Description | Format | When Given |
 |----|-------------|--------|------------|
 | 159-H00-A | Character sheets — six pre-gens with personal hooks and contact names | Printed cards, one per player | Before play begins |
-| 159-H00-B | South Bank area map — Waterloo to Borough, key locations marked | Printed A5, ink-sketch style | Before play begins |
+| 159-H00-B | South Bank area map — Waterloo to Tower Bridge, key locations marked | Printed A5, ink-sketch style | Before play begins |
 | 159-H00-C | NHS Emergency Alert screengrab — red screen, government text | Phone-sized printed card or displayed on GM device | Introduction beat — alert fires |
 
 ---
@@ -107,7 +107,7 @@ The scenario ends when the players reach Tower Bridge or the moored RIB at Banks
 
 ### Player Briefing
 
-Players know: there is an alert, something is happening, they do not know what. They are scattered across 600 metres of South Bank between Waterloo Station and Borough Market. They have mobile phones, whatever their character carries, and no information beyond four words and one scream.
+Players know: there is an alert, something is happening, they do not know what. They are scattered across two kilometres of South Bank between Waterloo Station and Borough Market. They have mobile phones, whatever their character carries, and no information beyond four words and one scream.
 
 They do not know each other yet. They converge on a bus crash on Southwark Street — a bus whose driver had a medical episode — which gives everyone a natural reason to approach the same point.
 
@@ -126,7 +126,7 @@ They do not know each other yet. They converge on a bus crash on Southwark Stree
 
 ### Summary
 
-The players converge on the bus crash on Southwark Street. Among the gathering crowd is the first infected NPC — a man in a high-vis vest standing very still with his head tilted. Social media is exploding but contradicting itself. Callum Fraser arrives trying to manage a scene he has no framework for. Fatima Osei is already trying to lock up her stall and get gone. The first violent infected encounter happens when someone approaches the high-vis man. Then Borough Market breaks.
+The players converge on the bus crash on Southwark Street. Among the gathering crowd is the first infected NPC — a man in a high-vis vest standing very still with his head tilted. Social media is exploding but contradicting itself. Callum Fraser arrives trying to manage a scene he has no framework for. Fatima Balogun is already trying to lock up her stall and get gone. The first violent infected encounter happens when someone approaches the high-vis man. Then Borough Market breaks.
 
 ### Locations
 
@@ -148,14 +148,14 @@ The players converge on the bus crash on Southwark Street. Among the gathering c
 #### Jubilee Walkway / Riverside Path
 - **Description:** The riverside path between Waterloo Bridge and Southwark Bridge. Exposed, fast, good sightlines to the north bank of the Thames. Benches, tourist boards, a few cyclists.
 - **Atmosphere:** Quieter than the market side. Eerily so.
-- **Key Details:** Two bodies of early infected will appear here within minutes of the alert — one collapsed, one standing in the river up to mid-thigh, facing the far bank. Maggie's riverside walk route takes her directly past these. The standing figure in the river is not drowning. It is not doing anything. That is the problem.
+- **Key Details:** Two bodies of early infected will appear here within minutes of the alert — one collapsed, one standing waist-deep in the river, facing the far bank. Maggie's riverside walk route takes her directly past these. The standing figure in the river is not drowning. It is not doing anything. That is the problem.
 - **[BRP: Sanity 1/1d6 — first sight of infected behaviour (the figure in the river)]**
 - **Artwork Asset:** 159-ART-04
 
 #### The Shard Lobby (Olu's starting position)
 - **Description:** The ground floor lobby of The Shard. Glass walls. A security desk with a monitor bank. Emergency radio. Keys to staff-only areas including the roof access and lower service levels.
 - **Atmosphere:** Fifteen percent occupancy means near silence. The few occupants in the building have already gathered at the glass exterior, looking out.
-- **Key Details:** The security desk radio is picking up fragmented police transmissions. Olu can make contact with the group outside via text or social media. The Shard is a high point — someone in the upper floors can see south and east across the city. What they see is smoke, three separate plumes, all south of where they expected.
+- **Key Details:** The security desk radio is picking up fragmented police transmissions — including a unit being sent to the Southwark Street bus crash, ten minutes' walk away. That crash is what pulls Olu out of the building toward the others. The Shard is a high point — someone on the upper floors can see across the whole city. What they see is smoke, three separate plumes, all south of the river, the nearest rising from the direction of Elephant & Castle.
 - **[BRP: Electronics/Computer — accessing the building's CCTV to see the street outside clearly]**
 
 ### NPCs — Act One
@@ -173,7 +173,7 @@ The players converge on the bus crash on Southwark Street. Among the gathering c
   - Body damage reduces Move but not aggression
 - **[BRP: Sanity 1/1d6 — first zombie seen]**
 
-#### FATIMA OSEI — Borough Market stall owner
+#### FATIMA BALOGUN — Borough Market stall owner
 - **Role:** First competent adult voice; de facto NPC leader if players allow her
 - **Physical Description:** Nigerian-British, 50s. Broad shoulders, close-cropped grey hair. Market apron still on over a heavy coat. Moving with complete economy of motion — no wasted steps. Her expression is not frightened. It is alert.
 - **Motivation:** Lock up the van (her driver has gone missing), assess what this actually is, survive and get her people out. Not sentimental. Not panicking.
@@ -189,7 +189,7 @@ The players converge on the bus crash on Southwark Street. Among the gathering c
 - **Role:** Information source; institutional voice losing its authority in real time
 - **Physical Description:** Male, 28, Scottish accent. Uniform but no protective equipment beyond standard kit. Baton, PAVA spray, radio. Looking for someone to tell him what to do.
 - **Motivation:** Follow protocol. When protocol stops applying, follow the person who seems most competent.
-- **What He Knows:** The first reports came from Elephant & Castle at 7:14 AM — nearly two hours before the alert. He heard this on his radio before comms got patchy. He doesn't know what it means but he knows it's relevant. He has not shared it with anyone yet.
+- **What He Knows:** The first reports came from Elephant & Castle at 7:14 AM — more than three hours before the alert. He heard this on his radio before comms got patchy. He doesn't know what it means but he knows it's relevant. He has not shared it with anyone yet.
 - **Disposition:** Initially neutral → friendly if players are calm and cooperative; panics if confronted with direct violence in front of him
 - **Mechanics:**
   - STR: 13 | CON: 12 | SIZ: 13 | DEX: 11 | INT: 13 | POW: 12 | APP: 11
@@ -203,8 +203,8 @@ The players converge on the bus crash on Southwark Street. Among the gathering c
 | # | Clue | Location / Source | How Found | What It Reveals | Type |
 |---|------|-------------------|-----------|-----------------|------|
 | 1 | The high-vis man was eating breakfast when he stopped moving | Near the body, sausage roll evidence | Spot Hidden or close approach before attack | Onset is rapid — no warning stage | Essential |
-| 2 | Callum's radio fragment: "first reports... Elephant... 07:14" | Callum himself | Talk to Callum, ask what he's heard | This started two hours before the alert — the government knew | Essential |
-| 3 | Social media — a drone stream showing north bank panic | Dev or Priya on phones | Technology check, or find Marcus | The spread is already wider than the South Bank; this is not localised | Optional |
+| 2 | Callum's radio fragment: "first reports... Elephant... 07:14" | Callum himself | Talk to Callum, ask what he's heard | This started more than three hours before the alert — the government knew | Essential |
+| 3 | Social media — a drone stream showing north bank panic | Dev or Priya on phones | Technology check, or following @marcus_everything_live's stream (the handle is in the social feed) | The spread is already wider than the South Bank; this is not localised | Optional |
 | 4 | The market's radio picks up the BBC saying "health emergency — do not approach persons showing disorientation" | Borough Market | Spot Hidden (audio) or lingering near the stall radio | Government language is already evasive — "health emergency" not "attack" | Optional |
 
 **Fallback (Clue 2):** If players don't speak to Callum, his radio crackles loudly as the Market breaks — he involuntarily repeats the fragment aloud while trying to restore communications.
@@ -242,7 +242,7 @@ The Market breaking is the hard trigger for Act Two. This should happen no later
 
 ### Summary
 
-After the Market breaks, the group is south of Borough Market, moving through Bermondsey Street toward the comparative quiet of the back streets. The Blue Anchor pub offers shelter, supplies, and community — and one person inside who is infected and hasn't turned yet. Dr Yasmin Sharif arrives and provides medical grounding. The pharmacy produces a human-on-human confrontation. Marcus (the livestreamer) and his drone footage show the city from above for the first time. Then someone reanimates. Then Callum's radio picks up the word "cordon." The act ends when the players make a decision: north to Tower Bridge, or south-west toward Bankside Pier and the RIB.
+After the Market breaks, the group is south of Borough Market, moving through Bermondsey Street toward the comparative quiet of the back streets. The Blue Anchor pub offers shelter, supplies, and community — and one person inside who is infected and hasn't turned yet. Dr Yasmin Sharif arrives and provides medical grounding. The pharmacy produces a human-on-human confrontation. Marcus (the livestreamer) and his drone footage show the city from above for the first time. Then someone reanimates. Then Callum's radio picks up the word "cordon." The act ends when the players make a decision: east to Tower Bridge, or west along the river to Bankside Pier and the RIB.
 
 ### Locations
 
@@ -272,7 +272,7 @@ After the Market breaks, the group is south of Borough Market, moving through Be
 #### Guy's Hospital Car Park (Multi-Storey)
 - **Description:** Visible from Bermondsey Street — a grey concrete tower of a car park adjacent to Guy's Hospital.
 - **Atmosphere:** High ground. Defensible. Obvious. Surrounded on three sides by the hospital grounds, which are becoming overwhelmed.
-- **Key Details:** A dead end if the players are surrounded. Good for a short rest and a full view of the situation — but not an exit. St Thomas' Hospital is visible across the river, clearly overwhelmed: ambulances parked on the forecourt, lights flashing, a line of people at the entrance that stretches to the bridge approach. It is not safe. The group should be able to see this clearly from height.
+- **Key Details:** A dead end if the players are surrounded. Good for a short rest and a full view of the situation — but not an exit. From the upper decks the group looks straight down onto Guy's Hospital: ambulances abandoned on the forecourt, lights still flashing, a queue at the entrance that stretches up St Thomas Street and has stopped moving. It is not safe, and it is the clearest evidence available that the hospitals south of the river have already been lost. The group should be able to see this clearly from height.
 
 ### NPCs — Act Two
 
@@ -340,11 +340,11 @@ This must happen. The choice of victim is the GM's, but the source material reco
 
 **If Danny:** He stands up in the pub mid-conversation. The jacket falls from his arm. The wound is visible. The pub's twelve survivors panic. The door is blocked.
 
-> **[BRP: POW×5 — panic response for groups of 5+ infected (not applicable here, but the crowd panic counts)]**
+> **[BRP: POW×5 — panic response; the rule is written for groups of 5+ infected, but twelve panicking survivors in a blocked room counts as the same trigger]**
 
 ### Story Hooks
 
-- **If players want to go to St Thomas':** Sharif will push for this. The building is clearly overwhelmed — visible from the car park. Players who get within 100 metres will see infected inside the entrance hall. It is a trap they must reason their way out of.
+- **If players want to go to St Thomas':** Sharif will push for this — it is her hospital, two and a half kilometres west along the river. The state of Guy's, visible from the car park, is the counter-argument: every hospital south of the river is in the same state or worse. Players who insist and get within 100 metres of any hospital entrance will see infected inside the entrance hall. It is a trap they must reason their way out of.
 - **If players try to help everyone:** The maths will not work. Twelve people at the Blue Anchor cannot all be kept together and safe. The GM should make this clear through logistics, not lecture.
 - **If Priya finds the editor's message:** She will be quiet for a moment and then say "I think I know what this is." Whether she shares it depends on the player. Encourage her to sit with it — it is a character beat, not just an information dump.
 - **If players try to shelter and wait:** Nightfall is approaching. The infected are harder to see in the dark. The streets will be more dangerous, not less, after 9 PM.
@@ -371,24 +371,24 @@ The cordon radio fragment is the hard trigger for Act Three. It must happen befo
 
 ### Summary
 
-Night is approaching. The group has thirty minutes of viable light left. Two routes exist: Tower Bridge (on foot, controlled by an armed group of civilians who demand negotiation) or the RIB moored at Bankside Pier (discovered via Marcus's drone stream, accessible only through a heavily infected zone near Blackfriars). Both are possible. Neither is safe. Someone does not reach the destination. Whether that is a player character, an NPC, or a choice the group makes deliberately — that is where the scenario lives.
+Night is approaching. The group has thirty minutes of viable light left. Two routes exist: Tower Bridge (on foot, controlled by an armed group of civilians who demand negotiation) or the RIB moored at Bankside Pier (discovered via Marcus's drone stream, accessible only through the dark railway arches at Clink Street). Both are possible. Neither is safe. Someone does not reach the destination. Whether that is a player character, an NPC, or a choice the group makes deliberately — that is where the scenario lives.
 
 ### Locations
 
 #### Tooley Street → Tower Bridge Approach
 - **Description:** The most direct route to Tower Bridge is also the most exposed — broad street, limited cover, infected clustering near the bridge approach where people have been trying to cross all afternoon.
-- **Atmosphere:** End-of-day light. Shadows long. The bridge is visible from here — its distinctive blue-and-white stonework catching the last afternoon sun. It looks almost normal from 400 metres.
-- **Key Details:** A group of six to eight civilians — BRIDGE GROUP — has taken control of the north-side gate house. They are armed (makeshift weapons, two with actual kitchen knives, one with a fire axe). They are letting people across, but only after questioning. They will not let infected through. Their leader, PETE (50s, former building site foreman, completely calm), will interrogate the group about who they are, where they've been, and whether anyone has been bitten. He is not unreasonable. He is not wrong.
+- **Atmosphere:** End-of-day light. Shadows long. The bridge is visible from here — its blue-painted steelwork and pale stone catching the last afternoon sun. It looks almost normal from 400 metres.
+- **Key Details:** A group of six to eight civilians — BRIDGE GROUP — has taken control of the south-side gatehouse — the end the players arrive at. They are armed (makeshift weapons, two with actual kitchen knives, one with a fire axe). They are letting people across, but only after questioning. They will not let infected through. Their leader, PETE (50s, former building site foreman, completely calm), will interrogate the group about who they are, where they've been, and whether anyone has been bitten. He is not unreasonable. He is not wrong.
 - **[BRP: Persuade — convincing the Bridge Group to let the full party through]**
 - **[BRP: Psychology — reading Pete: he has already turned away two infected people and had to deal with the consequences. He knows the cost. He is not cruel. He is broken.]**
 - **Artwork Asset:** 159-ART-07
 
 #### Bankside Pier → The RIB
-- **Description:** A small commercial pier at Bankside — normally used for tourist RIB rides and private river taxis. A 6-metre rigid inflatable boat is moored at the end. It has fuel (gauge unread — players must check). The path to the pier from Bermondsey requires passing through the Blackfriars underpass, which has been dark since noon and which contains at minimum a dozen infected.
-- **Atmosphere:** The sound of the river. The smell of low-tide Thames mud. And from inside the underpass: wet footsteps, that low moaning that everyone now recognises immediately.
+- **Description:** A small commercial pier at Bankside — normally used for tourist RIB rides and private river taxis. A 6-metre rigid inflatable boat is moored at the end. It has fuel (gauge unread — players must check). The path to the pier from Bermondsey requires passing through the Clink Street railway arches — a narrow stone tunnel beneath the rail viaduct, dark since the power on that stretch failed at noon — which contain at minimum a dozen infected.
+- **Atmosphere:** The sound of the river. The smell of low-tide Thames mud. And from inside the arches: wet footsteps, that low moaning that everyone now recognises immediately.
 - **Key Details:** The RIB can hold ten people. Starting it requires a key that is in a locked box in the pier office (combination or break-in). The engine starts on the third try. Once on the river, the group is out of reach of the infected. The north bank of the Thames is not clear — but from the river, they can see which points of the Embankment are least dangerous for landing.
 - **[BRP: Mechanics/Drive (Boat) — starting and navigating the RIB; failure means a longer, louder startup that draws infected]**
-- **[BRP: Sanity 1d4/1d8 — moving through the Blackfriars underpass; the darkness + the moaning + the known density of infected]**
+- **[BRP: Sanity 1d4/1d8 — moving through the Clink Street arches; the darkness + the moaning + the known density of infected]**
 - **Artwork Asset:** 159-ART-08
 
 ### NPCs — Act Three
@@ -431,7 +431,7 @@ This must happen before the bridge or boat is reached. Options, in descending or
 
 - **If the group is fragmented:** Divide the challenge. Part of the group reaches the bridge; part heads for the boat. The GM runs both simultaneously, cutting between them. The two groups may not be able to help each other.
 - **If Pete refuses someone:** Play him straight. He is not wrong. He is doing exactly what anyone responsible would do. The confrontation should feel like arguing with a mirror.
-- **If the RIB won't start immediately:** The noise draws infected from the underpass. The group has approximately three minutes to get the engine running or fight their way back.
+- **If the RIB won't start immediately:** The noise draws infected from the arches. The group has approximately three minutes to get the engine running or fight their way back.
 
 ### Pacing Note
 
@@ -444,7 +444,7 @@ At 3:05, regardless of where the group is: the cost happens. Force it. Do not le
 | ID | Description | Format |
 |----|-------------|--------|
 | 159-H03-A | Tower Bridge approach sketch — evening light, figures at the gatehouse | Ink sketch, A5 |
-| 159-H03-B | Bankside Pier — RIB in foreground, Blackfriars underpass behind | Ink sketch, A5 |
+| 159-H03-B | Bankside Pier — RIB in foreground, the dark arch mouth behind | Ink sketch, A5 |
 
 
 ---
@@ -548,10 +548,28 @@ At 3:05, regardless of where the group is: the cost happens. Force it. Do not le
 - **Why he's here:** Sunday overtime job near Waterloo
 - **Who he wants to reach:** His van — a practical resource — and through it, an exit route
 - **Special ability:** Physical competence and tools — he has a bag of basic hand tools, knows how to break into things and build temporary barriers, and has an accurate instinct for structural stability in any environment
-- **Character hook:** Tom's van is parked near Lambeth North — across the river, or a long way round. Whether it becomes an objective is up to the player. What it represents (escape, independence, normality) is clear.
+- **Character hook:** Tom's van is parked off Waterloo Road near Lambeth North — a long walk west, back through everything the group is trying to leave behind. Whether it becomes an objective is up to the player. What it represents (escape, independence, normality) is clear.
 - **Stats:** STR 14 | CON 14 | SIZ 13 | DEX 13 | INT 12 | POW 11 | APP 11 | HP 14 | MP 11
 - **Key Skills:** Craft (Construction) 70%, Mechanics 60%, Athletics 65%, Brawl 55%, Drive 65%, Spot Hidden 50%
 
+
+---
+
+## NPC Roster — Quick Sheet
+
+| NPC | Act | Essence (who + want) | Disposition | Combat / key numbers |
+|-----|-----|----------------------|-------------|----------------------|
+| The High-Vis Man | One | First infected; motor function without cognition | Passive until approached, then hostile | HP 12, Move 4, bite 1d4+infection, head shot to kill |
+| FATIMA BALOGUN | One → | Market stall owner; first competent adult voice; wants her people out alive | Neutral → friendly if players prove useful | Persuade 75%, cleaver 50% (1d6+1d4), HP 13 |
+| PC CALLUM FRASER | One → | Young constable; institution failing around him; radio = clue delivery | Friendly if players stay calm | Baton 55% (1d6), HP 13 |
+| DR YASMIN SHARIF | Two → | Off-duty A&E consultant; wants to reach St Thomas' — she is wrong about this | Friendly-professional | Medicine 85%, First Aid 90%, not a fighter |
+| MARCUS | Two → | 19, streaming to 41,000; his chat and drone feed are the aerial truth | Friendly, chaotic, a liability in stealth | No attacks; phone at 31% |
+| HELEN | Two → | Retired Cabinet Office; "I'm sure it's a gas leak"; the bravest person here | Resistant → the most grounded, if engaged | Keys to the Kensington Club annex; The Moment |
+| GORDON | Two (minor) | Retired schoolteacher holding the Blue Anchor's twelve together | Friendly, stretched thin | Stat as minor |
+| DANNY | Two (minor) | Bitten 40 minutes ago, hiding it under a jacket | Hidden — turns if the group stays ~30 min | Reanimates as standard zombie |
+| DECLAN & RYAN | Two (minor) | Scared looters in the pharmacy; Ryan is bitten and hiding it | Hostile → negotiable | Craft knife / bicycle lock; stat as minors |
+| PETE | Three | Bridge Group foreman; triage with no good options; not a villain, not wrong | Neutral; hostile only if lied to or pushed | Fire axe 60% (1d8+1d4), HP 14 |
+| The Bridge Group | Three (minor) | Six frightened civilians who hold only because Pete holds | Follow Pete; scatter if he falls | Stat as minors |
 
 ---
 
@@ -569,7 +587,7 @@ At 3:05, regardless of where the group is: the cost happens. Force it. Do not le
 | 159-ART-05 | Bermondsey Street — narrow Victorian street, small group of survivors moving south, windows above with watching faces | Act Two | Ink sketch narrow London street survivors moving, watching faces in upper windows, threatening quietness, reportage sketch |
 | 159-ART-06 | The Blue Anchor interior — pub crowd, Danny visible in corner with jacket over arm, slight wrongness in his posture | Act Two | Ink sketch pub interior, crowded survivors, one figure in corner with jacket over arm, subtle wrongness in posture, crosshatch low light |
 | 159-ART-07 | Tower Bridge approach — late afternoon light, figures at the gatehouse, Pete visible with axe at his leg | Act Three | Ink sketch Tower Bridge approach, civilians at gatehouse, strong foreground figure with axe, long shadows, last light, reportage urgency |
-| 159-ART-08 | Bankside Pier — RIB in foreground, dark underpass mouth visible behind, water reflecting city light and fire | Act Three | Ink sketch riverside pier, rigid inflatable boat moored, dark underpass mouth behind, fire reflections in Thames water, crosshatch darkness |
+| 159-ART-08 | Bankside Pier — RIB in foreground, dark arch mouth visible behind, water reflecting city light and fire | Act Three | Ink sketch riverside pier, rigid inflatable boat moored, dark underpass mouth behind, fire reflections in Thames water, crosshatch darkness |
 | 159-ART-09 | NPC portraits — six character sketches: Fatima, Callum, Sharif, Marcus, Helen, Pete | Throughout | Individual ink portrait sketches, each with one defining visual detail: Fatima (apron, purposeful), Callum (uniform, lost expression), Sharif (glasses up, calm), Marcus (phone-selfie-stick, terrified beneath content-face), Helen (tote bag, extraordinary calm), Pete (hi-vis foreman, axe, broken-steady eyes) |
 
 ---
