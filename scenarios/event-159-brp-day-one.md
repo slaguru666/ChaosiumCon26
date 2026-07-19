@@ -113,6 +113,19 @@ Players know: there is an alert, something is happening, they do not know what. 
 
 They do not know each other yet. They converge on a bus crash on Southwark Street — a bus whose driver had a medical episode — which gives everyone a natural reason to approach the same point.
 
+### The calls home *(run these DURING the convergence walk — parallel narration, ~3 minutes, not a scene of their own)*
+
+Every pregen's first instinct is a phone call, and the text answers each one:
+
+- **Kira → Abena (Peckham):** she answers, confused but fine — "there's sirens somewhere, love, but Peckham's quiet." The relief is real. So is the geography: Peckham is *deeper* into the zone being written off.
+- **Maggie → Cara (Deptford):** voicemail. Cara works weekend shifts **north of the river** — a fact Maggie knows and the player should be told. The unanswered phone means nothing. It will not feel that way.
+- **Dev → flatmate (Old Street):** answers, panicking, watching a helicopter from the roof — "it's mental over the river, what can YOU see?" A live north-bank viewpoint for one act.
+- **Tom → his mum:** voicemail again, same as this morning. Road noise on his own last message.
+- **Priya:** her phone rings *first* — the editor (see Clue 9; take the beat when she answers or note the missed call if she doesn't).
+- **Olu:** has no one to call — and stands there hearing everyone else's. Give that a sentence.
+
+**The network dies on schedule:** calls work at 11:00 · circuits jammed by 12:00 ("all lines are busy") · dead south of the river by mid-afternoon. Say it as it degrades — it retires 999 redials and repeat-calling without a ruling.
+
 ### Atmosphere Notes
 
 - Music suggestion: ambient urban drone — distant sirens, low register
@@ -171,7 +184,7 @@ The players converge on the bus crash on Southwark Street. Among the gathering c
   - STR: 10 | CON: 18 | SIZ: 12 | DEX: 6 | INT: — | POW: — | APP: —
   - HP: 12 | Move: 4 (slow shamble)
   - Head shot only for instant kill (–20% penalty or Special Success)
-  - Bite: 1d4 + Infection (CON roll or symptoms begin within hours)
+  - **Bite 40%** (grapple-and-bite; +20% when a crowd of them swarms one target): 1d4 + Infection (CON roll or symptoms begin within hours)
   - Body damage reduces Move but not aggression
 - **[BRP: Sanity 1/1d6 — first zombie seen]**
 
@@ -181,6 +194,7 @@ The players converge on the bus crash on Southwark Street. Among the gathering c
 - **Motivation:** Lock up the van (her driver has gone missing), assess what this actually is, survive and get her people out. Not sentimental. Not panicking.
 - **What She Knows:** Knows the market layout intimately. Knows every exit. Has a locked supply van (driver missing, she has a spare key). Has seen riots, the 2011 disorder, a gas explosion in 2019. This is different, and she will say so directly.
 - **Disposition:** Neutral → Friendly if players prove useful and not stupid; hostile if patronised
+- **If the Persuade fails:** she locks the stall and goes her own way, alone — and resurfaces in Act Two, barricaded inside the Blue Anchor (she knows the publican), notably cooler toward the group. Nothing is lost but her warmth; the failed roll costs the party its best NPC ally's trust, not the plot.
 - **Mechanics:**
   - STR: 13 | CON: 14 | SIZ: 11 | DEX: 12 | INT: 17 | POW: 15 | APP: 14
   - HP: 13 | MP: 15
@@ -388,7 +402,7 @@ Night is approaching. The group has thirty minutes of viable light left. Two rou
 #### Bankside Pier → The RIB
 - **Description:** A small commercial pier at Bankside — normally used for tourist RIB rides and private river taxis. A 6-metre rigid inflatable boat is moored at the end. It has fuel (gauge unread — players must check). The path to the pier from Bermondsey requires passing through the Clink Street railway arches — a narrow stone tunnel beneath the rail viaduct, dark since the power on that stretch failed at noon — which contain at minimum a dozen infected.
 - **Atmosphere:** The sound of the river. The smell of low-tide Thames mud. And from inside the arches: wet footsteps, that low moaning that everyone now recognises immediately.
-- **Key Details:** The RIB can hold ten people. Starting it requires a key that is in a locked box in the pier office (combination or break-in). The engine starts on the third try. Once on the river, the group is out of reach of the infected. The north bank of the Thames is not clear — but from the river, they can see which points of the Embankment are least dangerous for landing.
+- **Key Details:** The RIB can hold ten people. Starting it requires a key that is in a locked box in the pier office (combination or break-in). **The engine [BRP: Mechanics or Drive (Boat)]: a regular success = it starts on the third try — loud, and the arches empty toward the pier (that noise is written in, keep it); a Special/Extreme success = first pull, clean; a failure = flooded engine and the full three-minute window before the infected arrive.** Once on the river, the group is out of reach of the infected. The north bank of the Thames is not clear — but from the river, they can see which points of the Embankment are least dangerous for landing.
 - **[BRP: Mechanics/Drive (Boat) — starting and navigating the RIB; failure means a longer, louder startup that draws infected]**
 - **[BRP: Sanity 1d4/1d8 — moving through the Clink Street arches; the darkness + the moaning + the known density of infected]**
 - **Artwork Asset:** 159-ART-08
@@ -419,7 +433,7 @@ This must happen before the bridge or boat is reached. Options, in descending or
 
 **Option B — A player character:** BRP is lethal. If a character has taken wounds or is at low HP, this is the moment a bite, a fall, a wrong turn, ends them. Do not pull this punch. The character's player should be offered a final moment: a last instruction, a last look back, something given to the group before they can no longer be helped.
 
-**Option C — A moral choice:** The group reaches the bridge and Pete refuses to let someone through — correctly identifying that they are symptomatic or questionable. The group must choose: leave that person, or risk the bridge. There is no third option the scenario provides. The players may invent one. The GM should not save them from the weight of it.
+**Option C — A moral choice:** The group reaches the bridge and Pete refuses to let someone through — correctly identifying that they are symptomatic or questionable (his questioning includes rolled-up sleeves; a hidden bite WILL be found on his Spot Hidden 65%). The group must choose: leave that person, or risk the bridge. **One compromise exists and the players will find it: the quarantine crossing** — the bitten crosses last, hands bound, watched the whole way, and Pete's people escort them off the far side at spear-length. Pete accepts this **only on a Special or Extreme social success** — and he is not wrong to demand it. Beyond that, there is no third option the scenario provides. The players may invent another; the GM should not save them from the weight of it.
 
 ### Clue Trail — Act Three
 *No new information needed. This act is consequence, not discovery.*
@@ -492,7 +506,7 @@ At 3:05, regardless of where the group is: the cost happens. Force it. Do not le
 
 **Killing:** Only head shots reduce HP to zero and kill instantly. Standard penalty –20% on attack roll, OR a Special Success on any hit. Body damage reduces Move rate only.
 
-**Bite Attack:** 1d4 damage + Infection (CON roll or progressive illness begins within hours — this scenario does not resolve the arc, but the threat should hang over every bite)
+**Bite Attack:** **40%** (grapple-and-bite; +20% when a crowd swarms one target), 1d4 damage + Infection (CON roll or progressive illness begins within hours — this scenario does not resolve the arc, but the threat should hang over every bite)
 
 **Sanity Loss:**
 | Trigger | Loss |
@@ -511,7 +525,7 @@ At 3:05, regardless of where the group is: the cost happens. Force it. Do not le
 - **Who she wants to reach:** Her mother, Abena, 74, lives alone in Peckham
 - **Special ability:** Medicine 55%, First Aid 75% — the group's best medical resource until Sharif arrives
 - **Character hook:** She has been awake for 22 hours after a night shift. She is running on adrenaline and knows it.
-- **Stats:** STR 9 | CON 12 | SIZ 10 | DEX 13 | INT 16 | POW 14 | APP 14 | HP 11 | MP 14
+- **Stats:** STR 9 | CON 12 | SIZ 10 | DEX 13 | INT 16 | POW 14 | APP 14 | HP 11 | MP 14 | **SAN 70**
 - **Key Skills:** Medicine 55%, First Aid 75%, Persuade 55%, Science (Biology) 50%, Spot Hidden 50%
 
 ### DEV KRISHNAMURTHY — Freelance software engineer
@@ -519,7 +533,7 @@ At 3:05, regardless of where the group is: the cost happens. Force it. Do not le
 - **Who he wants to reach:** His flatmate near Old Street
 - **Special ability:** Electronics/Computers 75%, most likely to find the drone stream and exploit technology
 - **Character hook:** He has been tracking the spread on social media since before anyone else — he had alert notifications on from a emergency services scanner app. He knows more than he's said.
-- **Stats:** STR 10 | CON 11 | SIZ 11 | DEX 13 | INT 17 | POW 12 | APP 12 | HP 11 | MP 12
+- **Stats:** STR 10 | CON 11 | SIZ 11 | DEX 13 | INT 17 | POW 12 | APP 12 | HP 11 | MP 12 | **SAN 60**
 - **Key Skills:** Computer 75%, Electronics 65%, Library Use/Search 60%, Science (Mathematics) 45%, Spot Hidden 45%
 
 ### MAGGIE DONNELLY — Retired Metropolitan Police officer (22 years)
@@ -527,7 +541,7 @@ At 3:05, regardless of where the group is: the cost happens. Force it. Do not le
 - **Who she wants to reach:** Her adult daughter Cara, lives in Deptford
 - **Special ability:** Authority and pattern recognition — Persuade 70%, Law 60%, and she immediately reads situations through the lens of crowd management experience
 - **Character hook:** She was first on scene at the 2005 Tavistock Square bombing. She knows what mass casualty situations feel like. This one is different.
-- **Stats:** STR 12 | CON 13 | SIZ 12 | DEX 11 | INT 15 | POW 14 | APP 12 | HP 13 | MP 14
+- **Stats:** STR 12 | CON 13 | SIZ 12 | DEX 11 | INT 15 | POW 14 | APP 12 | HP 13 | MP 14 | **SAN 70**
 - **Key Skills:** Persuade 70%, Law 60%, Spot Hidden 65%, Psychology 65%, Brawl 55%, First Aid 50%
 
 ### OLU ADEYEMI — Security guard, The Shard
@@ -535,7 +549,7 @@ At 3:05, regardless of where the group is: the cost happens. Force it. Do not le
 - **Who he wants to reach:** Anyone — he has no immediate family in London. His motivation shifts during the scenario toward the group itself.
 - **Special ability:** Access to the Shard's infrastructure — radio, CCTV, staff areas, keys. Also the most physically capable character in the group.
 - **Character hook:** He is the only character who begins the scenario with a functioning radio and a defensible position. What he does with that advantage in the first ten minutes shapes the rest of the session.
-- **Stats:** STR 15 | CON 14 | SIZ 14 | DEX 12 | INT 13 | POW 13 | APP 13 | HP 15 | MP 13
+- **Stats:** STR 15 | CON 14 | SIZ 14 | DEX 12 | INT 13 | POW 13 | APP 13 | HP 15 | MP 13 | **SAN 65**
 - **Key Skills:** Security Systems 60%, Brawl 65%, Spot Hidden 60%, Persuade 45%, Drive 55%, Athletics 60%
 
 ### PRIYA MEHTA — Science journalist
@@ -543,7 +557,7 @@ At 3:05, regardless of where the group is: the cost happens. Force it. Do not le
 - **Who she wants to reach:** Her editor — she is already filing copy, and the editor's message about Meridian may be the key to understanding what's happening
 - **Special ability:** Research and source assessment — Library Use 70%, Science knowledge, and the Meridian Biosciences connection through her editor
 - **Character hook:** She is the character best positioned to understand the truth of the outbreak. Whether she uses that ability to help the group or to get the story is a genuine player choice.
-- **Stats:** STR 9 | CON 11 | SIZ 10 | DEX 12 | INT 17 | POW 13 | APP 14 | HP 11 | MP 13
+- **Stats:** STR 9 | CON 11 | SIZ 10 | DEX 12 | INT 17 | POW 13 | APP 14 | HP 11 | MP 13 | **SAN 65**
 - **Key Skills:** Science (Biology/Chemistry) 55%, Library Use 70%, Persuade 60%, Psychology 55%, Write 65%, Spot Hidden 50%
 
 ### TOM BECKER — Scaffolding worker
@@ -551,7 +565,7 @@ At 3:05, regardless of where the group is: the cost happens. Force it. Do not le
 - **Who he wants to reach:** His van — a practical resource — and through it, an exit route
 - **Special ability:** Physical competence and tools — he has a bag of basic hand tools, knows how to break into things and build temporary barriers, and has an accurate instinct for structural stability in any environment
 - **Character hook:** Tom's van is parked off Waterloo Road near Lambeth North — a long walk west, back through everything the group is trying to leave behind. Whether it becomes an objective is up to the player. What it represents (escape, independence, normality) is clear.
-- **Stats:** STR 14 | CON 14 | SIZ 13 | DEX 13 | INT 12 | POW 11 | APP 11 | HP 14 | MP 11
+- **Stats:** STR 14 | CON 14 | SIZ 13 | DEX 13 | INT 12 | POW 11 | APP 11 | HP 14 | MP 11 | **SAN 55**
 - **Key Skills:** Craft (Construction) 70%, Mechanics 60%, Athletics 65%, Brawl 55%, Drive 65%, Spot Hidden 50%
 
 
