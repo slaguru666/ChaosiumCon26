@@ -236,6 +236,8 @@ The players converge on the bus crash on Southwark Street. Among the gathering c
 - **If players try to call 999:** Three rings, then: *"All lines are currently experiencing extremely high demand. If you are in immediate life-threatening danger, please stay on the line."* Hold music. Then a recorded message asking callers not to ring unless in immediate danger. The line drops.
 - **If players ask their AI assistant what is happening:** It returns a news story from 9:45 AM saying the NHS alert was a "precautionary measure following reports of a public disturbance near Elephant & Castle." Three minutes out of date and already wrong.
 - **If players stall:** A second infected person stumbles into the market visible from the crash site — already fully turned, moving with the shamble, and moves toward the most densely populated stall area.
+- **If the players go north immediately** *(the correct in-fiction move — Cara and Dev's flatmate are both north; answer it, don't block it)*: every bridge has the same idea on it. London Bridge at 11:05 is a crowd-crush moving at shuffle pace; police vans seal the north end "for incident response" and a barrier slams while people are still against it. There are casualties at the rails — **[BR: First Aid — a real save, unscripted and worth 1 Vanity-of-the-soul]** — and **[BR: Sanity 0/1d3 — the crush, and what the crowd does to its own]**. The party is turned back having *seen it*: the north bank filling with blue lights, every one of them pointed south. This is not a route. It is a preview of the cordon, honestly earned. (~10 minutes; it replaces nothing — the Market still breaks on schedule behind them.)
+- **If they go for Tom's van** *(the hook on his card — someone will)*: it is reachable, ~25 minutes west through visibly worsening streets. Callum, if present or radioed: *"That's the wrong way. Everything west is where it's coming from."* Tom can free it — **[BR: Craft or Mechanics]** — and it drives approximately 400 metres before Waterloo Road becomes a wall of abandoned traffic. Salvage: the tool bag, the van radio (a second radio for a split party), dust masks, a first-aid tin. Then the long walk back east. **Say the cost aloud as GM guidance: this detour spends the Blue Anchor** — run the pub with whoever stayed east, or not at all.
 
 ### Pacing Note
 
@@ -355,6 +357,8 @@ This must happen. The choice of victim is the GM's, but the source material reco
 > **[BRP: Sanity 1d2/1d8 — witnessing reanimation of a known person]**
 
 **If Danny:** He stands up in the pub mid-conversation. The jacket falls from his arm. The wound is visible. The pub's twelve survivors panic. The door is blocked.
+
+**If the party is split when the hinge lands:** the moment plays only to those present — and the retelling at the reunion is a scene, not a summary. Make the witness say it badly.
 
 > **[BRP: POW×5 — panic response; the rule is written for groups of 5+ infected, but twelve panicking survivors in a blocked room counts as the same trigger]**
 
