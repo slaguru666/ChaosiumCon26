@@ -1,0 +1,183 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" font-family="'Bradley Hand','Segoe Print','Comic Sans MS',cursive">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="4"/>
+    </filter>
+    <filter id="paper">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.04 0.04 0.04 0 0" result="tex"/>
+      <feComposite in="tex" in2="SourceGraphic" operator="over"/>
+    </filter>
+    <pattern id="water" width="26" height="12" patternUnits="userSpaceOnUse">
+      <path d="M0 6 q6 -5 13 0 q6 5 13 0" fill="none" stroke="#1a1712" stroke-width="0.7" opacity="0.35"/>
+    </pattern>
+    <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="8" stroke="#1a1712" stroke-width="1.1" opacity="0.5"/>
+    </pattern>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#1a1712"/>
+    </marker>
+  </defs>
+
+  <!-- paper -->
+  <rect width="1000" height="700" fill="#f2ead8"/>
+  <rect width="1000" height="700" fill="#fff" opacity="0" filter="url(#paper)"/>
+  <rect x="14" y="14" width="972" height="672" fill="none" stroke="#1a1712" stroke-width="2.5" filter="url(#rough)"/>
+  <rect x="20" y="20" width="960" height="660" fill="none" stroke="#1a1712" stroke-width="1" filter="url(#rough)"/>
+
+  <g filter="url(#rough)">
+    <!-- THE THAMES: gentle S, west (left) to east (right) -->
+    <path d="M20 160 C 180 150, 300 205, 430 218 C 560 231, 600 208, 700 200 C 800 193, 900 196, 980 200
+             L 980 288 C 900 284, 800 281, 700 288 C 600 295, 560 318, 430 305 C 300 292, 180 240, 20 250 Z"
+          fill="url(#water)" stroke="#1a1712" stroke-width="2.5"/>
+
+    <!-- north bank cordon hatching -->
+    <path d="M20 100 C 180 92, 300 145, 430 158 C 560 171, 600 148, 700 140 C 800 133, 900 136, 980 140 L 980 200 C 900 196, 800 193, 700 200 C 600 208, 560 231, 430 218 C 300 205, 180 150, 20 160 Z"
+          fill="url(#hatch)" opacity="0.5"/>
+
+    <!-- bridges -->
+    <g stroke="#1a1712" stroke-width="5" fill="none">
+      <line x1="150" y1="146" x2="150" y2="252"/>              <!-- Waterloo -->
+      <line x1="280" y1="188" x2="280" y2="282"/>              <!-- Blackfriars -->
+      <line x1="380" y1="205" x2="380" y2="298" stroke-width="2.5" stroke-dasharray="6 4"/> <!-- Millennium (foot) -->
+      <line x1="470" y1="216" x2="470" y2="308"/>              <!-- Southwark -->
+      <line x1="535" y1="216" x2="535" y2="308" stroke-dasharray="2 3"/> <!-- Cannon St rail -->
+      <line x1="605" y1="205" x2="605" y2="296"/>              <!-- London -->
+      <line x1="850" y1="190" x2="850" y2="286"/>              <!-- Tower -->
+    </g>
+    <!-- tower bridge towers -->
+    <rect x="843" y="196" width="14" height="16" fill="#f2ead8" stroke="#1a1712" stroke-width="2"/>
+    <rect x="843" y="262" width="14" height="16" fill="#f2ead8" stroke="#1a1712" stroke-width="2"/>
+
+    <!-- Jubilee Walkway / riverside path (Maggie's walk) -->
+    <path d="M60 262 C 180 252, 300 300, 430 315 C 520 325, 560 328, 600 306" fill="none" stroke="#1a1712" stroke-width="1.6" stroke-dasharray="7 5"/>
+
+    <!-- roads -->
+    <g stroke="#1a1712" stroke-width="2" fill="none">
+      <path d="M150 252 L 133 392"/>                            <!-- Waterloo Rd south -->
+      <path d="M240 372 C 340 355, 430 352, 505 352 C 560 352, 590 340, 605 296"/> <!-- Southwark St / Borough High St -->
+      <path d="M470 308 L 470 352"/>                            <!-- Southwark Bridge Rd -->
+      <path d="M605 296 C 640 320, 700 330, 828 300"/>          <!-- Tooley St to Tower Br approach -->
+      <path d="M628 350 C 645 400, 655 460, 668 528"/>          <!-- Bermondsey St south -->
+      <path d="M535 308 C 528 322, 512 330, 500 334"/>          <!-- Clink St -->
+    </g>
+  </g>
+
+  <!-- ======== labels & markers (no rough filter for legibility) ======== -->
+  <g fill="#1a1712">
+    <!-- river + banks -->
+    <text x="650" y="252" font-size="24" letter-spacing="8">THE  THAMES</text>
+    <text x="300" y="125" font-size="15" letter-spacing="2">NORTH BANK — "THE CORDON" — THEY ARE NOT COMING SOUTH</text>
+
+    <!-- bridge names -->
+    <g font-size="13">
+      <text x="120" y="140" transform="rotate(-90 120 140)" text-anchor="end">WATERLOO BR.</text>
+      <text x="272" y="182" transform="rotate(-90 272 182)" text-anchor="end">BLACKFRIARS BR.</text>
+      <text x="372" y="200" transform="rotate(-90 372 200)" text-anchor="end">MILLENNIUM (FOOT)</text>
+      <text x="462" y="212" transform="rotate(-90 462 212)" text-anchor="end">SOUTHWARK BR.</text>
+      <text x="547" y="212" transform="rotate(-90 547 212)" text-anchor="end">RAIL BR.</text>
+      <text x="597" y="200" transform="rotate(-90 597 200)" text-anchor="end">LONDON BR.</text>
+      <text x="875" y="176" font-size="16">TOWER BRIDGE</text>
+      <text x="862" y="316" font-size="12">gatehouse — Pete's lot ⚑</text>
+    </g>
+
+    <!-- ESCAPE A -->
+    <circle cx="850" cy="300" r="13" fill="none" stroke="#1a1712" stroke-width="2.5"/>
+    <text x="850" y="306" font-size="15" text-anchor="middle" font-weight="bold">A</text>
+
+    <!-- Bankside Pier / ESCAPE B -->
+    <text x="366" y="374" font-size="12" text-anchor="middle">BANKSIDE PIER — the RIB</text>
+    <path d="M416 302 l0 14 m-6 -5 q6 8 12 0" stroke="#1a1712" stroke-width="2.2" fill="none"/>
+    <circle cx="393" cy="309" r="13" fill="none" stroke="#1a1712" stroke-width="2.5"/>
+    <text x="393" y="315" font-size="15" text-anchor="middle" font-weight="bold">B</text>
+
+    <!-- locations, west to east -->
+    <g font-size="14">
+      <text x="60" y="292">SOUTHBANK CENTRE</text>
+      <circle cx="155" cy="273" r="9" fill="none" stroke="#1a1712" stroke-width="2"/><text x="155" y="278" font-size="12" text-anchor="middle" font-weight="bold">P</text>
+
+      <rect x="95" y="395" width="72" height="30" fill="none" stroke="#1a1712" stroke-width="2"/>
+      <text x="131" y="415" font-size="13" text-anchor="middle">WATERLOO</text>
+      <text x="131" y="440" font-size="11" text-anchor="middle">STATION</text>
+
+      <circle cx="250" cy="285" r="9" fill="none" stroke="#1a1712" stroke-width="2"/><text x="250" y="290" font-size="12" text-anchor="middle" font-weight="bold">M</text>
+      <text x="60" y="390" font-size="12">↗ Jubilee Walkway — the figure in the river</text>
+
+      <text x="300" y="345" font-size="14">TATE MODERN</text>
+      <circle cx="352" cy="330" r="9" fill="none" stroke="#1a1712" stroke-width="2"/><text x="352" y="335" font-size="12" text-anchor="middle" font-weight="bold">K</text>
+      <text x="296" y="362" font-size="11">coffee shop</text>
+
+      <!-- bus crash -->
+      <g stroke="#1a1712" stroke-width="3"><line x1="462" y1="344" x2="478" y2="360"/><line x1="478" y1="344" x2="462" y2="360"/></g>
+      <text x="452" y="384" font-size="13" font-weight="bold">THE BUS CRASH</text>
+      <text x="452" y="400" font-size="11">Southwark St ✕ Southwark Bridge Rd</text>
+
+      <!-- Clink St -->
+      <text x="463" y="338" font-size="11">CLINK ST ARCHES ☠</text>
+
+      <!-- Borough Market -->
+      <rect x="522" y="342" width="60" height="34" fill="none" stroke="#1a1712" stroke-width="2" transform="rotate(-4 552 359)"/>
+      <text x="552" y="361" font-size="12" text-anchor="middle" transform="rotate(-4 552 359)">BOROUGH</text>
+      <text x="552" y="373" font-size="12" text-anchor="middle" transform="rotate(-4 552 359)">MARKET</text>
+      <circle cx="596" cy="388" r="9" fill="none" stroke="#1a1712" stroke-width="2"/><text x="596" y="393" font-size="12" text-anchor="middle" font-weight="bold">D</text>
+
+      <!-- Shard -->
+      <path d="M622 352 l9 -34 l9 34 z" fill="none" stroke="#1a1712" stroke-width="2"/>
+      <text x="646" y="340" font-size="13">THE SHARD</text>
+      <circle cx="631" cy="364" r="9" fill="none" stroke="#1a1712" stroke-width="2"/><text x="631" y="369" font-size="12" text-anchor="middle" font-weight="bold">O</text>
+
+      <!-- Guy's -->
+      <rect x="690" y="356" width="56" height="26" fill="none" stroke="#1a1712" stroke-width="2"/>
+      <line x1="712" y1="360" x2="712" y2="378" stroke="#1a1712" stroke-width="2"/>
+      <line x1="703" y1="369" x2="721" y2="369" stroke="#1a1712" stroke-width="2"/>
+      <text x="752" y="374" font-size="12">GUY'S HOSPITAL + CAR PARK</text>
+
+      <!-- Tooley St -->
+      <text x="716" y="308" font-size="12" transform="rotate(3 716 308)">TOOLEY ST →</text>
+
+      <!-- Bermondsey St -->
+      <text x="694" y="430" font-size="13" transform="rotate(80 694 430)">BERMONDSEY ST</text>
+      <rect x="596" y="450" width="16" height="14" fill="none" stroke="#1a1712" stroke-width="2"/>
+      <text x="548" y="482" font-size="12">BLUE ANCHOR ⚓</text>
+      <text x="512" y="498" font-size="10">12 inside — one of them is wrong</text>
+      <rect x="678" y="512" width="14" height="14" fill="none" stroke="#1a1712" stroke-width="2"/>
+      <line x1="685" y1="514" x2="685" y2="524" stroke="#1a1712" stroke-width="2"/><line x1="680" y1="519" x2="690" y2="519" stroke="#1a1712" stroke-width="2"/>
+      <text x="700" y="524" font-size="12">PHARMACY</text>
+    </g>
+
+    <!-- off-map arrows -->
+    <g font-size="12">
+      <path d="M120 470 L 60 490" stroke="#1a1712" stroke-width="2" marker-end="url(#arr)" fill="none"/>
+      <text x="70" y="512">TOM'S VAN — Waterloo Rd / Lambeth North</text>
+      <path d="M470 590 L 380 648" stroke="#1a1712" stroke-width="2.5" marker-end="url(#arr)" fill="none"/>
+      <text x="400" y="620" font-weight="bold">ELEPHANT &amp; CASTLE — 1 mile · where it started · DO NOT</text>
+      <path d="M790 545 L 878 585" stroke="#1a1712" stroke-width="2" marker-end="url(#arr)" fill="none"/>
+      <text x="640" y="568">DEPTFORD / PECKHAM — Cara · Abena</text>
+    </g>
+
+    <!-- legend -->
+    <g font-size="12">
+      <rect x="42" y="546" width="286" height="118" fill="#f2ead8" stroke="#1a1712" stroke-width="1.6"/>
+      <text x="54" y="566" font-size="13" font-weight="bold" letter-spacing="2">WHERE EVERYONE WAS AT 10:47</text>
+      <text x="54" y="586">Ⓚ Kira — coffee, Bankside &#160;&#160;Ⓓ Dev — Borough Mkt café</text>
+      <text x="54" y="604">Ⓜ Maggie — riverside walk &#160;&#160;Ⓞ Olu — Shard lobby</text>
+      <text x="54" y="622">Ⓟ Priya — Southbank Centre &#160;&#160;Ⓣ Tom — van, Waterloo Rd</text>
+      <text x="54" y="646" font-weight="bold">Ⓐ Tower Bridge on foot &#160;&#160;&#160;Ⓑ the RIB at Bankside Pier</text>
+    </g>
+
+    <!-- compass + scale -->
+    <g transform="translate(930,560)">
+      <line x1="0" y1="30" x2="0" y2="-18" stroke="#1a1712" stroke-width="2.5" marker-end="url(#arr)"/>
+      <text x="0" y="-28" font-size="18" text-anchor="middle" font-weight="bold">N</text>
+    </g>
+    <line x1="700" y1="640" x2="820" y2="640" stroke="#1a1712" stroke-width="2.5"/>
+    <line x1="700" y1="634" x2="700" y2="646" stroke="#1a1712" stroke-width="2.5"/>
+    <line x1="820" y1="634" x2="820" y2="646" stroke="#1a1712" stroke-width="2.5"/>
+    <text x="760" y="662" font-size="12" text-anchor="middle">≈ 500 m</text>
+
+    <!-- title -->
+    <text x="500" y="62" font-size="30" text-anchor="middle" letter-spacing="4" font-weight="bold">SOUTH BANK — WATERLOO TO TOWER BRIDGE</text>
+    <text x="500" y="86" font-size="14" text-anchor="middle" letter-spacing="2">Sunday 17 May 2026 · sketched from memory · 159-H00-B</text>
+  </g>
+</svg>

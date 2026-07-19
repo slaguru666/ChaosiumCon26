@@ -752,6 +752,11 @@ composition, 1984 SF, emotional weight through space and separation
 **Existing art:** Cover, Bus Crash, Market, River Figure, Bermondsey, Blue Anchor
 Pub, Tower Bridge, Pier/RIB, Character Portraits (9 pieces).
 **These 6 prompts extend to missing scenes and moments.**
+**STATUS: generated 19 Jul 2026** (plus a 7th, ART-16 drone aerial, for handout
+159-H02-A; ART-12 reworded to put the army line at the *north* end of the bridge,
+ART-15 shifted to dusk to match the scenario clock and re-rolled once for style
+drift; ART-10 prompt needed "no visible gore" removed — the word trips MJ's filter
+even in negation). The area map 159-H00-B is hand-drawn SVG, not generated.
 
 ---
 

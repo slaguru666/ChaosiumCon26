@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>DAY ONE — London Falls — Handout Pack (Print)</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#e8e6e1;color:#111;font-family:"Avenir Next","Helvetica Neue",Arial,sans-serif}
+  @page{size:A4 portrait;margin:12mm}
+  @media print{
+    html,body{background:#fff}
+    .page{box-shadow:none;margin:0;page-break-after:always}
+    .page:last-child{page-break-after:auto}
+    .no-print{display:none}
+    .alert-screen,.strip,.msgapp{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
+  .no-print{max-width:186mm;margin:16px auto 0;padding:12px 16px;background:#fffbe8;border:1px solid #d8c66a;font-size:12px;line-height:1.55}
+  .page{width:186mm;min-height:263mm;margin:16px auto;background:#fff;box-shadow:0 2px 14px rgba(0,0,0,.25);padding:14mm 16mm;position:relative;display:flex;flex-direction:column}
+  h2.props{font-size:9px;letter-spacing:.34em;text-transform:uppercase;border-bottom:1.5px solid #111;padding-bottom:1mm;margin-bottom:6mm}
+  .footer-id{margin-top:auto;padding-top:4mm;font-size:7px;letter-spacing:.3em;text-transform:uppercase;color:#999;display:flex;justify-content:space-between}
+  .cutout{border:1.5px dashed #999;padding:8mm 10mm;margin-bottom:8mm;position:relative}
+  .cutout .scissors{position:absolute;top:-4mm;left:6mm;background:#fff;padding:0 2mm;font-size:11px;color:#999}
+  .gmnote{font-size:9.5px;color:#666;line-height:1.5;margin-top:3mm}
+
+  /* ---- NHS emergency alert (phone) ---- */
+  .phones{display:flex;gap:10mm;justify-content:center}
+  .phone{width:64mm;border:3px solid #111;border-radius:8mm;padding:3mm;background:#000}
+  .alert-screen{background:#c0231b;border-radius:5mm;color:#fff;padding:8mm 5mm;text-align:center;min-height:110mm;display:flex;flex-direction:column;justify-content:center}
+  .alert-screen .icon{font-size:26px}
+  .alert-screen h1{font-size:14px;letter-spacing:.04em;margin:4mm 0 1mm}
+  .alert-screen .src{font-size:9.5px;opacity:.85;margin-bottom:6mm}
+  .alert-screen p{font-size:11.5px;line-height:1.6;font-weight:700}
+  .alert-screen .t{margin-top:7mm;font-size:8.5px;opacity:.8;font-family:"Courier New",monospace}
+  .alert-screen .btn{margin-top:5mm;border:1.5px solid rgba(255,255,255,.8);border-radius:2mm;padding:2mm;font-size:9px;letter-spacing:.1em}
+
+  /* ---- 999 script ---- */
+  .call{font-family:"Courier New",monospace;font-size:11.5px;line-height:1.9}
+  .call i{color:#777}
+
+  /* ---- social strips ---- */
+  .strip{background:#101317;color:#d9dde2;border-radius:2.5mm;padding:4mm 5mm;margin-bottom:6mm}
+  .strip .h{color:#6aa5d8;font-size:11px;font-weight:700}
+  .strip .h span{color:#5a6470;font-weight:400;margin-left:2mm;font-size:9.5px}
+  .strip .b{font-size:12.5px;line-height:1.55;margin-top:1.5mm}
+  .strip .m{color:#5a6470;font-size:9px;margin-top:2mm;letter-spacing:.06em}
+
+  /* ---- police notebook ---- */
+  .notebook{background:#fbf8f0;border:1.5px solid #b9b29e;padding:0}
+  .nb-head{border-bottom:2px solid #1a2440;padding:4mm 6mm;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:#1a2440;display:flex;justify-content:space-between}
+  .hand{font-family:"Bradley Hand","Segoe Print","Comic Sans MS",cursive;font-size:15px;line-height:2.05;color:#1a2440}
+  .ruled{background:repeating-linear-gradient(#fbf8f0,#fbf8f0 30px,#c9d4e4 31px);padding:8px 6mm 6mm}
+  .strike{text-decoration:line-through;text-decoration-thickness:2px}
+
+  /* ---- messaging app ---- */
+  .msgapp{width:100mm;margin:0 auto;background:#0c0c0e;border:3px solid #111;border-radius:6mm;padding:4mm;color:#e8e8ea}
+  .msg-head{text-align:center;font-size:10px;padding:2mm 0 3mm;border-bottom:1px solid #26262c;color:#9a9aa4}
+  .msg-head b{display:block;color:#fff;font-size:12px;letter-spacing:.02em}
+  .msg-day{text-align:center;font-size:8.5px;color:#5a5a66;margin:4mm 0 2mm;letter-spacing:.08em}
+  .bub{max-width:78%;background:#26262e;border-radius:4mm 4mm 4mm 1mm;padding:2.8mm 3.6mm;font-size:11px;line-height:1.5;margin:2mm 0}
+  .bub .tm{display:block;font-size:7.5px;color:#71717e;margin-top:1.2mm}
+  .bub.warn{background:#33222a}
+  .msg-status{font-size:8px;color:#71717e;margin:1mm 0 2mm 2mm}
+
+  /* ---- plates ---- */
+  .photo-frame{border:2px solid #111;background:#111;padding:3mm}
+  .photo-frame img{width:100%;display:block}
+  .photo-meta{font-family:"Courier New",monospace;font-size:9.5px;color:#ddd;background:#111;padding:2mm 1mm 0;letter-spacing:.12em;display:flex;justify-content:space-between}
+  .plate-cap{font-size:10px;color:#555;margin:3mm 0 8mm;line-height:1.5}
+  .live{color:#ff5a5a;font-weight:700}
+
+  /* ---- pregen cards ---- */
+  .pcgrid{display:flex;flex-direction:column;gap:8mm}
+  .pcc{border:2px solid #111;padding:7mm 8mm;background:#fdfcf8;position:relative}
+  .pcc h3{font-size:16px;letter-spacing:.06em}
+  .pcc .role{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#8a1f1f;margin:1mm 0 4mm}
+  .pcc .cols{display:flex;gap:8mm}
+  .pcc .col{flex:1;font-size:10.5px;line-height:1.6}
+  .pcc .col b{display:block;font-size:8px;letter-spacing:.24em;text-transform:uppercase;color:#666;margin-bottom:1mm}
+  .pcc .statline{font-family:"Courier New",monospace;font-size:10.5px;border-top:1.5px solid #111;margin-top:4mm;padding-top:3mm}
+  .pcc .skills{font-size:10px;line-height:1.7;margin-top:2mm}
+  .pcc .hook{font-style:italic;color:#333}
+</style>
+</head>
+<body>
+
+<div class="no-print">
+  <b>DAY ONE handout pack — print notes.</b> A4 portrait, 100% scale, <b>background graphics ON</b> (needed for the alert screens, social strips and phone pages). Pages: alert ×2 + 999 script → social strips → radio notepad slips → Priya's phone → area map → drone still → six character cards (2 per page) → scene plates. Cut along dashed lines. Art plates load from <code>../art/event-159/</code> — print from the repo so the images resolve.
+</div>
+
+<!-- ============ PAGE 1 — 159-H00-C ALERT + 999 ============ -->
+<div class="page">
+  <h2 class="props">159-H00-C — NHS Emergency Alert · two copies — pass them down the table</h2>
+  <div class="phones">
+    <div class="phone"><div class="alert-screen">
+      <div class="icon">⚠️</div>
+      <h1>EMERGENCY ALERT</h1>
+      <div class="src">UK Government</div>
+      <p>STAY INDOORS. AVOID ALL CONTACT WITH PERSONS WHO APPEAR CONFUSED OR AGGRESSIVE. EMERGENCY SERVICES ARE RESPONDING. THIS IS NOT A TEST.</p>
+      <div class="t">Sunday 17 May · 10:47</div>
+      <div class="btn">OK</div>
+    </div></div>
+    <div class="phone"><div class="alert-screen">
+      <div class="icon">⚠️</div>
+      <h1>EMERGENCY ALERT</h1>
+      <div class="src">UK Government</div>
+      <p>STAY INDOORS. AVOID ALL CONTACT WITH PERSONS WHO APPEAR CONFUSED OR AGGRESSIVE. EMERGENCY SERVICES ARE RESPONDING. THIS IS NOT A TEST.</p>
+      <div class="t">Sunday 17 May · 10:47</div>
+      <div class="btn">OK</div>
+    </div></div>
+  </div>
+  <div class="cutout" style="margin-top:10mm"><span class="scissors">✂ GM read-aloud</span>
+    <div class="call"><b>IF ANYONE DIALS 999</b><br><br>
+<i>Three rings. Then:</i><br><br>
+"All lines are currently experiencing extremely high demand. If you are in immediate life-threatening danger, please stay on the line."<br><br>
+<i>Hold music. A recorded message asks callers not to ring unless in immediate danger.</i><br><br>
+<i>The line drops.</i></div>
+  </div>
+  <div class="gmnote">Play the real alert tone from your phone as you hand these over — the shock of recognition is the opening of the scenario.</div>
+  <div class="footer-id"><span>DAY ONE — LONDON FALLS</span><span>159-H00-C</span></div>
+</div>
+
+<!-- ============ PAGE 2 — 159-H01-A SOCIAL STRIPS ============ -->
+<div class="page">
+  <h2 class="props">159-H01-A — Social feed · cut into strips, deal them out as players check phones</h2>
+  <div class="cutout"><span class="scissors">✂</span>
+    <div class="strip"><div class="h">@running_south_bank <span>· 10:49</span></div>
+      <div class="b">Something is very wrong on the South Bank. Someone just BIT a man near Borough Market. Filming now.</div>
+      <div class="m">♻ 4,281 · ♥ 9,930 · replies disabled by author</div></div>
+  </div>
+  <div class="cutout"><span class="scissors">✂</span>
+    <div class="strip"><div class="h">@TfL_unofficial <span>· 10:51</span></div>
+      <div class="b">All Jubilee Line services suspended pending emergency. No further info from TfL.</div>
+      <div class="m">♻ 12,044 · ♥ 3,112</div></div>
+  </div>
+  <div class="cutout"><span class="scissors">✂</span>
+    <div class="strip"><div class="h">@defnotaGPT <span>· 10:52</span></div>
+      <div class="b">It's a gas leak from the new development site near Elephant. They're not telling us.</div>
+      <div class="m">♻ 18,930 · ♥ 22,014 · Readers added context</div></div>
+  </div>
+  <div class="cutout"><span class="scissors">✂</span>
+    <div class="strip"><div class="h">@mrsevanslondon27 <span>· 10:54</span></div>
+      <div class="b">I can hear screaming from my flat on Southwark Street. This has been going on for ten minutes. Where are the police.</div>
+      <div class="m">♻ 891 · ♥ 2,406</div></div>
+  </div>
+  <div class="cutout"><span class="scissors">✂</span>
+    <div class="strip"><div class="h">@marcus_everything_live <span>· LIVE</span></div>
+      <div class="b"><span class="live">● LIVE</span> — what is HAPPENING — 41,000 watching — SHARE THIS — [Southwark Bridge stream link]</div>
+      <div class="m">▶ 41,207 watching now</div></div>
+  </div>
+  <div class="footer-id"><span>DAY ONE — LONDON FALLS</span><span>159-H01-A</span></div>
+</div>
+
+<!-- ============ PAGE 3 — 159-H01-B RADIO SLIPS ============ -->
+<div class="page">
+  <h2 class="props">159-H01-B — Callum's pocket notebook · slip 1 hands out with Clue 2, slip 2 is the Act Two hinge</h2>
+  <div class="cutout"><span class="scissors">✂ slip 1 — Act One</span>
+    <div class="notebook">
+      <div class="nb-head"><span>Metropolitan Police</span><span>Pocket Note Book · PC 4402 FRASER</span></div>
+      <div class="ruled hand">Sun 17/05 — radio partial, logged best I could —<br>
+"…all units… first reports… Elephant… <b>zero seven fourteen</b>…"<br>
+07:14?? Alert didn't go till 10:47. <span class="strike">Query control</span> — no answer.<br>
+That's three and a half hours. Who knew?</div>
+    </div>
+  </div>
+  <div class="cutout"><span class="scissors">✂ slip 2 — Act Two (the cordon)</span>
+    <div class="notebook">
+      <div class="nb-head"><span>Metropolitan Police</span><span>Pocket Note Book · PC 4402 FRASER</span></div>
+      <div class="ruled hand">16:40 approx — clear transmission, all-channels:<br>
+"ALL UNITS — <b>HOLD THE NORTH BANK LINE</b> — DO NOT CROSS — REPEAT — DO NOT CROSS."<br>
+<span class="strike">They're staging to come south</span><br>
+They're not coming.</div>
+    </div>
+  </div>
+  <div class="gmnote">Hand slip 2 over in silence after playing Callum's reaction. His face first, then the paper.</div>
+  <div class="footer-id"><span>DAY ONE — LONDON FALLS</span><span>159-H01-B</span></div>
+</div>
+
+<!-- ============ PAGE 4 — 159-H02-B PRIYA'S PHONE ============ -->
+<div class="page">
+  <h2 class="props">159-H02-B — Priya's phone · give to Priya's player only, when she checks her messages</h2>
+  <div class="msgapp">
+    <div class="msg-head"><b>Ed Whitfield — Editor</b>mobile · Messages</div>
+    <div class="msg-day">Saturday 21:47</div>
+    <div class="bub">Something came in. Might be relevant. Can we talk Monday?<span class="tm">21:47</span></div>
+    <div class="msg-day">Sunday</div>
+    <div class="bub">Priya are you seeing this alert<span class="tm">10:49</span></div>
+    <div class="bub warn">The thing that came in. Thursday. A whistleblower package — Meridian Biosciences, their London site. Lab safety documentation. Legal wouldn't clear it for the weekend and I sat on it.<span class="tm">10:53</span></div>
+    <div class="bub warn">If this is what I think it is I sat on it for two days.<span class="tm">10:54</span></div>
+    <div class="bub">Call me. Please.<span class="tm">10:56</span></div>
+    <div class="msg-status">Delivered · Sunday 10:56 — no messages since</div>
+  </div>
+  <div class="gmnote" style="margin-top:6mm">Clue 9. Let her sit with it — "I think I know what this is" is a character beat, not an information dump. Whether she shares it is the player's choice.</div>
+  <div class="footer-id"><span>DAY ONE — LONDON FALLS</span><span>159-H02-B</span></div>
+</div>
+
+<!-- ============ PAGE 5 — 159-H00-B MAP ============ -->
+<div class="page">
+  <h2 class="props">159-H00-B — South Bank area map · one per table, face-up from the start</h2>
+  <div class="photo-frame"><img src="../art/event-159/159-H00-B-map.svg" alt="South Bank map"></div>
+  <div class="plate-cap" style="margin-top:3mm">Waterloo to Tower Bridge. Start positions marked K·D·M·O·P·T; escape routes Ⓐ (Tower Bridge on foot) and Ⓑ (the RIB at Bankside Pier).</div>
+  <div class="footer-id"><span>DAY ONE — LONDON FALLS</span><span>159-H00-B</span></div>
+</div>
+
+<!-- ============ PAGE 6 — 159-H02-A DRONE STILL ============ -->
+<div class="page">
+  <h2 class="props">159-H02-A — Marcus's stream, drone still · show when the group watches his feed (Clue 6)</h2>
+  <div class="photo-frame">
+    <div class="photo-meta"><span class="live">● LIVE</span><span>@marcus_everything_live</span><span>41,207 watching</span></div>
+    <img src="../art/event-159/159-ART-16-drone-aerial.png" alt="Drone aerial of central London">
+    <div class="photo-meta"><span>viewer drone clip · central London</span><span>REPOSTED TO STREAM</span></div>
+  </div>
+  <div class="plate-cap" style="margin-top:3mm">The aerial view of London. It is much worse than they expected — city-wide, both banks, crowds compressing onto the bridges heading north.</div>
+  <div class="footer-id"><span>DAY ONE — LONDON FALLS</span><span>159-H02-A</span></div>
+</div>
+
+<!-- ============ PAGES 7-9 — 159-H00-A PREGEN CARDS ============ -->
+<div class="page">
+  <h2 class="props">159-H00-A — Character cards 1/3 · one per player</h2>
+  <div class="pcgrid">
+    <div class="pcc">
+      <h3>KIRA OSEI-MENSAH</h3><div class="role">NHS Junior Doctor — off duty</div>
+      <div class="cols">
+        <div class="col"><b>Why you're here</b>Coffee near Tate Modern; your friend is running late. You've been awake 22 hours after a night shift, running on adrenaline, and you know it.</div>
+        <div class="col"><b>Who you want to reach</b>Your mother, Abena, 74. She lives alone in Peckham. She doesn't always hear the phone.</div>
+      </div>
+      <div class="statline">STR 9 · CON 12 · SIZ 10 · DEX 13 · INT 16 · POW 14 · APP 14 — HP 11 · MP 14 · SAN 70</div>
+      <div class="skills"><b>First Aid 75%</b> · Medicine 55% · Persuade 55% · Science (Biology) 50% · Spot Hidden 50%</div>
+      <div class="hook">Three unread NHS group-chat messages are sitting on your phone.</div>
+    </div>
+    <div class="pcc">
+      <h3>DEV KRISHNAMURTHY</h3><div class="role">Freelance Software Engineer</div>
+      <div class="cols">
+        <div class="col"><b>Why you're here</b>"Working" from a Borough Market café since nine. An emergency-services scanner app has been pinging you since before anyone else noticed anything. You know more than you've said.</div>
+        <div class="col"><b>Who you want to reach</b>Your flatmate, near Old Street. You never answered their voice note about the spare keys.</div>
+      </div>
+      <div class="statline">STR 10 · CON 11 · SIZ 11 · DEX 13 · INT 17 · POW 12 · APP 12 — HP 11 · MP 12 · SAN 60</div>
+      <div class="skills"><b>Computer 75%</b> · Electronics 65% · Library Use/Search 60% · Science (Maths) 45% · Spot Hidden 45%</div>
+      <div class="hook">You could probably find anything online right now. The question is what you do with it.</div>
+    </div>
+  </div>
+  <div class="footer-id"><span>DAY ONE — LONDON FALLS</span><span>159-H00-A · 1/3</span></div>
+</div>
+
+<div class="page">
+  <h2 class="props">159-H00-A — Character cards 2/3</h2>
+  <div class="pcgrid">
+    <div class="pcc">
+      <h3>MAGGIE DONNELLY</h3><div class="role">Retired Metropolitan Police Officer — 22 years</div>
+      <div class="cols">
+        <div class="col"><b>Why you're here</b>Your Sunday riverside walk, same as every week. You were first on scene at Tavistock Square in 2005. You know what mass-casualty feels like. This is different.</div>
+        <div class="col"><b>Who you want to reach</b>Your daughter Cara, in Deptford. She doesn't answer your first call.</div>
+      </div>
+      <div class="statline">STR 12 · CON 13 · SIZ 12 · DEX 11 · INT 15 · POW 14 · APP 12 — HP 13 · MP 14 · SAN 70</div>
+      <div class="skills"><b>Persuade 70%</b> · Spot Hidden 65% · Psychology 65% · Law 60% · Brawl 55% · First Aid 50%</div>
+      <div class="hook">You retired six years ago. Your voice hasn't.</div>
+    </div>
+    <div class="pcc">
+      <h3>OLU ADEYEMI</h3><div class="role">Security Guard — The Shard</div>
+      <div class="cols">
+        <div class="col"><b>Why you're here</b>Sunday overtime, fifteen percent occupancy, a radio that doesn't quite work. You start the day with the only defensible position on the South Bank — and keys to most of it.</div>
+        <div class="col"><b>Who you want to reach</b>No family in London. Whoever you're standing next to when it gets bad — that's who you've got.</div>
+      </div>
+      <div class="statline">STR 15 · CON 14 · SIZ 14 · DEX 12 · INT 13 · POW 13 · APP 13 — HP 15 · MP 13 · SAN 65</div>
+      <div class="skills"><b>Brawl 65%</b> · Athletics 60% · Security Systems 60% · Spot Hidden 60% · Drive 55% · Persuade 45%</div>
+      <div class="hook">What you do with your advantage in the first ten minutes shapes the whole day.</div>
+    </div>
+  </div>
+  <div class="footer-id"><span>DAY ONE — LONDON FALLS</span><span>159-H00-A · 2/3</span></div>
+</div>
+
+<div class="page">
+  <h2 class="props">159-H00-A — Character cards 3/3</h2>
+  <div class="pcgrid">
+    <div class="pcc">
+      <h3>PRIYA MEHTA</h3><div class="role">Science Journalist</div>
+      <div class="cols">
+        <div class="col"><b>Why you're here</b>Covering a weekend exhibition at the Southbank Centre, copy due Tuesday. Last night your editor sent: "Something came in. Might be relevant. Can we talk Monday?" You filed it away.</div>
+        <div class="col"><b>Who you want to reach</b>Your editor. You have a notebook, a press lanyard, and a very good instinct you are choosing not to use.</div>
+      </div>
+      <div class="statline">STR 9 · CON 11 · SIZ 10 · DEX 12 · INT 17 · POW 13 · APP 14 — HP 11 · MP 13 · SAN 65</div>
+      <div class="skills"><b>Library Use 70%</b> · Write 65% · Persuade 60% · Science (Bio/Chem) 55% · Psychology 55% · Spot Hidden 50%</div>
+      <div class="hook">Help the group, or get the story. Nobody said you can't try both.</div>
+    </div>
+    <div class="pcc">
+      <h3>TOM BECKER</h3><div class="role">Scaffolding Worker</div>
+      <div class="cols">
+        <div class="col"><b>Why you're here</b>Sunday overtime near Waterloo. Van packed, radio on, a bag of hand tools you know how to use. You called your mum this morning; she didn't pick up.</div>
+        <div class="col"><b>Who you want to reach</b>Your van, off Waterloo Road — escape, independence, normality. It's a long walk back the wrong way.</div>
+      </div>
+      <div class="statline">STR 14 · CON 14 · SIZ 13 · DEX 13 · INT 12 · POW 11 · APP 11 — HP 14 · MP 11 · SAN 55</div>
+      <div class="skills"><b>Craft (Construction) 70%</b> · Athletics 65% · Drive 65% · Mechanics 60% · Brawl 55% · Spot Hidden 50%</div>
+      <div class="hook">You can break into things, and build barriers out of almost anything.</div>
+    </div>
+  </div>
+  <div class="footer-id"><span>DAY ONE — LONDON FALLS</span><span>159-H00-A · 3/3</span></div>
+</div>
+
+<!-- ============ PLATES ============ -->
+<div class="page">
+  <h2 class="props">Scene plates 1/2 — show, don't describe</h2>
+  <div class="photo-frame"><img src="../art/event-159/159-ART-06-blue-anchor.png" alt="Blue Anchor interior"></div>
+  <div class="plate-cap">159-H02-C — The Blue Anchor. Twelve survivors. Danny in the corner, jacket over his arm.</div>
+  <div class="photo-frame"><img src="../art/event-159/159-ART-07-tower-bridge.png" alt="Tower Bridge approach"></div>
+  <div class="plate-cap">159-H03-A — Tower Bridge approach, last light. Pete at the gatehouse.</div>
+  <div class="footer-id"><span>DAY ONE — LONDON FALLS</span><span>PLATES 1/2</span></div>
+</div>
+
+<div class="page">
+  <h2 class="props">Scene plates 2/2</h2>
+  <div class="photo-frame"><img src="../art/event-159/159-ART-08-pier-rib.png" alt="Bankside Pier and the RIB"></div>
+  <div class="plate-cap">159-H03-B — Bankside Pier. The RIB, and the dark arch mouth behind it.</div>
+  <div class="photo-frame"><img src="../art/event-159/159-ART-10-first-infected.png" alt="The first infected"></div>
+  <div class="plate-cap">159-ART-10 — One figure standing completely still. Nothing obviously wrong, until you look.</div>
+  <div class="footer-id"><span>DAY ONE — LONDON FALLS</span><span>PLATES 2/2</span></div>
+</div>
+
+</body>
+</html>

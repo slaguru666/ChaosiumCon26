@@ -73,6 +73,8 @@ The scenario ends when the players reach Tower Bridge or the moored RIB at Banks
 | 159-H00-B | South Bank area map — Waterloo to Tower Bridge, key locations marked | Printed A5, ink-sketch style | Before play begins |
 | 159-H00-C | NHS Emergency Alert screengrab — red screen, government text | Phone-sized printed card or displayed on GM device | Introduction beat — alert fires |
 
+*All pre-game handouts are print-ready in [`gm-docs/event-159-handouts.html`](gm-docs/event-159-handouts.html) (H00-A cards ×6, H00-B map — asset `159-H00-B-map.svg` — and H00-C alert ×2). The GM console (`gm-docs/event-159-gm-console.html`) can also display H00-C, the social feed, radio fragments and all art fullscreen at the table.*
+
 ---
 
 ## Introduction *(~15 minutes)*
@@ -359,7 +361,7 @@ The cordon radio fragment is the hard trigger for Act Three. It must happen befo
 
 | ID | Description | Format |
 |----|-------------|--------|
-| 159-H02-A | Marcus's livestream screenshot — aerial drone view of London, chaos visible | Printed image, ink-sketch style aerial |
+| 159-H02-A | Marcus's livestream screenshot — aerial drone view of London, chaos visible | Printed image — asset 159-ART-16, framed as his stream in the print pack |
 | 159-H02-B | Priya's phone — editor's message screengrab | Phone-screenshot format |
 | 159-H02-C | The Blue Anchor interior sketch — showing Danny in the corner, jacket over arm | Ink sketch, A5 |
 
@@ -589,6 +591,14 @@ At 3:05, regardless of where the group is: the cost happens. Force it. Do not le
 | 159-ART-07 | Tower Bridge approach — late afternoon light, figures at the gatehouse, Pete visible with axe at his leg | Act Three | Ink sketch Tower Bridge approach, civilians at gatehouse, strong foreground figure with axe, long shadows, last light, reportage urgency |
 | 159-ART-08 | Bankside Pier — RIB in foreground, dark arch mouth visible behind, water reflecting city light and fire | Act Three | Ink sketch riverside pier, rigid inflatable boat moored, dark underpass mouth behind, fire reflections in Thames water, crosshatch darkness |
 | 159-ART-09 | NPC portraits — six character sketches: Fatima, Callum, Sharif, Marcus, Helen, Pete | Throughout | Individual ink portrait sketches, each with one defining visual detail: Fatima (apron, purposeful), Callum (uniform, lost expression), Sharif (glasses up, calm), Marcus (phone-selfie-stick, terrified beneath content-face), Helen (tote bag, extraordinary calm), Pete (hi-vis foreman, axe, broken-steady eyes) |
+| 159-ART-10 | The first infected — one figure completely still on a busy street, nothing obviously wrong until you look | Act One | Borough Market-area street, one still figure the crowd gives space to without looking at, quiet suburban horror, understated |
+| 159-ART-11 | The Bermondsey run — four survivors sprinting, a crowd becoming something else behind them | Act Two | Narrow Bermondsey terraced street, urgent motion, incomplete lines suggesting speed |
+| 159-ART-12 | The cordon at Tower Bridge — military line at the far north end of the bridge road | Act Three | Tower Bridge from the south approach, distant army line blocking the north end, civilians facing it |
+| 159-ART-13 | Borough Market aftermath — stalls abandoned mid-trade, no people | Act One/Two transition | Horror of absence: fallen coffee cup, spilled bag, ordinary Sunday light |
+| 159-ART-14 | Southwark Cathedral — survivors gathering at the steps, cardboard sign by the door | Act Two (optional colour) | Medieval stone vs phones and modern clothes, crisis documentation |
+| 159-ART-15 | The RIB looking back — the city burning at dusk from the water | Epilogue | Skyline lit by fires not streetlights, three smoke columns, figures facing away |
+| 159-ART-16 | Drone aerial of central London — the basis of handout 159-H02-A | Act Two (Clue 6) | Both banks from above, crowds compressing onto bridges heading north, three smoke plumes south of the river |
+| 159-H00-B-map | South Bank area map, Waterloo to Tower Bridge (SVG, hand-drawn style) — handout 159-H00-B | Pre-game | Drawn directly (not generated): accurate geography, PC start positions K·D·M·O·P·T, escape routes A/B, Elephant & Castle warning |
 
 ---
 
