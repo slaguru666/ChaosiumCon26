@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>LONDON FALLS — Day One GM Console (Event 159)</title>
+<style>
+  :root{
+    --bg:#0b0b0d; --panel:#141416; --panel2:#1b1b1f; --line:#2a2a30;
+    --red:#e2483d; --red-dim:#7a2a25; --amber:#e8a33d; --ink:#d9d4cc; --dim:#807a72;
+    --ok:#7fb069; --tap:54px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    background:var(--bg) url('../art/event-159/159-ART-01-cover.png') center/cover fixed no-repeat;
+    color:var(--ink);font-family:"Avenir Next","Segoe UI",Arial,sans-serif;
+    overscroll-behavior:none;user-select:none;
+  }
+  body::before{content:"";position:fixed;inset:0;background:rgba(8,8,10,.90);z-index:0}
+  #app{position:relative;z-index:1;display:flex;flex-direction:column;height:100dvh}
+
+  header{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);background:rgba(14,14,16,.8);backdrop-filter:blur(4px)}
+  header .logo{font-size:11px;letter-spacing:.32em;color:var(--red);text-transform:uppercase;line-height:1.3}
+  header .logo b{display:block;color:var(--ink);font-size:14px;letter-spacing:.2em}
+  header .spacer{flex:1}
+  .clock{display:flex;align-items:center;gap:10px}
+  .clock .time{font-family:"Courier New",monospace;font-size:26px;color:var(--amber);min-width:96px;text-align:right}
+  .clock .time.warn{color:var(--red)}
+  .checkpoint{font-size:11px;color:var(--dim);text-align:right;line-height:1.4;max-width:220px}
+  .checkpoint b{color:var(--amber);font-weight:600}
+  .checkpoint .late{color:var(--red)}
+
+  main{flex:1;overflow-y:auto;padding:14px;padding-bottom:8px}
+  nav{display:flex;border-top:1px solid var(--line);background:rgba(14,14,16,.94)}
+  nav button{flex:1;background:none;border:none;color:var(--dim);padding:12px 4px 14px;font-size:11px;letter-spacing:.13em;text-transform:uppercase;min-height:60px;cursor:pointer;border-top:3px solid transparent;font-family:inherit}
+  nav button.active{color:var(--red);border-top-color:var(--red)}
+  nav button:active{background:#18181c}
+  .tab{display:none}
+  .tab.active{display:block}
+
+  .card{background:rgba(20,20,22,.93);border:1px solid var(--line);border-radius:8px;padding:14px;margin-bottom:14px}
+  .card h2{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--red);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .card h2 .sub{color:var(--dim);letter-spacing:.05em;text-transform:none;font-size:11px;font-weight:400;text-align:right}
+  button.big{background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:8px;min-height:var(--tap);padding:10px 16px;font-size:15px;cursor:pointer;font-family:inherit;letter-spacing:.03em}
+  button.big:active{background:#242429}
+  button.primary{background:#3a1815;border-color:#6e2a25;color:#f0958d;font-weight:700}
+  button.amber{background:#3a2c12;border-color:#6e5a2a;color:var(--amber)}
+  button.green{background:#1d2b18;border-color:#3d5a33;color:var(--ok)}
+  button:disabled{opacity:.35;pointer-events:none}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .grow{flex:1}
+  .muted{color:var(--dim);font-size:12px;line-height:1.5}
+  textarea{width:100%;min-height:120px;background:#101013;border:1px solid var(--line);border-radius:8px;color:var(--ink);padding:12px;font-size:15px;font-family:inherit;line-height:1.5;user-select:text}
+
+  /* schedule */
+  .sched{display:flex;flex-direction:column;gap:8px}
+  .sched button{display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid var(--line);border-radius:8px;min-height:var(--tap);padding:8px 12px;color:var(--ink);font-size:14px;text-align:left;cursor:pointer;font-family:inherit}
+  .sched button .at{font-family:"Courier New",monospace;color:var(--dim);min-width:44px}
+  .sched button .lbl{flex:1;line-height:1.35}
+  .sched button .stamp{font-family:"Courier New",monospace;font-size:12px;color:var(--ok)}
+  .sched button .stamp.over{color:var(--red)}
+  .sched button.done{opacity:.55;border-color:#243020}
+  .sched button.hard{border-left:4px solid var(--red)}
+  .cd{border-left:3px solid var(--line);padding:2px 0 2px 12px;margin-bottom:10px}
+  .cd .t{font-family:"Courier New",monospace;color:var(--amber);font-size:13px}
+  .cd .x{font-size:13px;line-height:1.45;color:var(--ink)}
+  .cd.gm .t{color:var(--red)}
+
+  /* clues */
+  .clue{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:8px;background:var(--panel2);cursor:pointer}
+  .clue.found{opacity:.5}
+  .clue .box{width:26px;height:26px;border:2px solid var(--dim);border-radius:6px;flex:none;margin-top:2px;display:flex;align-items:center;justify-content:center;color:var(--ok);font-size:16px}
+  .clue.found .box{border-color:var(--ok)}
+  .clue .body{flex:1;font-size:13px;line-height:1.45}
+  .clue .fb{color:var(--amber);font-size:12px;margin-top:4px;display:block}
+  .clue .tag{font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:2px 7px;border-radius:4px;flex:none;margin-top:3px}
+  .clue .tag.ess{background:#3a1815;color:#f0958d}
+  .clue .tag.opt{background:#22222a;color:var(--dim)}
+
+  /* dice */
+  .skillpad{display:flex;gap:10px;align-items:center;margin-bottom:12px}
+  .skillpad .val{font-family:"Courier New",monospace;font-size:34px;color:var(--amber);min-width:92px;text-align:center}
+  .skillpad button{min-width:var(--tap)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chips button{background:var(--panel2);border:1px solid var(--line);border-radius:20px;color:var(--ink);min-height:44px;padding:8px 14px;font-size:13px;cursor:pointer;font-family:inherit}
+  .chips button:active{background:#242429}
+  .rollout{text-align:center;padding:16px 6px;min-height:120px}
+  .rollout .die{font-family:"Courier New",monospace;font-size:58px;line-height:1;color:var(--ink)}
+  .rollout .verdict{font-size:15px;letter-spacing:.22em;text-transform:uppercase;margin-top:8px}
+  .v-crit{color:#ffd76e}.v-spec{color:var(--ok)}.v-succ{color:var(--ok)}.v-fail{color:var(--dim)}.v-fum{color:var(--red)}
+  .rollout .detail{color:var(--dim);font-size:12px;margin-top:6px}
+  .log{font-family:"Courier New",monospace;font-size:12px;color:var(--dim);line-height:1.7;max-height:170px;overflow-y:auto;user-select:text}
+  .log b{color:var(--ink)}
+
+  /* horde */
+  .zrow{display:flex;flex-wrap:wrap;gap:8px}
+  .zom{border:1px solid var(--line);border-radius:8px;background:var(--panel2);padding:8px 10px;display:flex;align-items:center;gap:8px}
+  .zom.dead{opacity:.4;text-decoration:line-through}
+  .zom .hp{font-family:"Courier New",monospace;color:var(--amber);min-width:30px;text-align:center;font-size:16px}
+  .zom .hp.slow{color:var(--red)}
+  .zom button{background:#101013;border:1px solid var(--line);border-radius:6px;color:var(--ink);min-width:44px;min-height:44px;font-size:13px;cursor:pointer;font-family:inherit}
+  .inf{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin-bottom:8px;background:var(--panel2);font-size:14px}
+  .inf .t{font-family:"Courier New",monospace;color:var(--red);margin-left:auto}
+  table.qref{width:100%;border-collapse:collapse;font-size:13px}
+  table.qref td,table.qref th{border-bottom:1px solid var(--line);padding:7px 6px;text-align:left;vertical-align:top}
+  table.qref th{color:var(--dim);font-size:10px;letter-spacing:.16em;text-transform:uppercase}
+  table.qref td:first-child{color:var(--amber);white-space:nowrap}
+
+  /* cast */
+  .pc{border:1px solid var(--line);border-radius:8px;background:var(--panel2);padding:12px;margin-bottom:12px}
+  .pc h3{font-size:14px;letter-spacing:.06em;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .pc h3 .who{color:var(--dim);font-size:12px;font-weight:400}
+  .pc .want{font-size:12px;color:var(--dim);margin:4px 0 8px;line-height:1.4}
+  .pips{display:flex;align-items:center;gap:5px;margin:6px 0;flex-wrap:wrap}
+  .pips .lb{font-size:10px;letter-spacing:.16em;color:var(--dim);text-transform:uppercase;min-width:34px}
+  .pip{width:26px;height:26px;border-radius:50%;border:2px solid var(--dim);cursor:pointer;flex:none}
+  .pip.on{background:var(--red);border-color:var(--red)}
+  .pip.mp.on{background:#4a6fa5;border-color:#4a6fa5}
+  .san{display:flex;align-items:center;gap:8px;margin:6px 0}
+  .san .n{font-family:"Courier New",monospace;font-size:22px;color:var(--amber);min-width:44px;text-align:center}
+  .san button{background:#101013;border:1px solid var(--line);border-radius:6px;color:var(--ink);min-width:44px;min-height:44px;cursor:pointer;font-family:inherit;font-size:15px}
+  .flags{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+  .flags button{border-radius:16px;border:1px solid var(--line);background:#101013;color:var(--dim);padding:6px 12px;min-height:38px;font-size:12px;cursor:pointer;font-family:inherit;letter-spacing:.08em}
+  .flags button.on{background:#3a1815;border-color:var(--red);color:#f0958d}
+  .npc{border:1px solid var(--line);border-radius:8px;background:var(--panel2);margin-bottom:10px;overflow:hidden}
+  .npc .head{display:flex;align-items:center;gap:10px;padding:12px;cursor:pointer;min-height:var(--tap)}
+  .npc .dot{width:12px;height:12px;border-radius:50%;flex:none}
+  .npc .head b{font-size:14px;letter-spacing:.05em}
+  .npc .head .ess{color:var(--dim);font-size:12px;flex:1;line-height:1.35}
+  .npc .bodyx{display:none;padding:0 12px 12px;font-size:13px;line-height:1.5}
+  .npc.open .bodyx{display:block}
+  .npc .sec{background:#2a1512;border:1px solid #5a2a24;border-radius:6px;padding:8px 10px;margin-top:8px;color:#f0b0a8}
+  .npc .stats{font-family:"Courier New",monospace;font-size:12px;color:var(--dim);margin-top:8px;user-select:text}
+
+  /* props */
+  .propgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+  .propgrid .p{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel2);cursor:pointer;min-height:60px}
+  .propgrid .p img{width:100%;height:100px;object-fit:cover;display:block;filter:grayscale(20%)}
+  .propgrid .p .cap{font-size:11px;color:var(--dim);padding:7px 9px;line-height:1.35}
+  .propgrid .p .cap b{color:var(--ink);display:block;font-size:12px}
+  #fs{position:fixed;inset:0;background:#000;z-index:50;display:none;align-items:center;justify-content:center;flex-direction:column}
+  #fs.show{display:flex}
+  #fs img{max-width:100vw;max-height:100dvh;object-fit:contain}
+  #fs .txtprop{max-width:720px;width:92vw;max-height:92dvh;overflow-y:auto;padding:28px;user-select:none}
+  /* alert prop */
+  .alertscreen{background:#c0231b;color:#fff;border-radius:12px;padding:34px 26px;text-align:center;font-family:"Segoe UI","Avenir Next",Arial,sans-serif}
+  .alertscreen .icon{font-size:44px}
+  .alertscreen h1{font-size:22px;letter-spacing:.06em;margin:12px 0 4px}
+  .alertscreen .src{font-size:14px;opacity:.85;margin-bottom:18px}
+  .alertscreen p{font-size:19px;line-height:1.55;font-weight:600}
+  .alertscreen .t{margin-top:20px;font-size:13px;opacity:.8;font-family:"Courier New",monospace}
+  .radioprop{background:#0d0f0d;border:1px solid #2c3a2c;border-radius:12px;padding:30px;font-family:"Courier New",monospace;color:#9fd39f;font-size:20px;line-height:1.8}
+  .radioprop .st{color:#4a5a4a}
+  .socialprop{background:#101317;border-radius:12px;padding:18px;font-family:"Avenir Next",Arial,sans-serif}
+  .socialprop .post{border-bottom:1px solid #22262c;padding:13px 6px}
+  .socialprop .h{color:#6aa5d8;font-size:14px;font-weight:700}
+  .socialprop .b{color:#d9dde2;font-size:16px;line-height:1.5;margin-top:3px}
+  .phoneprop{background:#0c0c0e;border-radius:12px;padding:30px;color:#cfd2d6;font-size:18px;line-height:1.8;font-family:"Avenir Next",Arial,sans-serif}
+  #toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);background:#222;border:1px solid var(--line);color:var(--ink);padding:10px 18px;border-radius:20px;font-size:13px;z-index:60;display:none}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="logo">Event 159 · BRP<b>LONDON FALLS</b></div>
+    <div class="spacer"></div>
+    <div class="checkpoint" id="nextchk">—</div>
+    <div class="clock">
+      <div class="time" id="clock">0:00:00</div>
+      <button class="big" id="clockbtn">Start</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- CASE -->
+    <section class="tab active" id="tab-case">
+      <div class="card">
+        <h2>Session Schedule <span class="sub">tap a checkpoint when you reach it — red bar = hard trigger</span></h2>
+        <div class="sched" id="sched"></div>
+      </div>
+      <div class="card">
+        <h2>The Day — GM Truth Timeline <span class="sub">tap a beat when the table learns it</span></h2>
+        <div id="countdown"></div>
+      </div>
+      <div class="card">
+        <h2>Clue Trail <span class="sub">tap = found · amber line = fallback if missed</span></h2>
+        <div id="clues"></div>
+      </div>
+      <div class="card">
+        <h2>GM Notes <span class="sub">autosaves</span></h2>
+        <textarea id="notes" placeholder="Table notes, rulings, who has the van keys…"></textarea>
+      </div>
+    </section>
+
+    <!-- DICE -->
+    <section class="tab" id="tab-dice">
+      <div class="card">
+        <h2>D100 — Roll Under Skill</h2>
+        <div class="skillpad">
+          <button class="big" data-adj="-10">−10</button>
+          <button class="big" data-adj="-5">−5</button>
+          <div class="val" id="skillval">50%</div>
+          <button class="big" data-adj="5">+5</button>
+          <button class="big" data-adj="10">+10</button>
+          <button class="big primary grow" id="rollbtn">ROLL</button>
+        </div>
+        <div class="chips" id="quickrolls"></div>
+        <div class="rollout" id="rollout"><div class="muted">Crit ≤ 1/20 of skill · Special ≤ 1/5 · 100 is always a fumble</div></div>
+      </div>
+      <div class="card">
+        <h2>Damage &amp; Utility Dice</h2>
+        <div class="chips" id="dmgdice"></div>
+      </div>
+      <div class="card">
+        <h2>Sanity Triggers <span class="sub">rolls both losses — apply pass/fail after the SAN roll</span></h2>
+        <div class="chips" id="sanbtns"></div>
+        <div class="rollout" id="sanout" style="min-height:60px"></div>
+      </div>
+      <div class="card">
+        <h2>Roll Log <span class="sub" id="clearlog" style="cursor:pointer">clear</span></h2>
+        <div class="log" id="rolllog"></div>
+      </div>
+    </section>
+
+    <!-- HORDE -->
+    <section class="tab" id="tab-horde">
+      <div class="card">
+        <h2>Infected — Quick Rules</h2>
+        <table class="qref">
+          <tr><th>Stat</th><th>Value</th></tr>
+          <tr><td>STR 10 · CON 18 · DEX 6</td><td>Move 4 (shamble) · HP 12 · pain-immune</td></tr>
+          <tr><td>Killing</td><td>Head shots only (−20% or Special). Body damage reduces Move, never aggression</td></tr>
+          <tr><td>Bite</td><td>1d4 + Infection — CON roll or symptoms within hours</td></tr>
+          <tr><td>Panic (5+ infected)</td><td>POW×5 or freeze / flee / attack wildly (d6: 1–2 / 3–4 / 5–6)</td></tr>
+        </table>
+        <div class="row" style="margin-top:10px">
+          <button class="big amber" id="panicroll">Panic d6</button>
+          <span class="muted" id="panicout">POW×5 targets — Kira 70 · Dev 60 · Maggie 70 · Olu 65 · Priya 65 · Tom 55</span>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Active Infected <span class="sub">−dmg on body slows at ≤6 HP · HEAD kills</span></h2>
+        <div class="row" style="margin-bottom:10px">
+          <button class="big" data-spawn="1">+1</button>
+          <button class="big" data-spawn="3">+3</button>
+          <button class="big" data-spawn="6">+6</button>
+          <button class="big" id="clearzoms">Clear dead</button>
+        </div>
+        <div class="zrow" id="zoms"></div>
+      </div>
+      <div class="card">
+        <h2>Infection Tracker <span class="sub">stamps session clock at bite</span></h2>
+        <div class="chips" id="infbtns"></div>
+        <div id="inflist" style="margin-top:10px"></div>
+      </div>
+      <div class="card">
+        <h2>The Cost — Act Three <span class="sub">must happen before bridge/boat</span></h2>
+        <div class="muted" style="font-size:13px;line-height:1.6">
+          <b style="color:var(--ink)">A — an NPC they know:</b> Helen, Fatima, Callum or Marcus. An accident, not a sacrifice.<br>
+          <b style="color:var(--ink)">B — a PC:</b> if anyone is wounded, this is where it lands. Offer a final moment. Do not pull it.<br>
+          <b style="color:var(--ink)">C — a moral choice:</b> Pete correctly refuses someone symptomatic. Leave them, or risk the bridge. No third option is provided.
+        </div>
+      </div>
+    </section>
+
+    <!-- CAST -->
+    <section class="tab" id="tab-cast">
+      <div class="card"><h2>Player Characters <span class="sub">tap pips = damage · tap skill = roll</span></h2><div id="pclist"></div></div>
+      <div class="card"><h2>NPCs <span class="sub">tap to open · red box = GM-only secret</span></h2><div id="npclist"></div></div>
+    </section>
+
+    <!-- PROPS -->
+    <section class="tab" id="tab-props">
+      <div class="card">
+        <h2>Table Props <span class="sub">tap → fullscreen → turn the screen to the players</span></h2>
+        <div class="propgrid" id="txtprops"></div>
+      </div>
+      <div class="card">
+        <h2>Artwork <span class="sub">159-ART-01 … 09</span></h2>
+        <div class="propgrid" id="artprops"></div>
+      </div>
+    </section>
+
+    <!-- MORE -->
+    <section class="tab" id="tab-more">
+      <div class="card">
+        <h2>Screen</h2>
+        <div class="row"><button class="big" id="wakebtn">Keep screen awake</button></div>
+        <p class="muted" style="margin-top:10px">Wake lock stops the screen sleeping mid-scene (supported browsers only; re-arms when you return to this tab).</p>
+      </div>
+      <div class="card">
+        <h2>Memory</h2>
+        <div class="row">
+          <button class="big" id="exportbtn">Export session JSON</button>
+          <button class="big" id="importbtn">Import</button>
+          <button class="big primary" id="resetbtn">Reset session</button>
+        </div>
+        <input type="file" id="importfile" accept=".json" style="display:none">
+        <p class="muted" style="margin-top:10px">Everything autosaves to this device (localStorage). Export before the convention as a backup.</p>
+      </div>
+      <div class="card">
+        <h2>About</h2>
+        <p class="muted">GM console for <b>Event 159 — BRP: Day One — "London Falls"</b> (ChaosiumCon 26 / Continuum 2026 Friday Slot 1). Content matches the scenario file. Zombie bite quick-roll uses a 50% house attack value — the scenario stats the bite by damage only. Basic Roleplaying © Chaosium Inc. Private convention play utility, not for sale.</p>
+      </div>
+    </section>
+  </main>
+
+  <nav id="nav">
+    <button data-tab="case" class="active">Case</button>
+    <button data-tab="dice">Dice</button>
+    <button data-tab="horde">Horde</button>
+    <button data-tab="cast">Cast</button>
+    <button data-tab="props">Props</button>
+    <button data-tab="more">More</button>
+  </nav>
+</div>
+
+<div id="fs"></div>
+<div id="toast"></div>
+
+<script>
+'use strict';
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const KEY='df159.v1';
+
+/* ---------------- data ---------------- */
+const SCHEDULE=[
+  {id:'intro', at:15*60,  hard:false, label:'Intro done — six placed, alert fired, players converging'},
+  {id:'market',at:60*60,  hard:true,  label:'MARKET BREAKS — vendor bitten in full view, stampede (force it now if not yet)'},
+  {id:'act1',  at:75*60,  hard:false, label:'Act One done — first infected met, group formed'},
+  {id:'cordon',at:150*60, hard:true,  label:'CORDON FRAGMENT — "hold the north bank line — do not cross" (force by now)'},
+  {id:'act2',  at:165*60, hard:false, label:'Act Two done — pub resolved, reanimation witnessed, route chosen'},
+  {id:'cost',  at:185*60, hard:true,  label:'THE COST — someone does not make it. Force it. Do not soften it'},
+  {id:'reach', at:190*60, hard:false, label:'Bridge or boat reached'},
+  {id:'act3',  at:195*60, hard:false, label:'Act Three done — cost paid'},
+  {id:'epi',   at:210*60, hard:false, label:'Epilogue + debrief done — tangent seeded'},
+];
+const COUNTDOWN=[
+  {t:'Thu 14 May', gm:true,  x:'BSL-3 breach, Meridian Biosciences annex — railway arches under Elephant & Castle. Four lab workers exposed (MX-9).'},
+  {t:'Sat evening',gm:true,  x:'Two dead workers reanimate inside the sealed section.'},
+  {t:'07:14',      gm:false, x:'A third reaches the public drainage network. First reports logged from Elephant & Castle — the timestamp on Callum’s radio.'},
+  {t:'~07:54',     gm:true,  x:'First members of the public symptomatic. Responding officers have no PPE; two are bitten.'},
+  {t:'08:30',      gm:true,  x:'The government knows.'},
+  {t:'09:00',      gm:true,  x:'COBR convenes. Containment-first: delay the alert, avoid a stampede. The assessment is wrong.'},
+  {t:'10:47',      gm:false, x:'NHS Emergency Alert fires. Session opens. The infection is already moving along the South Bank.'},
+  {t:'Afternoon',  gm:false, x:'Cordon forms on the NORTH bank. It is containment, not rescue. They are closing the door on South London.'},
+  {t:'~20:57',     gm:false, x:'Sunset. After dark the infected are harder to see; the streets get worse, not better.'},
+  {t:'21:20',      gm:false, x:'Epilogue. "That’s Day One."'},
+];
+const CLUES=[
+  {act:'Act One', ess:true,  text:'1 · High-vis man was mid-breakfast when he stopped — onset is rapid, no warning stage.'},
+  {act:'Act One', ess:true,  text:'2 · Callum’s radio: "first reports… Elephant… 07:14" — more than three hours before the alert. The government knew.', fb:'Fallback: as the Market breaks, his radio crackles and he repeats the fragment aloud.'},
+  {act:'Act One', ess:false, text:'3 · Drone stream on social media — north bank panicking too; not localised.'},
+  {act:'Act One', ess:false, text:'4 · BBC on the stall radio: "health emergency — do not approach persons showing disorientation." Evasive language.'},
+  {act:'Act Two', ess:true,  text:'5 · Danny’s bite in the Blue Anchor — infection is already inside the "safe" space.', fb:'Fallback: if nobody checks him, he turns in front of the group.'},
+  {act:'Act Two', ess:true,  text:'6 · Marcus’s drone stream — aerial London. City-wide. Much worse than they thought.'},
+  {act:'Act Two', ess:true,  text:'7 · Radio: "cordon… north bank… all units hold position" — south of the river is written off.', fb:'Fallback: Marcus’s chat — "military on Embankment going NORTH not south — wtf".'},
+  {act:'Act Two', ess:false, text:'8 · Helen is ex-Cabinet Office. "There’s a protocol for this. If they haven’t activated it, something went wrong before the alert." Names Meridian.'},
+  {act:'Act Two', ess:false, text:'9 · Priya’s editor had Meridian whistleblower documents 48 hours ago. He didn’t run the story.'},
+  {act:'Act Two', ess:false, text:'10 · Ryan’s bite in the pharmacy — post-alert bites already symptomatic. It is accelerating.'},
+  {act:'Act Three',ess:false, text:'11 · Pete’s radio confirms the north-bank cordon — closes the loop.'},
+  {act:'Act Three',ess:false, text:'12 · The RIB’s fuel gauge — check it before trusting the escape route.'},
+];
+const QUICKROLLS=[
+  {l:'Kira · First Aid',v:75},{l:'Kira · Medicine',v:55},
+  {l:'Dev · Computer',v:75},{l:'Maggie · Persuade',v:70},
+  {l:'Maggie · Spot Hidden',v:65},{l:'Olu · Brawl',v:65},
+  {l:'Priya · Library Use',v:70},{l:'Tom · Craft (Constr.)',v:70},
+  {l:'Fatima · Persuade',v:75},{l:'Sharif · Medicine',v:85},
+  {l:'Callum · Baton',v:55},{l:'Pete · Fire Axe',v:60},
+  {l:'Zombie · Bite (house 50%)',v:50},
+];
+const DMG=[
+  {l:'Bite 1d4',d:[[1,4]]},{l:'Baton 1d6',d:[[1,6]]},{l:'Improvised 1d6',d:[[1,6]]},
+  {l:'Cleaver 1d6+1d4',d:[[1,6],[1,4]]},{l:'Fire axe 1d8+1d4',d:[[1,8],[1,4]]},
+  {l:'d100',d:'d100'},{l:'d6',d:[[1,6]]},{l:'d8',d:[[1,8]]},
+];
+const SAN=[
+  {l:'First zombie seen 1/1d6',a:[0,0],b:[1,6],flat:1},
+  {l:'First zombie killed 0/1d4',a:null,b:[1,4],flat:0},
+  {l:'Known person reanimates 1d2/1d8',a:[1,2],b:[1,8]},
+  {l:'Danny turns in the pub 1d2/1d8',a:[1,2],b:[1,8]},
+  {l:'Clink Street arches 1d4/1d8',a:[1,4],b:[1,8]},
+];
+const PCS=[
+  {id:'kira', name:'KIRA OSEI-MENSAH', who:'NHS junior doctor · awake 22 hrs', want:'Reach her mother Abena, 74, alone in Peckham', hp:11, mp:14, san:70,
+   skills:[['First Aid',75],['Medicine',55],['Persuade',55],['Biology',50],['Spot Hidden',50]]},
+  {id:'dev', name:'DEV KRISHNAMURTHY', who:'Freelance software engineer', want:'Reach his flatmate near Old Street — knows more than he’s said', hp:11, mp:12, san:60,
+   skills:[['Computer',75],['Electronics',65],['Search',60],['Spot Hidden',45]]},
+  {id:'maggie', name:'MAGGIE DONNELLY', who:'Retired Met officer (22 yrs) · Tavistock Square 2005', want:'Reach her daughter Cara in Deptford', hp:13, mp:14, san:70,
+   skills:[['Persuade',70],['Spot Hidden',65],['Psychology',65],['Law',60],['Brawl',55],['First Aid',50]]},
+  {id:'olu', name:'OLU ADEYEMI', who:'Shard security · radio, CCTV, keys', want:'No family here — his motivation becomes the group', hp:15, mp:13, san:65,
+   skills:[['Brawl',65],['Athletics',60],['Security Systems',60],['Spot Hidden',60],['Drive',55]]},
+  {id:'priya', name:'PRIYA MEHTA', who:'Science journalist · press lanyard', want:'Her editor — and the Meridian story he sat on', hp:11, mp:13, san:65,
+   skills:[['Library Use',70],['Persuade',60],['Science (Bio/Chem)',55],['Psychology',55],['Write',65],['Spot Hidden',50]]},
+  {id:'tom', name:'TOM BECKER', who:'Scaffolder · bag of hand tools', want:'His van off Waterloo Road — escape, independence, normality', hp:14, mp:11, san:55,
+   skills:[['Craft (Construction)',70],['Athletics',65],['Drive',65],['Mechanics',60],['Brawl',55],['Spot Hidden',50]]},
+];
+const NPCS=[
+  {id:'fatima', name:'FATIMA BALOGUN', dot:'#7fb069', ess:'Market stall owner — first competent adult voice', hp:13,
+   body:'Nigerian-British, 50s. Complete economy of motion. Knows every market exit; has the spare key to her supply van (driver missing). Neutral → friendly if players prove useful; hostile if patronised.',
+   stats:'STR 13 CON 14 SIZ 11 DEX 12 INT 17 POW 15 · HP 13 · Persuade 75 / Spot 70 / Drive 60 / First Aid 55 / Dodge 55 · Cleaver 50% (1d6+1d4)'},
+  {id:'callum', name:'PC CALLUM FRASER', dot:'#7fb069', ess:'Met constable, 28 — institution failing around him', hp:13,
+   body:'Scottish. Standard kit only: baton, PAVA (useless on zombies), radio — the clue-delivery machine. Follows whoever seems most competent.',
+   sec:'Heard "first reports… Elephant… 07:14" before comms went patchy. Hasn’t told anyone. When the cordon fragment lands, play his face first.',
+   stats:'STR 13 CON 12 SIZ 13 DEX 11 INT 13 POW 12 · HP 13 · Law 45 / Persuade 55 / Spot 60 / Dodge 50 · Baton 55% (1d6)'},
+  {id:'sharif', name:'DR YASMIN SHARIF', dot:'#7fb069', ess:'Off-duty A&E consultant — will name what this is', hp:12,
+   body:'Mid-40s, resus-calm. "Most of them are not survivable." Treats 1d3 HP per First Aid per scene; identifies infected with Medicine.',
+   sec:'She wants to reach St Thomas’ — 2.5 km west. She is wrong. The state of Guy’s (visible from the car park) is the counter-argument. Losing her costs the group its best medic.',
+   stats:'STR 9 CON 13 SIZ 10 DEX 13 INT 18 POW 15 · HP 12 · Medicine 85 / First Aid 90 / Persuade 60 / Psychology 70 · not a fighter'},
+  {id:'marcus', name:'MARCUS', dot:'#e8a33d', ess:'19, livestreaming to 41,000 — walking liability', hp:11,
+   body:'Lime bike, selfie stick, terror resolving into content-creator energy. His chat feeds him intel; his drone contact shows aerial London (Clue 6).',
+   sec:'Phone at 31%. When it dies, he’s just a scared 19-year-old — that’s a beat, not a punishment. Chat reports military massing at London Bridge north approach.',
+   stats:'STR 10 CON 11 SIZ 11 DEX 14 INT 14 POW 11 · HP 11 · Computer 65 / Fast Talk 55 / Ride 60 · no attacks'},
+  {id:'helen', name:'HELEN', dot:'#e8a33d', ess:'"I’m sure it’s a gas leak." The bravest person here', hp:11,
+   body:'Late 60s, National Theatre tote, extraordinary calm. Keys to the Kensington Club annex — food, wine cellar, panic room with emergency radio.',
+   sec:'Thirty years Cabinet Office. "There’s a protocol for this. If they haven’t activated it, something went wrong before the alert." Names Meridian if trusted. THE MOMENT: once, she steps into danger for someone else. Play it straight. Recommended reanimation victim.',
+   stats:'STR 8 CON 11 SIZ 10 DEX 10 INT 17 POW 16 · HP 11 · Persuade 65 / Psychology 70 / History-Law 55 / First Aid 40'},
+  {id:'pete', name:'PETE', dot:'#e2483d', ess:'Bridge Group foreman — triage with no good options', hp:14,
+   body:'50s, FOREMAN hi-vis, fire axe resting not raised. Interrogates: who are you, where have you been, has anyone been bitten. Not unreasonable. Not wrong.',
+   sec:'Knows the cordon is real (someone in his group has a radio). Hasn’t told his people. Has already turned away two infected and dealt with the consequences — he is broken, not cruel.',
+   stats:'STR 14 CON 13 SIZ 14 DEX 11 INT 14 POW 13 · HP 14 · Persuade 60 / Spot 65 / Psychology 55 · Fire axe 60% (1d8+1d4)'},
+  {id:'minors', name:'MINORS — Gordon · Danny · Declan & Ryan · Bridge Group', dot:'#807a72', ess:'Stat as minors', hp:null,
+   body:'GORDON: retired schoolteacher holding the Blue Anchor’s twelve together. DECLAN & RYAN: scared pharmacy looters — craft knife, bicycle lock; talk them down or it escalates.',
+   sec:'DANNY: bitten 40 min before the pub; jacket over the arm; turns if the group stays ~30 min — Sharif spots him in 5. RYAN is also bitten (blood on sleeve) — post-alert bites already symptomatic.'},
+];
+const ART=[
+  ['159-ART-01-cover.png','Cover — South Bank aerial, three smoke plumes'],
+  ['159-ART-02-bus-crash.png','Act One — the bus crash, one figure standing still'],
+  ['159-ART-03-market.png','Act One — Fatima closing the shutter'],
+  ['159-ART-04-river-figure.png','Act One — the figure in the river'],
+  ['159-ART-05-bermondsey.png','Act Two — Bermondsey Street, watching windows'],
+  ['159-ART-06-blue-anchor.png','Act Two — Blue Anchor interior, Danny in the corner'],
+  ['159-ART-07-tower-bridge.png','Act Three — Tower Bridge approach, Pete at the gatehouse'],
+  ['159-ART-08-pier-rib.png','Act Three — Bankside Pier, the RIB, the arch mouth'],
+  ['159-ART-09-portraits.png','NPC portraits — Fatima, Callum, Sharif, Marcus, Helen, Pete'],
+];
+const TXTPROPS=[
+  {id:'alert', t:'EMERGENCY ALERT', c:'10:47 — the red screen. Play the alert tone from your phone with it.'},
+  {id:'social', t:'SOCIAL FEED', c:'Five posts — Act One phone checks (Handout 159-H01-A)'},
+  {id:'radio1', t:'RADIO — 07:14', c:'Callum’s fragment (Handout 159-H01-B / Clue 2)'},
+  {id:'radio2', t:'RADIO — THE CORDON', c:'Act Two hinge (Clue 7)'},
+  {id:'nine99', t:'999 CALL', c:'What players hear if they dial'},
+];
+
+/* ---------------- state ---------------- */
+let S=null;
+const DEF=()=>({clock:{run:false,elapsed:0,last:0},checks:{},cd:{},clues:{},notes:'',skill:50,log:[],
+  pcs:Object.fromEntries(PCS.map(p=>[p.id,{hp:0,mp:0,san:p.san,bit:false,down:false}])),
+  npcs:Object.fromEntries(NPCS.map(n=>[n.id,{hp:0,open:false}])),
+  zoms:[],infs:[]});
+function load(){try{const raw=localStorage.getItem(KEY);S=raw?Object.assign(DEF(),JSON.parse(raw)):DEF();}catch(e){S=DEF();}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+load();
+
+function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(t._h);t._h=setTimeout(()=>t.style.display='none',1800);}
+function fmt(s){s=Math.floor(s);const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return h+':'+String(m).padStart(2,'0')+':'+String(x).padStart(2,'0');}
+function fmts(s){s=Math.floor(s);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
+function roll(n,d){let t=0;for(let i=0;i<n;i++)t+=1+Math.floor(Math.random()*d);return t;}
+
+/* ---------------- nav ---------------- */
+$('#nav').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  $$('#nav button').forEach(x=>x.classList.toggle('active',x===b));
+  $$('.tab').forEach(t=>t.classList.toggle('active',t.id==='tab-'+b.dataset.tab));
+});
+
+/* ---------------- clock ---------------- */
+function elapsed(){return S.clock.run?S.clock.elapsed+(Date.now()-S.clock.last)/1000:S.clock.elapsed;}
+$('#clockbtn').addEventListener('click',()=>{
+  if(S.clock.run){S.clock.elapsed=elapsed();S.clock.run=false;}
+  else{S.clock.last=Date.now();S.clock.run=true;}
+  $('#clockbtn').textContent=S.clock.run?'Pause':'Start';save();
+});
+$('#clockbtn').textContent=S.clock.run?'Pause':'Start';
+setInterval(()=>{
+  const e=elapsed();
+  const c=$('#clock');c.textContent=fmt(e);c.classList.toggle('warn',e>210*60);
+  const next=SCHEDULE.find(s=>!S.checks[s.id]);
+  const n=$('#nextchk');
+  if(next){const dt=next.at-e;
+    n.innerHTML='next: <b>'+fmts(next.at)+'</b> '+next.label.split('—')[0]+(dt<0?' <span class="late">'+fmts(-dt)+' over</span>':'');
+  } else n.textContent='all checkpoints stamped';
+},500);
+
+/* ---------------- schedule ---------------- */
+function renderSched(){
+  $('#sched').innerHTML=SCHEDULE.map(s=>{
+    const st=S.checks[s.id];
+    const stamp=st!=null?('<span class="stamp'+(st>s.at?' over':'')+'">'+fmts(st)+(st>s.at?' (+'+fmts(st-s.at)+')':'')+'</span>'):'';
+    return '<button data-chk="'+s.id+'" class="'+(st!=null?'done ':'')+(s.hard?'hard':'')+'"><span class="at">'+fmts(s.at)+'</span><span class="lbl">'+s.label+'</span>'+stamp+'</button>';
+  }).join('');
+}
+$('#sched').addEventListener('click',e=>{
+  const b=e.target.closest('[data-chk]');if(!b)return;
+  const id=b.dataset.chk;
+  if(S.checks[id]!=null)delete S.checks[id];else S.checks[id]=Math.floor(elapsed());
+  save();renderSched();
+});
+
+/* ---------------- countdown ---------------- */
+function renderCd(){
+  $('#countdown').innerHTML=COUNTDOWN.map((c,i)=>'<div class="cd'+(c.gm?' gm':'')+'" data-cd="'+i+'" style="opacity:'+(S.cd[i]?'.45':'1')+';cursor:pointer"><div class="t">'+c.t+(c.gm?' · GM-ONLY':'')+'</div><div class="x">'+c.x+'</div></div>').join('');
+}
+$('#countdown').addEventListener('click',e=>{
+  const d=e.target.closest('[data-cd]');if(!d)return;
+  const i=d.dataset.cd;S.cd[i]=!S.cd[i];save();renderCd();
+});
+
+/* ---------------- clues ---------------- */
+function renderClues(){
+  let act='';
+  $('#clues').innerHTML=CLUES.map((c,i)=>{
+    const hdr=c.act!==act?('<div class="muted" style="margin:10px 0 6px;letter-spacing:.2em;text-transform:uppercase;font-size:10px">'+(act=c.act)+'</div>'):'';
+    return hdr+'<div class="clue'+(S.clues[i]?' found':'')+'" data-clue="'+i+'"><div class="box">'+(S.clues[i]?'✓':'')+'</div><div class="body">'+c.text+(c.fb&&!S.clues[i]?'<span class="fb">'+c.fb+'</span>':'')+'</div><span class="tag '+(c.ess?'ess':'opt')+'">'+(c.ess?'Essential':'Optional')+'</span></div>';
+  }).join('');
+}
+$('#clues').addEventListener('click',e=>{
+  const d=e.target.closest('[data-clue]');if(!d)return;
+  const i=d.dataset.clue;S.clues[i]=!S.clues[i];save();renderClues();
+});
+
+/* ---------------- notes ---------------- */
+$('#notes').value=S.notes;
+$('#notes').addEventListener('input',()=>{S.notes=$('#notes').value;save();});
+
+/* ---------------- dice ---------------- */
+function setSkill(v){S.skill=Math.min(100,Math.max(1,v));$('#skillval').textContent=S.skill+'%';save();}
+setSkill(S.skill);
+$$('.skillpad [data-adj]').forEach(b=>b.addEventListener('click',()=>setSkill(S.skill+parseInt(b.dataset.adj))));
+$('#quickrolls').innerHTML=QUICKROLLS.map((q,i)=>'<button data-qr="'+i+'">'+q.l+' '+q.v+'%</button>').join('');
+$('#quickrolls').addEventListener('click',e=>{
+  const b=e.target.closest('[data-qr]');if(!b)return;
+  const q=QUICKROLLS[b.dataset.qr];setSkill(q.v);doRoll(q.l);
+});
+function verdict(r,sk){
+  if(r===100)return['FUMBLE','v-fum'];
+  if(r<=Math.ceil(sk/20))return['CRITICAL','v-crit'];
+  if(r<=Math.ceil(sk/5))return['SPECIAL','v-spec'];
+  if(r<=sk)return['SUCCESS','v-succ'];
+  return['FAIL','v-fail'];
+}
+function doRoll(label){
+  const r=1+Math.floor(Math.random()*100);
+  const [v,cls]=verdict(r,S.skill);
+  $('#rollout').innerHTML='<div class="die">'+String(r).padStart(2,'0')+'</div><div class="verdict '+cls+'">'+v+'</div><div class="detail">'+(label?label+' · ':'')+'vs '+S.skill+'% · crit ≤'+Math.ceil(S.skill/20)+' · special ≤'+Math.ceil(S.skill/5)+'</div>';
+  addLog((label||'roll')+' vs '+S.skill+'% → <b>'+r+' '+v+'</b>');
+}
+$('#rollbtn').addEventListener('click',()=>doRoll());
+$('#dmgdice').innerHTML=DMG.map((d,i)=>'<button data-dmg="'+i+'">'+d.l+'</button>').join('');
+$('#dmgdice').addEventListener('click',e=>{
+  const b=e.target.closest('[data-dmg]');if(!b)return;
+  const d=DMG[b.dataset.dmg];let out,det;
+  if(d.d==='d100'){out=1+Math.floor(Math.random()*100);det='d100';}
+  else{const parts=d.d.map(([n,x])=>roll(n,x));out=parts.reduce((a,b)=>a+b,0);det=d.l+(parts.length>1?' ('+parts.join('+')+')':'');}
+  $('#rollout').innerHTML='<div class="die">'+out+'</div><div class="verdict v-succ">'+d.l+'</div><div class="detail">'+det+'</div>';
+  addLog(d.l+' → <b>'+out+'</b>');
+});
+$('#sanbtns').innerHTML=SAN.map((s,i)=>'<button data-san="'+i+'">'+s.l+'</button>').join('');
+$('#sanbtns').addEventListener('click',e=>{
+  const b=e.target.closest('[data-san]');if(!b)return;
+  const s=SAN[b.dataset.san];
+  const pass=s.a===null?0:(s.flat!=null?s.flat:roll(s.a[0],s.a[1]));
+  const fail=roll(s.b[0],s.b[1]);
+  $('#sanout').innerHTML='<div style="font-size:16px;line-height:1.7">'+s.l+'<br>SAN roll <b style="color:var(--ok)">passed → lose '+pass+'</b> · <b style="color:var(--red)">failed → lose '+fail+'</b></div>';
+  addLog('SAN '+s.l+' → pass '+pass+' / fail <b>'+fail+'</b>');
+});
+function addLog(h){S.log.unshift(fmts(elapsed())+' · '+h);S.log=S.log.slice(0,60);save();renderLog();}
+function renderLog(){$('#rolllog').innerHTML=S.log.join('<br>')||'<span class="muted">no rolls yet</span>';}
+$('#clearlog').addEventListener('click',()=>{S.log=[];save();renderLog();});
+
+/* ---------------- horde ---------------- */
+$('#panicroll').addEventListener('click',()=>{
+  const d=roll(1,6);
+  const r=d<=2?'FREEZE':d<=4?'FLEE':'ATTACK WILDLY';
+  $('#panicout').innerHTML='d6 = '+d+' → <b style="color:var(--red)">'+r+'</b> · POW×5 — Kira 70 · Dev 60 · Maggie 70 · Olu 65 · Priya 65 · Tom 55';
+});
+function renderZoms(){
+  $('#zoms').innerHTML=S.zoms.map((z,i)=>{
+    const slow=z.hp>0&&z.hp<=6;
+    return '<div class="zom'+(z.hp<=0?' dead':'')+'"><span class="hp'+(slow?' slow':'')+'">'+Math.max(0,z.hp)+'</span>'+(slow?'<span class="muted">Mv2</span>':'')+'<button data-z="'+i+'" data-d="1">−1</button><button data-z="'+i+'" data-d="3">−3</button><button data-z="'+i+'" data-d="head">HEAD</button></div>';
+  }).join('')||'<span class="muted">none active</span>';
+}
+$$('[data-spawn]').forEach(b=>b.addEventListener('click',()=>{
+  for(let i=0;i<parseInt(b.dataset.spawn);i++)S.zoms.push({hp:12});
+  save();renderZoms();
+}));
+$('#clearzoms').addEventListener('click',()=>{S.zoms=S.zoms.filter(z=>z.hp>0);save();renderZoms();});
+$('#zoms').addEventListener('click',e=>{
+  const b=e.target.closest('[data-z]');if(!b)return;
+  const z=S.zoms[b.dataset.z];
+  if(b.dataset.d==='head')z.hp=0;else z.hp-=parseInt(b.dataset.d);
+  save();renderZoms();
+});
+const INFNAMES=['Kira','Dev','Maggie','Olu','Priya','Tom','Danny','Ryan','Other…'];
+$('#infbtns').innerHTML=INFNAMES.map(n=>'<button data-inf="'+n+'">'+n+'</button>').join('');
+$('#infbtns').addEventListener('click',e=>{
+  const b=e.target.closest('[data-inf]');if(!b)return;
+  let n=b.dataset.inf;
+  if(n==='Other…'){n=prompt('Who was bitten?');if(!n)return;}
+  S.infs.push({n,t:Math.floor(elapsed())});save();renderInfs();
+});
+function renderInfs(){
+  $('#inflist').innerHTML=S.infs.map((f,i)=>'<div class="inf">'+f.n+' — bitten <span class="t">'+fmts(f.t)+'</span><button class="big" data-uninf="'+i+'" style="min-height:38px;padding:4px 12px">✕</button></div>').join('')||'<span class="muted">no bites logged</span>';
+}
+$('#inflist').addEventListener('click',e=>{
+  const b=e.target.closest('[data-uninf]');if(!b)return;
+  S.infs.splice(b.dataset.uninf,1);save();renderInfs();
+});
+
+/* ---------------- cast ---------------- */
+function pips(cur,max,cls,pc,kind){
+  let h='';for(let i=0;i<max;i++)h+='<span class="pip '+cls+(i<max-cur?' on':'')+'" data-pc="'+pc+'" data-k="'+kind+'" data-i="'+i+'"></span>';
+  return h;
+}
+function renderPCs(){
+  $('#pclist').innerHTML=PCS.map(p=>{
+    const st=S.pcs[p.id];
+    return '<div class="pc"><h3>'+p.name+' <span class="who">'+p.who+'</span></h3><div class="want">'+p.want+'</div>'
+      +'<div class="pips"><span class="lb">HP '+(p.hp-st.hp)+'/'+p.hp+'</span>'+pips(p.hp-st.hp,p.hp,'',p.id,'hp')+'</div>'
+      +'<div class="pips"><span class="lb">MP '+(p.mp-st.mp)+'/'+p.mp+'</span>'+pips(p.mp-st.mp,p.mp,'mp',p.id,'mp')+'</div>'
+      +'<div class="san"><span class="lb" style="font-size:10px;letter-spacing:.16em;color:var(--dim)">SAN</span><button data-pc="'+p.id+'" data-k="san" data-d="-5">−5</button><button data-pc="'+p.id+'" data-k="san" data-d="-1">−1</button><span class="n">'+st.san+'</span><button data-pc="'+p.id+'" data-k="san" data-d="1">+1</button></div>'
+      +'<div class="chips">'+p.skills.map(s=>'<button data-pcroll="'+s[1]+'" data-l="'+p.name.split(' ')[0]+' · '+s[0]+'">'+s[0]+' '+s[1]+'%</button>').join('')+'</div>'
+      +'<div class="flags"><button data-pc="'+p.id+'" data-k="bit" class="'+(st.bit?'on':'')+'">BITTEN</button><button data-pc="'+p.id+'" data-k="down" class="'+(st.down?'on':'')+'">DOWN</button></div></div>';
+  }).join('');
+}
+$('#pclist').addEventListener('click',e=>{
+  const r=e.target.closest('[data-pcroll]');
+  if(r){setSkill(parseInt(r.dataset.pcroll));doRoll(r.dataset.l);
+    $$('#nav button').forEach(x=>x.classList.toggle('active',x.dataset.tab==='dice'));
+    $$('.tab').forEach(t=>t.classList.toggle('active',t.id==='tab-dice'));return;}
+  const b=e.target.closest('[data-pc]');if(!b)return;
+  const st=S.pcs[b.dataset.pc],k=b.dataset.k;
+  const pc=PCS.find(p=>p.id===b.dataset.pc);
+  if(k==='hp'||k==='mp'){const i=parseInt(b.dataset.i);
+    st[k]=(st[k]===i+1)?i:i+1;}
+  else if(k==='san'){st.san=Math.max(0,Math.min(99,st.san+parseInt(b.dataset.d)));}
+  else st[k]=!st[k];
+  save();renderPCs();
+});
+function renderNPCs(){
+  $('#npclist').innerHTML=NPCS.map(n=>{
+    const st=S.npcs[n.id];
+    let hp='';
+    if(n.hp){const cur=n.hp-st.hp;hp='<div class="pips"><span class="lb">HP '+cur+'/'+n.hp+'</span>'+pips(cur,n.hp,'',n.id,'nhp')+'</div>';}
+    return '<div class="npc'+(st.open?' open':'')+'"><div class="head" data-npc="'+n.id+'"><span class="dot" style="background:'+n.dot+'"></span><b>'+n.name+'</b><span class="ess">'+n.ess+'</span></div><div class="bodyx">'+n.body+hp+(n.sec?'<div class="sec">'+n.sec+'</div>':'')+(n.stats?'<div class="stats">'+n.stats+'</div>':'')+'</div></div>';
+  }).join('');
+}
+$('#npclist').addEventListener('click',e=>{
+  const p=e.target.closest('.pip');
+  if(p&&p.dataset.k==='nhp'){const n=NPCS.find(x=>x.id===p.dataset.pc);const st=S.npcs[n.id];
+    const i=parseInt(p.dataset.i);st.hp=(st.hp===i+1)?i:i+1;
+    save();renderNPCs();return;}
+  const h=e.target.closest('[data-npc]');if(!h)return;
+  const st=S.npcs[h.dataset.npc];st.open=!st.open;save();renderNPCs();
+});
+
+/* ---------------- props ---------------- */
+const ARTDIR='../art/event-159/';
+$('#artprops').innerHTML=ART.map((a,i)=>'<div class="p" data-art="'+i+'"><img src="'+ARTDIR+a[0]+'" alt=""><div class="cap"><b>'+a[0].slice(0,10)+'</b>'+a[1]+'</div></div>').join('');
+$('#txtprops').innerHTML=TXTPROPS.map(t=>'<div class="p" data-txt="'+t.id+'"><div class="cap" style="padding:14px 10px"><b>'+t.t+'</b>'+t.c+'</div></div>').join('');
+const fs=$('#fs');
+$('#artprops').addEventListener('click',e=>{
+  const d=e.target.closest('[data-art]');if(!d)return;
+  fs.innerHTML='<img src="'+ARTDIR+ART[d.dataset.art][0]+'" alt="">';fs.classList.add('show');
+});
+const PROP_HTML={
+  alert:'<div class="txtprop"><div class="alertscreen"><div class="icon">⚠️</div><h1>EMERGENCY ALERT</h1><div class="src">UK Government</div><p>STAY INDOORS. AVOID ALL CONTACT WITH PERSONS WHO APPEAR CONFUSED OR AGGRESSIVE. EMERGENCY SERVICES ARE RESPONDING. THIS IS NOT A TEST.</p><div class="t">Sunday 17 May · 10:47</div></div></div>',
+  social:'<div class="txtprop"><div class="socialprop">'
+    +'<div class="post"><div class="h">@running_south_bank</div><div class="b">Something is very wrong on the South Bank. Someone just BIT a man near Borough Market. Filming now.</div></div>'
+    +'<div class="post"><div class="h">@TfL_unofficial</div><div class="b">All Jubilee Line services suspended pending emergency. No further info from TfL.</div></div>'
+    +'<div class="post"><div class="h">@defnotaGPT</div><div class="b">It’s a gas leak from the new development site near Elephant. They’re not telling us.</div></div>'
+    +'<div class="post"><div class="h">@mrsevanslondon27</div><div class="b">I can hear screaming from my flat on Southwark Street. This has been going on for ten minutes. Where are the police.</div></div>'
+    +'<div class="post"><div class="h">@marcus_everything_live</div><div class="b">LIVE — what is HAPPENING — 41,000 watching — SHARE THIS — [Southwark Bridge stream link]</div></div>'
+    +'</div></div>',
+  radio1:'<div class="txtprop"><div class="radioprop"><span class="st">‹kssshhh›</span> …all units… <span class="st">‹kssshhh›</span> …first reports… Elephant… zero seven fourteen… <span class="st">‹kssshhh›</span> …do not approach… awaiting instruc— <span class="st">‹signal lost›</span></div></div>',
+  radio2:'<div class="txtprop"><div class="radioprop"><span class="st">‹kssshhh›</span> ALL UNITS — HOLD THE NORTH BANK LINE — DO NOT CROSS — REPEAT — DO NOT CROSS <span class="st">‹kssshhh›</span></div></div>',
+  nine99:'<div class="txtprop"><div class="phoneprop">📞 999<br><br><i>Three rings. Then:</i><br><br>"All lines are currently experiencing extremely high demand. If you are in immediate life-threatening danger, please stay on the line."<br><br><i>Hold music. A recorded message asks callers not to ring unless in immediate danger.</i><br><br><i>The line drops.</i></div></div>',
+};
+$('#txtprops').addEventListener('click',e=>{
+  const d=e.target.closest('[data-txt]');if(!d)return;
+  fs.innerHTML=PROP_HTML[d.dataset.txt];fs.classList.add('show');
+});
+fs.addEventListener('click',()=>fs.classList.remove('show'));
+
+/* ---------------- more ---------------- */
+let wakeLock=null,wakeWanted=false;
+async function acquireWake(){
+  if(!wakeWanted||!('wakeLock' in navigator))return;
+  try{wakeLock=await navigator.wakeLock.request('screen');}catch(e){}
+}
+$('#wakebtn').addEventListener('click',async()=>{
+  wakeWanted=!wakeWanted;
+  if(wakeWanted){await acquireWake();toast(wakeLock?'Screen will stay awake':'Wake lock unavailable in this browser');if(!wakeLock)wakeWanted=false;}
+  else{if(wakeLock){wakeLock.release();wakeLock=null;}toast('Wake lock off');}
+  $('#wakebtn').classList.toggle('primary',wakeWanted);
+});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')acquireWake();});
+$('#exportbtn').addEventListener('click',()=>{
+  const a=document.createElement('a');
+  a.href='data:application/json,'+encodeURIComponent(JSON.stringify(S));
+  a.download='london-falls-session.json';a.click();toast('Exported');
+});
+$('#importbtn').addEventListener('click',()=>$('#importfile').click());
+$('#importfile').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{try{S=Object.assign(DEF(),JSON.parse(r.result));save();renderAll();toast('Imported');}catch(x){toast('Bad file');}};
+  r.readAsText(f);
+});
+$('#resetbtn').addEventListener('click',()=>{
+  if(!confirm('Reset the whole session? Clock, clues, cast, log — everything.'))return;
+  S=DEF();save();renderAll();$('#notes').value='';toast('Session reset');
+});
+
+function renderAll(){renderSched();renderCd();renderClues();renderLog();renderZoms();renderInfs();renderPCs();renderNPCs();setSkill(S.skill);$('#notes').value=S.notes;$('#clockbtn').textContent=S.clock.run?'Pause':'Start';}
+renderAll();
+</script>
+</body>
+</html>
