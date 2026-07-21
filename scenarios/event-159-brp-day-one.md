@@ -1,5 +1,6 @@
 # Event 159 – BRP: Day One — "London Falls"
 
+
 ---
 
 ## MASTER RULES (this scenario)
@@ -73,7 +74,7 @@ The scenario ends when the players reach Tower Bridge or the moored RIB at Banks
 | 159-H00-B | South Bank area map — Waterloo to Tower Bridge, key locations marked | Printed A5, ink-sketch style | Before play begins |
 | 159-H00-C | NHS Emergency Alert screengrab — red screen, government text | Phone-sized printed card or displayed on GM device | Introduction beat — alert fires |
 
-*All pre-game handouts are print-ready in [`gm-docs/event-159-handouts.html`](gm-docs/event-159-handouts.html) (H00-A cards ×6, H00-B map — asset `159-H00-B-map.svg` — and H00-C alert ×2). The GM console (`gm-docs/event-159-gm-console.html`) can also display H00-C, the social feed, radio fragments and all art fullscreen at the table.*
+*All pre-game handouts are print-ready in [`gm-docs/day-one-handouts.html`](gm-docs/day-one-handouts.html) (H00-A cards ×6, H00-B map — asset `159-H00-B-map.svg` — and H00-C alert ×2). The GM console (`gm-docs/day-one-console.html`) can also display H00-C, the social feed, radio fragments and all art fullscreen at the table.*
 
 ---
 
@@ -616,6 +617,7 @@ At 3:05, regardless of where the group is: the cost happens. Force it. Do not le
 | 159-ART-14 | Southwark Cathedral — survivors gathering at the steps, cardboard sign by the door | Act Two (optional colour) | Medieval stone vs phones and modern clothes, crisis documentation |
 | 159-ART-15 | The RIB looking back — the city burning at dusk from the water | Epilogue | Skyline lit by fires not streetlights, three smoke columns, figures facing away |
 | 159-ART-16 | Drone aerial of central London — the basis of handout 159-H02-A | Act Two (Clue 6) | Both banks from above, crowds compressing onto bridges heading north, three smoke plumes south of the river |
+| 159-ART-17–22 | PC portraits — Kira, Dev, Maggie, Olu, Priya, Tom (reportage ink, head-and-shoulders) | Survivor record cards 159-H00-A | Case-file mugshot framing on the redesigned gritty cards; grayscale print |
 | 159-H00-B-map | South Bank area map, Waterloo to Tower Bridge (SVG, hand-drawn style) — handout 159-H00-B | Pre-game | Drawn directly (not generated): accurate geography, PC start positions K·D·M·O·P·T, escape routes A/B, Elephant & Castle warning |
 
 ---
